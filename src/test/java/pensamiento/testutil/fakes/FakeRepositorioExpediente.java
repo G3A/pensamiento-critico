@@ -23,13 +23,23 @@ public final class FakeRepositorioExpediente implements RepositorioExpediente {
 
     @Override
     public Optional<Expediente> porId(UUID usuarioId, UUID id) {
-        return Optional.ofNullable(expedientes.get(id)).filter(e -> e.usuarioId().equals(usuarioId));
+        return Optional.ofNullable(expedientes.get(id)).filter(e -> e.usuarioId().equals(usuarioId) && !borrados.contains(e.id()));
+    }
+
+    private final java.util.Set<UUID> borrados = new java.util.HashSet<>();
+
+    @Override
+    public boolean borrar(UUID usuarioId, UUID id, java.time.Instant cuando) {
+        if (porId(usuarioId, id).isEmpty()) {
+            return false;
+        }
+        return borrados.add(id);
     }
 
     @Override
     public List<Expediente> deUsuario(UUID usuarioId) {
         return expedientes.values().stream()
-                .filter(e -> e.usuarioId().equals(usuarioId))
+                .filter(e -> e.usuarioId().equals(usuarioId) && !borrados.contains(e.id()))
                 .sorted(Comparator.comparing(Expediente::creadoEn).reversed().thenComparing(e -> e.id().toString(), Comparator.reverseOrder()))
                 .toList();
     }

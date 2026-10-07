@@ -43,6 +43,7 @@ class RealRepositorioExpedienteContractIT extends RepositorioExpedienteContract 
             @Override public Expediente guardar(Expediente e) { return bd.comoUsuario(usuarioId, personas.institucion(), () -> real.guardar(e)); }
             @Override public Optional<Expediente> porId(UUID u, UUID id) { return bd.comoUsuario(usuarioId, personas.institucion(), () -> real.porId(u, id)); }
             @Override public List<Expediente> deUsuario(UUID u) { return bd.comoUsuario(usuarioId, personas.institucion(), () -> real.deUsuario(u)); }
+            @Override public boolean borrar(UUID u, UUID id, java.time.Instant c) { return bd.comoUsuario(usuarioId, personas.institucion(), () -> real.borrar(u, id, c)); }
         };
     }
 }

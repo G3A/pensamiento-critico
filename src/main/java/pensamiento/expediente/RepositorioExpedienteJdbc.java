@@ -59,6 +59,13 @@ public class RepositorioExpedienteJdbc implements RepositorioExpediente {
                 .query(RepositorioExpedienteJdbc::fila).list();
     }
 
+    @Override
+    public boolean borrar(UUID usuarioId, UUID id, java.time.Instant cuando) {
+        return jdbc.sql("UPDATE expediente SET eliminado_en = :cuando WHERE usuario_id = :usuario AND id = :id AND eliminado_en IS NULL")
+                .param("cuando", Timestamp.from(cuando)).param("usuario", usuarioId).param("id", id)
+                .update() == 1;
+    }
+
     static Expediente fila(ResultSet rs, int i) throws SQLException {
         return new Expediente(
                 rs.getObject("id", UUID.class),

@@ -14,6 +14,9 @@ public interface RepositorioExpediente {
     /** Vacío si no existe o si pertenece a otro usuario: ambas cosas se ven igual desde afuera. */
     Optional<Expediente> porId(UUID usuarioId, UUID id);
 
-    /** Del más reciente al más antiguo. */
+    /** Del más reciente al más antiguo; sin los borrados. */
     List<Expediente> deUsuario(UUID usuarioId);
+
+    /** Borrado lógico. Falso si no existe, ya estaba borrado o es de otro usuario. Desasociar sus ejecuciones es del servicio. */
+    boolean borrar(UUID usuarioId, UUID id, java.time.Instant cuando);
 }

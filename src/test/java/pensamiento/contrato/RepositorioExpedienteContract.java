@@ -50,6 +50,27 @@ public abstract class RepositorioExpedienteContract {
     }
 
     @Test
+    void un_expediente_borrado_deja_de_verse_y_no_se_borra_dos_veces() {
+        Personas p = personas();
+        RepositorioExpediente repo = comoUsuario(p.usuarioA());
+        Expediente e = repo.guardar(expediente(p.usuarioA(), "la olla comunitaria", Instant.parse("2026-10-02T00:00:00Z")));
+
+        assertThat(repo.borrar(p.usuarioA(), e.id(), Instant.parse("2026-10-07T15:00:00Z"))).isTrue();
+
+        assertThat(repo.porId(p.usuarioA(), e.id())).isEmpty();
+        assertThat(repo.deUsuario(p.usuarioA()).stream().map(Expediente::id)).doesNotContain(e.id());
+        assertThat(repo.borrar(p.usuarioA(), e.id(), Instant.parse("2026-10-07T15:00:00Z"))).isFalse();
+    }
+
+    @Test
+    void el_usuario_b_no_puede_borrar_el_expediente_del_usuario_a() {
+        Personas p = personas();
+        Expediente deA = comoUsuario(p.usuarioA()).guardar(expediente(p.usuarioA(), "de A, no se toca", Instant.now()));
+        assertThat(comoUsuario(p.usuarioB()).borrar(p.usuarioB(), deA.id(), Instant.now())).isFalse();
+        assertThat(comoUsuario(p.usuarioA()).porId(p.usuarioA(), deA.id())).isPresent();
+    }
+
+    @Test
     void el_usuario_b_no_encuentra_el_expediente_del_usuario_a() {
         Personas p = personas();
         Expediente deA = comoUsuario(p.usuarioA()).guardar(expediente(p.usuarioA(), "privado de A", Instant.now()));
