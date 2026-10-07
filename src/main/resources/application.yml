@@ -21,6 +21,10 @@ spring:
     locations: classpath:db/migration
     placeholders:
       rol_app: app
+  servlet:
+    multipart:
+      max-file-size: 5MB        # RF-12: el respaldo JSON de una persona
+      max-request-size: 6MB
   jackson:
     default-property-inclusion: non_null
 
