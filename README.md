@@ -178,9 +178,14 @@ el banco de 30 diálogos antes de fijar el modelo por defecto.
 
 ## Licencia
 
-El archivo [`LICENSE`](LICENSE) del repo (MIT) queda **como está, pendiente de la decisión del dueño** antes del
-hito 1: la mesa de expertos evaluó Apache-2.0 y AGPL-3.0 para el código, y CC BY-SA 4.0 para el contenido
-(ejemplos, esquemas, escenarios, preguntas), separada de la del código.
+Decidida por el dueño el 2026-10-07, antes del hito 1:
+
+- **Código**: [GNU AGPL-3.0](LICENSE). Quien modifique el código y lo ofrezca por red debe publicar sus cambios;
+  usarlo tal cual no impone obligaciones. El dueño conserva todo el copyright y puede ofrecer además una
+  licencia comercial (licencia dual); por eso toda contribución externa requiere un acuerdo de contribución
+  que permita relicenciar. Las dependencias (Apache-2.0, MIT, 0BSD, licencia PostgreSQL) son compatibles.
+- **Contenido** (catálogo, ejemplos, esquemas, escenarios, preguntas): [CC BY-SA 4.0](LICENSE-CONTENIDO),
+  separada de la del código. El alcance exacto está al inicio de ese archivo.
 
 ## Decisiones tomadas en el hito 0
 
