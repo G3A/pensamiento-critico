@@ -33,6 +33,7 @@ class VerificadorCatalogoTest {
         return new Ejecutor<>() {
             @Override public IdTecnica id() { return IdTecnica.de(id); }
             @Override public int versionEsquema() { return 1; }
+            @Override public Tipos<Object, Object, Object> tipos() { return new Tipos<>(Object.class, Object.class, Object.class); }
             @Override public Validacion validar(Object config, Object entrada) { return Validacion.VALIDA; }
             @Override public Resultado<Object> ejecutar(Object config, Object entrada, Contexto ctx) { return new Resultado<>(1, null, List.of(), List.of(), ""); }
             @Override public Object migrar(Json datosViejos, int desdeVersion) { return null; }

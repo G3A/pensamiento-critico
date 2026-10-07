@@ -1,0 +1,130 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "Las ventas de los sábados",
+    "versionEsquema": 1,
+    "config": { "maxHipotesis": 4, "escala": "cin", "pesosActivos": true },
+    "datos": {
+      "pregunta": "¿Por qué bajaron un 18% las ventas de los sábados en la panadería?",
+      "hipotesis": [
+        { "texto": "Abrió una feria a dos cuadras los sábados" },
+        { "texto": "Subió el precio del pan" },
+        { "texto": "Los clientes están de vacaciones" }
+      ],
+      "evidencias": [
+        { "texto": "La baja es solo los sábados", "peso": "alto", "celdas": ["C", "I", "N"] },
+        { "texto": "El precio no cambia desde marzo", "peso": "medio", "celdas": ["N", "I", "N"] },
+        { "texto": "La feria abrió el mismo fin de semana", "peso": "alto", "celdas": ["C", "N", "I"] },
+        { "texto": "Entre semana vienen los mismos clientes", "peso": "bajo", "celdas": ["N", "N", "I"] }
+      ]
+    },
+    "resultado": {
+      "inconsistencias": { "H1": 0, "H2": 5, "H3": 4 },
+      "menosRefutadas": ["H1"],
+      "empate": false,
+      "masRefutadas": ["H2"],
+      "evidenciasEnContraDeLaMasRefutada": ["E1", "E2"],
+      "verificar": [ { "hipotesis": "H1", "evidencia": "E1" } ],
+      "pendientes": ["Verificar E1: La baja es solo los sábados (hipótesis H1: Abrió una feria a dos cuadras los sábados)"],
+      "resumen": "Menos refutada: H1, Abrió una feria a dos cuadras los sábados (0 inconsistencias ponderadas)."
+    },
+    "nota": "La dueña de la panadería quiere saber por qué bajaron las ventas de los sábados antes de bajar precios. Es el ejemplo del mockup de la pestaña Usar."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "La asamblea vacía",
+    "versionEsquema": 1,
+    "config": { "maxHipotesis": 4, "escala": "cin", "pesosActivos": false },
+    "datos": {
+      "pregunta": "¿Por qué casi nadie fue a la asamblea de marzo de la junta de vecinos?",
+      "hipotesis": [
+        { "texto": "El aviso se pegó muy tarde" },
+        { "texto": "La asamblea coincidió con el partido de la selección" },
+        { "texto": "Los vecinos ya no confían en la junta" }
+      ],
+      "evidencias": [
+        { "texto": "El aviso se pegó en la cartelera dos días antes", "celdas": ["C", "N", "N"] },
+        { "texto": "A la asamblea de enero, avisada con una semana, llegaron 40 personas", "celdas": ["C", "N", "I"] },
+        { "texto": "El partido empezó a las 8 de la noche y la asamblea era a las 6", "celdas": ["N", "I", "N"] },
+        { "texto": "La cuadra 3 recibió el aviso por mensaje una semana antes y tampoco fue", "celdas": ["I", "N", "C"] },
+        { "texto": "A la olla comunitaria de febrero, organizada por la junta, llegaron 60 vecinos", "celdas": ["N", "N", "I"] }
+      ]
+    },
+    "resultado": {
+      "inconsistencias": { "H1": 1, "H2": 1, "H3": 2 },
+      "menosRefutadas": ["H1", "H2"],
+      "empate": true,
+      "masRefutadas": ["H3"],
+      "evidenciasEnContraDeLaMasRefutada": ["E2", "E5"],
+      "verificar": [ { "hipotesis": "H1", "evidencia": "E1" }, { "hipotesis": "H2", "evidencia": null } ],
+      "pendientes": [
+        "Verificar E1: El aviso se pegó en la cartelera dos días antes (hipótesis H1: El aviso se pegó muy tarde)",
+        "Buscar una evidencia que distinga H2 de las demás (hipótesis H2: La asamblea coincidió con el partido de la selección)"
+      ],
+      "resumen": "Empate entre H1 y H2 (1 inconsistencia ponderada cada una)."
+    },
+    "nota": "La secretaria de la junta de vecinos quiere entender por qué a la asamblea de marzo llegaron 9 personas, cuando a la de enero llegaron 40."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "La factura de luz",
+    "versionEsquema": 1,
+    "config": { "maxHipotesis": 4, "escala": "numerica", "pesosActivos": true },
+    "datos": {
+      "pregunta": "¿Por qué la factura de luz de septiembre llegó un 40% más alta?",
+      "hipotesis": [
+        { "texto": "La nevera vieja está fallando" },
+        { "texto": "Subió la tarifa" },
+        { "texto": "El hijo mayor usa la consola más horas desde las vacaciones" }
+      ],
+      "evidencias": [
+        { "texto": "La tarifa por kWh impresa en la factura es igual a la de agosto", "peso": "alto", "celdas": ["0", "-2", "0"] },
+        { "texto": "El consumo en kWh subió un 38%", "peso": "alto", "celdas": ["1", "-1", "1"] },
+        { "texto": "La nevera hace ruido y el motor no se apaga", "peso": "medio", "celdas": ["2", "0", "0"] },
+        { "texto": "Las vacaciones del colegio terminaron en julio", "peso": "medio", "celdas": ["0", "0", "-2"] },
+        { "texto": "Un vecino con la misma empresa no notó cambios en su factura", "peso": "bajo", "celdas": ["0", "-1", "0"] }
+      ]
+    },
+    "resultado": {
+      "inconsistencias": { "H1": 0, "H2": 10, "H3": 4 },
+      "menosRefutadas": ["H1"],
+      "empate": false,
+      "masRefutadas": ["H2"],
+      "evidenciasEnContraDeLaMasRefutada": ["E1", "E2", "E5"],
+      "verificar": [ { "hipotesis": "H1", "evidencia": "E3" } ],
+      "pendientes": ["Verificar E3: La nevera hace ruido y el motor no se apaga (hipótesis H1: La nevera vieja está fallando)"],
+      "resumen": "Menos refutada: H1, La nevera vieja está fallando (0 inconsistencias ponderadas)."
+    },
+    "nota": "Una familia recibe la factura de luz de septiembre un 40% más alta que la de agosto y quiere saber qué cambió antes de discutir quién gasta más. Ninguna evidencia contradice a H1, pero eso no la confirma."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El pan quemado",
+    "versionEsquema": 1,
+    "config": { "maxHipotesis": 4, "escala": "cin", "pesosActivos": false },
+    "datos": {
+      "pregunta": "¿Por qué sale quemado el pan en la sucursal del centro?",
+      "hipotesis": [
+        { "texto": "El horno calienta de más" },
+        { "texto": "Cambió la harina" },
+        { "texto": "El horario del turno de la madrugada" }
+      ],
+      "evidencias": [
+        { "texto": "El pan sale quemado solo en la tanda de las 6", "celdas": ["C", "I", "C"] },
+        { "texto": "Se usa el mismo lote de harina todo el día", "celdas": ["N", "I", "N"] },
+        { "texto": "El termostato marca más de lo que mide un termómetro de horno", "celdas": ["C", "N", "I"] }
+      ]
+    },
+    "resultado": {
+      "inconsistencias": { "H1": 0, "H2": 2, "H3": 1 },
+      "menosRefutadas": ["H1"],
+      "empate": false,
+      "masRefutadas": ["H2"],
+      "evidenciasEnContraDeLaMasRefutada": ["E1", "E2"],
+      "verificar": [ { "hipotesis": "H1", "evidencia": "E1" } ],
+      "pendientes": ["Verificar E1: El pan sale quemado solo en la tanda de las 6 (hipótesis H1: El horno calienta de más)"],
+      "resumen": "Menos refutada: H1, El horno calienta de más (0 inconsistencias ponderadas)."
+    },
+    "nota": "Caso adicional de la tarjeta de T28 en la sección 7b; no cuenta entre los tres ejemplos de ámbito distinto."
+  }
+]

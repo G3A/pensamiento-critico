@@ -53,9 +53,9 @@ class CatalogoJsonTest {
     }
 
     @Test
-    void todas_estan_pendientes_en_el_hito_0_y_tienen_nombre_llano_y_usala_cuando() {
+    void en_el_hito_1_solo_t28_esta_activa_y_todas_tienen_nombre_llano_y_usala_cuando() {
+        assertThat(catalogo.tecnicas().stream().filter(t -> !t.estaPendiente()).map(t -> t.id().valor())).containsExactly("T28");
         for (Tecnica t : catalogo.tecnicas()) {
-            assertThat(t.estaPendiente()).as(t.cita()).isTrue();
             assertThat(t.nombreLlano()).as(t.cita()).isNotBlank();
             assertThat(t.usalaCuando()).as(t.cita()).isNotBlank();
             assertThat(t.definicion()).as(t.cita()).isNotBlank();
@@ -108,6 +108,26 @@ class CatalogoJsonTest {
         CatalogoJson.ReglaVersion r01 = reglas.getFirst();
         assertThat(r01.parametros().get("umbralCraap")).isEqualTo(18);
         assertThat(r01.parametros().get("maximo")).isEqualTo(8);
+    }
+
+    @Test
+    void toda_tecnica_activa_tiene_esquemas_configuracion_por_defecto_y_tres_ejemplos_de_ambito_distinto() {
+        for (Tecnica t : catalogo.tecnicas().stream().filter(t -> !t.estaPendiente()).toList()) {
+            assertThat(t.esquemaConfig().texto()).as(t.cita()).contains("\"campos\"");
+            assertThat(t.esquemaEntrada().texto()).as(t.cita()).contains("\"campos\"");
+            assertThat(t.configDefault().texto()).as(t.cita()).isNotEqualTo("{}");
+            assertThat(catalogo.ejemplosDe(t.id()).stream().map(e -> e.ambito()).collect(Collectors.toSet())).as(t.cita())
+                    .containsExactlyInAnyOrder(pensamiento.nucleo.Ejemplo.Ambito.values());
+        }
+    }
+
+    @Test
+    void los_ejemplos_solo_existen_para_tecnicas_del_catalogo_y_con_titulo_unico() {
+        Set<String> ids = catalogo.tecnicas().stream().map(t -> t.id().valor()).collect(Collectors.toSet());
+        List<CatalogoJson.EjemploJson> ejemplos = catalogo.ejemplos();
+        assertThat(ejemplos).isNotEmpty();
+        assertThat(ejemplos).allSatisfy(e -> assertThat(ids).contains(e.tecnica()));
+        assertThat(ejemplos.stream().map(e -> e.tecnica() + "/" + e.titulo()).distinct()).hasSize(ejemplos.size());
     }
 
     @Test

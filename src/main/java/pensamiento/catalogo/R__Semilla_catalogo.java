@@ -9,6 +9,7 @@ import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 import org.springframework.stereotype.Component;
 
+import pensamiento.nucleo.Ejemplo;
 import pensamiento.nucleo.Familia;
 import pensamiento.nucleo.Tecnica;
 
@@ -35,6 +36,39 @@ public class R__Semilla_catalogo extends BaseJavaMigration {
         sembrarTecnicas(con, catalogo.tecnicas());
         sembrarRelaciones(con, catalogo.relaciones());
         sembrarReglas(con, catalogo.reglas());
+        sembrarEjemplos(con, catalogo.ejemplos().stream().map(catalogo::aEjemplo).toList());
+    }
+
+    /** Identificador determinista por técnica y título: el mismo en toda instalación. Se borran los retirados del JSON. */
+    private void sembrarEjemplos(Connection con, List<Ejemplo> ejemplos) throws SQLException {
+        try (PreparedStatement borrar = con.prepareStatement("DELETE FROM ejemplo WHERE NOT (id = ANY (?))")) {
+            borrar.setArray(1, con.createArrayOf("uuid", ejemplos.stream().map(Ejemplo::id).toArray()));
+            borrar.executeUpdate();
+        }
+        String sql = """
+                INSERT INTO ejemplo (id, tecnica_id, orden, version_esquema, ambito, titulo, config, datos, resultado, nota)
+                VALUES (?, ?, ?, ?, ?, ?, ?::jsonb, ?::jsonb, ?::jsonb, ?)
+                ON CONFLICT (id) DO UPDATE SET
+                  tecnica_id = EXCLUDED.tecnica_id, orden = EXCLUDED.orden, version_esquema = EXCLUDED.version_esquema,
+                  ambito = EXCLUDED.ambito, titulo = EXCLUDED.titulo, config = EXCLUDED.config, datos = EXCLUDED.datos,
+                  resultado = EXCLUDED.resultado, nota = EXCLUDED.nota
+                """;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            for (Ejemplo e : ejemplos) {
+                ps.setObject(1, e.id());
+                ps.setString(2, e.tecnica().valor());
+                ps.setInt(3, e.orden());
+                ps.setInt(4, e.versionEsquema());
+                ps.setString(5, e.ambito().enBaseDeDatos());
+                ps.setString(6, e.titulo());
+                ps.setString(7, e.config().texto());
+                ps.setString(8, e.datos().texto());
+                ps.setString(9, e.resultado().texto());
+                ps.setString(10, e.nota());
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
     }
 
     private void sembrarFamilias(Connection con, List<Familia> familias) throws SQLException {

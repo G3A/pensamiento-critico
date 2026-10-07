@@ -84,8 +84,9 @@ class RealRepositorioTecnicaContractIT extends RepositorioTecnicaContract {
                     .param("c", f.codigo()).param("n", f.nombre()).param("o", f.orden()).update();
         }
         for (Tecnica t : tecnicas) {
-            // Si la fila ya estaba en el catálogo real, se guarda su copia para restaurarla después.
-            dadoQueNoExiste(t.id());
+            // Si la fila ya estaba en el catálogo real, se guarda su copia para restaurarla después. No se borra:
+            // T28 tiene ejemplos (se irían en cascada) y ejecuciones de usuarios (la clave foránea lo impide).
+            guardarCopia(t.id());
             admin.sql(SQL_UPSERT)
                     .param("id", t.id().valor()).param("f", t.familia()).param("n", t.nombre()).param("nl", t.nombreLlano())
                     .param("uc", t.usalaCuando()).param("d", t.definicion()).param("tipo", t.tipo().name().toLowerCase())
@@ -102,12 +103,16 @@ class RealRepositorioTecnicaContractIT extends RepositorioTecnicaContract {
         JdbcClient admin = bd.jdbcAdmin();
         relacionesRetiradas.addAll(admin.sql("SELECT origen_id, destino_id, tipo FROM relacion_tecnica WHERE origen_id = :id OR destino_id = :id")
                 .param("id", id.valor()).query().listOfRows());
-        filasRetiradas.addAll(admin.sql("""
+        guardarCopia(id);
+        admin.sql("DELETE FROM tecnica WHERE id = :id").param("id", id.valor()).update();
+    }
+
+    private void guardarCopia(IdTecnica id) {
+        filasRetiradas.addAll(bd.jdbcAdmin().sql("""
                 SELECT id, familia_codigo, nombre, nombre_llano, usala_cuando, definicion, tipo, operacion, objeto, modalidad, patron,
                        origen, requiere_ia, version_esquema, esquema_config::text AS esquema_config, esquema_entrada::text AS esquema_entrada,
                        config_default::text AS config_default, estado
                 FROM tecnica WHERE id = :id
                 """).param("id", id.valor()).query().listOfRows());
-        admin.sql("DELETE FROM tecnica WHERE id = :id").param("id", id.valor()).update();
     }
 }

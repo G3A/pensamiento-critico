@@ -193,7 +193,54 @@
     "usalaCuando": "Hay varias explicaciones posibles de lo que pasó y quieres cruzar cada una con la evidencia para ver cuál queda menos refutada, en vez de enamorarte de la primera.",
     "definicion": "Procedimiento que cruza hipótesis con evidencias en una matriz (consistente, inconsistente, neutral), pondera las inconsistencias y señala la hipótesis menos refutada. ACH elimina, no confirma.",
     "tipo": "procedimiento", "operacion": "evaluar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V03a",
-    "origen": "Heuer 1999", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Heuer 1999", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "maxHipotesis": 4, "escala": "cin", "pesosActivos": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "escala", "tipo": "enumeracion", "etiqueta": "Escala de cada celda", "obligatorio": true,
+          "ayuda": "Cómo marcas cada evidencia frente a cada hipótesis.",
+          "opciones": [
+            { "valor": "cin", "etiqueta": "C, I, N: consistente, inconsistente o neutral" },
+            { "valor": "numerica", "etiqueta": "Numérica de -2 (muy inconsistente) a +2 (muy consistente)" }
+          ] },
+        { "nombre": "maxHipotesis", "tipo": "entero", "etiqueta": "Máximo de hipótesis", "obligatorio": true, "minimo": 2, "maximo": 8 },
+        { "nombre": "pesosActivos", "tipo": "booleano", "etiqueta": "Pesos de evidencia activos (alto 3, medio 2, bajo 1)",
+          "ayuda": "Apagados, toda evidencia pesa 1." }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "pregunta", "tipo": "texto", "etiqueta": "Pregunta", "obligatorio": true, "largoMaximo": 300,
+          "ayuda": "Qué quieres explicar. Por ejemplo: ¿por qué bajaron las ventas de los sábados?" },
+        { "nombre": "hipotesis", "tipo": "filas", "etiqueta": "Hipótesis", "prefijo": "H", "minimo": 2, "maximoDesdeConfig": "maxHipotesis",
+          "ayuda": "Las explicaciones que compiten. Escribe también las que te parecen improbables.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Hipótesis", "obligatorio": true, "largoMaximo": 200 }
+          ] },
+        { "nombre": "evidencias", "tipo": "filas", "etiqueta": "Evidencias", "prefijo": "E", "minimo": 1, "maximo": 12,
+          "ayuda": "Lo que sabes. Marca cada evidencia frente a cada hipótesis.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Evidencia", "obligatorio": true, "largoMaximo": 200 },
+            { "nombre": "peso", "tipo": "enumeracion", "etiqueta": "Peso", "obligatorio": true, "visibleSi": "pesosActivos",
+              "opciones": [
+                { "valor": "alto", "etiqueta": "alto" }, { "valor": "medio", "etiqueta": "medio" }, { "valor": "bajo", "etiqueta": "bajo" }
+              ] },
+            { "nombre": "celdas", "tipo": "enumeracion", "etiqueta": "Frente a", "obligatorio": true, "porCadaFilaDe": "hipotesis",
+              "opcionesSegun": "escala",
+              "opcionesPor": {
+                "cin": [
+                  { "valor": "C", "etiqueta": "C · consistente" }, { "valor": "I", "etiqueta": "I · inconsistente" },
+                  { "valor": "N", "etiqueta": "N · neutral" }
+                ],
+                "numerica": [
+                  { "valor": "2", "etiqueta": "+2 · muy consistente" }, { "valor": "1", "etiqueta": "+1 · consistente" },
+                  { "valor": "0", "etiqueta": "0 · neutral" }, { "valor": "-1", "etiqueta": "-1 · inconsistente" },
+                  { "valor": "-2", "etiqueta": "-2 · muy inconsistente" }
+                ]
+              } }
+          ] }
+      ]
+    }
   },
   {
     "id": "T29", "familia": "F5", "nombre": "Pre-mortem", "nombreLlano": "Ya fracasó: ¿por qué?",
