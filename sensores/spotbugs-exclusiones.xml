@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Exclusiones de SpotBugs y FindSecBugs. Cada una con motivo; vacía por defecto. -->
+<!-- Exclusiones de SpotBugs y FindSecBugs. Cada una con motivo. Revisadas el 7 de octubre de 2026. -->
 <FindBugsFilter>
   <!-- Las plantillas JTE precompiladas son código generado. -->
   <Match>
@@ -8,5 +8,22 @@
   <!-- Los records exponen listas copiadas con List.copyOf (inmutables): el aviso de "exposición de representación" no aplica. -->
   <Match>
     <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+  </Match>
+  <!-- Procesos hijo: el comando es una lista fija escrita en código (dot, pdftotext) con tiempo máximo y límites;
+       el DOT entra por stdin, nunca como argumento, y la ruta del PDF la produce la aplicación, no el usuario. -->
+  <Match>
+    <Or>
+      <Class name="pensamiento.graficos.ProcesoHijo" />
+      <Class name="pensamiento.graficos.GraphvizProceso" />
+      <Class name="pensamiento.biblioteca.ExtractorPdfProceso" />
+    </Or>
+    <Bug pattern="COMMAND_INJECTION" />
+  </Match>
+  <!-- Respuestas de sesión: la redirección tras entrar pasa por destinoSeguro (solo rutas relativas del propio
+       sitio, sin esquema ni barra doble); la de /bloqueo lleva la URI propia codificada; el cuerpo escrito es el
+       fragmento JTE (escapado por la plantilla) o vacío. -->
+  <Match>
+    <Class name="pensamiento.web.seguridad.RespuestasSesion" />
+    <Bug pattern="UNVALIDATED_REDIRECT,HRS_REQUEST_PARAMETER_TO_HTTP_HEADER,XSS_SERVLET" />
   </Match>
 </FindBugsFilter>

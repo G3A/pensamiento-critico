@@ -212,10 +212,14 @@ public class IaSpringAi implements Ia {
     }
 
     private static String textoDe(ChatResponse r) {
-        if (r == null || r.getResult() == null || r.getResult().getOutput() == null) {
+        if (r == null) {
             return "";
         }
-        String texto = r.getResult().getOutput().getText();
+        var resultado = r.getResult();
+        if (resultado == null || resultado.getOutput() == null) {
+            return "";
+        }
+        String texto = resultado.getOutput().getText();
         return texto == null ? "" : texto;
     }
 

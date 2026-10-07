@@ -58,8 +58,7 @@ public class RespuestasSesion {
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write("");
             } else {
-                String volver = request.getParameter("volver");
-                response.sendRedirect(volver != null && volver.startsWith("/") && !volver.startsWith("//") ? volver : "/");
+                response.sendRedirect(destinoSeguro(request.getParameter("volver")));
             }
         };
     }
@@ -92,6 +91,16 @@ public class RespuestasSesion {
         String valor = token == null ? "" : token.getToken();
         return "{\"" + EVENTO_CSRF + "\": {\"token\": \"" + valor + "\"}, \"sesion-renovada\": true}";
     }
+
+    /** Solo rutas relativas al propio sitio: una letra o dígito tras la barra y sin esquema, barra doble ni caracteres de control. */
+    public static String destinoSeguro(String volver) {
+        if (volver == null || !DESTINO_LOCAL.matcher(volver).matches()) {
+            return "/";
+        }
+        return volver;
+    }
+
+    private static final java.util.regex.Pattern DESTINO_LOCAL = java.util.regex.Pattern.compile("^/(?!/)[A-Za-z0-9/_.~%?=&-]*$");
 
     /** Modelo del fragmento de bloqueo: token CSRF, error opcional y si se muestra como overlay. */
     public record ModeloBloqueo(String csrf, String error, boolean overlay) {

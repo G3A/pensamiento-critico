@@ -29,7 +29,7 @@
     <bouncycastle.version>1.86</bouncycastle.version>
     <spotbugs-maven-plugin.version>4.10.4.1</spotbugs-maven-plugin.version>
     <findsecbugs.version>1.14.0</findsecbugs.version>
-    <dependency-check.version>13.0.0</dependency-check.version>
+    <dependency-check.version>12.2.2</dependency-check.version>   <!-- 13.0.0 trae una clave NVD vacía por defecto y aborta sin clave (issue 8715) -->
   </properties>
 
   <dependencyManagement>
@@ -223,7 +223,6 @@
             <version>${dependency-check.version}</version>
             <configuration>
               <failBuildOnCVSS>7</failBuildOnCVSS>
-              <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
               <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
               <nodeAnalyzerEnabled>false</nodeAnalyzerEnabled>
               <suppressionFiles>
@@ -241,6 +240,18 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <!-- Clave de la API de NVD solo si existe la variable: sin ella Dependency-Check usa el acceso público, más lento. -->
+    <profile>
+      <id>nvd-clave</id>
+      <activation>
+        <property>
+          <name>env.NVD_API_KEY</name>
+        </property>
+      </activation>
+      <properties>
+        <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+      </properties>
     </profile>
   </profiles>
 </project>
