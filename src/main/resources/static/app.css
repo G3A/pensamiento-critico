@@ -162,3 +162,123 @@ input[type="text"], input[type="password"], input[type="number"], textarea, sele
 
 .htmx-indicator { display: none; }
 .htmx-request .htmx-indicator, .htmx-request.htmx-indicator { display: inline-block; }
+
+/* ---------------------------------------------------------------------------------------------
+   Hito 1: ficha de técnica, formulario por lenguaje de campos, patrón V03a, expediente, inicio
+   --------------------------------------------------------------------------------------------- */
+.chip-error { background: var(--error-fondo); color: var(--error); border-color: transparent; }
+.boton-chico { padding: .2rem .6rem; font-size: .85rem; }
+.boton-peligro { background: transparent; color: var(--error); border-color: var(--error); }
+.en-linea { display: inline; }
+.acciones { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-top: var(--espacio); }
+.subtitulo { font-size: 1.05rem; margin: var(--espacio) 0 .5rem; }
+input[type="search"], input[type="date"] {
+  width: 100%; max-width: 420px; padding: .5rem .65rem; border: 1px solid var(--borde); border-radius: 6px;
+  background: var(--fondo); color: var(--texto); font: inherit; margin-top: .25rem;
+}
+
+/* Ficha y pestañas */
+.familia-ficha { margin: 0; font-size: .9rem; }
+.cabecera-ficha h1 { margin: .2rem 0; }
+.cita { color: var(--texto-suave); margin: 0 0 .25rem; }
+.resumen-config { font-size: .9rem; color: var(--texto-suave); margin: .25rem 0 0; }
+.pestanas { display: flex; flex-wrap: wrap; gap: .25rem; border-bottom: 2px solid var(--borde); margin: var(--espacio) 0; }
+.pestana { padding: .5rem 1rem; text-decoration: none; color: var(--texto); border-radius: var(--radio) var(--radio) 0 0; border: 1px solid transparent; }
+.pestana[aria-selected="true"] { border-color: var(--borde); border-bottom: 3px solid var(--acento); font-weight: 700; background: var(--superficie); }
+.facetas { display: grid; grid-template-columns: max-content 1fr; gap: .25rem 1rem; }
+.facetas dt { font-weight: 600; }
+.facetas dd { margin: 0; }
+.barra-ejemplos ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.ejemplo { display: inline-block; padding: .35rem .7rem; border: 1px solid var(--borde); border-radius: var(--radio); text-decoration: none; color: var(--texto); background: var(--superficie); }
+.ejemplo.activo { border-color: var(--acento); outline: 2px solid var(--acento); }
+.ejemplo-elegido { margin: var(--espacio) 0; }
+.configuracion { margin: var(--espacio) 0; background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: .5rem var(--espacio); }
+.configuracion summary { cursor: pointer; font-weight: 600; }
+.usar-cuerpo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--espacio); align-items: start; }
+@media (max-width: 1000px) { .usar-cuerpo { grid-template-columns: 1fr; } }
+.origen-config { font-size: .9rem; color: var(--texto-suave); }
+
+/* Lenguaje de campos */
+.campo { margin-bottom: .5rem; }
+fieldset.campo, .campo fieldset { border: 1px solid var(--borde); border-radius: var(--radio); padding: .5rem .75rem; margin: .5rem 0; min-width: 0; }
+fieldset.campo > legend, .campo legend { font-weight: 600; padding: 0 .25rem; }
+.obligatorio { font-weight: 400; color: var(--texto-suave); font-size: .85rem; }
+.ayuda { color: var(--texto-suave); font-size: .9rem; margin: .25rem 0; }
+.error-campo { color: var(--error); font-size: .92rem; margin: .25rem 0; }
+[aria-invalid="true"] { border-color: var(--error) !important; outline: 1px solid var(--error); }
+.radios { display: flex; flex-wrap: wrap; gap: .25rem .9rem; }
+.radio, .casilla { display: inline-flex; align-items: center; gap: .3rem; font-weight: 400; margin-top: .25rem; }
+.interruptor { display: inline-flex; align-items: center; gap: .5rem; font-weight: 600; }
+.interruptor input { width: 2.4rem; height: 1.3rem; accent-color: var(--acento); }
+.entero-con-rango { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.entero-con-rango input[type="number"] { max-width: 6rem; }
+.valor-visible { font-weight: 700; min-width: 2ch; }
+.lista-ordenada li { display: flex; align-items: center; gap: .4rem; margin: .25rem 0; }
+.filas { list-style: none; padding: 0; margin: 0; }
+.fila { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: .5rem; padding: .5rem 0; border-top: 1px dashed var(--borde); }
+.fila .quitar-fila { grid-column: 2; justify-self: start; }
+.codigo-fila { font-weight: 700; color: var(--acento); padding-top: 2.1rem; }
+.campos-fila .campo-enumeracion fieldset { padding: .25rem .5rem; margin: .25rem 0; }
+
+/* Patrón V03a: matriz de consistencia. El estado siempre va en texto; el color solo refuerza. */
+.resultado { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: var(--espacio); margin-bottom: var(--espacio); }
+.titulo-resultado { margin-top: 0; }
+.pregunta-resultado { font-weight: 600; }
+.leyenda-hipotesis { padding-left: 1.2rem; }
+.leyenda-hipotesis .menos-refutada { font-weight: 600; }
+.tabla-desplazable { overflow-x: auto; max-width: 100%; }
+.matriz { border-collapse: collapse; width: 100%; min-width: 280px; }
+.matriz caption { text-align: left; color: var(--texto-suave); font-size: .85rem; padding-bottom: .4rem; }
+.matriz th, .matriz td { border: 1px solid var(--borde); padding: .35rem .45rem; text-align: center; vertical-align: top; }
+.matriz tbody th { text-align: left; font-weight: 400; font-size: .9rem; min-width: 9rem; }
+.matriz .codigo { font-weight: 700; }
+.matriz .peso { color: var(--texto-suave); font-size: .8rem; }
+.celda .marca { font-weight: 700; }
+.celda .palabra { display: block; font-size: .7rem; }
+.celda-consistente { background: var(--ok-fondo); color: var(--ok); }
+.celda-inconsistente { background: var(--error-fondo); color: var(--error); }
+.celda-neutral { color: var(--texto-suave); }
+.total { font-weight: 700; }
+.total-menor { background: var(--ok-fondo); color: var(--ok); }
+.tarjeta-resultado { margin-top: var(--espacio); border-left: 4px solid var(--acento); padding-left: .75rem; }
+.titular { font-weight: 700; font-size: 1.05rem; }
+.guardado { margin: .5rem 0; }
+@media (max-width: 420px) {
+  .matriz tbody th { min-width: 7rem; font-size: .8rem; }
+  .celda .palabra { font-size: .65rem; }
+  .matriz th, .matriz td { padding: .25rem; }
+}
+
+/* Historial y comparación */
+.tabla-historial { width: 100%; border-collapse: collapse; }
+.tabla-historial th, .tabla-historial td { border-bottom: 1px solid var(--borde); padding: .4rem; text-align: left; vertical-align: top; }
+.tabla-historial caption { text-align: left; color: var(--texto-suave); padding-bottom: .4rem; }
+.diferencias { list-style: none; padding: 0; }
+.diferencias li { padding: .2rem 0; }
+.diferencia-cambio .chip { background: var(--aviso-fondo); color: var(--aviso); }
+.diferencia-nueva .chip { background: var(--ok-fondo); color: var(--ok); }
+.diferencia-quitada .chip { background: var(--error-fondo); color: var(--error); }
+
+/* Expediente */
+.expediente-cuerpo { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--espacio); }
+@media (max-width: 900px) { .expediente-cuerpo { grid-template-columns: 1fr; } }
+.linea { list-style: none; padding: 0; border-left: 3px solid var(--borde); }
+.item-linea { padding: .25rem 0 .75rem .9rem; }
+.item-linea p { margin: .2rem 0; }
+.resumen-familias ul { list-style: none; padding: 0; }
+.resumen-familias li { padding: .25rem 0; font-size: .92rem; }
+.familia-vacia { color: var(--texto-suave); }
+.aviso-muestra { background: var(--pendiente-fondo); color: var(--texto); padding: .5rem .75rem; border-radius: var(--radio); }
+.asociar fieldset { border: 1px solid var(--borde); border-radius: var(--radio); padding: .5rem .75rem; }
+.lista-expedientes { list-style: none; padding: 0; }
+.lista-expedientes li { padding: .3rem 0; }
+
+/* Inicio y catálogo */
+.inicio-columnas { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--espacio); }
+.pendientes, .recientes { list-style: none; padding: 0; }
+.pendientes li, .recientes li { padding: .3rem 0; }
+.filtros { display: flex; flex-wrap: wrap; gap: .25rem 1rem; align-items: end; margin-bottom: var(--espacio); }
+.filtros label { margin-top: 0; }
+.filtros > * { flex: 1 1 200px; }
+.filtros .boton { flex: 0 0 auto; }
+.tecnica .nombre-llano a { color: var(--texto); }

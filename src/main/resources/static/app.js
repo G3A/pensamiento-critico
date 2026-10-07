@@ -1,6 +1,7 @@
 /* app.js: menos de 100 líneas. Sin inline ni eval (CSP script-src 'self').
    1) componentes Alpine (build CSP), 2) token CSRF renovado por el servidor, 3) progreso de subida,
-   4) scroll al resultado en celular. El swap del 422 y del 401 lo configura <meta name="htmx-config">. */
+   4) scroll al resultado en celular, 5) flechas en las pestañas, 6) espejo del campo entero.
+   El swap del 422 y del 401 lo configura <meta name="htmx-config">. */
 (function () {
   'use strict';
 
@@ -37,9 +38,31 @@
 
   // 4) En celular, el resultado de una técnica se apila debajo del formulario: llevar la vista hasta él.
   document.body.addEventListener('htmx:afterSwap', function (evento) {
-    var resultado = evento.detail && evento.detail.target;
-    if (resultado && resultado.id && resultado.id.indexOf('res-') === 0 && window.innerWidth < 800) {
+    var destino = evento.detail && evento.detail.target;
+    var resultado = destino && (destino.id && destino.id.indexOf('res-') === 0 ? destino : destino.querySelector('[id^="res-"]'));
+    if (resultado && window.innerWidth < 800) {
       resultado.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  });
+
+  // 5) Pestañas con teclado (ARIA tablist): flechas izquierda y derecha mueven el foco entre pestañas.
+  document.body.addEventListener('keydown', function (evento) {
+    var tab = evento.target.closest && evento.target.closest('[role="tab"]');
+    if (!tab || (evento.key !== 'ArrowRight' && evento.key !== 'ArrowLeft')) { return; }
+    var tabs = Array.prototype.slice.call(tab.parentNode.querySelectorAll('[role="tab"]'));
+    var i = tabs.indexOf(tab) + (evento.key === 'ArrowRight' ? 1 : -1);
+    tabs[(i + tabs.length) % tabs.length].focus();
+    evento.preventDefault();
+  });
+
+  // 6) Campo entero: el control de rango y el número muestran el mismo valor.
+  document.body.addEventListener('input', function (evento) {
+    var campo = evento.target;
+    var espejo = campo.dataset && campo.dataset.espejo ? document.getElementById(campo.dataset.espejo)
+      : document.querySelector('[data-espejo="' + campo.id + '"]');
+    if (!espejo) { return; }
+    espejo.value = campo.value;
+    var salida = campo.closest('.entero-con-rango') && campo.closest('.entero-con-rango').querySelector('output');
+    if (salida) { salida.textContent = campo.value; }
   });
 })();
