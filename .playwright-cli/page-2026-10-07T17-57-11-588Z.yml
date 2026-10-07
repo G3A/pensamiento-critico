@@ -1,0 +1,19 @@
+- generic [ref=f1e1]:
+  - link "Ir al contenido" [ref=f1e2] [cursor=pointer]:
+    - /url: "#principal"
+  - banner [ref=f1e3]:
+    - generic [ref=f1e4]:
+      - button "Menú" [expanded] [active] [ref=f1e19]
+      - link "Taller de Pensamiento Crítico" [ref=f1e5] [cursor=pointer]:
+        - /url: /
+    - status [ref=f1e6]:
+      - generic [ref=f1e7]: ollama
+      - generic [ref=f1e8]: qwen3:4b · bge-m3
+  - main [ref=f1e10]:
+    - generic [ref=f1e12]:
+      - heading "¿Quién eres?" [level=1] [ref=f1e13]
+      - paragraph [ref=f1e14]: Escribe tu PIN y elige tu nombre. Cada persona tiene su cuenta y su PIN; las crea el administrador.
+      - generic [ref=f1e15]: Tu PIN
+      - textbox "Tu PIN" [ref=f1e16]
+      - paragraph [ref=f1e17]: Todavía no hay cuentas. Revisa secrets/admin_pin.txt y el registro de arranque.
+      - paragraph [ref=f1e18]: Catálogo y ejemplos son compartidos. Configuraciones, ejecuciones, decisiones y posturas son de cada persona.
