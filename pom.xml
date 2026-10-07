@@ -29,6 +29,7 @@
     <jqwik.version>1.10.1</jqwik.version>
     <jsoup.version>1.23.2</jsoup.version>
     <json-schema-validator.version>3.0.8</json-schema-validator.version>
+    <playwright.version>1.63.0</playwright.version>
     <bouncycastle.version>1.86</bouncycastle.version>
     <spotbugs-maven-plugin.version>4.10.4.1</spotbugs-maven-plugin.version>
     <findsecbugs.version>1.14.0</findsecbugs.version>
@@ -136,6 +137,13 @@
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
       <version>${jsoup.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Prueba de humo en navegador real (RNF-09); Chromium lo baja la primera corrida al volumen de Maven -->
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>playwright</artifactId>
+      <version>${playwright.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
