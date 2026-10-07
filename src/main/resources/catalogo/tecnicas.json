@@ -212,12 +212,12 @@
       "campos": [
         { "nombre": "pregunta", "tipo": "texto", "etiqueta": "Pregunta", "obligatorio": true, "largoMaximo": 300,
           "ayuda": "Qué quieres explicar. Por ejemplo: ¿por qué bajaron las ventas de los sábados?" },
-        { "nombre": "hipotesis", "tipo": "filas", "etiqueta": "Hipótesis", "prefijo": "H", "minimo": 2, "maximoDesdeConfig": "maxHipotesis",
+        { "nombre": "hipotesis", "tipo": "filas", "etiqueta": "Hipótesis", "prefijo": "H", "elemento": "hipótesis", "minimo": 2, "maximoDesdeConfig": "maxHipotesis",
           "ayuda": "Las explicaciones que compiten. Escribe también las que te parecen improbables.",
           "campos": [
             { "nombre": "texto", "tipo": "texto", "etiqueta": "Hipótesis", "obligatorio": true, "largoMaximo": 200 }
           ] },
-        { "nombre": "evidencias", "tipo": "filas", "etiqueta": "Evidencias", "prefijo": "E", "minimo": 1, "maximo": 12,
+        { "nombre": "evidencias", "tipo": "filas", "etiqueta": "Evidencias", "prefijo": "E", "elemento": "evidencia", "minimo": 1, "maximo": 12,
           "ayuda": "Lo que sabes. Marca cada evidencia frente a cada hipótesis.",
           "campos": [
             { "nombre": "texto", "tipo": "texto", "etiqueta": "Evidencia", "obligatorio": true, "largoMaximo": 200 },
