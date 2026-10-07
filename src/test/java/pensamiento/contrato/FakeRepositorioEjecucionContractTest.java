@@ -19,4 +19,9 @@ class FakeRepositorioEjecucionContractTest extends RepositorioEjecucionContract 
     protected RepositorioEjecucion comoUsuario(UUID usuarioId) {
         return fake;
     }
+
+    @Override
+    protected UUID expedienteDe(UUID usuarioId) {
+        return UUID.randomUUID();
+    }
 }

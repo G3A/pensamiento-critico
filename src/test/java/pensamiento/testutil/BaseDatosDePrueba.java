@@ -65,12 +65,21 @@ public final class BaseDatosDePrueba {
                 .param("i", institucion).param("n", nombre).query(UUID.class).single();
     }
 
+    /** Expediente de prueba creado como administrador (sin RLS). */
+    public UUID crearExpediente(UUID institucion, UUID usuario, String nombre) {
+        return jdbcAdmin().sql("INSERT INTO expediente (usuario_id, institucion_id, nombre) VALUES (:u, :i, :n) RETURNING id")
+                .param("u", usuario).param("i", institucion).param("n", nombre).query(UUID.class).single();
+    }
+
     /** Borra en cascada todo lo de la institución de prueba. */
     public void borrarInstitucion(UUID institucion) {
         JdbcClient jdbc = jdbcAdmin();
         jdbc.sql("DELETE FROM auditoria WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM pendiente WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM ejecucion WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM expediente WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM afirmacion WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM configuracion_usuario WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM usuario WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM institucion WHERE id = :i").param("i", institucion).update();
     }
