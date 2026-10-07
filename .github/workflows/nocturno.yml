@@ -42,7 +42,28 @@ jobs:
           docker compose ps
 
       - name: Contratos reales
-        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml --profile test run --rm -e CONTRACT_REAL=true tests
+        # Sin -q: el log debe mostrar cuántas pruebas corrieron en cada Real*ContractIT.
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml --profile test run --rm -e CONTRACT_REAL=true tests mvn -B verify
+
+      - name: Sensor contra el falso verde (los Real*ContractIT corrieron de verdad)
+        # Un verde sin contratos reales ejecutados (CONTRACT_REAL perdido, gating roto) deja al Fake autocertificado.
+        run: |
+          for puerto in Ia Grafico Reloj RepositorioTecnica RepositorioEjecucion RepositorioUsuarios RepositorioExpediente RegistroAuditoria; do
+            reporte="target/failsafe-reports/TEST-pensamiento.contrato.real.Real${puerto}ContractIT.xml"
+            test -f "$reporte" || { echo "Falta el reporte de Real${puerto}ContractIT"; exit 1; }
+            corridas=$(grep -oE 'tests="[0-9]+"' "$reporte" | head -1 | grep -oE '[0-9]+')
+            omitidas=$(grep -oE 'skipped="[0-9]+"' "$reporte" | head -1 | grep -oE '[0-9]+')
+            echo "Real${puerto}ContractIT: ${corridas} pruebas, ${omitidas} omitidas"
+            [ "$corridas" -gt 0 ] && [ "$omitidas" -eq 0 ] || { echo "Real${puerto}ContractIT no corrió completo"; exit 1; }
+          done
+
+      - name: Reportes de Failsafe
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failsafe-reports-nocturno
+          path: target/failsafe-reports/
+          if-no-files-found: error
 
       - name: Registros si algo falló
         if: failure()
