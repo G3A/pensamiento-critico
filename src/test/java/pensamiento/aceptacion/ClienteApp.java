@@ -75,6 +75,37 @@ public final class ClienteApp {
         return enviar(peticion);
     }
 
+    /** Sube un archivo como multipart/form-data, con el token CSRF en la cabecera (formulario de importar). */
+    public Respuesta postArchivo(String ruta, String campo, String nombreArchivo, byte[] contenido) {
+        String limite = "----limite" + java.util.UUID.randomUUID();
+        byte[] inicio = ("--" + limite + "\r\nContent-Disposition: form-data; name=\"" + campo + "\"; filename=\"" + nombreArchivo
+                + "\"\r\nContent-Type: application/json\r\n\r\n").getBytes(StandardCharsets.UTF_8);
+        byte[] fin = ("\r\n--" + limite + "--\r\n").getBytes(StandardCharsets.UTF_8);
+        byte[] cuerpo = new byte[inicio.length + contenido.length + fin.length];
+        System.arraycopy(inicio, 0, cuerpo, 0, inicio.length);
+        System.arraycopy(contenido, 0, cuerpo, inicio.length, contenido.length);
+        System.arraycopy(fin, 0, cuerpo, inicio.length + contenido.length, fin.length);
+        return enviar(HttpRequest.newBuilder(URI.create(base + ruta))
+                .header("Content-Type", "multipart/form-data; boundary=" + limite)
+                .header("X-CSRF-TOKEN", csrf)
+                .POST(HttpRequest.BodyPublishers.ofByteArray(cuerpo)));
+    }
+
+    /** Envía pares nombre-valor que pueden repetirse (como un formulario real), opcionalmente como petición htmx. */
+    public Respuesta postPares(String ruta, java.util.List<Map.Entry<String, String>> pares, boolean htmx) {
+        String cuerpo = pares.stream()
+                .map(e -> URLEncoder.encode(e.getKey(), StandardCharsets.UTF_8) + "=" + URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8))
+                .collect(Collectors.joining("&"));
+        HttpRequest.Builder peticion = HttpRequest.newBuilder(URI.create(base + ruta))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("X-CSRF-TOKEN", csrf)
+                .POST(HttpRequest.BodyPublishers.ofString(cuerpo));
+        if (htmx) {
+            peticion.header("HX-Request", "true");
+        }
+        return enviar(peticion);
+    }
+
     /** Visita la pantalla de bloqueo y toma el token CSRF de la sesión anónima. */
     public String tomarCsrf() {
         Respuesta bloqueo = get("/bloqueo");
