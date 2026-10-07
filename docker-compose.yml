@@ -92,6 +92,7 @@ services:
       SPRING_AI_OLLAMA_BASE_URL: http://ollama:11434
       APP_URL: http://app:8080
       CONTRACT_REAL: ${CONTRACT_REAL:-false}   # true solo en el workflow nocturno
+      NVD_API_KEY: ${NVD_API_KEY:-}             # opcional: acelera Dependency-Check en -Pgates; vacía, el perfil nvd-clave no se activa
     secrets: [db_password, admin_pin]
     depends_on:
       db: { condition: service_healthy }
