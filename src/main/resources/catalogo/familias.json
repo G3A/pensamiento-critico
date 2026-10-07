@@ -1,0 +1,10 @@
+[
+  { "codigo": "F1", "nombre": "Análisis y estructura de argumentos", "orden": 1 },
+  { "codigo": "F2", "nombre": "Cuestionamiento sistemático", "orden": 2 },
+  { "codigo": "F3", "nombre": "Falacias y sesgos cognitivos", "orden": 3 },
+  { "codigo": "F4", "nombre": "Evaluación de fuentes e información", "orden": 4 },
+  { "codigo": "F5", "nombre": "Pensamiento probabilístico y decisiones", "orden": 5 },
+  { "codigo": "F6", "nombre": "Perspectivas múltiples y diálogo", "orden": 6 },
+  { "codigo": "F7", "nombre": "Resolución de problemas y descomposición", "orden": 7 },
+  { "codigo": "F8", "nombre": "Metacognición y hábito", "orden": 8 }
+]

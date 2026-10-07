@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>4.1.1</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>pensamiento</groupId>
+  <artifactId>pensamiento-critico</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Taller de Pensamiento Crítico</name>
+  <description>Catálogo de 49 técnicas de pensamiento crítico, configurable y offline.</description>
+
+  <properties>
+    <java.version>25</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring-ai.version>2.0.1</spring-ai.version>
+    <jte.version>3.2.4</jte.version>
+    <htmx-spring-boot.version>5.0.0</htmx-spring-boot.version>
+    <archunit.version>1.5.1</archunit.version>
+    <jqwik.version>1.10.1</jqwik.version>
+    <jsoup.version>1.23.2</jsoup.version>
+    <bouncycastle.version>1.86</bouncycastle.version>
+    <spotbugs-maven-plugin.version>4.10.4.1</spotbugs-maven-plugin.version>
+    <findsecbugs.version>1.14.0</findsecbugs.version>
+    <dependency-check.version>13.0.0</dependency-check.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-bom</artifactId>
+        <version>${spring-ai.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Web, seguridad, datos -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webmvc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-flyway</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- Argon2 para el hash del PIN -->
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>${bouncycastle.version}</version>
+    </dependency>
+
+    <!-- Plantillas y htmx -->
+    <dependency>
+      <groupId>gg.jte</groupId>
+      <artifactId>jte-spring-boot-starter-4</artifactId>
+      <version>${jte.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>gg.jte</groupId>
+      <artifactId>jte</artifactId>
+      <version>${jte.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.wimdeblauwe</groupId>
+      <artifactId>htmx-spring-boot</artifactId>
+      <version>${htmx-spring-boot.version}</version>
+    </dependency>
+
+    <!-- IA local: solo el adaptador de Ollama, detrás del puerto Ia de nucleo -->
+    <dependency>
+      <groupId>org.springframework.ai</groupId>
+      <artifactId>spring-ai-ollama</artifactId>
+    </dependency>
+
+    <!-- Pruebas -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit-junit5</artifactId>
+      <version>${archunit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.jqwik</groupId>
+      <artifactId>jqwik</artifactId>
+      <version>${jqwik.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>${jsoup.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <!-- Plantillas JTE precompiladas a clases Java dentro del jar -->
+      <plugin>
+        <groupId>gg.jte</groupId>
+        <artifactId>jte-maven-plugin</artifactId>
+        <version>${jte.version}</version>
+        <configuration>
+          <sourceDirectory>${project.basedir}/src/main/jte</sourceDirectory>
+          <contentType>Html</contentType>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Dos velocidades: *Test rápidos sin red ni base; *IT contra el compose -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*IT.java</include>
+          </includes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <!-- Gates de PR: análisis estático con FindSecBugs y análisis de dependencias (OWASP). -->
+    <profile>
+      <id>gates</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>${spotbugs-maven-plugin.version}</version>
+            <configuration>
+              <effort>Max</effort>
+              <threshold>Medium</threshold>
+              <failOnError>true</failOnError>
+              <excludeFilterFile>${project.basedir}/sensores/spotbugs-exclusiones.xml</excludeFilterFile>
+              <plugins>
+                <plugin>
+                  <groupId>com.h3xstream.findsecbugs</groupId>
+                  <artifactId>findsecbugs-plugin</artifactId>
+                  <version>${findsecbugs.version}</version>
+                </plugin>
+              </plugins>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>${dependency-check.version}</version>
+            <configuration>
+              <failBuildOnCVSS>7</failBuildOnCVSS>
+              <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+              <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+              <nodeAnalyzerEnabled>false</nodeAnalyzerEnabled>
+              <suppressionFiles>
+                <suppressionFile>${project.basedir}/sensores/dependency-check-supresiones.xml</suppressionFile>
+              </suppressionFiles>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

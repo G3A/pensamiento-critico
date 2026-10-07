@@ -1,0 +1,23 @@
+# Compilados y artefactos
+target/
+*.class
+*.log
+
+# Secretos y datos locales: nunca al repo
+secrets/*
+!secrets/.gitkeep
+!secrets/README.md
+respaldos/*
+!respaldos/.gitkeep
+.env
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# Capturas de sesiones de IA
+.ia/

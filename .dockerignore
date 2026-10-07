@@ -1,0 +1,9 @@
+target/
+.git/
+.ia/
+secrets/
+respaldos/
+docs/
+.github/
+*.md
+!README.md

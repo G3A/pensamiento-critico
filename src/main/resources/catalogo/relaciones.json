@@ -1,0 +1,17 @@
+[
+  { "origen": "T11", "destino": "T19", "tipo": "produce_entrada" },
+  { "origen": "T11", "destino": "T20", "tipo": "produce_entrada" },
+  { "origen": "T11", "destino": "T21", "tipo": "produce_entrada" },
+  { "origen": "T11", "destino": "T22", "tipo": "produce_entrada" },
+  { "origen": "T11", "destino": "T23", "tipo": "produce_entrada" },
+  { "origen": "T38", "destino": "T22", "tipo": "produce_entrada" },
+  { "origen": "T34", "destino": "T37", "tipo": "complementa" },
+  { "origen": "T28", "destino": "T33", "tipo": "complementa" },
+  { "origen": "T42", "destino": "T43", "tipo": "variante" },
+  { "origen": "T13", "destino": "T34", "tipo": "contrasta" },
+  { "origen": "T17", "destino": "T22", "tipo": "prerrequisito" },
+  { "origen": "T40", "destino": "T41", "tipo": "produce_entrada" },
+  { "origen": "T29", "destino": "T32", "tipo": "produce_entrada" },
+  { "origen": "T32", "destino": "T25", "tipo": "produce_entrada" },
+  { "origen": "T06", "destino": "T01", "tipo": "complementa" }
+]

@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: pensamiento-critico
+  # Los secretos de Compose llegan como archivos en /run/secrets: cada archivo es una propiedad
+  # (db_password, admin_pin). Las variables *_FILE del compose documentan la ruta; aquí se leen.
+  config:
+    import: "optional:configtree:/run/secrets/"
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/pensamiento}
+    username: ${SPRING_DATASOURCE_USERNAME:app}
+    password: ${db_password:}
+    hikari:
+      maximum-pool-size: 8
+  flyway:
+    enabled: true
+    user: ${SPRING_FLYWAY_USER:pensamiento}
+    password: ${db_password:}
+    locations: classpath:db/migration
+    placeholders:
+      rol_app: app
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 10m          # RF-02: expiración por inactividad de 10 minutos
+      cookie:
+        http-only: true
+        same-site: strict
+        name: PENSAMIENTO_SESION
+  error:
+    whitelabel:
+      enabled: false
+    include-stacktrace: never
+
+gg:
+  jte:
+    usePrecompiledTemplates: true
+    templateLocation: src/main/jte
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+
+app:
+  zona: ${APP_ZONA:America/Bogota}
+  admin:
+    pin: ${admin_pin:}
+  ia:
+    base-url: ${SPRING_AI_OLLAMA_BASE_URL:http://localhost:11434}
+    modelo-chat: ${SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL:qwen3:4b}
+    modelo-embeddings: ${SPRING_AI_OLLAMA_EMBEDDING_OPTIONS_MODEL:bge-m3}
+    timeout-chat: ${APP_IA_TIMEOUT_CHAT:60s}
+    timeout-clasificacion: ${APP_IA_TIMEOUT_CLASIFICACION:20s}
+    timeout-embeddings: ${APP_IA_TIMEOUT_EMBEDDINGS:10s}
+  graphviz:
+    timeout: ${APP_GRAPHVIZ_TIMEOUT:5s}
+    nslimit: 50
+  pdf:
+    timeout: ${APP_PDF_TIMEOUT:60s}
+    paginas-maximas: 300

@@ -1,0 +1,345 @@
+[
+  {
+    "id": "T01", "familia": "F1", "nombre": "Mapeo de argumentos", "nombreLlano": "Dibujar el argumento",
+    "usalaCuando": "Tienes un texto o una discusión con varias razones y objeciones y quieres ver cómo se conectan antes de decidir si te convence.",
+    "definicion": "Representación de un argumento como grafo: enunciados conectados por relaciones de apoyo y ataque, con premisas, conclusiones, objeciones y refutaciones como nodos.",
+    "tipo": "representacion", "operacion": "analizar", "objeto": "argumento", "modalidad": "diagrama", "patron": "V01",
+    "origen": "Wigmore 1913; van Gelder 2003", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T02", "familia": "F1", "nombre": "Modelo de Toulmin", "nombreLlano": "Revisar las seis partes de un argumento",
+    "usalaCuando": "Quieres saber si a tu argumento le falta algo: datos, una garantía que una los datos con la afirmación, respaldo, un calificador o la respuesta a una objeción.",
+    "definicion": "Marco que descompone un argumento en afirmación, datos, garantía, respaldo, calificador y refutación, y señala los huecos.",
+    "tipo": "marco", "operacion": "analizar", "objeto": "argumento", "modalidad": "lista", "patron": "V02",
+    "origen": "Toulmin 1958", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T03", "familia": "F1", "nombre": "Afirmación, evidencia, razonamiento (CER)", "nombreLlano": "Afirmo, muestro, explico",
+    "usalaCuando": "Quieres defender una idea con una estructura simple: qué afirmas, qué evidencia tienes y por qué esa evidencia sostiene la afirmación, con un contraargumento y tu réplica.",
+    "definicion": "Procedimiento que arma un argumento en tres piezas (afirmación, evidencia, razonamiento) y lo extiende con contraargumento y réplica; devuelve un puntaje de completitud.",
+    "tipo": "procedimiento", "operacion": "analizar", "objeto": "argumento", "modalidad": "formulario", "patron": "V10",
+    "origen": "McNeill y Krajcik 2008", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T04", "familia": "F1", "nombre": "Elementos y estándares de Paul-Elder", "nombreLlano": "Las ocho piezas de un razonamiento",
+    "usalaCuando": "Quieres revisar un razonamiento completo pieza por pieza: propósito, pregunta, información, supuestos, conceptos, inferencias, implicaciones y puntos de vista, y calificar su claridad, precisión y equidad.",
+    "definicion": "Marco de ocho elementos del razonamiento y nueve estándares intelectuales (claridad, exactitud, precisión, relevancia, profundidad, amplitud, lógica, significancia, equidad).",
+    "tipo": "marco", "operacion": "evaluar", "objeto": "argumento", "modalidad": "lista", "patron": "V02",
+    "origen": "Paul y Elder 2001", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T05", "familia": "F1", "nombre": "Validez y solidez", "nombreLlano": "¿La conclusión se sigue y las premisas son ciertas?",
+    "usalaCuando": "Alguien te da razones y una conclusión y quieres separar dos preguntas: si la conclusión se seguiría de las premisas y si las premisas son verdad.",
+    "definicion": "Criterio que etiqueta un argumento como deductivo o inductivo, juzga si su forma es válida o fuerte y si sus premisas están establecidas (solidez).",
+    "tipo": "criterio", "operacion": "evaluar", "objeto": "argumento", "modalidad": "lista", "patron": "V10",
+    "origen": "Lógica clásica; Copi 1953", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T06", "familia": "F1", "nombre": "Reconstrucción de premisas ocultas", "nombreLlano": "Encontrar lo que se da por sentado",
+    "usalaCuando": "Un argumento salta de los datos a la conclusión y sospechas que hay un supuesto sin decir que lo sostiene.",
+    "definicion": "Procedimiento para reconstruir la premisa implícita (entimema) que hace que la conclusión se siga de lo dicho, y marcarla en el mapa para verificarla.",
+    "tipo": "procedimiento", "operacion": "analizar", "objeto": "argumento", "modalidad": "formulario", "patron": "V01",
+    "origen": "Aristóteles (entimema); Walton 2001", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T07", "familia": "F1", "nombre": "Razonamiento por analogía", "nombreLlano": "A ellos les funcionó, ¿a mí también?",
+    "usalaCuando": "Quieres decidir algo porque a otra persona o negocio parecido le fue bien o mal, y necesitas saber si el caso se parece en lo que importa.",
+    "definicion": "Procedimiento que lista similitudes y diferencias relevantes entre dos casos, exige que la diferencia clave sea verificable y califica la fuerza de la analogía.",
+    "tipo": "procedimiento", "operacion": "evaluar", "objeto": "argumento", "modalidad": "formulario", "patron": "V04",
+    "origen": "Walton 1996 (esquema de analogía)", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T08", "familia": "F2", "nombre": "Preguntas socráticas", "nombreLlano": "Que te hagan preguntas, no que te den respuestas",
+    "usalaCuando": "Tienes una postura y quieres que alguien la apriete con preguntas: aclarar, sondear supuestos, pedir evidencia, otras perspectivas, implicaciones y cuestionar la pregunta misma.",
+    "definicion": "Procedimiento de diálogo guiado con seis tipos de preguntas (clarificar, supuestos, evidencia, perspectivas, implicaciones, la pregunta misma), un tipo por turno.",
+    "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "afirmacion", "modalidad": "dialogo", "patron": "V09",
+    "origen": "Paul 1993 (seis tipos)", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T09", "familia": "F2", "nombre": "5 porqués", "nombreLlano": "Preguntar por qué hasta llegar a la causa",
+    "usalaCuando": "Algo salió mal y quieres llegar a la causa de fondo en vez de arreglar el síntoma.",
+    "definicion": "Procedimiento que encadena de tres a siete preguntas \"¿por qué?\" sobre un problema hasta llegar a una causa raíz, con evidencia por nivel.",
+    "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "problema", "modalidad": "formulario", "patron": "V06",
+    "origen": "Toyoda y Ohno, años 50", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T10", "familia": "F2", "nombre": "Escalera de inferencia", "nombreLlano": "De los datos a la acción, peldaño por peldaño",
+    "usalaCuando": "Llegaste rápido a una conclusión sobre alguien o algo y quieres revisar qué datos elegiste, cómo los interpretaste y qué asumiste en el camino.",
+    "definicion": "Marco de seis peldaños (datos, selección, interpretación, supuestos, conclusión, acción) que muestra dónde se debilita un razonamiento.",
+    "tipo": "marco", "operacion": "cuestionar", "objeto": "afirmacion", "modalidad": "lista", "patron": "V02",
+    "origen": "Argyris 1982; Senge 1990", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T11", "familia": "F2", "nombre": "Falsación y \"qué tendría que ser cierto\"", "nombreLlano": "¿Qué me haría cambiar de opinión?",
+    "usalaCuando": "Crees algo con fuerza y quieres escribir qué condiciones tendrían que cumplirse para que fuera cierto y qué evidencia te haría abandonarlo.",
+    "definicion": "Procedimiento que lista las condiciones verificables de las que depende una postura y la evidencia que la refutaría; cada condición puede enviarse a verificación.",
+    "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V13a",
+    "origen": "Popper 1934; Lafley y Martin 2013", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T12", "familia": "F2", "nombre": "Definición de términos y detección de ambigüedad", "nombreLlano": "¿De qué estamos hablando exactamente?",
+    "usalaCuando": "Una discusión no avanza porque cada quien usa una palabra (seguridad, pronto, justo) con un sentido distinto.",
+    "definicion": "Procedimiento que identifica los términos clave de una afirmación, pide definición, ejemplo y contraejemplo por término y marca los ambiguos en el texto.",
+    "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V05",
+    "origen": "Ennis 1962; Halpern 1998", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T13", "familia": "F3", "nombre": "Falacias como esquemas fallidos", "nombreLlano": "Detectar trampas en el razonamiento",
+    "usalaCuando": "Lees o escribes un argumento y quieres saber si descalifica a la persona, exagera, presenta solo dos opciones o se apoya en una autoridad que no corresponde.",
+    "definicion": "Criterio que reconoce el esquema de argumentación de Walton usado y marca como falacia la pregunta crítica que quedó sin responder; la etiqueta la confirma el usuario (regla R06).",
+    "tipo": "criterio", "operacion": "evaluar", "objeto": "argumento", "modalidad": "lista", "patron": "V05",
+    "origen": "Hamblin 1970; Walton 1995", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T14", "familia": "F3", "nombre": "Sesgos cognitivos", "nombreLlano": "¿Qué atajo mental me está jugando en contra?",
+    "usalaCuando": "Vas a decidir o acabas de leer algo y quieres revisar si el anclaje, el costo hundido, la confirmación o el exceso de confianza están empujando tu juicio.",
+    "definicion": "Criterio que recorre un catálogo de sesgos y señala, con la señal detectada, cuáles son probables en una decisión o lectura, más el antídoto sugerido.",
+    "tipo": "criterio", "operacion": "evaluar", "objeto": "uno_mismo", "modalidad": "lista", "patron": "V13a",
+    "origen": "Tversky y Kahneman 1974", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T15", "familia": "F3", "nombre": "Considera lo opuesto", "nombreLlano": "¿Y si fuera al revés?",
+    "usalaCuando": "Estás muy seguro de algo y quieres obligarte a escribir la postura contraria y qué cambiaría si fuera cierta.",
+    "definicion": "Procedimiento de desesgo que genera una o más posturas opuestas a la propia y registra qué cambiaría en cada caso y cómo se mueve la confianza.",
+    "tipo": "procedimiento", "operacion": "generar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V04",
+    "origen": "Lord, Lepper y Preston 1984", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T16", "familia": "F3", "nombre": "Lista de verificación antes de decidir", "nombreLlano": "Revisión rápida antes de firmar",
+    "usalaCuando": "Vas a tomar una decisión con dinero o personas de por medio y quieres pasar una lista corta de preguntas antes de cerrarla.",
+    "definicion": "Práctica que recorre una lista de ítems (interés personal, alternativas, fuentes independientes, qué pasa si esperamos, quién defendió lo contrario) y bloquea el guardado si falta alguno obligatorio.",
+    "tipo": "practica", "operacion": "evaluar", "objeto": "decision", "modalidad": "lista", "patron": "V02",
+    "origen": "Kahneman, Lovallo y Sibony 2011", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T17", "familia": "F3", "nombre": "Hecho, inferencia, juicio", "nombreLlano": "Separar lo que pasó de lo que pienso",
+    "usalaCuando": "Un texto mezcla datos, suposiciones y opiniones y quieres saber qué oraciones se pueden verificar y cuáles no.",
+    "definicion": "Criterio que etiqueta cada oración como hecho, inferencia o juicio de valor, con los ocho tipos de afirmación, y dice cuáles son verificables.",
+    "tipo": "criterio", "operacion": "analizar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V05",
+    "origen": "Hayakawa 1939", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T18", "familia": "F3", "nombre": "Correlación, causalidad y tasas base", "nombreLlano": "Que dos cosas pasen juntas no significa que una cause la otra",
+    "usalaCuando": "Te dicen que algo causa otra cosa, o te dan un porcentaje alarmante, y quieres revisar la tasa base y los criterios de causalidad antes de creerlo.",
+    "definicion": "Criterio que aplica los criterios de causalidad de Hill, exige tasa base para afirmaciones de riesgo y calcula la probabilidad real con frecuencias naturales.",
+    "tipo": "criterio", "operacion": "evaluar", "objeto": "afirmacion", "modalidad": "calculo", "patron": "V08",
+    "origen": "Hill 1965; Kahneman y Tversky 1973", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T19", "familia": "F4", "nombre": "SIFT", "nombreLlano": "Cuatro movimientos antes de compartir",
+    "usalaCuando": "Te llegó un titular o una cadena por el grupo del barrio y quieres revisarla en minutos antes de reenviarla.",
+    "definicion": "Procedimiento de cuatro pasos: detente, investiga la fuente, encuentra mejor cobertura y rastrea el contexto original.",
+    "tipo": "procedimiento", "operacion": "evaluar", "objeto": "fuente", "modalidad": "lista", "patron": "V02",
+    "origen": "Caulfield 2019", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T20", "familia": "F4", "nombre": "Lectura lateral", "nombreLlano": "Salir de la página para juzgarla",
+    "usalaCuando": "Quieres saber si una fuente es confiable y en vez de leerla a fondo prefieres ver qué dicen de ella otras fuentes independientes.",
+    "definicion": "Procedimiento que registra qué dicen fuentes externas e independientes sobre la fuente original y produce un veredicto sobre su credibilidad.",
+    "tipo": "procedimiento", "operacion": "evaluar", "objeto": "fuente", "modalidad": "formulario", "patron": "V10",
+    "origen": "Wineburg y McGrew 2017", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T21", "familia": "F4", "nombre": "CRAAP", "nombreLlano": "Calificar una fuente de 0 a 25",
+    "usalaCuando": "Necesitas un puntaje comparable para varias fuentes: actualidad, relevancia, autoridad, exactitud y propósito.",
+    "definicion": "Criterio que puntúa cinco dimensiones de una fuente (0 a 5 cada una) con pesos configurables y un umbral de aprobación.",
+    "tipo": "criterio", "operacion": "evaluar", "objeto": "fuente", "modalidad": "calculo", "patron": "V10",
+    "origen": "Blakeslee 2004", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T22", "familia": "F4", "nombre": "Triangulación", "nombreLlano": "Dos fuentes independientes antes de decir \"verificado\"",
+    "usalaCuando": "Tienes evidencia a favor y en contra de una afirmación y quieres saber en qué estado queda: verificada, refutada, disputada o en verificación.",
+    "definicion": "Criterio que aplica la regla R03: una afirmación solo es verificada o refutada con al menos dos fuentes de grupos de origen distintos y fuerza neta fuerte.",
+    "tipo": "criterio", "operacion": "evaluar", "objeto": "afirmacion", "modalidad": "calculo", "patron": "V10",
+    "origen": "Denzin 1978", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T23", "familia": "F4", "nombre": "Jerarquía de evidencia", "nombreLlano": "No toda evidencia pesa igual",
+    "usalaCuando": "Tienes testimonios, estudios y revisiones mezclados y quieres saber cuánto pesa cada uno y cuánto suman a favor o en contra.",
+    "definicion": "Criterio que asigna fuerza a cada evidencia por tipo de afirmación y diseño del estudio (regla R01) y calcula la fuerza neta de la afirmación (regla R02).",
+    "tipo": "criterio", "operacion": "evaluar", "objeto": "fuente", "modalidad": "lista", "patron": "V10",
+    "origen": "Sackett 1996; GRADE 2004", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T24", "familia": "F5", "nombre": "Razonamiento bayesiano", "nombreLlano": "Actualizar lo que creo con cada dato nuevo",
+    "usalaCuando": "Tienes una creencia con cierta confianza y llega evidencia nueva; quieres saber cuánto debería moverse esa confianza.",
+    "definicion": "Procedimiento que parte de un prior, aplica la verosimilitud de cada evidencia y obtiene el posterior, con gráfico de actualización.",
+    "tipo": "procedimiento", "operacion": "evaluar", "objeto": "afirmacion", "modalidad": "calculo", "patron": "V08",
+    "origen": "Bayes 1763; Laplace 1812", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T25", "familia": "F5", "nombre": "Calibración y puntaje Brier", "nombreLlano": "Medir mi puntería",
+    "usalaCuando": "Llevas tiempo registrando predicciones con porcentaje y quieres saber si cuando dices 90% aciertas el 90% de las veces.",
+    "definicion": "Práctica que agrupa predicciones resueltas por intervalo de confianza, calcula el puntaje Brier y avisa de exceso o falta de confianza (regla R05).",
+    "tipo": "practica", "operacion": "reflexionar", "objeto": "uno_mismo", "modalidad": "calculo", "patron": "V08",
+    "origen": "Brier 1950; Tetlock y Gardner 2015", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T26", "familia": "F5", "nombre": "Estimación de Fermi", "nombreLlano": "Estimar por partes cuando no hay dato",
+    "usalaCuando": "Necesitas un número que nadie tiene (cuántos panes vendería una sucursal nueva) y prefieres descomponerlo en factores que sí puedes estimar.",
+    "definicion": "Procedimiento que descompone una cantidad desconocida en factores con rango mínimo y máximo y produce una estimación con rango.",
+    "tipo": "procedimiento", "operacion": "generar", "objeto": "afirmacion", "modalidad": "calculo", "patron": "V06",
+    "origen": "Fermi, años 40", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T27", "familia": "F5", "nombre": "Valor esperado", "nombreLlano": "Comparar opciones por lo que suelen rendir",
+    "usalaCuando": "Tienes varias opciones con resultados inciertos y quieres compararlas multiplicando la probabilidad de cada escenario por su impacto.",
+    "definicion": "Criterio que calcula, para cada opción, la suma de probabilidad por impacto de sus escenarios en una misma unidad, y las ordena.",
+    "tipo": "criterio", "operacion": "decidir", "objeto": "decision", "modalidad": "calculo", "patron": "V12",
+    "origen": "Bernoulli 1738", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T28", "familia": "F5", "nombre": "Análisis de hipótesis en competencia (ACH)", "nombreLlano": "Descartar explicaciones con la evidencia",
+    "usalaCuando": "Hay varias explicaciones posibles de lo que pasó y quieres cruzar cada una con la evidencia para ver cuál queda menos refutada, en vez de enamorarte de la primera.",
+    "definicion": "Procedimiento que cruza hipótesis con evidencias en una matriz (consistente, inconsistente, neutral), pondera las inconsistencias y señala la hipótesis menos refutada. ACH elimina, no confirma.",
+    "tipo": "procedimiento", "operacion": "evaluar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V03a",
+    "origen": "Heuer 1999", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T29", "familia": "F5", "nombre": "Pre-mortem", "nombreLlano": "Ya fracasó: ¿por qué?",
+    "usalaCuando": "Vas a arrancar un proyecto o una decisión y quieres imaginar que ya salió mal para encontrar las causas antes de que ocurran.",
+    "definicion": "Procedimiento que pide causas probables de un fracaso imaginado, las prioriza y exige una mitigación por causa.",
+    "tipo": "procedimiento", "operacion": "generar", "objeto": "decision", "modalidad": "formulario", "patron": "V13a",
+    "origen": "Klein 2007", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T30", "familia": "F5", "nombre": "Inversión", "nombreLlano": "¿Cómo garantizo que fracase?",
+    "usalaCuando": "Quieres encontrar los errores evitables de un plan preguntando qué harías para asegurarte de que salga mal.",
+    "definicion": "Procedimiento que lista formas de garantizar el fracaso y exige la acción contraria por cada una.",
+    "tipo": "procedimiento", "operacion": "generar", "objeto": "decision", "modalidad": "formulario", "patron": "V04",
+    "origen": "Jacobi, siglo XIX; Munger 1986", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T31", "familia": "F5", "nombre": "Matriz de decisión ponderada", "nombreLlano": "Puntuar opciones con criterios y pesos",
+    "usalaCuando": "Tienes dos o más opciones y varios criterios que no pesan igual, y quieres un ranking que diga además qué tan sensible es a los pesos.",
+    "definicion": "Procedimiento que puntúa cada opción por criterio, multiplica por el peso del criterio y ordena; informa si el ranking cambia con pesos distintos.",
+    "tipo": "procedimiento", "operacion": "decidir", "objeto": "decision", "modalidad": "calculo", "patron": "V03b",
+    "origen": "Kepner y Tregoe 1965; Pugh 1981", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T32", "familia": "F5", "nombre": "Diario de decisiones", "nombreLlano": "Anotar la decisión para revisarla después",
+    "usalaCuando": "Vas a decidir algo importante y quieres dejar escrito el contexto, las alternativas, tu predicción y qué te haría cambiar de opinión, con fecha de revisión.",
+    "definicion": "Práctica que registra una decisión con campos obligatorios y una fecha de revisión; al llegar la fecha, se registra el resultado y alimenta la calibración.",
+    "tipo": "practica", "operacion": "reflexionar", "objeto": "decision", "modalidad": "formulario", "patron": "V11",
+    "origen": "Kahneman 2011; Parrish 2014", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T33", "familia": "F5", "nombre": "Inferencia a la mejor explicación", "nombreLlano": "Elegir la explicación que más cosas explica",
+    "usalaCuando": "Tienes varias explicaciones de un hecho y no basta con descartar: necesitas elegir una por su alcance, simplicidad, coherencia y fecundidad.",
+    "definicion": "Procedimiento que puntúa explicaciones candidatas por criterios explicativos con pesos y elige la mejor con su justificación.",
+    "tipo": "procedimiento", "operacion": "evaluar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V03b",
+    "origen": "Harman 1965; Lipton 1991", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T34", "familia": "F6", "nombre": "Steelmanning", "nombreLlano": "La mejor versión del argumento contrario",
+    "usalaCuando": "Vas a discutir con alguien y quieres asegurarte de responder a la versión más fuerte de lo que piensa, no a una caricatura.",
+    "definicion": "Procedimiento que reescribe la postura contraria en su versión más sólida, con cita de la original, y marca las diferencias.",
+    "tipo": "procedimiento", "operacion": "generar", "objeto": "argumento", "modalidad": "formulario", "patron": "V04",
+    "origen": "Rapoport, en Dennett 2013", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T35", "familia": "F6", "nombre": "Seis Sombreros", "nombreLlano": "Mirar un tema desde seis ángulos",
+    "usalaCuando": "Un grupo (la familia, el equipo, la junta) se traba discutiendo y quieres que todos miren el tema por turnos: hechos, emociones, riesgos, beneficios, ideas y proceso.",
+    "definicion": "Marco de seis perspectivas por turnos (blanco, rojo, negro, amarillo, verde, azul) con notas por sombrero y una síntesis.",
+    "tipo": "marco", "operacion": "generar", "objeto": "decision", "modalidad": "dialogo", "patron": "V03c",
+    "origen": "de Bono 1985", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T36", "familia": "F6", "nombre": "Equipo rojo / abogado del diablo", "nombreLlano": "Que alguien ataque tu plan a propósito",
+    "usalaCuando": "Tu postura ya está escrita y quieres que la ataquen con intensidad controlada para ver qué resiste.",
+    "definicion": "Procedimiento de diálogo donde una parte ataca la postura con un número de ataques e intensidad configurables y la otra responde.",
+    "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "argumento", "modalidad": "dialogo", "patron": "V09",
+    "origen": "Advocatus diaboli 1587; red teaming, siglo XX", "requiereIa": "si", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T37", "familia": "F6", "nombre": "Test de Turing ideológico", "nombreLlano": "¿Puedes explicar la postura contraria sin caricaturizarla?",
+    "usalaCuando": "Quieres comprobar si entiendes de verdad a quien piensa distinto: escribes su postura como la defendería esa persona y se compara con el steelman.",
+    "definicion": "Criterio que califica el texto del usuario sobre la postura contraria con una rúbrica (caricatura, omisión, tono) y un umbral de aprobación.",
+    "tipo": "criterio", "operacion": "evaluar", "objeto": "uno_mismo", "modalidad": "formulario", "patron": "V10",
+    "origen": "Caplan 2011", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T38", "familia": "F6", "nombre": "Double crux", "nombreLlano": "El hecho del que depende el desacuerdo",
+    "usalaCuando": "Dos personas no se ponen de acuerdo y quieres encontrar el hecho concreto que, si se comprobara, haría cambiar de opinión a ambas.",
+    "definicion": "Procedimiento que lista de qué depende cada postura y busca el punto de quiebre común, verificable, que puede enviarse a verificación.",
+    "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V04",
+    "origen": "CFAR 2016", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T39", "familia": "F6", "nombre": "Razonamiento ético (consecuencias, deberes, virtudes)", "nombreLlano": "¿A quién afecta y bajo qué marco?",
+    "usalaCuando": "Una decisión afecta a otras personas y quieres mirarla por sus consecuencias, por los deberes que implica y por el tipo de persona o comunidad que quieres ser.",
+    "definicion": "Marco que cruza tres marcos éticos con las partes afectadas, exige una objeción por marco y señala los conflictos entre marcos.",
+    "tipo": "marco", "operacion": "evaluar", "objeto": "decision", "modalidad": "formulario", "patron": "V03b",
+    "origen": "Rest 1986; marcos clásicos", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T40", "familia": "F7", "nombre": "Definición del problema", "nombreLlano": "Reformular antes de resolver",
+    "usalaCuando": "Estás a punto de resolver algo y sospechas que la pregunta está mal planteada; quieres escribir varias reformulaciones y elegir la que abre más opciones.",
+    "definicion": "Procedimiento que genera reformulaciones de un problema con plantillas y elige un enunciado final, registrando los descartados.",
+    "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "problema", "modalidad": "formulario", "patron": "V13a",
+    "origen": "Dewey 1910; Wedell-Wedellsborg 2017", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T41", "familia": "F7", "nombre": "Primeros principios", "nombreLlano": "Separar lo que sé de lo que asumo",
+    "usalaCuando": "Quieres reconstruir un problema desde lo que sabes con certeza, sin arrastrar supuestos heredados, y marcar cada supuesto para verificarlo.",
+    "definicion": "Procedimiento de dos columnas (sé con certeza, asumo) con mínimos configurables y enlace de cada supuesto a verificación.",
+    "tipo": "procedimiento", "operacion": "analizar", "objeto": "problema", "modalidad": "formulario", "patron": "V04",
+    "origen": "Aristóteles; uso moderno", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T42", "familia": "F7", "nombre": "Árbol de hipótesis MECE", "nombreLlano": "Descomponer sin solapes ni huecos",
+    "usalaCuando": "Un problema es grande y quieres partirlo en ramas que no se repitan y que entre todas lo cubran por completo.",
+    "definicion": "Representación en árbol de causas o hipótesis con verificación automática de que las ramas son mutuamente excluyentes y colectivamente exhaustivas.",
+    "tipo": "representacion", "operacion": "analizar", "objeto": "problema", "modalidad": "diagrama", "patron": "V06",
+    "origen": "Minto 1987", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T43", "familia": "F7", "nombre": "Diagrama de Ishikawa", "nombreLlano": "Las causas por categoría, como espina de pescado",
+    "usalaCuando": "Algo falla repetidamente (el pan se quema, los robos nocturnos) y quieres ordenar las causas posibles por categoría para no olvidar ninguna.",
+    "definicion": "Representación de causas agrupadas en categorías (6M o propias) alrededor de un efecto, con categorías vacías señaladas.",
+    "tipo": "representacion", "operacion": "analizar", "objeto": "problema", "modalidad": "diagrama", "patron": "V07",
+    "origen": "Ishikawa 1968", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T44", "familia": "F7", "nombre": "SCAMPER y pensamiento lateral", "nombreLlano": "Generar opciones antes de elegir",
+    "usalaCuando": "Solo se te ocurre una solución y quieres forzar más opciones con siete operadores: sustituir, combinar, adaptar, modificar, otros usos, eliminar, reordenar.",
+    "definicion": "Procedimiento de generación divergente con siete operadores, ideas mínimas por operador y selección final.",
+    "tipo": "procedimiento", "operacion": "generar", "objeto": "problema", "modalidad": "formulario", "patron": "V03c",
+    "origen": "de Bono 1967; Eberle 1971", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T45", "familia": "F8", "nombre": "Diario de razonamiento", "nombreLlano": "El historial de cómo pensaste",
+    "usalaCuando": "Quieres ver en un solo lugar las sesiones, mapas y decisiones de la semana para notar patrones en cómo razonas.",
+    "definicion": "Práctica que unifica el historial de ejecuciones de todas las técnicas en una línea de tiempo con resumen semanal.",
+    "tipo": "practica", "operacion": "reflexionar", "objeto": "uno_mismo", "modalidad": "lista", "patron": "V11",
+    "origen": "Dewey 1933; Schön 1983", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T46", "familia": "F8", "nombre": "Registro de cambios de opinión", "nombreLlano": "Cuándo y por qué cambié de opinión",
+    "usalaCuando": "Quieres saber si cambias de opinión por evidencia o por presión, y qué posturas llevas más de un año sin revisar.",
+    "definicion": "Práctica que registra cada cambio de confianza con su causa (evidencia, steelman, revisión, regla, manual) y resume el año.",
+    "tipo": "practica", "operacion": "reflexionar", "objeto": "uno_mismo", "modalidad": "lista", "patron": "V11",
+    "origen": "Tetlock 2015 (actualización de creencias)", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T47", "familia": "F8", "nombre": "Reflexión estructurada", "nombreLlano": "¿Qué aprendí y qué sigue sin estar claro?",
+    "usalaCuando": "Terminas una sesión o una decisión y quieres cerrar con tres preguntas que fijen lo aprendido.",
+    "definicion": "Procedimiento de cierre con preguntas activas (qué aprendí, qué sigue sin estar claro, qué haría distinto) guardado en el diario.",
+    "tipo": "procedimiento", "operacion": "reflexionar", "objeto": "uno_mismo", "modalidad": "formulario", "patron": "V02",
+    "origen": "Gibbs 1988", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T48", "familia": "F8", "nombre": "Taxonomía de Bloom", "nombreLlano": "Niveles de práctica: identificar, analizar, evaluar, crear",
+    "usalaCuando": "Practicas falacias o sesgos y quieres subir de nivel de forma ordenada, en vez de repetir siempre el mismo tipo de reto.",
+    "definicion": "Método de aprendizaje que organiza la práctica en cuatro niveles con avance por aciertos; no es una técnica de pensamiento crítico, organiza las demás.",
+    "tipo": "metodo_de_aprendizaje", "operacion": "reflexionar", "objeto": "uno_mismo", "modalidad": "lista", "patron": "V13b",
+    "origen": "Bloom 1956; Anderson y Krathwohl 2001", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+  },
+  {
+    "id": "T49", "familia": "F8", "nombre": "Repetición espaciada", "nombreLlano": "Repasar justo antes de olvidar",
+    "usalaCuando": "Quieres que los nombres de falacias, sesgos y movimientos SIFT se te queden, con pocos repasos bien distribuidos.",
+    "definicion": "Método de aprendizaje que programa repasos con SM-2 o FSRS según aciertos y facilidad; fija el vocabulario, no es una técnica de pensamiento crítico.",
+    "tipo": "metodo_de_aprendizaje", "operacion": "reflexionar", "objeto": "uno_mismo", "modalidad": "calculo", "patron": "V13c",
+    "origen": "Ebbinghaus 1885; Wozniak 1987 (SM-2)", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+  }
+]

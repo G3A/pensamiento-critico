@@ -1,0 +1,34 @@
+[
+  {
+    "regla": "R01", "version": 1, "nombre": "Fuerza de una evidencia",
+    "parametros": {
+      "porDisenoEstudio": { "revision_sistematica": 4, "ensayo_controlado": 3, "observacional": 2, "opinion_experto": 1, "testimonio": 0 },
+      "porTipoFuente": { "primaria": 2, "secundaria": 1, "terciaria": 0 },
+      "tiposQueUsanDiseno": ["dato_estadistico", "causal"],
+      "bonoReciente": 1, "aniosParaReciente": 5,
+      "bonoIndependiente": 1, "bonoAccesoOriginal": 1,
+      "bonoCraap": 1, "umbralCraap": 18,
+      "maximo": 8
+    }
+  },
+  {
+    "regla": "R02", "version": 1, "nombre": "Fuerza neta de una afirmación",
+    "parametros": { "umbralMedia": 3, "umbralFuerte": 6 }
+  },
+  {
+    "regla": "R03", "version": 1, "nombre": "Estado de una afirmación",
+    "parametros": { "umbralFuerte": 6, "fuentesIndependientesMinimas": 2, "tiposNoVerificables": ["juicio_de_valor", "definicion"] }
+  },
+  {
+    "regla": "R04", "version": 1, "nombre": "Aceptabilidad bajo estándar de prueba",
+    "parametros": { "umbralMayorProClaroYConvincente": 3, "umbralContraMaximoMasAllaDeDuda": 1 }
+  },
+  {
+    "regla": "R05", "version": 1, "nombre": "Confianza y calibración",
+    "parametros": { "intervalos": [0, 50, 60, 70, 80, 90, 100], "nMinimoPorIntervalo": 10 }
+  },
+  {
+    "regla": "R06", "version": 1, "nombre": "Falacia como esquema fallido",
+    "parametros": { "confirmaElUsuario": true }
+  }
+]

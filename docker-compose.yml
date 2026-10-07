@@ -1,0 +1,107 @@
+# Un solo comando levanta todo: docker compose up --build
+# Pruebas:  docker compose --profile test run --rm tests
+# Respaldo: docker compose --profile backup run --rm backup
+# Imágenes y modelos fijados por digest (resueltos el 7 de octubre de 2026 con docker manifest inspect
+# y con el manifiesto de registry.ollama.ai).
+services:
+  db:
+    image: pgvector/pgvector:pg18@sha256:ad249f9fb9572979643a47694e59b9a8cdcdf6abc6accebf49bb80ad5f20ff9b   # PG19 exige pg_upgrade, no cambiar el tag
+    shm_size: 256m
+    command: ["postgres", "-c", "shared_buffers=256MB", "-c", "maintenance_work_mem=256MB", "-c", "work_mem=16MB"]
+    environment:
+      POSTGRES_DB: pensamiento
+      POSTGRES_USER: pensamiento
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets: [db_password]
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./docker/db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pensamiento -d pensamiento"]
+      interval: 5s
+      retries: 10
+
+  ollama:
+    image: ollama/ollama:0.12.3@sha256:36ccf1b4c161179a198a19e897aa0a1acd54cd5eeb6ab99c80f2ef50ba7fa106
+    volumes: [ollama:/root/.ollama]
+    environment:
+      OLLAMA_NUM_PARALLEL: "1"
+      OLLAMA_KEEP_ALIVE: "30m"
+    entrypoint: ["/bin/sh", "-c",
+      "ollama serve & sleep 3 && ollama pull qwen3:4b@sha256:359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7 && ollama pull bge-m3@sha256:7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab && wait"]
+    healthcheck:                   # sano solo cuando ambos modelos están listados
+      test: ["CMD-SHELL", "ollama list | grep -q qwen3 && ollama list | grep -q bge-m3"]
+      interval: 15s
+      retries: 80
+
+  app:
+    build: .                       # Dockerfile multi-stage: maven:3-eclipse-temurin-25 -> temurin 25-jre + graphviz
+    ports: ["${BIND_IP:-127.0.0.1}:8080:8080"]   # BIND_IP=0.0.0.0 solo si se quiere servir a la red
+    mem_limit: 2g
+    pids_limit: 256
+    read_only: true
+    tmpfs: [/tmp]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/pensamiento
+      SPRING_DATASOURCE_USERNAME: app
+      SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/db_password
+      SPRING_FLYWAY_USER: pensamiento
+      SPRING_AI_OLLAMA_BASE_URL: http://ollama:11434
+      SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL: qwen3:4b
+      SPRING_AI_OLLAMA_EMBEDDING_OPTIONS_MODEL: bge-m3
+      APP_IA_TIMEOUT_CHAT: 60s
+      APP_IA_TIMEOUT_CLASIFICACION: 20s
+      APP_IA_TIMEOUT_EMBEDDINGS: 10s
+      APP_GRAPHVIZ_TIMEOUT: 5s
+      APP_PDF_TIMEOUT: 60s
+      APP_ZONA: ${APP_ZONA:-America/Bogota}
+    secrets: [db_password, admin_pin]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://127.0.0.1:8080/actuator/health | grep -q UP"]
+      interval: 10s
+      retries: 30
+      start_period: 40s
+    depends_on:
+      db: { condition: service_healthy }
+      ollama: { condition: service_healthy }
+
+  backup:                          # docker compose --profile backup run --rm backup
+    profiles: ["backup"]
+    image: pgvector/pgvector:pg18@sha256:ad249f9fb9572979643a47694e59b9a8cdcdf6abc6accebf49bb80ad5f20ff9b
+    entrypoint: ["/bin/sh", "-c", "export PGPASSWORD=$$(cat /run/secrets/db_password) && pg_dump -Fc -h db -U pensamiento pensamiento > /respaldos/pensamiento-$$(date +%F).dump && ls -la /respaldos"]
+    secrets: [db_password]
+    volumes: ["./respaldos:/respaldos"]
+    depends_on:
+      db: { condition: service_healthy }
+
+  tests:                           # docker compose --profile test run --rm tests
+    profiles: ["test"]
+    build:
+      context: .
+      dockerfile: Dockerfile.tests
+    working_dir: /src
+    volumes: [".:/src", "m2:/root/.m2"]
+    command: ["mvn", "-q", "-B", "verify"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/pensamiento
+      SPRING_DATASOURCE_USERNAME: app
+      SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/db_password
+      SPRING_FLYWAY_USER: pensamiento
+      SPRING_AI_OLLAMA_BASE_URL: http://ollama:11434
+      APP_URL: http://app:8080
+      CONTRACT_REAL: ${CONTRACT_REAL:-false}   # true solo en el workflow nocturno
+    secrets: [db_password, admin_pin]
+    depends_on:
+      db: { condition: service_healthy }
+      app: { condition: service_healthy }
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt   # fuera del repo; secrets/README.md documenta el formato
+  admin_pin:
+    file: ./secrets/admin_pin.txt
+
+volumes:
+  pgdata:
+  ollama:
+  m2:                              # caché de Maven entre corridas de pruebas
