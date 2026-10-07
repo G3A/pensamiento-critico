@@ -64,7 +64,7 @@ class RlsIT {
                 () -> jdbc.sql("INSERT INTO expediente (usuario_id, institucion_id, nombre) VALUES (:u, :i, 'suplantado')")
                         .param("u", perfilA).param("i", institucion).update()))
                 .isInstanceOf(DataAccessException.class)
-                .hasMessageContaining("row-level security");
+                .rootCause().hasMessageContaining("row-level security");
     }
 
     @Test
@@ -72,6 +72,6 @@ class RlsIT {
         JdbcClient jdbc = bd.jdbcApp();
         assertThatThrownBy(() -> bd.comoUsuario(perfilA, institucion, () -> jdbc.sql("DELETE FROM auditoria").update()))
                 .isInstanceOf(DataAccessException.class)
-                .hasMessageContaining("permission denied");
+                .rootCause().hasMessageContaining("permission denied");
     }
 }

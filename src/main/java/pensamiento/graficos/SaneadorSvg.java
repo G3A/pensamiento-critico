@@ -70,7 +70,7 @@ public final class SaneadorSvg {
             Transformer t = TransformerFactory.newInstance().newTransformer();
             t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             StringWriter salida = new StringWriter();
-            t.transform(new DOMSource(documento), new StreamResult(salida));
+            t.transform(new DOMSource(raiz), new StreamResult(salida));
             return salida.toString();
         } catch (Exception e) {
             throw new SvgInvalido("No se pudo serializar el SVG saneado", e);

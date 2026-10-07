@@ -22,4 +22,9 @@ class FakeRepositorioTecnicaContractTest extends RepositorioTecnicaContract {
         familias.forEach(fake::agregarFamilia);
         tecnicas.forEach(fake::agregar);
     }
+
+    @Override
+    protected void dadoQueNoExiste(pensamiento.nucleo.IdTecnica id) {
+        fake.quitar(id);
+    }
 }

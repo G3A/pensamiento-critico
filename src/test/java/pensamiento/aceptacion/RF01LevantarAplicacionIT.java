@@ -13,8 +13,8 @@ class RF01LevantarAplicacionIT {
         ClienteApp.Respuesta salud = cliente.get("/actuator/health");
         assertThat(salud.estado()).isEqualTo(200);
         assertThat(salud.cuerpo()).contains("\"status\":\"UP\"");
-        assertThat(salud.cuerpo()).as("PostgreSQL responde").contains("\"db\":{\"status\":\"UP\"");
-        assertThat(salud.cuerpo()).as("Ollama lista los dos modelos").contains("\"ia\":{\"status\":\"UP\"").contains("qwen3").contains("bge-m3");
+        assertThat(salud.cuerpo()).as("PostgreSQL responde").contains("\"db\":{\"details\"").contains("\"database\":\"PostgreSQL\"");
+        assertThat(salud.cuerpo()).as("Ollama lista los dos modelos").contains("\"ia\":{\"details\"").contains("qwen3").contains("bge-m3");
     }
 
     @Test

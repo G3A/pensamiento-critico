@@ -43,6 +43,10 @@ public class IaSpringAi implements Ia {
 
     public static final double TEMPERATURA = 0.0;
     public static final long SEMILLA = 42L;
+    /** Tope de tokens generados por llamada: ninguna tarea del catálogo necesita más y evita respuestas que no terminan. */
+    public static final int TOKENS_MAXIMOS = 512;
+    /** Ventana de contexto: suficiente para prompt, ejemplos y texto del usuario; acota la memoria del KV cache. */
+    public static final int CONTEXTO = 8192;
 
     private final OllamaApi api;
     private final OllamaChatModel chat;
@@ -72,6 +76,8 @@ public class IaSpringAi implements Ia {
                 .model(modeloChat)
                 .temperature(TEMPERATURA)
                 .seed((int) SEMILLA)
+                .numPredict(TOKENS_MAXIMOS)
+                .numCtx(CONTEXTO)
                 .disableThinking();
     }
 

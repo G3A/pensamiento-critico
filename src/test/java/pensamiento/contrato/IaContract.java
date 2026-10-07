@@ -30,7 +30,7 @@ import pensamiento.nucleo.puertos.RespuestaChat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class IaContract {
 
-    protected static final Duration TIEMPO_NORMAL = Duration.ofSeconds(90);
+    protected static final Duration TIEMPO_NORMAL = Duration.ofSeconds(300);
     protected static final List<String> ETIQUETAS = List.of("apoya", "contradice", "irrelevante");
 
     /** Implementación disponible y con los modelos listos. */

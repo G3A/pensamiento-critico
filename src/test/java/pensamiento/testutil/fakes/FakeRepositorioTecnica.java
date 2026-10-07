@@ -26,6 +26,10 @@ public final class FakeRepositorioTecnica implements RepositorioTecnica {
         tecnicas.put(tecnica.id(), tecnica);
     }
 
+    public void quitar(IdTecnica id) {
+        tecnicas.remove(id);
+    }
+
     @Override
     public List<Familia> familias() {
         return familias.stream().sorted(Comparator.comparingInt(Familia::orden)).toList();

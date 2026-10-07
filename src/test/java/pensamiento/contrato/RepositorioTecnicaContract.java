@@ -20,12 +20,15 @@ public abstract class RepositorioTecnicaContract {
 
     protected abstract RepositorioTecnica crearSut();
 
-    /** Deja el catálogo con exactamente estas familias y técnicas (además de lo que ya haya si la implementación es compartida). */
+    /** Deja el catálogo con estas familias y técnicas (además de lo que ya haya si la implementación es compartida). */
     protected abstract void dadoQueExisten(List<Familia> familias, List<Tecnica> tecnicas);
+
+    /** Garantiza que la técnica no está (el real la retira temporalmente del catálogo compartido y la restaura al final). */
+    protected abstract void dadoQueNoExiste(IdTecnica id);
 
     @Test
     void una_tecnica_que_no_existe_devuelve_vacio() {
-        dadoQueExisten(List.of(), List.of());
+        dadoQueNoExiste(IdTecnica.de("T49"));
         assertThat(crearSut().porId(IdTecnica.de("T49"))).isEmpty();
     }
 
