@@ -48,7 +48,7 @@ jobs:
       - name: Sensor contra el falso verde (los Real*ContractIT corrieron de verdad)
         # Un verde sin contratos reales ejecutados (CONTRACT_REAL perdido, gating roto) deja al Fake autocertificado.
         run: |
-          for puerto in Ia Grafico Reloj RepositorioTecnica RepositorioEjecucion RepositorioUsuarios RepositorioExpediente RegistroAuditoria; do
+          for puerto in Ia Grafico Reloj RepositorioTecnica RepositorioEjecucion RepositorioUsuarios RepositorioExpediente RegistroAuditoria RepositorioConfiguracion RegistroIdentificadores; do
             reporte="target/failsafe-reports/TEST-pensamiento.contrato.real.Real${puerto}ContractIT.xml"
             test -f "$reporte" || { echo "Falta el reporte de Real${puerto}ContractIT"; exit 1; }
             corridas=$(grep -oE 'tests="[0-9]+"' "$reporte" | head -1 | grep -oE '[0-9]+')

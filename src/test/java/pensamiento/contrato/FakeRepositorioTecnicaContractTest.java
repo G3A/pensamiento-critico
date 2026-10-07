@@ -27,4 +27,14 @@ class FakeRepositorioTecnicaContractTest extends RepositorioTecnicaContract {
     protected void dadoQueNoExiste(pensamiento.nucleo.IdTecnica id) {
         fake.quitar(id);
     }
+
+    @Override
+    protected void dadoQueExistenEjemplos(List<pensamiento.nucleo.Ejemplo> ejemplos) {
+        ejemplos.forEach(fake::agregarEjemplo);
+    }
+
+    @Override
+    protected void dadoQueExisteRelacion(pensamiento.nucleo.RelacionTecnica relacion) {
+        fake.agregarRelacion(relacion);
+    }
 }

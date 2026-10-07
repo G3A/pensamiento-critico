@@ -4,12 +4,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import pensamiento.nucleo.Ejemplo;
 import pensamiento.nucleo.Familia;
+import pensamiento.nucleo.RelacionTecnica;
 import pensamiento.nucleo.IdTecnica;
 import pensamiento.nucleo.Json;
 import pensamiento.nucleo.Tecnica;
@@ -30,6 +33,38 @@ public class RepositorioTecnicaJdbc implements RepositorioTecnica {
 
     public RepositorioTecnicaJdbc(JdbcClient jdbc) {
         this.jdbc = jdbc;
+    }
+
+    @Override
+    public List<Ejemplo> ejemplos(IdTecnica tecnica) {
+        return jdbc.sql("SELECT " + COLUMNAS_EJEMPLO + " FROM ejemplo WHERE tecnica_id = :t ORDER BY orden, titulo")
+                .param("t", tecnica.valor()).query(RepositorioTecnicaJdbc::ejemplo).list();
+    }
+
+    @Override
+    public Optional<Ejemplo> ejemplo(UUID id) {
+        return jdbc.sql("SELECT " + COLUMNAS_EJEMPLO + " FROM ejemplo WHERE id = :id")
+                .param("id", id).query(RepositorioTecnicaJdbc::ejemplo).optional();
+    }
+
+    @Override
+    public List<RelacionTecnica> relaciones(IdTecnica tecnica) {
+        return jdbc.sql("SELECT origen_id, destino_id, tipo FROM relacion_tecnica WHERE origen_id = :t OR destino_id = :t ORDER BY tipo, origen_id, destino_id")
+                .param("t", tecnica.valor())
+                .query((rs, i) -> new RelacionTecnica(IdTecnica.de(rs.getString("origen_id")), IdTecnica.de(rs.getString("destino_id")),
+                        RelacionTecnica.Tipo.valueOf(rs.getString("tipo").toUpperCase())))
+                .list();
+    }
+
+    private static final String COLUMNAS_EJEMPLO = """
+            id, tecnica_id, orden, version_esquema, ambito, titulo, config::text AS config, datos::text AS datos,
+            resultado::text AS resultado, nota
+            """;
+
+    static Ejemplo ejemplo(ResultSet rs, int i) throws SQLException {
+        return new Ejemplo(rs.getObject("id", UUID.class), IdTecnica.de(rs.getString("tecnica_id")), rs.getInt("orden"),
+                rs.getInt("version_esquema"), Ejemplo.Ambito.valueOf(rs.getString("ambito").toUpperCase()), rs.getString("titulo"),
+                new Json(rs.getString("config")), new Json(rs.getString("datos")), new Json(rs.getString("resultado")), rs.getString("nota"));
     }
 
     @Override

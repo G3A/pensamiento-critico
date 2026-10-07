@@ -4,12 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import pensamiento.nucleo.Ejemplo;
 import pensamiento.nucleo.Familia;
 import pensamiento.nucleo.IdTecnica;
+import pensamiento.nucleo.Json;
+import pensamiento.nucleo.RelacionTecnica;
 import pensamiento.nucleo.Tecnica;
 import pensamiento.nucleo.puertos.RepositorioTecnica;
 import pensamiento.testutil.builders.Tecnicas;
@@ -76,6 +80,51 @@ public abstract class RepositorioTecnicaContract {
         List<Familia> familias = crearSut().familias();
         assertThat(familias.stream().map(Familia::orden).toList()).isSorted();
         assertThat(familias.stream().map(Familia::codigo)).contains("F1", "F2");
+    }
+
+    /** Deja estos ejemplos en el catálogo (el real los inserta y los retira al terminar). */
+    protected abstract void dadoQueExistenEjemplos(List<Ejemplo> ejemplos);
+
+    protected abstract void dadoQueExisteRelacion(RelacionTecnica relacion);
+
+    private static Ejemplo ejemplo(int orden, String titulo, Ejemplo.Ambito ambito) {
+        return new Ejemplo(UUID.nameUUIDFromBytes(("contrato/" + titulo).getBytes(java.nio.charset.StandardCharsets.UTF_8)), IdTecnica.de("T28"),
+                orden, 1, ambito, titulo, new Json("{\"escala\":\"cin\"}"), new Json("{\"pregunta\":\"¿Por qué el niño no fue?\"}"),
+                new Json("{\"menosRefutadas\":[\"H1\"]}"), "Nota con ñ");
+    }
+
+    @Test
+    void los_ejemplos_vienen_en_su_orden_y_se_leen_igual_con_jsonb() {
+        Ejemplo segundo = ejemplo(98, "Contrato: la asamblea del año", Ejemplo.Ambito.COMUNIDAD);
+        Ejemplo primero = ejemplo(97, "Contrato: la panadería", Ejemplo.Ambito.TRABAJO);
+        dadoQueExistenEjemplos(List.of(segundo, primero));
+        RepositorioTecnica sut = crearSut();
+
+        List<Ejemplo> ejemplos = sut.ejemplos(IdTecnica.de("T28"));
+        assertThat(ejemplos.stream().map(Ejemplo::orden).toList()).isSorted();
+        assertThat(ejemplos.stream().map(Ejemplo::id).toList()).containsSubsequence(primero.id(), segundo.id());
+        Ejemplo leido = sut.ejemplo(segundo.id()).orElseThrow();
+        assertThat(leido.titulo()).isEqualTo("Contrato: la asamblea del año");
+        assertThat(leido.ambito()).isEqualTo(Ejemplo.Ambito.COMUNIDAD);
+        assertThat(leido.nota()).isEqualTo("Nota con ñ");
+        // JSONB normaliza espacios y orden de claves: se compara el árbol, no el texto.
+        assertThat(arbol(leido.datos())).isEqualTo(arbol(segundo.datos()));
+        assertThat(arbol(leido.resultado())).isEqualTo(arbol(segundo.resultado()));
+        assertThat(sut.ejemplo(UUID.randomUUID())).isEmpty();
+    }
+
+    private static tools.jackson.databind.JsonNode arbol(Json json) {
+        return pensamiento.catalogo.MapeadorJson.mapper().readTree(json.texto());
+    }
+
+    @Test
+    void las_relaciones_se_ven_desde_el_origen_y_desde_el_destino() {
+        RelacionTecnica r = new RelacionTecnica(IdTecnica.de("T28"), IdTecnica.de("T33"), RelacionTecnica.Tipo.COMPLEMENTA);
+        dadoQueExisteRelacion(r);
+        RepositorioTecnica sut = crearSut();
+        assertThat(sut.relaciones(IdTecnica.de("T28"))).contains(r);
+        assertThat(sut.relaciones(IdTecnica.de("T33"))).contains(r);
+        assertThat(sut.relaciones(IdTecnica.de("T33")).getFirst().otra(IdTecnica.de("T33"))).isNotEqualTo(IdTecnica.de("T33"));
     }
 
     @Test
