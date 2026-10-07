@@ -3,6 +3,8 @@
 # Respaldo: docker compose --profile backup run --rm backup
 # Imágenes y modelos fijados por digest (resueltos el 7 de octubre de 2026 con docker manifest inspect
 # y con el manifiesto de registry.ollama.ai).
+name: pensamiento
+
 services:
   db:
     image: pgvector/pgvector:pg18@sha256:ad249f9fb9572979643a47694e59b9a8cdcdf6abc6accebf49bb80ad5f20ff9b   # PG19 exige pg_upgrade, no cambiar el tag
@@ -28,9 +30,9 @@ services:
       OLLAMA_NUM_PARALLEL: "1"
       OLLAMA_KEEP_ALIVE: "30m"
     entrypoint: ["/bin/sh", "-c",
-      "ollama serve & sleep 3 && ollama pull qwen3:4b@sha256:359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7 && ollama pull bge-m3@sha256:7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab && wait"]
-    healthcheck:                   # sano solo cuando ambos modelos están listados
-      test: ["CMD-SHELL", "ollama list | grep -q qwen3 && ollama list | grep -q bge-m3"]
+      "ollama serve & sleep 3 && ollama pull qwen3:4b && ollama pull bge-m3 && wait"]
+    healthcheck:                   # sano solo cuando ambos modelos están listados CON el digest esperado (fijados por digest)
+      test: ["CMD-SHELL", "ollama list | grep -Eq '^qwen3:4b[[:space:]]+359d7dd4bcda' && ollama list | grep -Eq '^bge-m3:latest[[:space:]]+790764642607'"]
       interval: 15s
       retries: 80
 

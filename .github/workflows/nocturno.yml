@@ -1,0 +1,53 @@
+# Workflow nocturno: los Real*ContractIT contra el Ollama y el PostgreSQL del compose (CONTRACT_REAL=true).
+# Es el disparador del lado Real de cada contrato: sin él, los Fakes quedarían autocertificados.
+# El README registra la fecha de la última corrida en verde.
+name: Nocturno (contratos reales)
+
+on:
+  schedule:
+    - cron: '0 7 * * *'     # 02:00 en Bogotá (UTC-5); el cron va en UTC
+  workflow_dispatch:
+
+jobs:
+  contratos-reales:
+    name: Real*ContractIT contra Ollama y PostgreSQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Secretos de la instalación de prueba
+        run: |
+          printf '%s' 'clave-nocturna-${{ github.run_id }}' > secrets/db_password.txt
+          printf '%s' '2468' > secrets/admin_pin.txt
+          cp .env.example .env
+
+      - name: Caché de modelos de Ollama (3,7 GB)
+        uses: actions/cache@v4
+        with:
+          path: ~/ollama-modelos
+          key: ollama-qwen3-4b-359d7dd4bcda-bge-m3-790764642607
+
+      - name: Caché de Maven
+        uses: actions/cache@v4
+        with:
+          path: ~/m2-ci
+          key: m2-${{ hashFiles('pom.xml') }}
+          restore-keys: m2-
+
+      - name: Levantar el compose (espera a que ambos modelos estén listados con su digest)
+        run: |
+          mkdir -p ~/ollama-modelos ~/m2-ci
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
+          docker compose ps
+
+      - name: Contratos reales
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml --profile test run --rm -e CONTRACT_REAL=true tests
+
+      - name: Registros si algo falló
+        if: failure()
+        run: docker compose logs --tail 200 app db ollama
+
+      - name: Apagar
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml down

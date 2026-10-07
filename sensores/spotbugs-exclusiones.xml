@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Exclusiones de SpotBugs y FindSecBugs. Cada una con motivo; vacía por defecto. -->
+<FindBugsFilter>
+  <!-- Las plantillas JTE precompiladas son código generado. -->
+  <Match>
+    <Package name="gg.jte.generated.precompiled" />
+  </Match>
+  <!-- Los records exponen listas copiadas con List.copyOf (inmutables): el aviso de "exposición de representación" no aplica. -->
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+  </Match>
+</FindBugsFilter>

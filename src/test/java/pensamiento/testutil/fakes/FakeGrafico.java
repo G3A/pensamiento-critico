@@ -9,13 +9,13 @@ import pensamiento.graficos.SaneadorSvg;
 import pensamiento.nucleo.puertos.Grafico;
 
 /**
- * Fake del puerto Grafico: no dibuja, pero produce un SVG con las etiquetas del DOT como texto y lo pasa
- * por el mismo saneador que el real, para que el contrato "etiqueta hostil produce SVG inerte" lo cubra.
- * Certificado por FakeGraficoContractTest.
+ * Fake del puerto Grafico: no dibuja, pero produce un SVG con un grupo por nodo (con el id y la class del
+ * DOT, como hace Graphviz) y la etiqueta como texto, y lo pasa por el mismo saneador que el real, para que el
+ * contrato "etiqueta hostil produce SVG inerte" lo cubra. Certificado por FakeGraficoContractTest.
  */
 public final class FakeGrafico implements Grafico {
 
-    private static final Pattern NODO = Pattern.compile("(\\w+)\\s*\\[[^\\]]*label\\s*=\\s*\"((?:[^\"\\\\]|\\\\.)*)\"");
+    private static final Pattern NODO = Pattern.compile("(\\w+)\\s*\\[([^\\]]*)\\]");
     private final List<String> dotsRecibidos = new ArrayList<>();
 
     public List<String> dotsRecibidos() {
@@ -36,13 +36,21 @@ public final class FakeGrafico implements Grafico {
         Matcher m = NODO.matcher(dot);
         int y = 20;
         while (m.find()) {
-            String etiqueta = m.group(2).replace("\\\"", "\"");
-            svg.append("<g id=\"").append(m.group(1)).append("\" class=\"node\"><text x=\"10\" y=\"").append(y).append("\">")
+            String atributos = m.group(2);
+            String id = atributo(atributos, "id").orElse(m.group(1));
+            String clase = atributo(atributos, "class").orElse("node");
+            String etiqueta = atributo(atributos, "label").orElse(m.group(1));
+            svg.append("<g id=\"").append(escapar(id)).append("\" class=\"node ").append(escapar(clase)).append("\"><text x=\"10\" y=\"").append(y).append("\">")
                .append(escapar(etiqueta)).append("</text></g>");
             y += 20;
         }
         svg.append("</svg>");
         return SaneadorSvg.sanear(svg.toString());
+    }
+
+    private static java.util.Optional<String> atributo(String atributos, String nombre) {
+        Matcher m = Pattern.compile("\\b" + nombre + "\\s*=\\s*\"((?:[^\"\\\\]|\\\\.)*)\"").matcher(atributos);
+        return m.find() ? java.util.Optional.of(m.group(1).replace("\\\"", "\"")) : java.util.Optional.empty();
     }
 
     private static String escapar(String texto) {

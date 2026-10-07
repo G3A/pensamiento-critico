@@ -86,13 +86,23 @@ public final class SaneadorSvg {
         return fin < 0 ? svg : svg.substring(0, inicio) + svg.substring(fin + 1);
     }
 
+    /** Elementos que no dibujan pero envuelven dibujo (enlaces de Graphviz con URL): se quitan y sus hijos suben. */
+    static final Set<String> ENVOLTORIOS = Set.of("a", "switch");
+
     private static void limpiar(Element elemento) {
         NodeList hijos = elemento.getChildNodes();
         for (int i = hijos.getLength() - 1; i >= 0; i--) {
             Node hijo = hijos.item(i);
             if (hijo.getNodeType() == Node.ELEMENT_NODE) {
                 Element e = (Element) hijo;
-                if (!ELEMENTOS.contains(e.getTagName().toLowerCase(Locale.ROOT))) {
+                String nombre = e.getTagName().toLowerCase(Locale.ROOT);
+                if (ENVOLTORIOS.contains(nombre)) {
+                    limpiar(e);
+                    while (e.getFirstChild() != null) {
+                        elemento.insertBefore(e.getFirstChild(), e);
+                    }
+                    elemento.removeChild(e);
+                } else if (!ELEMENTOS.contains(nombre)) {
                     elemento.removeChild(e);
                 } else {
                     limpiar(e);

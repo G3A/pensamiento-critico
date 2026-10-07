@@ -1,0 +1,65 @@
+# Workflow de PR: levanta el compose, corre el perfil test (rápidos, contratos contra Fakes, *IT y
+# aceptación), los sensores (voseo, Fakes sin contrato, ArchUnit) y los gates de seguridad
+# (OWASP Dependency-Check y SpotBugs con FindSecBugs). Los Real*ContractIT NO corren aquí.
+name: PR
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pruebas:
+    name: Compose, perfil test y sensores
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Secretos de la instalación de prueba
+        run: |
+          printf '%s' 'clave-ci-${{ github.run_id }}' > secrets/db_password.txt
+          printf '%s' '2468' > secrets/admin_pin.txt
+          cp .env.example .env
+
+      - name: Caché de modelos de Ollama (3,7 GB)
+        uses: actions/cache@v4
+        with:
+          path: ~/ollama-modelos
+          key: ollama-qwen3-4b-359d7dd4bcda-bge-m3-790764642607
+
+      - name: Caché de Maven
+        uses: actions/cache@v4
+        with:
+          path: ~/m2-ci
+          key: m2-${{ hashFiles('pom.xml') }}
+          restore-keys: m2-
+
+      - name: Sensor de voseo
+        run: LC_ALL=C.UTF-8 bash sensores/voseo.sh
+
+      - name: Levantar el compose
+        run: |
+          mkdir -p ~/ollama-modelos ~/m2-ci
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
+          docker compose ps
+
+      - name: Perfil test (rápidos, contratos Fake, IT, aceptación, ArchUnit, sensores)
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml --profile test run --rm tests
+
+      - name: Gates de seguridad (Dependency-Check y SpotBugs con FindSecBugs)
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml --profile test run --rm -e NVD_API_KEY tests mvn -B -q -DskipTests -Pgates verify
+
+      - name: Registros si algo falló
+        if: failure()
+        run: docker compose logs --tail 200 app db ollama
+
+      - name: Apagar
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml down

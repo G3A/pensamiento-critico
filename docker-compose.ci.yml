@@ -1,0 +1,11 @@
+# Superposición para GitHub Actions: los modelos de Ollama y la caché de Maven viven en carpetas del
+# runner que actions/cache guarda entre corridas. Uso:
+#   docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
+services:
+  ollama:
+    volumes:
+      - ~/ollama-modelos:/root/.ollama
+  tests:
+    volumes:
+      - .:/src
+      - ~/m2-ci:/root/.m2

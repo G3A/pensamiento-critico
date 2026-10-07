@@ -15,7 +15,7 @@ public class ConfiguracionWeb {
 
     /** Reloj real del sistema en la zona configurada (APP_ZONA). */
     @Bean
-    Reloj reloj(@Value("${app.zona:America/Bogota}") String zona) {
+    public Reloj reloj(@Value("${app.zona:America/Bogota}") String zona) {
         ZoneId zonaId = ZoneId.of(zona);
         Clock reloj = Clock.system(zonaId);
         return new Reloj() {
