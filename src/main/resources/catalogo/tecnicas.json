@@ -88,7 +88,40 @@
     "usalaCuando": "Lees o escribes un argumento y quieres saber si descalifica a la persona, exagera, presenta solo dos opciones o se apoya en una autoridad que no corresponde.",
     "definicion": "Criterio que reconoce el esquema de argumentación de Walton usado y marca como falacia la pregunta crítica que quedó sin responder; la etiqueta la confirma el usuario (regla R06).",
     "tipo": "criterio", "operacion": "evaluar", "objeto": "argumento", "modalidad": "lista", "patron": "V05",
-    "origen": "Hamblin 1970; Walton 1995", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Hamblin 1970; Walton 1995", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "esquemas": ["ad_hominem", "alternativas", "pendiente_resbaladiza", "autoridad", "analogia", "causa_efecto", "signo", "ejemplo", "opinion_popular", "clasificacion_verbal", "consecuencias"], "sensibilidad": "reglas", "mostrarPregunta": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "esquemas", "tipo": "conjunto", "etiqueta": "Esquemas de Walton activos",
+          "ayuda": "Las reglas solo buscan los esquemas que actives.",
+          "opciones": [
+            { "valor": "ad_hominem", "etiqueta": "Ataque a la persona" },
+            { "valor": "alternativas", "etiqueta": "Argumento por alternativas" },
+            { "valor": "pendiente_resbaladiza", "etiqueta": "Argumento de pendiente resbaladiza" },
+            { "valor": "autoridad", "etiqueta": "Argumento por la opinión de un experto" },
+            { "valor": "analogia", "etiqueta": "Argumento por analogía" },
+            { "valor": "causa_efecto", "etiqueta": "Argumento de causa a efecto" },
+            { "valor": "signo", "etiqueta": "Argumento por signo" },
+            { "valor": "ejemplo", "etiqueta": "Argumento por ejemplo" },
+            { "valor": "opinion_popular", "etiqueta": "Argumento por opinión popular" },
+            { "valor": "clasificacion_verbal", "etiqueta": "Argumento por clasificación verbal" },
+            { "valor": "consecuencias", "etiqueta": "Argumento por las consecuencias" }
+          ] },
+        { "nombre": "sensibilidad", "tipo": "enumeracion", "etiqueta": "Sensibilidad", "obligatorio": true,
+          "ayuda": "Por ahora solo reglas léxicas en español; la clasificación con el modelo local llegará después.",
+          "opciones": [ { "valor": "reglas", "etiqueta": "Solo reglas léxicas" } ] },
+        { "nombre": "mostrarPregunta", "tipo": "booleano", "etiqueta": "Mostrar la pregunta crítica que quedó sin responder" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "texto", "tipo": "texto", "etiqueta": "Tu texto", "obligatorio": true, "largoMaximo": 2000,
+          "ayuda": "Pega o escribe el argumento que quieres revisar. Puede ser tuyo o de alguien más." },
+        { "nombre": "confirmadas", "tipo": "conjunto", "etiqueta": "Marcas que confirmas como falacia",
+          "ayuda": "Evalúa primero. Después marca aquí los códigos que confirmas y vuelve a evaluar o guarda: la etiqueta de falacia solo cuenta si la confirmas.",
+          "opciones": [ { "valor": "M1", "etiqueta": "M1" }, { "valor": "M2", "etiqueta": "M2" }, { "valor": "M3", "etiqueta": "M3" }, { "valor": "M4", "etiqueta": "M4" }, { "valor": "M5", "etiqueta": "M5" }, { "valor": "M6", "etiqueta": "M6" }, { "valor": "M7", "etiqueta": "M7" }, { "valor": "M8", "etiqueta": "M8" }, { "valor": "M9", "etiqueta": "M9" }, { "valor": "M10", "etiqueta": "M10" }, { "valor": "M11", "etiqueta": "M11" }, { "valor": "M12", "etiqueta": "M12" } ] }
+      ]
+    }
   },
   {
     "id": "T14", "familia": "F3", "nombre": "Sesgos cognitivos", "nombreLlano": "¿Qué atajo mental me está jugando en contra?",

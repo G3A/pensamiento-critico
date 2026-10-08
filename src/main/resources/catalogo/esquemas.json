@@ -1,0 +1,137 @@
+[
+  {
+    "id": "ad_hominem", "nombre": "Ataque a la persona",
+    "descripcion": "Se rechaza lo que alguien dice por cómo es o por su situación, no por sus razones.",
+    "origen": "Walton, Reed y Macagno 2008",
+    "preguntas": [
+      { "numero": 1, "texto": "¿La característica o la circunstancia de quien habla afecta la verdad de lo que dice?", "falacia": "ad hominem circunstancial",
+        "comoResponder": "Escucha sus razones como si las dijera otra persona." },
+      { "numero": 2, "texto": "¿Se responde a sus razones o solo se descalifica a quien las dice?", "falacia": "ad hominem",
+        "comoResponder": "Escribe la mejor razón de esa persona y respóndela a ella." }
+    ]
+  },
+  {
+    "id": "alternativas", "nombre": "Argumento por alternativas",
+    "descripcion": "Se presentan unas pocas opciones, se descartan todas menos una y se concluye esa.",
+    "origen": "Walton, Reed y Macagno 2008",
+    "preguntas": [
+      { "numero": 1, "texto": "¿Son de verdad las únicas opciones?", "falacia": "falso dilema",
+        "comoResponder": "Busca al menos una tercera opción, aunque parezca rara." },
+      { "numero": 2, "texto": "¿Se descartó cada opción con razones?", "falacia": "descarte sin razones",
+        "comoResponder": "Escribe por qué se descarta cada opción." }
+    ]
+  },
+  {
+    "id": "pendiente_resbaladiza", "nombre": "Argumento de pendiente resbaladiza",
+    "descripcion": "Un primer paso llevaría, por una cadena de pasos, a un final indeseable.",
+    "origen": "Walton, Reed y Macagno 2008",
+    "preguntas": [
+      { "numero": 1, "texto": "¿Cada paso de la cadena es probable?", "falacia": "pendiente resbaladiza",
+        "comoResponder": "Escribe cada paso y estima por separado qué tan probable es." },
+      { "numero": 2, "texto": "¿Hay un punto en el que la cadena se puede detener?", "falacia": "pendiente resbaladiza",
+        "comoResponder": "Busca en qué paso se podría poner un límite." }
+    ]
+  },
+  {
+    "id": "autoridad", "nombre": "Argumento por la opinión de un experto",
+    "descripcion": "Alguien que se presenta como conocedor afirma algo, y por eso se concluye que es cierto.",
+    "origen": "Walton, Reed y Macagno 2008",
+    "preguntas": [
+      { "numero": 1, "texto": "¿Quien lo afirma es experto en el tema del que habla?", "falacia": "apelación a una autoridad inapropiada",
+        "comoResponder": "Averigua la formación o la experiencia de esa persona en este tema específico, no en otro." },
+      { "numero": 2, "texto": "¿Quien lo afirma tiene un interés propio en que le creas?", "falacia": "apelación a una autoridad interesada",
+        "comoResponder": "Busca una fuente independiente o una prueba que no dependa de quien gana si le crees." },
+      { "numero": 3, "texto": "¿Otros que saben del tema dicen lo mismo?", "falacia": "apelación a una autoridad aislada",
+        "comoResponder": "Busca una segunda opinión de otra persona experta en el mismo tema." },
+      { "numero": 4, "texto": "¿Se sabe en qué se basa lo que afirma?", "falacia": "apelación a la autoridad sin evidencia",
+        "comoResponder": "Pregunta qué datos o pruebas respaldan esa opinión." }
+    ]
+  },
+  {
+    "id": "analogia", "nombre": "Argumento por analogía",
+    "descripcion": "Dos casos se parecen; lo que pasó o se cumple en uno se concluye para el otro.",
+    "origen": "Walton, Reed y Macagno 2008",
+    "preguntas": [
+      { "numero": 1, "texto": "¿Los dos casos se parecen en lo que importa para la conclusión?", "falacia": "falsa analogía",
+        "comoResponder": "Lista las semejanzas que de verdad importan para la conclusión." },
+      { "numero": 2, "texto": "¿Hay una diferencia importante entre los dos casos?", "falacia": "falsa analogía",
+        "comoResponder": "Busca la diferencia que más podría cambiar el resultado y revisa si pesa." },
+      { "numero": 3, "texto": "¿Hay otro caso parecido que lleve a la conclusión contraria?", "falacia": "analogía selectiva",
+        "comoResponder": "Busca un caso parecido en el que haya salido al revés." }
+    ]
+  },
+  {
+    "id": "causa_efecto", "nombre": "Argumento de causa a efecto",
+    "descripcion": "Dos cosas ocurren juntas o una después de la otra, y se concluye que una causa la otra.",
+    "origen": "Walton, Reed y Macagno 2008",
+    "preguntas": [
+      { "numero": 1, "texto": "¿Hay más razones que el hecho de que ocurrieron juntos o uno después del otro?", "falacia": "falsa causa",
+        "comoResponder": "Busca si el efecto aparece también sin la supuesta causa, o la causa sin el efecto." },
+      { "numero": 2, "texto": "¿Hay otra causa que explique el efecto?", "falacia": "causa única",
+        "comoResponder": "Escribe al menos otra explicación y compáralas, por ejemplo con T28 · Análisis de hipótesis en competencia (ACH)." },
+      { "numero": 3, "texto": "¿Podría ser al revés: el efecto produce la causa?", "falacia": "causalidad invertida",
+        "comoResponder": "Revisa qué ocurrió primero y si el efecto pudo provocar la supuesta causa." }
+    ]
+  },
+  {
+    "id": "signo", "nombre": "Argumento por signo",
+    "descripcion": "Una señal observada se toma como indicio de algo que no se ve.",
+    "origen": "Walton, Reed y Macagno 2008",
+    "preguntas": [
+      { "numero": 1, "texto": "¿Qué tan seguro es que esa señal indique lo que se dice?", "falacia": "señal débil tomada como prueba",
+        "comoResponder": "Piensa cuántas veces aparece esa señal sin que pase lo que se dice." },
+      { "numero": 2, "texto": "¿Hay otra explicación para esa señal?", "falacia": "señal con otra explicación",
+        "comoResponder": "Escribe otras dos razones que también explicarían la señal." }
+    ]
+  },
+  {
+    "id": "ejemplo", "nombre": "Argumento por ejemplo",
+    "descripcion": "De uno o pocos casos se saca una regla general.",
+    "origen": "Walton, Reed y Macagno 2008",
+    "preguntas": [
+      { "numero": 1, "texto": "¿El ejemplo es cierto y está bien contado?", "falacia": "ejemplo dudoso",
+        "comoResponder": "Confirma el caso con alguien más o con un registro." },
+      { "numero": 2, "texto": "¿Uno o pocos casos bastan para generalizar?", "falacia": "generalización apresurada",
+        "comoResponder": "Cuenta cuántos casos tienes y busca casos que no encajen." },
+      { "numero": 3, "texto": "¿El caso es típico o es una excepción?", "falacia": "generalización desde un caso atípico",
+        "comoResponder": "Compara el caso con lo que suele pasar en la mayoría." }
+    ]
+  },
+  {
+    "id": "opinion_popular", "nombre": "Argumento por opinión popular",
+    "descripcion": "Como mucha gente lo cree o lo hace, se concluye que es cierto o conveniente.",
+    "origen": "Walton, Reed y Macagno 2008",
+    "preguntas": [
+      { "numero": 1, "texto": "¿Que mucha gente lo crea o lo haga lo vuelve cierto o conveniente?", "falacia": "apelación a la mayoría",
+        "comoResponder": "Busca razones que no dependan de cuánta gente lo cree." },
+      { "numero": 2, "texto": "¿Es cierto que la mayoría lo cree o lo hace?", "falacia": "mayoría sin comprobar",
+        "comoResponder": "Cuenta de verdad: una votación, una encuesta o un registro." }
+    ]
+  },
+  {
+    "id": "clasificacion_verbal", "nombre": "Argumento por clasificación verbal",
+    "descripcion": "Algo se pone en una categoría y se le aplica lo que se dice de toda esa categoría.",
+    "origen": "Walton, Reed y Macagno 2008",
+    "preguntas": [
+      { "numero": 1, "texto": "¿El caso cumple de verdad la definición de esa categoría?", "falacia": "clasificación forzada",
+        "comoResponder": "Escribe la definición y revísala punto por punto contra el caso." },
+      { "numero": 2, "texto": "¿La definición es la aceptada o se acomodó para llegar a la conclusión?", "falacia": "definición persuasiva",
+        "comoResponder": "Busca cómo define esa palabra una norma o una fuente que no tenga interés en el caso." },
+      { "numero": 3, "texto": "¿La palabra se usa con el mismo sentido en todo el argumento?", "falacia": "equívoco",
+        "comoResponder": "Reemplaza la palabra por su definición en cada frase y mira si cambia el sentido." }
+    ]
+  },
+  {
+    "id": "consecuencias", "nombre": "Argumento por las consecuencias",
+    "descripcion": "Se acepta o rechaza algo por lo bueno o lo malo que traería.",
+    "origen": "Walton, Reed y Macagno 2008",
+    "preguntas": [
+      { "numero": 1, "texto": "¿Qué tan probable es que la consecuencia ocurra?", "falacia": "alarmismo",
+        "comoResponder": "Busca casos parecidos y cuántas veces pasó de verdad esa consecuencia." },
+      { "numero": 2, "texto": "¿Hay consecuencias del otro lado que pesen más?", "falacia": "consecuencias a medias",
+        "comoResponder": "Escribe también las consecuencias en contra y compáralas." },
+      { "numero": 3, "texto": "¿La consecuencia hace que la afirmación sea verdadera, o solo deseable?", "falacia": "apelación a las consecuencias",
+        "comoResponder": "Separa si es cierto de si te gustaría que fuera cierto." }
+    ]
+  }
+]

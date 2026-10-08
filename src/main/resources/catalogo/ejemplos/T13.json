@@ -1,0 +1,72 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Los que se oponen a las cámaras",
+    "versionEsquema": 1,
+    "config": {
+      "esquemas": ["ad_hominem", "alternativas", "pendiente_resbaladiza", "autoridad", "analogia", "causa_efecto", "signo", "ejemplo",
+                   "opinion_popular", "clasificacion_verbal", "consecuencias"],
+      "sensibilidad": "reglas", "mostrarPregunta": true
+    },
+    "datos": {
+      "texto": "Los que se oponen a las cámaras son los que tienen algo que esconder, así que no hay que escucharlos.",
+      "confirmadas": ["M1"]
+    },
+    "resultado": {
+      "marcas": [
+        { "codigo": "M1", "fragmento": "Los que se oponen a las cámaras son los que tienen algo que esconder, así que no hay que escucharlos.",
+          "esquema": "ad_hominem", "pregunta": 1, "falacia": "ad hominem circunstancial", "estado": "confirmada",
+          "porque": "Encontré «tienen algo que esconder»: descalifica a quien opina por lo que supuestamente oculta, no por sus razones." }
+      ],
+      "pendientes": [],
+      "resumen": "1 marca: 1 falacia confirmada (ad hominem circunstancial) y ningún esquema con preguntas sin responder."
+    },
+    "nota": "En el chat de la junta de vecinos, sobre la propuesta de las cámaras. La persona confirma M1. Es la tarjeta de T13 de la sección 7b."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "La harina del proveedor",
+    "versionEsquema": 1,
+    "config": {
+      "esquemas": ["ad_hominem", "alternativas", "pendiente_resbaladiza", "autoridad", "analogia", "causa_efecto", "signo", "ejemplo",
+                   "opinion_popular", "clasificacion_verbal", "consecuencias"],
+      "sensibilidad": "reglas", "mostrarPregunta": true
+    },
+    "datos": {
+      "texto": "El proveedor dice que su harina nueva rinde un 20% más, así que conviene cambiarnos a ella.",
+      "confirmadas": []
+    },
+    "resultado": {
+      "marcas": [
+        { "codigo": "M1", "fragmento": "El proveedor dice que su harina nueva rinde un 20% más, así que conviene cambiarnos a ella.",
+          "esquema": "autoridad", "pregunta": 2, "falacia": "apelación a una autoridad interesada", "estado": "propuesta",
+          "porque": "Encontré «El proveedor dice»: la razón es lo que dice alguien que gana si le crees." }
+      ],
+      "pendientes": [
+        "Responder la pregunta crítica de M1 (Argumento por la opinión de un experto): ¿Quien lo afirma tiene un interés propio en que le creas?"
+      ],
+      "resumen": "1 marca: ninguna falacia confirmada y 1 esquema con preguntas sin responder."
+    },
+    "nota": "El encargado de compras de la panadería. No confirma nada: el proveedor conoce su producto y prefiere probar antes de decidir."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El mercado del mes",
+    "versionEsquema": 1,
+    "config": {
+      "esquemas": ["ad_hominem", "alternativas", "pendiente_resbaladiza", "autoridad", "analogia", "causa_efecto", "signo", "ejemplo",
+                   "opinion_popular", "clasificacion_verbal", "consecuencias"],
+      "sensibilidad": "reglas", "mostrarPregunta": true
+    },
+    "datos": {
+      "texto": "Este mes gastamos más en mercado porque subió el precio del arroz y del aceite, según las facturas de la tienda.",
+      "confirmadas": []
+    },
+    "resultado": {
+      "marcas": [],
+      "pendientes": [],
+      "resumen": "Sin marcas: las reglas no reconocieron ningún esquema."
+    },
+    "nota": "En una familia, quien hace las cuentas anota por qué subió el gasto. Que no haya marcas no prueba que el razonamiento sea bueno."
+  }
+]

@@ -15,6 +15,7 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 
 import pensamiento.nucleo.Ejemplo;
+import pensamiento.nucleo.Esquema;
 import pensamiento.nucleo.Familia;
 import pensamiento.nucleo.IdTecnica;
 import pensamiento.nucleo.Json;
@@ -23,7 +24,7 @@ import pensamiento.nucleo.Tecnica;
 /** Lee el catálogo del repo: src/main/resources/catalogo/*.json. Es la fuente de verdad de la semilla. */
 public final class CatalogoJson {
 
-    public static final List<String> ARCHIVOS = List.of("familias.json", "tecnicas.json", "relaciones.json", "reglas.json");
+    public static final List<String> ARCHIVOS = List.of("familias.json", "tecnicas.json", "relaciones.json", "reglas.json", "esquemas.json");
 
     public record Relacion(String origen, String destino, String tipo) {
     }
@@ -74,6 +75,11 @@ public final class CatalogoJson {
         return leer("reglas.json", new TypeReference<List<ReglaVersion>>() { });
     }
 
+    /** El catálogo único de esquemas de Walton, en el orden del archivo. */
+    public List<Esquema> esquemas() {
+        return leer("esquemas.json", new TypeReference<List<Esquema>>() { });
+    }
+
     /** Los ejemplos de todas las técnicas que tienen archivo en catalogo/ejemplos/, por técnica y orden. */
     public List<EjemploJson> ejemplos() {
         List<EjemploJson> todos = new ArrayList<>();
@@ -116,7 +122,11 @@ public final class CatalogoJson {
         return valor == null ? "{}" : mapper.writeValueAsString(valor);
     }
 
-    /** Huella del contenido de los cuatro archivos: la migración repeatable vuelve a correr cuando cambia. */
+    public String aJsonLista(List<?> valor) {
+        return mapper.writeValueAsString(valor);
+    }
+
+    /** Huella del contenido de los archivos del catálogo y los ejemplos: la migración repeatable vuelve a correr cuando cambia. */
     public int huella() {
         try {
             MessageDigest sha = MessageDigest.getInstance("SHA-256");

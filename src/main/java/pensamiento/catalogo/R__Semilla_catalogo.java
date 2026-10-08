@@ -10,6 +10,7 @@ import org.flywaydb.core.api.migration.Context;
 import org.springframework.stereotype.Component;
 
 import pensamiento.nucleo.Ejemplo;
+import pensamiento.nucleo.Esquema;
 import pensamiento.nucleo.Familia;
 import pensamiento.nucleo.Tecnica;
 
@@ -36,6 +37,7 @@ public class R__Semilla_catalogo extends BaseJavaMigration {
         sembrarTecnicas(con, catalogo.tecnicas());
         sembrarRelaciones(con, catalogo.relaciones());
         sembrarReglas(con, catalogo.reglas());
+        sembrarEsquemas(con, catalogo.esquemas());
         sembrarEjemplos(con, catalogo.ejemplos().stream().map(catalogo::aEjemplo).toList());
     }
 
@@ -65,6 +67,30 @@ public class R__Semilla_catalogo extends BaseJavaMigration {
                 ps.setString(8, e.datos().texto());
                 ps.setString(9, e.resultado().texto());
                 ps.setString(10, e.nota());
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
+    }
+
+    /** Upsert por identificador; los esquemas retirados del JSON se borran (argumento.esquema_id queda en nulo). */
+    private void sembrarEsquemas(Connection con, List<Esquema> esquemas) throws SQLException {
+        try (PreparedStatement borrar = con.prepareStatement("DELETE FROM esquema_walton WHERE NOT (id = ANY (?))")) {
+            borrar.setArray(1, con.createArrayOf("text", esquemas.stream().map(Esquema::id).toArray()));
+            borrar.executeUpdate();
+        }
+        String sql = """
+                INSERT INTO esquema_walton (id, nombre, descripcion, preguntas_criticas, origen) VALUES (?, ?, ?, ?::jsonb, ?)
+                ON CONFLICT (id) DO UPDATE SET nombre = EXCLUDED.nombre, descripcion = EXCLUDED.descripcion,
+                  preguntas_criticas = EXCLUDED.preguntas_criticas, origen = EXCLUDED.origen
+                """;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            for (Esquema e : esquemas) {
+                ps.setString(1, e.id());
+                ps.setString(2, e.nombre());
+                ps.setString(3, e.descripcion());
+                ps.setString(4, catalogo.aJsonLista(e.preguntas()));
+                ps.setString(5, e.origen());
                 ps.addBatch();
             }
             ps.executeBatch();
