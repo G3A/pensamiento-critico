@@ -76,6 +76,7 @@ public final class BaseDatosDePrueba {
         JdbcClient jdbc = jdbcAdmin();
         jdbc.sql("DELETE FROM auditoria WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM pendiente WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM prediccion WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM argumento WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM ejecucion WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM expediente WHERE institucion_id = :i").param("i", institucion).update();

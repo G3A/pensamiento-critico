@@ -59,6 +59,7 @@ class RealRepositorioEjecucionContractIT extends RepositorioEjecucionContract {
             @Override public List<Ejecucion> porExpediente(UUID u, UUID x) { return bd.comoUsuario(usuarioId, inst, () -> real.porExpediente(u, x)); }
             @Override public List<Ejecucion> recientes(UUID u, int l) { return bd.comoUsuario(usuarioId, inst, () -> real.recientes(u, l)); }
             @Override public boolean asociar(UUID u, UUID e, Optional<UUID> x) { return bd.comoUsuario(usuarioId, inst, () -> real.asociar(u, e, x)); }
+            @Override public int cerrarPendientes(UUID u, pensamiento.nucleo.TipoPendiente t, UUID o) { return bd.comoUsuario(usuarioId, inst, () -> real.cerrarPendientes(u, t, o)); }
         };
     }
 }

@@ -75,6 +75,20 @@ public final class FakeRepositorioEjecucion implements RepositorioEjecucion {
     }
 
     @Override
+    public int cerrarPendientes(UUID usuarioId, pensamiento.nucleo.TipoPendiente tipo, UUID objetoId) {
+        int cerrados = 0;
+        for (int i = 0; i < pendientes.size(); i++) {
+            PendienteGuardado p = pendientes.get(i);
+            if (!p.resuelto() && p.pendiente().tipo() == tipo && p.pendiente().objetoId().equals(Optional.of(objetoId))
+                    && porId(usuarioId, p.ejecucionId()).isPresent()) {
+                pendientes.set(i, new PendienteGuardado(p.id(), p.ejecucionId(), p.pendiente(), true));
+                cerrados++;
+            }
+        }
+        return cerrados;
+    }
+
+    @Override
     public boolean asociar(UUID usuarioId, UUID ejecucionId, Optional<UUID> expedienteId) {
         Optional<Ejecucion> ejecucion = porId(usuarioId, ejecucionId);
         ejecucion.ifPresent(e -> ejecuciones.put(e.id(), new Ejecucion(e.id(), e.usuarioId(), e.institucionId(), e.tecnica(), e.versionEsquema(),

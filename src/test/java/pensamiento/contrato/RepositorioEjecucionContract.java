@@ -151,6 +151,27 @@ public abstract class RepositorioEjecucionContract {
     }
 
     @Test
+    void cerrar_los_pendientes_de_un_objeto_solo_cierra_los_de_ese_tipo_y_ese_objeto_del_usuario() {
+        Personas p = personas();
+        RepositorioEjecucion repo = comoUsuario(p.usuarioA());
+        AfirmacionConRol prediccion = hipotesis("La sucursal cubre sus costos en seis meses");
+        AfirmacionConRol otra = hipotesis("La feria abre también los domingos");
+        Pendiente revisar = new Pendiente(TipoPendiente.REVISION, Optional.of(prediccion.afirmacionId()), Optional.of(LocalDate.of(2027, 4, 15)),
+                "Revisar la decisión: Abrir en la terminal");
+        Pendiente verificar = new Pendiente(TipoPendiente.VERIFICACION, Optional.of(prediccion.afirmacionId()), Optional.empty(), "Verificar");
+        Pendiente deOtra = new Pendiente(TipoPendiente.REVISION, Optional.of(otra.afirmacionId()), Optional.empty(), "Revisar la otra");
+        Ejecucion e = repo.guardar(ejecucion(p.usuarioA(), "cerrar-" + UUID.randomUUID(), BASE), List.of(prediccion, otra),
+                List.of(revisar, verificar, deOtra));
+
+        assertThat(comoUsuario(p.usuarioB()).cerrarPendientes(p.usuarioB(), TipoPendiente.REVISION, prediccion.afirmacionId())).isZero();
+        assertThat(repo.cerrarPendientes(p.usuarioA(), TipoPendiente.REVISION, prediccion.afirmacionId())).isEqualTo(1);
+        assertThat(repo.cerrarPendientes(p.usuarioA(), TipoPendiente.REVISION, prediccion.afirmacionId())).isZero();
+
+        assertThat(repo.pendientes(p.usuarioA())).filteredOn(pg -> pg.ejecucionId().equals(e.id()))
+                .extracting(pg -> pg.pendiente().descripcion()).containsExactlyInAnyOrder("Verificar", "Revisar la otra");
+    }
+
+    @Test
     void asociar_a_un_expediente_y_desasociar() {
         Personas p = personas();
         RepositorioEjecucion repo = comoUsuario(p.usuarioA());

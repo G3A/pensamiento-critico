@@ -45,6 +45,12 @@ public interface RepositorioEjecucion {
     /** Las últimas ejecuciones del usuario en cualquier técnica, de la más reciente a la más antigua. */
     List<Ejecucion> recientes(UUID usuarioId, int limite);
 
+    /**
+     * Cierra los pendientes sin resolver del usuario de ese tipo sobre ese objeto (por ejemplo, la revisión de una predicción
+     * al registrar su resultado). Devuelve cuántos cerró; 0 si no había o si son de otra persona.
+     */
+    int cerrarPendientes(UUID usuarioId, pensamiento.nucleo.TipoPendiente tipo, UUID objetoId);
+
     /** Asocia la ejecución a un expediente o la desasocia (vacío). Falso si la ejecución no existe o no es del usuario. */
     boolean asociar(UUID usuarioId, UUID ejecucionId, Optional<UUID> expedienteId);
 }

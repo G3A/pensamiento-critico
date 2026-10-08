@@ -172,7 +172,7 @@ class ServicioRespaldoTest {
                 MapeadorJson.leer(sucursal.datos(), EjecutorMapa.Entrada.class), Contextos.sinIa());
         Ejecucion e = new Ejecucion(Uuid7.en(reloj.ahora()), DUENA, INSTITUCION, EjecutorMapa.ID, 1, Optional.empty(), sucursal.config(),
                 sucursal.datos(), MapeadorJson.escribir(r.valor()), r.resumen(), Optional.empty(), "clave-mapa", reloj.ahora());
-        return new GuardadoDeEjecuciones(ejecuciones, argumentos).guardar(e, r);
+        return new GuardadoDeEjecuciones(ejecuciones, argumentos, new pensamiento.testutil.fakes.FakeRepositorioPredicciones(ejecuciones)).guardar(e, r);
     }
 
     @Test

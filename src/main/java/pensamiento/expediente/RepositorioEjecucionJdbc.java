@@ -185,6 +185,12 @@ public class RepositorioEjecucionJdbc implements RepositorioEjecucion {
     }
 
     @Override
+    public int cerrarPendientes(UUID usuarioId, TipoPendiente tipo, UUID objetoId) {
+        return jdbc.sql("UPDATE pendiente SET resuelto = true WHERE usuario_id = :usuario AND tipo = :tipo AND objeto_id = :objeto AND NOT resuelto")
+                .param("usuario", usuarioId).param("tipo", tipo.name().toLowerCase()).param("objeto", objetoId).update();
+    }
+
+    @Override
     public boolean asociar(UUID usuarioId, UUID ejecucionId, Optional<UUID> expedienteId) {
         return jdbc.sql("UPDATE ejecucion SET expediente_id = :expediente WHERE usuario_id = :usuario AND id = :id AND eliminada_en IS NULL")
                 .param("expediente", expedienteId.orElse(null)).param("usuario", usuarioId).param("id", ejecucionId)
