@@ -76,7 +76,7 @@
         <p><span class="chip chip-aviso">sin IA local</span> Ollama no está disponible en esta máquina: todas las técnicas funcionan en modo plantillas.</p>
         <details>
           <summary>Qué cambia</summary>
-          <p>Nada que esté en el catálogo deja de funcionar. Las técnicas marcadas "Ollama opcional" piden que escribas tú lo que el modelo propondría (steelman, sugerencias de pre-mortem, clasificación de falacias). Lo que viene del modelo nunca cuenta hasta que tú lo adoptas, así que el modo plantillas es el modo normal, no una degradación.</p>
+          <p>Nada que esté en el catálogo deja de funcionar. Las técnicas marcadas "Ollama opcional" piden que escribas tú lo que el modelo propondría (steelman, posturas opuestas, clasificación de falacias). Lo que viene del modelo nunca cuenta hasta que tú lo adoptas, así que el modo plantillas es el modo normal, no una degradación.</p>
         </details>
       </div>
     @endif

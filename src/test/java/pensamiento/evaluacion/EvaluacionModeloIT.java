@@ -56,7 +56,7 @@ class EvaluacionModeloIT {
     @Test
     void medir_los_modelos() throws IOException {
         List<String> modelos = Arrays.stream(Optional.ofNullable(System.getenv("EVALUACION_MODELOS"))
-                .orElse("qwen3:4b-instruct-2507-q4_K_M,gemma3:4b,qwen3:4b").split(",")).map(String::strip).toList();
+                .orElse("qwen3:4b-instruct-2507-q4_K_M").split(",")).map(String::strip).toList();
         int limite = Optional.ofNullable(System.getenv("EVALUACION_LIMITE")).map(Integer::parseInt).orElse(Integer.MAX_VALUE);
         Path carpeta = Path.of("target", "evaluacion");
         Files.createDirectories(carpeta);

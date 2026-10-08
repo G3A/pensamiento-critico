@@ -79,17 +79,17 @@ class RF09TallerDeArgumentosIT {
         // RF-12: exportar trae los argumentos con su ejecución; importar lo propio no duplica nada.
         String archivo = taller.exportarMisDatos();
         PaqueteDatos paquete = MapeadorJson.mapper().readValue(archivo, PaqueteDatos.class);
-        assertThat(paquete.version()).isEqualTo(2);
+        assertThat(paquete.version()).as("versión 3 desde el hito 4").isEqualTo(3);
         PaqueteDatos.EjecucionDatos delMapa = paquete.ejecuciones().stream().filter(e -> e.id().equals(guardadas.getFirst())).findFirst().orElseThrow();
         assertThat(delMapa.argumentos()).hasSize(3);
         UUID argumento = delMapa.argumentos().getFirst().id();
         ClienteApp.Respuesta importada = taller.importarMisDatos(archivo);
         assertThat(importada.estado()).isEqualTo(200);
         assertThat(importada.cuerpo()).contains("0 ejecuciones nuevas, 3 ya estaban");
-        // Un archivo del hito 1: versión 1 y ejecuciones sin el campo argumentos.
+        // Un archivo del hito 1: versión 1 y ejecuciones sin los campos argumentos ni predicciones.
         tools.jackson.databind.node.ObjectNode viejo = (tools.jackson.databind.node.ObjectNode) MapeadorJson.mapper().readTree(archivo);
         viejo.put("version", 1);
-        viejo.get("ejecuciones").forEach(e -> ((tools.jackson.databind.node.ObjectNode) e).remove("argumentos"));
+        viejo.get("ejecuciones").forEach(e -> ((tools.jackson.databind.node.ObjectNode) e).remove(java.util.List.of("argumentos", "predicciones")));
         String version1 = viejo.toString();
         assertThat(taller.importarMisDatos(version1).estado()).as("un archivo de la versión 1 se migra al importarlo").isEqualTo(200);
 

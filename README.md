@@ -5,16 +5,44 @@ más flujos guiados que las encadenan. Todo funciona offline, sin ninguna API ex
 docker-compose. La única IA es Ollama local con modelos de 4 GB o menos (qwen3:4b-instruct-2507 y bge-m3), y la
 aplicación funciona igual sin ella ("modo plantillas").
 
-Estado: **hito 3, "Ollama en técnicas, opcional"**, sobre la versión 1 (hitos 0 a 2). Doce técnicas más, siete de ellas con
-el modelo local como ayuda opcional y marcada "experimental"; ver [Qué se puede hacer en el hito 3](#qué-se-puede-hacer-en-el-hito-3).
-La versión 1 trajo T28 · Análisis de hipótesis en competencia
+Estado: **hito 4, "Decisiones y problemas"**: el flujo D, Diario de decisiones y calibración, con su paso 0 para definir el
+problema, y catorce técnicas más de F5 y F7, todas deterministas; ver [Qué se puede hacer en el hito 4](#qué-se-puede-hacer-en-el-hito-4).
+El hito 3 sumó doce técnicas, siete de ellas con el modelo local como ayuda opcional y marcada "experimental"; ver
+[Qué se puede hacer en el hito 3](#qué-se-puede-hacer-en-el-hito-3). La versión 1 trajo T28 · Análisis de hipótesis en competencia
 (ACH), T01 · Mapeo de argumentos, T02 · Modelo de Toulmin, T06 · Reconstrucción de premisas ocultas y T13 · Falacias
 como esquemas fallidos (solo con reglas), más el Taller de argumentos y las 49 fichas "Qué es". La especificación
 completa está en [`docs/investigacion-y-propuestas.html`](docs/investigacion-y-propuestas.html); los prompts con que
 se construyó cada hito, en [`docs/prompt-hito-0.md`](docs/prompt-hito-0.md), [`docs/prompt-hito-1.md`](docs/prompt-hito-1.md),
-[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md) y [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md); el del siguiente, en [`docs/prompt-hito-4.md`](docs/prompt-hito-4.md).
+[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md), [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md) y [`docs/prompt-hito-4.md`](docs/prompt-hito-4.md).
 Pendiente para cerrar RF-08: las sesiones moderadas de primer uso, con el guion en [`docs/sesiones-primer-uso.md`](docs/sesiones-primer-uso.md);
-al cerrar este hito todavía no se habían hecho, así que no hay hallazgos que aplicar a las fichas.
+al cerrar el hito 4 todavía no se habían hecho, así que no hay hallazgos que aplicar a las fichas.
+
+## Qué se puede hacer en el hito 4
+
+- **Catorce técnicas nuevas en el catálogo**, con sus tres ejemplos calculados a mano, configuración, historial y
+  Expediente, todas sin IA:
+  - F5 · Pensamiento probabilístico y decisiones: T24 · Razonamiento bayesiano, T25 · Calibración y puntaje Brier,
+    T26 · Estimación de Fermi, T27 · Valor esperado, T29 · Pre-mortem, T30 · Inversión, T31 · Matriz de decisión
+    ponderada, T32 · Diario de decisiones y T33 · Inferencia a la mejor explicación (T28 ya estaba desde el hito 1);
+  - F7 · Resolución de problemas y descomposición: T40 · Definición del problema, T41 · Primeros principios, T42 · Árbol
+    de hipótesis MECE, T43 · Diagrama de Ishikawa y T44 · SCAMPER y pensamiento lateral.
+- **Diario de decisiones** (`/diario`, P17): al entrar, las revisiones que ya vencieron (también en Inicio), las
+  decisiones abiertas con lo que dice tu historial en ese tramo de confianza ("Tu historial entre 70 y 79%: se cumple el
+  100%…"), la curva de calibración con el puntaje Brier y las resueltas. "Nueva decisión" abre el asistente.
+- **Asistente de la decisión** (P18 y los cuatro pasos): 0 · Problema (T40 y T41 obligatorias, Ishikawa y su vista como
+  árbol MECE con Graphviz, SCAMPER), 1 · Contexto (valor esperado, Fermi, Bayes), 2 · Pre-mortem (o inversión), 3 · ACH
+  (o mejor explicación) y 4 · Predicción (matriz ponderada, lista de T16 y el registro con T32). Cada técnica se guarda
+  en el expediente de la decisión y lo escrito antes llena el formulario siguiente: la reformulación elegida, las ideas
+  seleccionadas de SCAMPER como opciones, el ganador de la matriz como decisión.
+- **Revisar y recalcular** (R05): en la fecha de revisión registras si la predicción se cumplió; queda fija (un segundo
+  intento responde 409), su pendiente se cierra y el tablero recalcula Brier y la curva. "Hoy" sale del puerto `Reloj`.
+- **Patrones nuevos**: V03b (matriz ponderada con totales y sensibilidad), V03c (rejilla), V06 (árbol o cadena con
+  Graphviz), V07 (espina de pescado con Graphviz), V11 (registro con línea de tiempo) y V12 (ranking con barras); V08
+  suma la curva de calibración y V04 y V13a se reúsan.
+- **Respaldo versión 3**: el paquete de datos de cada persona lleva las predicciones con su estado; los archivos de las
+  versiones 1 y 2 se migran al importarlos.
+
+Los ejemplos están en prosa, con el cálculo a mano, en [`docs/ejemplos/`](docs/ejemplos/).
 
 ## Qué se puede hacer en el hito 3
 
@@ -133,6 +161,7 @@ Se leen de `.env` (copia de [`.env.example`](.env.example)):
 | `BIND_IP` | `127.0.0.1` | Dirección en la que `app` expone el puerto 8080. `0.0.0.0` sirve a toda la red local. |
 | `CONTRACT_REAL` | `false` | `true` solo en el workflow nocturno: corre los `Real*ContractIT` contra Ollama y PostgreSQL reales. |
 | `APP_ZONA` | `America/Bogota` | Zona horaria de fechas de revisión y auditoría. |
+| `APP_RELOJ_AJUSTABLE` | `false` | `true` solo para pruebas de aceptación y demostraciones: el administrador puede adelantar el reloj (`POST /administracion/reloj?dias=N`) para ver vencer una revisión del Diario. La aceptación del flujo D lo necesita; el compose de CI lo activa. |
 
 Los secretos no van en variables: van en `secrets/db_password.txt` (PostgreSQL) y `secrets/admin_pin.txt`
 (PIN de la cuenta `administrador`, creada sola en el primer arranque). La carpeta `secrets/` está ignorada por git.
@@ -162,10 +191,10 @@ Paquetes (sección 4 del documento), verificados con ArchUnit en el perfil test:
 
 | Paquete | Contiene | Depende de |
 |---|---|---|
-| `nucleo` | Afirmación, Evidencia, Fuente, Argumento, Técnica, reglas R01 a R04 como código puro, puertos (`Ia`, `Grafico`, `Reloj`, repositorios), el contrato `Ejecutor<C, E, R>` y el record `Resultado<R>` | nadie: sin Spring, sin JPA, sin Ollama |
+| `nucleo` | Afirmación, Evidencia, Fuente, Argumento, Técnica, reglas R01 a R05 como código puro (R05, calibración: Brier, logarítmico y curva), la predicción inmutable al resolverse, puertos (`Ia`, `Grafico`, `Reloj`, repositorios, entre ellos el de predicciones), el contrato `Ejecutor<C, E, R>` y el record `Resultado<R>` | nadie: sin Spring, sin JPA, sin Ollama |
 | `catalogo` | lectura del JSON del repo, semilla repeatable de Flyway, repositorio de técnicas, verificación al arrancar, intenciones | `nucleo` |
-| `tecnicas.f1` a `f8` | un ejecutor por técnica: `f1` T01, T02 y T06 (con el mapa argumental y R04), `f3` T13 con sus reglas léxicas, `f5` T28 | `nucleo`, `catalogo` |
-| `flujos`, `expediente` | flujos guiados (el Taller de argumentos arma T02 y T13 desde el mapa); Expediente, respaldo de cada persona, guardado de ejecuciones con argumentos y los repositorios JDBC de ejecución, argumento, expediente e identificadores | `tecnicas`, `catalogo`, `nucleo` |
+| `tecnicas.f1` a `f8` | un ejecutor por técnica: `f1` T01, T02 y T06 (con el mapa argumental y R04), `f3` T13 con sus reglas léxicas, `f5` T24 a T33 (con la matriz ponderada que comparten T31 y T33), `f7` T40 a T44 | `nucleo`, `catalogo` |
+| `flujos`, `expediente` | flujos guiados (el Taller de argumentos arma T02 y T13 desde el mapa; el Diario de decisiones da el tablero con R05, la revisión y el asistente de cinco pasos); Expediente, respaldo de cada persona, guardado de ejecuciones con argumentos y predicciones y los repositorios JDBC de ejecución, argumento, predicción, expediente e identificadores | `tecnicas`, `catalogo`, `nucleo` |
 | `argdown`, `graficos`, `ia`, `biblioteca`, `trabajos` | adaptadores: parser del subconjunto Argdown, Graphviz como proceso hijo con saneador de SVG, Ollama vía Spring AI, extractor de PDF con límites | solo puertos de `nucleo` |
 | `web` | controladores, plantillas JTE, seguridad (Spring Security, RLS, CSRF, CSP), usuarios | `flujos`, `tecnicas`, `catalogo` |
 
@@ -194,10 +223,10 @@ Dos velocidades, al estilo Rainsberger (Fakes, sin `verify`), bajo `src/test/jav
 
 | Raíz | Qué hay | Cuándo corre |
 |---|---|---|
-| `unidad/` | collaboration tests de R01 a R04 con los ejemplos de la sección 5b como oráculo, propiedades jqwik (fuerza entre 0 y 8, estado total, R04 sin peso en ciclos), verificador del catálogo, servicio de usuarios, saneador de SVG; en el hito 1, el oráculo de T28 con sus ejemplos y sus propiedades jqwik, el formulario por lenguaje de campos, Expediente y respaldo con Fakes, y las pruebas de plantilla con jsoup; en el hito 2, los oráculos de T01, T02, T06 y T13, propiedades jqwik del mapa (R04 monótona entre estándares, una afirmación por nodo), el banco de 50 fragmentos con su umbral, el flujo del Taller, el guardado con argumentos y las plantillas V01, V02, V05 y del Taller | `mvn test` (sin red ni base) |
-| `contrato/` | una suite abstracta por puerto (`Ia`, `Grafico`, `Reloj`, repositorios de técnica, ejecución, usuarios, expediente, configuración y auditoría, registro de identificadores; en el hito 2, esquemas de Walton, argumentos y `Argdown`, este último con la propiedad de ida y vuelta contra el parser real, que es puro), `Fake*ContractTest` | cada PR |
+| `unidad/` | collaboration tests de R01 a R04 con los ejemplos de la sección 5b como oráculo, propiedades jqwik (fuerza entre 0 y 8, estado total, R04 sin peso en ciclos), verificador del catálogo, servicio de usuarios, saneador de SVG; en el hito 1, el oráculo de T28 con sus ejemplos y sus propiedades jqwik, el formulario por lenguaje de campos, Expediente y respaldo con Fakes, y las pruebas de plantilla con jsoup; en el hito 2, los oráculos de T01, T02, T06 y T13, propiedades jqwik del mapa (R04 monótona entre estándares, una afirmación por nodo), el banco de 50 fragmentos con su umbral, el flujo del Taller, el guardado con argumentos y las plantillas V01, V02, V05 y del Taller; en el hito 4, R05 con su oráculo y sus propiedades (Brier entre 0 y 1 y que no empeora al acercar la confianza a lo que pasó), los oráculos de T24 a T27, T29 a T33 y T40 a T44, propiedades de Bayes (posterior entre 0 y 100, monótono en la verosimilitud), de la matriz (invariante al reordenar criterios) y del árbol MECE (sin nodos huérfanos), el Diario de punta a punta con el reloj avanzable y las plantillas V03b, V03c, V06, V07, la curva de V08, V11 y V12 | `mvn test` (sin red ni base) |
+| `contrato/` | una suite abstracta por puerto (`Ia`, `Grafico`, `Reloj`, repositorios de técnica, ejecución, usuarios, expediente, configuración y auditoría, registro de identificadores; en el hito 2, esquemas de Walton, argumentos y `Argdown`, este último con la propiedad de ida y vuelta contra el parser real, que es puro; en el hito 4, predicciones, y `Grafico` y el registro de identificadores con sus dimensiones nuevas), `Fake*ContractTest` | cada PR |
 | `contrato/real/` | `Real*ContractIT` contra Ollama, Graphviz y PostgreSQL del compose | nocturno, `CONTRACT_REAL=true` |
-| `integracion/`, `aceptacion/` | RLS por SQL; proyección de pendientes en la misma transacción (RF-07); oráculos de T28, T01, T02, T06 y T13 sobre la tabla `ejemplo`; RF-01, RF-02, RF-03, RF-11, el flujo completo de T28 y el del Taller por HTTP contra `app:8080`; dos pruebas de humo en Chromium con Playwright (RNF-09): primer uso y Taller a 360 px | perfil test del compose |
+| `integracion/`, `aceptacion/` | RLS por SQL; proyección de pendientes en la misma transacción (RF-07); oráculos de T28, T01, T02, T06 y T13 sobre la tabla `ejemplo`; RF-01, RF-02, RF-03, RF-11, el flujo completo de T28 y el del Taller por HTTP contra `app:8080`; pruebas de humo en Chromium con Playwright (RNF-09): primer uso, Taller, SSE de T34 y, en el hito 4, el flujo D a 360 px; en el hito 4, el oráculo de las catorce desde la tabla `ejemplo`, la predicción inmutable por SQL y el flujo D por HTTP con el reloj adelantado | perfil test del compose |
 | `arquitectura/`, `sensores/` | ArchUnit; Fakes sin contrato; voseo sobre plantillas, catálogo y código; configuración segura | cada PR |
 
 Última corrida local del perfil completo (2026-10-08, hito 3), con `CONTRACT_REAL=true` y `-Pgates`: 471 pruebas rápidas y 111 de integración y aceptación en verde; 70 de ellas son contratos reales en 12 `Real*ContractIT` (10 contra Ollama 0.40.1). Dos omitidas a propósito: la aceptación con el servicio de Ollama detenido (pasó en una corrida aparte, con Ollama apagado) y el arnés de evaluación del modelo, que se corre a mano. SpotBugs con FindSecBugs y Dependency-Check en verde. La carga con k6 se corre aparte (`docker compose --profile test run --rm k6`).
@@ -301,6 +330,24 @@ Steelmanning y lee cada turno por SSE hasta el evento final.
 
 Si Ollama se reinicia justo antes, la app lo sigue viendo caído hasta la siguiente revisión del monitor (cada 30 s): en
 ese rato pedir una propuesta no abre turno, que es lo esperado. La primera corrida de k6 cayó en esa ventana.
+
+## Mediciones del hito 4
+
+Misma máquina que en los hitos anteriores, el 8 de octubre de 2026.
+
+**Carga básica con k6 (RNF-03)**: las diez personas del hito 3 recorren además el tablero del Diario (`/diario`, R05 sobre
+sus predicciones) y evalúan T43 · Diagrama de Ishikawa con el ejemplo del pan quemado (Graphviz dibuja la espina en cada
+iteración); la undécima sigue pidiendo steelmans a T34 · Steelmanning por SSE.
+
+| Métrica | Medido | Umbral que falla el build |
+|---|---|---|
+| p95 de las pantallas sin IA | 174 ms (media 55 ms, máximo 920 ms) | menos de 500 ms (RNF-03) |
+| Peticiones fallidas | 0 de 786 | 0 % |
+| Chequeos de contenido | 716 de 716 | 100 % |
+
+**Oráculo**: los 42 ejemplos de las catorce técnicas pasan como oráculo desde el JSON del catálogo y desde la tabla
+`ejemplo`; todos los cálculos de la prosa (Bayes, Brier, logarítmico, Fermi, valor esperado y la sensibilidad de la matriz)
+coincidieron con el código en la primera corrida.
 
 ## Licencia
 
@@ -410,3 +457,34 @@ reglas. Las mediciones que sostienen las decisiones del modelo están en [`docs/
 | 2026-10-08 | Ollama sube de 0.12.3 a 0.40.1 (última versión estable en sus notas de versión de GitHub, consultadas el 2026-10-08; la 0.40.2 es todavía pre-release), fijado por digest. Los 10 contratos reales de Ia pasan con ella. | La 0.12.3 no carga la arquitectura `mistral3` de Ministral 3B ni la familia qwen3.5, dos de los candidatos medidos. |
 | 2026-10-08 | `docker-compose.gpu.yml`, opcional: le da a Ollama la GPU NVIDIA y guarda el contexto con flash attention y caché KV en 8 bits. Sin ese archivo todo corre en CPU, como antes. | En una T600 de 4 GB no mejora (el modelo no cabe entero y partirlo entre GPU y CPU es más lento que la CPU sola), pero con 6 GB o más de VRAM el modelo cabe entero; queda versionado para esas máquinas. |
 | 2026-10-08 | Prompts `t13-esquema.v2` (dos ejemplos más de "ninguna" y la regla "conclusión sacada de una razón") y `t22-postura.v2` (el pasaje va entre `<<<PASAJE` y `PASAJE>>>`; el ejecutor quita esas marcas del texto del pasaje). Las propuestas guardadas con v1 conservan su versión. | En T22 · Triangulación bajaron las instrucciones obedecidas en CPU de 2 a 0 (con 2 sin respuesta). En T13 · Falacias como esquemas fallidos no cambiaron las marcas sobre "ninguna", pero tampoco empeoró el acierto. |
+
+## Decisiones tomadas en el hito 4
+
+Igual que en los hitos anteriores: lo que el documento no fijaba se resolvió con la opción más simple que respeta las
+reglas. Las reglas de cálculo de cada técnica, con sus decisiones marcadas, están en su archivo de [`docs/ejemplos/`](docs/ejemplos/).
+
+| Fecha | Decisión | Por qué |
+|---|---|---|
+| 2026-10-08 | La decisión del Diario no tiene tabla propia: es una ejecución de T32 · Diario de decisiones con sus afirmaciones de rol `opcion`, `prediccion` y `condicion_falsacion`, dentro de un expediente "Decisión: …" donde el asistente guarda cada técnica. La predicción sí va a la tabla `prediccion`, que V6 liga a la ejecución. | `prediccion` ya existía en V1 y alimenta R05; el resto lo cubren `ejecucion`, `ejecucion_afirmacion` y `expediente`. Ligarla a la ejecución permite exportarla con ella, borrarla en cascada y darle 404 a otra persona. |
+| 2026-10-08 | Una predicción resuelta es inmutable en el dominio (`Prediccion.resolver` lanza si ya está resuelta) y en la base (trigger de V6 y restricción que exige la fecha de resolución). Un segundo intento de revisar responde 409 y se detecta antes de escribir. | R05: "la predicción resuelta es inmutable"; si el rechazo saliera de la transacción del repositorio, la dejaría marcada para deshacer y la persona vería un 500. |
+| 2026-10-08 | `Resultado` declara además las predicciones (`PrediccionDeclarada`) y `GuardadoDeEjecuciones` las guarda en la misma transacción; `RepositorioEjecucion` suma `cerrarPendientes` para cerrar la revisión al resolver. | Un solo lugar para "todo o nada", como los argumentos del hito 2. |
+| 2026-10-08 | R05: tramos de 10 o 20 puntos, aviso cuando lo que se cumple se aleja más de 10 puntos de lo declarado, provisional si el tramo tiene menos que el umbral (10 en el Diario); logarítmico con logaritmo natural y la confianza recortada entre 1 y 99; horizonte en meses hacia atrás desde el reloj. | El documento fija Brier, curva y "n mínimo por intervalo" (corrección 13) sin números; están calculados a mano en `docs/ejemplos/T25.md`. |
+| 2026-10-08 | T24 · Razonamiento bayesiano pide dos probabilidades por evidencia (si es cierta y si es falsa) en vez de la razón, y actualiza sin redondeos intermedios; el prior de la configuración se usa si la persona no escribe uno, con un aviso. | Evita decimales en el formulario y errores acumulados; la tarjeta de la sección 7b (70%, 48%, 65%) sale igual. |
+| 2026-10-08 | T26 · Estimación de Fermi da como valor central la media geométrica del rango a dos cifras significativas: el pan del centro da 290, no el "mediana 300" del mockup. En T25, la tarjeta dice "al 90% aciertas 64%" con 5 en el tramo, que no es posible; el ejemplo usa 3 de 5. | Los mockups son ilustrativos; la regla que manda está escrita en la prosa del ejemplo. |
+| 2026-10-08 | T27 · Valor esperado: tres escenarios fijos por opción (bueno, medio, malo) cuyas probabilidades suman 100; con aversión a pérdidas, las pérdidas cuentan el doble (λ = 2). | El lenguaje de campos no anida filas dentro de filas; λ = 2 es el valor clásico de Kahneman y Tversky. |
+| 2026-10-08 | Sensibilidad de T31 · Matriz de decisión ponderada y T33 · Inferencia a la mejor explicación (código compartido, `MatrizPonderada`): por criterio, el primer peso entre 0 y 10, a distancia creciente y subiendo primero, que deja otra opción estrictamente por encima; nivel alta, media o baja por la menor distancia; con empate en el primer lugar no aplica. | "Cuánto tiene que cambiar un peso para que cambie el ganador", sin depender del orden de los criterios (propiedad jqwik). |
+| 2026-10-08 | T42 · Árbol de hipótesis MECE: las ramas son los hijos de la raíz y las hojas, los nodos sin hijos desde la profundidad 2; dos hermanos se solapan si comparten más de la mitad de las palabras del más corto, sin tildes ni palabras vacías. | La verificación MECE automática solo puede mirar la forma del árbol y las palabras; la tarjeta lo dice. |
+| 2026-10-08 | El lenguaje de campos suma `opcionesDesde` (las opciones salen de un campo de la configuración: las categorías propias de T43 escritas con comas, o solo los operadores activos de T44) y `visibleSi` con `~` (el campo existe si un conjunto de la configuración contiene el valor: los criterios de T33). | Sin esto, T43 no admitía categorías propias y T33 pedía puntajes de criterios apagados. |
+| 2026-10-08 | Entran V11 (registro con línea de tiempo, para T32) y V03c (rejilla, para T44), que la fila del hito no nombraba; V06 dibuja la cadena de Fermi y el árbol MECE; V08 suma la curva de calibración. | La sección 7 les asigna esos patrones; usar uno existente habría escondido la línea de tiempo y los siete operadores. |
+| 2026-10-08 | Graphviz: los nodos que son afirmaciones llevan como id el identificador de la afirmación; los de estructura (puntos de la espina, categorías de Ishikawa) llevan el id del fragmento más un sufijo. | Así los ids son únicos en la página aunque haya dos diagramas, y se cumple el convenio de la sección 7. |
+| 2026-10-08 | T29 · Pre-mortem, T30 · Inversión y T44 · SCAMPER y pensamiento lateral quedan "sin IA" en el catálogo: 32 técnicas sin IA, 16 con Ollama opcional y 1 obligatoria. Sus sugerencias del modelo quedan para cuando tengan banco y umbrales. | Este hito es determinista; decir "Ollama opcional" sin poder pedir nada al modelo sería falso. |
+| 2026-10-08 | T44: el temporizador es un recordatorio del tiempo sugerido por operador, sin cuenta regresiva. | Una cuenta regresiva necesita JavaScript propio y `app.js` tiene que quedar por debajo de 100 líneas. |
+| 2026-10-08 | T32: contexto, alternativas, predicción, confianza, qué me haría cambiar de opinión y fecha de revisión son siempre obligatorios; la configuración solo fija los días mínimos hasta la revisión (7) y una fecha más cercana bloquea el guardado. | "Los campos obligatorios no se pueden saltar" (sección 5 y prompt del hito). |
+| 2026-10-08 | El asistente tiene cinco pasos con las técnicas de la tabla de la sección 6: 0 Problema (T40, T41, T43, T42, T44), 1 Contexto (T27, T26, T24), 2 Pre-mortem (T29, T30), 3 ACH (T28, T33) y 4 Predicción (T31, T16, T32). No se pasa del 0 sin T40 y T41 guardadas y T32 pide antes la lista de T16. Lo escrito antes llena el formulario siguiente. | El estado vive en el expediente de la decisión: no hay borrador oculto que se pierda ni tabla nueva. |
+| 2026-10-08 | El tablero muestra "en preparación" los expedientes con el prefijo "Decisión: " que todavía no tienen T32. En Inicio, las revisiones del Diario aparecen cuando vencen; las que vencen más adelante esperan en el Diario. | Lo más simple sin columna nueva en `expediente`; Inicio muestra lo que hay que hacer hoy. |
+| 2026-10-08 | Revisar se puede antes de la fecha (a veces el resultado se sabe antes); la lista "al entrar" muestra las vencidas. | La fecha es un recordatorio, no un candado. |
+| 2026-10-08 | `RelojDelSistema`: el administrador puede adelantar el reloj (`POST /administracion/reloj?dias=N`) solo si `APP_RELOJ_AJUSTABLE=true`; si no, la ruta da 404. El compose de CI lo activa para la aceptación; `.env.example` lo deja en `false`. El ajuste queda en el log, no en `auditoria`. | La definición de hecho pide revisar "con el reloj adelantado" por HTTP y en Chromium contra la app real. La tabla `auditoria` no tiene esa acción y agregarla pedía una migración solo para pruebas. |
+| 2026-10-08 | El paquete de datos sube a la versión 3 con las predicciones de cada ejecución (con su estado) e importa las versiones 1 a 3. `RepositorioPredicciones.restaurar` las importa tal como estaban y `app_id_de_otro_usuario` cubre `prediccion` (V6). | RF-12 y RF-03 extendidos a las tablas nuevas, sin romper los respaldos anteriores. |
+| 2026-10-08 | El registro de T32 se pinta al día: si la predicción ya se revisó, el renderizador suma el hito "resuelta" leyendo la predicción de la persona de la sesión (`EstadoDePrediccion`). | El resultado guardado es el del momento del registro; sin esto el Expediente diría "pendiente de revisión" para siempre. |
+| 2026-10-08 | Del hito 3: el modelo por defecto no cambia, ninguna técnica del hito 4 usa el modelo (no hace falta el validador de voseo) y el monitor de Ollama sigue revisando cada 30 s. La lista por defecto del arnés de evaluación pasa a ser solo `qwen3:4b-instruct-2507-q4_K_M`, el único modelo de chat en el volumen. | Este hito es determinista; forzar una revisión del monitor no cambia nada si nadie pide propuestas. |
+| 2026-10-08 | Ninguna dependencia nueva de Maven en el hito 4. | Cálculos, patrones y flujo se escribieron con lo que ya estaba. |
