@@ -1,0 +1,63 @@
+[
+  {
+    "ambito": "personal",
+    "titulo": "El examen positivo",
+    "versionEsquema": 1,
+    "config": { "criterios": ["fuerza", "consistencia", "temporalidad", "gradiente", "plausibilidad"], "exigirTasaBase": true, "formato": "frecuencias" },
+    "datos": {
+      "afirmacion": "El examen dio positivo; la enfermedad afecta a 1 de cada 1000; el examen acierta el 99%.",
+      "esRiesgo": true, "casos": 1, "deCada": 1000, "sensibilidad": 99, "especificidad": 99,
+      "cumplidos": ["fuerza", "plausibilidad"]
+    },
+    "resultado": {
+      "calculo": { "deCada": 1000, "enfermos": 1, "sanos": 999, "detectados": 1, "noDetectados": 0, "positivosFalsos": 10, "negativosSanos": 989,
+                   "positivos": 11, "probabilidad": 9, "sensibilidad": 99 },
+      "fraseCalculo": "De cada 11 positivos, 1 tiene la condición: 9%, no 99%.",
+      "cumplidos": 2,
+      "avisos": [ "Correlación sin temporalidad: no se sabe qué vino primero.", "Con 2 de 5 criterios, trátalo como correlación, no como causa." ],
+      "pendientes": [],
+      "resumen": "Probabilidad real 9%, no 99% · 2 de 5 criterios de Hill."
+    },
+    "nota": "A la tía le llega un resultado de laboratorio y lo cuenta en el grupo de la familia. Es la tarjeta de T18 de la sección 7b; el cálculo paso a paso está en docs/ejemplos/T18.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "Las publicaciones en redes",
+    "versionEsquema": 1,
+    "config": { "criterios": ["fuerza", "consistencia", "temporalidad", "gradiente", "plausibilidad"], "exigirTasaBase": true, "formato": "porcentaje" },
+    "datos": {
+      "afirmacion": "Las semanas que publicamos más en redes vendemos más pan.",
+      "esRiesgo": false,
+      "cumplidos": ["consistencia", "temporalidad", "gradiente"]
+    },
+    "resultado": {
+      "calculo": null,
+      "fraseCalculo": null,
+      "cumplidos": 3,
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "Sin cálculo con tasa base · 3 de 5 criterios de Hill."
+    },
+    "nota": "El encargado de redes de la panadería cree que publicar más hace vender más; solo criterios de Hill, sin cálculo."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Los robos desde que cerró la tienda",
+    "versionEsquema": 1,
+    "config": { "criterios": ["fuerza", "consistencia", "temporalidad", "gradiente", "plausibilidad"], "exigirTasaBase": true, "formato": "frecuencias" },
+    "datos": {
+      "afirmacion": "Los robos subieron 50% desde que cerraron la tienda de la esquina.",
+      "esRiesgo": true,
+      "cumplidos": ["temporalidad"]
+    },
+    "resultado": {
+      "calculo": null,
+      "fraseCalculo": "Falta la tasa base: ¿de cada cuántos pasa? No es lo mismo pasar de 2 a 3 que de 20 a 30.",
+      "cumplidos": 1,
+      "avisos": [ "Con 1 de 5 criterios, trátalo como correlación, no como causa." ],
+      "pendientes": [ "Buscar la tasa base de: Los robos subieron 50% desde que cerraron la tienda de la esquina." ],
+      "resumen": "Falta la tasa base · 1 de 5 criterios de Hill."
+    },
+    "nota": "En la asamblea de la junta; una afirmación de riesgo sin tasa base, con la configuración que la exige."
+  }
+]

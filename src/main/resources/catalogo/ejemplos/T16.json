@@ -1,0 +1,70 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "El arriendo del local",
+    "versionEsquema": 1,
+    "config": { "items": ["interes", "alternativas", "cifras", "esperar", "contraria"], "obligatorios": ["alternativas", "cifras", "contraria"], "bloquearGuardado": true },
+    "datos": {
+      "decision": "Firmar el arriendo del local del centro por tres años.",
+      "interes": "El dueño del local es primo de mi socia.",
+      "alternativas": "Comparamos con un local en la avenida y con no abrir.",
+      "esperar": "Perderíamos la temporada de diciembre."
+    },
+    "resultado": {
+      "estados": ["respondido", "respondido", "falta_obligatorio", "respondido", "falta_obligatorio"],
+      "bloqueo": "Guardado bloqueado: faltan 2 ítems obligatorios.",
+      "firma": "Sin firmar: escribe quién firma y la fecha.",
+      "pendientes": [],
+      "resumen": "3 de 5 ítems respondidos · guardado bloqueado: faltan 2 ítems obligatorios."
+    },
+    "nota": "La dueña de la panadería va a firmar el arriendo del local del centro. Es la tarjeta de T16 de la sección 7b: el guardado queda bloqueado."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El carro usado",
+    "versionEsquema": 1,
+    "config": { "items": ["interes", "alternativas", "cifras", "esperar", "contraria", "reversible"], "obligatorios": ["alternativas", "cifras", "contraria"], "bloquearGuardado": true },
+    "datos": {
+      "decision": "Comprar el carro usado que vimos el sábado.",
+      "interes": "El vendedor es conocido del tío, pero no gana nada si lo compramos.",
+      "alternativas": "Seguir en bus un año más o comprar uno nuevo a crédito.",
+      "cifras": "El precio lo comparamos con la revista de precios de usados.",
+      "esperar": "El carro se vendería, pero hay otros parecidos.",
+      "contraria": "La mamá defendió esperar un año y ahorrar más.",
+      "reversible": "Se puede revender, perdiendo cerca de un 10%.",
+      "firma": "la mamá",
+      "fecha": "2026-10-05"
+    },
+    "resultado": {
+      "estados": ["respondido", "respondido", "respondido", "respondido", "respondido", "respondido"],
+      "bloqueo": null,
+      "firma": "Firmada por la mamá el 2026-10-05.",
+      "pendientes": [],
+      "resumen": "6 de 6 ítems respondidos · firmada por la mamá el 2026-10-05."
+    },
+    "nota": "La familia decide si compra el carro usado; los seis ítems respondidos y la lista firmada."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "La empresa de vigilancia",
+    "versionEsquema": 1,
+    "config": { "items": ["interes", "alternativas", "cifras", "esperar", "contraria"], "obligatorios": ["alternativas"], "bloquearGuardado": false },
+    "datos": {
+      "decision": "Cambiar la empresa de vigilancia del barrio.",
+      "interes": "Nadie de la junta trabaja con ninguna de las empresas.",
+      "alternativas": "Tres cotizaciones y la opción de seguir con la actual.",
+      "cifras": "Los precios salen de las cotizaciones escritas.",
+      "contraria": "El tesorero defendió seguir con la empresa actual.",
+      "firma": "la presidenta de la junta",
+      "fecha": "2026-10-01"
+    },
+    "resultado": {
+      "estados": ["respondido", "respondido", "respondido", "sin_responder", "respondido"],
+      "bloqueo": null,
+      "firma": "Firmada por la presidenta de la junta el 2026-10-01.",
+      "pendientes": [ "Responder antes de decidir: ¿Qué pasaría si esperamos tres meses?" ],
+      "resumen": "4 de 5 ítems respondidos · firmada por la presidenta de la junta el 2026-10-01."
+    },
+    "nota": "La junta de vecinos decide si cambia la empresa de vigilancia; sin bloqueo, el ítem que falta deja un pendiente."
+  }
+]

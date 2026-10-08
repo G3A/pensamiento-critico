@@ -1,0 +1,71 @@
+[
+  {
+    "ambito": "personal",
+    "titulo": "El auto que vimos primero",
+    "versionEsquema": 1,
+    "config": { "sesgos": ["anclaje", "costo_hundido", "confirmacion"], "contexto": "decision", "modo": "lista" },
+    "datos": {
+      "situacion": "Vamos a comprar el auto usado que vimos primero. Ya gastamos dos sábados viéndolo, y frente al primer precio que nos dieron, este nos parece barato.",
+      "senales": []
+    },
+    "resultado": {
+      "sesgos": [
+        { "id": "anclaje", "probable": true, "senal": "Encontré «primer precio» en tu situación." },
+        { "id": "costo_hundido", "probable": true, "senal": "Encontré «Ya gastamos» en tu situación." },
+        { "id": "confirmacion", "probable": false, "senal": "No lo marcaste y el texto no lo muestra." }
+      ],
+      "pendientes": [
+        "Aplicar el antídoto contra anclaje: Pide un segundo precio de referencia antes de comparar.",
+        "Aplicar el antídoto contra costo hundido: Decide como si empezaras hoy: lo gastado no vuelve con ninguna de las dos opciones."
+      ],
+      "resumen": "2 sesgos probables de 3 revisados: anclaje y costo hundido."
+    },
+    "nota": "Una familia está por comprar un auto usado. Es la tarjeta de T14 de la sección 7b."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El anuncio de la harina",
+    "versionEsquema": 1,
+    "config": { "sesgos": ["anclaje", "costo_hundido", "confirmacion", "exceso_confianza", "disponibilidad", "statu_quo", "arrastre", "halo"], "contexto": "lectura", "modo": "quiz" },
+    "datos": {
+      "situacion": "Todo el mundo en el gremio ya usa esa harina, y como es tan conocida la marca, pensamos pedirla.",
+      "senales": ["disponibilidad"]
+    },
+    "resultado": {
+      "sesgos": [
+        { "id": "disponibilidad", "probable": true, "senal": "Respondiste que sí: ¿Te guías por un caso que recuerdas fácil y no por cuántas veces pasa?" },
+        { "id": "arrastre", "probable": true, "senal": "Encontré «Todo el mundo» en tu situación." },
+        { "id": "halo", "probable": true, "senal": "Encontré «como es tan» en tu situación." },
+        { "id": "confirmacion", "probable": false, "senal": "No lo marcaste y el texto no lo muestra." },
+        { "id": "exceso_confianza", "probable": false, "senal": "No lo marcaste y el texto no lo muestra." }
+      ],
+      "pendientes": [
+        "Aplicar el antídoto contra disponibilidad: Busca la tasa base con T18 · Correlación, causalidad y tasas base: ¿de cada cuántos casos pasa?",
+        "Aplicar el antídoto contra efecto de arrastre: Pregunta qué razones tiene cada uno, no cuántos son.",
+        "Aplicar el antídoto contra efecto halo: Evalúa cada aspecto por separado, con su propia evidencia."
+      ],
+      "resumen": "3 sesgos probables de 5 revisados: disponibilidad, efecto de arrastre y efecto halo."
+    },
+    "nota": "La dueña de la panadería lee un anuncio y lo resume; la semana pasada vio a otra panadería quejarse de su harina."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "La empresa de vigilancia",
+    "versionEsquema": 1,
+    "config": { "sesgos": ["confirmacion", "exceso_confianza", "statu_quo"], "contexto": "decision", "modo": "lista" },
+    "datos": {
+      "situacion": "La junta va a decidir si cambia la empresa de vigilancia. Revisamos tres cotizaciones y pedimos referencias a otros barrios.",
+      "senales": []
+    },
+    "resultado": {
+      "sesgos": [
+        { "id": "confirmacion", "probable": false, "senal": "No lo marcaste y el texto no lo muestra." },
+        { "id": "exceso_confianza", "probable": false, "senal": "No lo marcaste y el texto no lo muestra." },
+        { "id": "statu_quo", "probable": false, "senal": "No lo marcaste y el texto no lo muestra." }
+      ],
+      "pendientes": [],
+      "resumen": "Ningún sesgo con señal de 3 revisados."
+    },
+    "nota": "La junta de vecinos decide si cambia la empresa de vigilancia; ninguna señal, sin decir que no hay sesgos."
+  }
+]

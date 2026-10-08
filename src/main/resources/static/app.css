@@ -344,3 +344,38 @@ pre.argdown { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--
 .taller-guardado:empty { display: none; }
 .taller-guardado { margin-top: var(--espacio); }
 .taller-todavia-no { margin-top: calc(var(--espacio) * 1.5); }
+
+/* Hito 3: el modelo local (propuestas, espera con SSE) y los patrones V04, V08, V10 y V13a. */
+.pedir-modelo { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .75rem 0; }
+.campo-propuestas .propuestas { list-style: none; padding: 0; margin: .5rem 0; display: grid; gap: .5rem; }
+.propuesta { border: 1px dashed var(--borde); border-radius: var(--radio); padding: .5rem .75rem; background: var(--superficie); }
+.propuesta-adoptada { border-style: solid; border-color: var(--ok); }
+.propuesta .valor-propuesto { margin: .25rem 0; }
+.zona-espera:empty { display: none; }
+.espera { border: 1px solid var(--borde); border-radius: var(--radio); padding: .75rem; margin: .75rem 0; background: var(--acento-fondo); }
+.espera .indicador { display: inline-block; width: .8rem; height: .8rem; border-radius: 50%; border: 2px solid var(--acento);
+  border-right-color: transparent; animation: girar 1s linear infinite; vertical-align: middle; }
+@keyframes girar { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .espera .indicador { animation: none; } }
+.espera .provisional { font-style: italic; color: var(--texto-suave); min-height: 1.5rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.aviso-ia { margin: .5rem 0; }
+.dos-columnas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--espacio); }
+@media (max-width: 600px) { .dos-columnas { grid-template-columns: minmax(0, 1fr); } }
+.columna { border: 1px solid var(--borde); border-radius: var(--radio); padding: .5rem .75rem; background: var(--superficie); }
+.columna h4 { margin: .25rem 0 .5rem; }
+.items-columna, .items-veredicto, .lista-priorizada, .acciones-sugeridas, .preguntas-abiertas { padding-left: 1.25rem; }
+.items-columna li, .items-veredicto li, .lista-priorizada li { margin-bottom: .5rem; overflow-wrap: anywhere; }
+.estado-resultado { margin: .75rem 0; }
+.estado-resultado .motivo { display: block; margin-top: .25rem; }
+.barra-puntaje { display: grid; gap: .25rem; margin: .5rem 0; }
+.barra-puntaje meter { width: 100%; max-width: 24rem; }
+.propuestas-resultado ul { padding-left: 1.25rem; }
+.aviso-lista { margin: .5rem 0; }
+.grafico-frecuencias { margin: .75rem 0; }
+.grafico-frecuencias svg { width: 100%; max-width: 32rem; height: auto; }
+.grafico-frecuencias .etiqueta-barra, .grafico-frecuencias .valor-barra { fill: var(--texto); font-size: 12px; }
+.grafico-frecuencias .barra-verdaderos { fill: var(--ok); }
+.grafico-frecuencias .barra-falsos { fill: var(--aviso); }
+.tabla-frecuencias { border-collapse: collapse; margin: .5rem 0; }
+.tabla-frecuencias th, .tabla-frecuencias td { border: 1px solid var(--borde); padding: .25rem .5rem; text-align: left; }
+.tabla-frecuencias td { text-align: right; }

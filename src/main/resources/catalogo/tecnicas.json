@@ -68,7 +68,31 @@
     "usalaCuando": "Quieres defender una idea con una estructura simple: qué afirmas, qué evidencia tienes y por qué esa evidencia sostiene la afirmación, con un contraargumento y tu réplica.",
     "definicion": "Procedimiento que arma un argumento en tres piezas (afirmación, evidencia, razonamiento) y lo extiende con contraargumento y réplica; devuelve un puntaje de completitud.",
     "tipo": "procedimiento", "operacion": "analizar", "objeto": "argumento", "modalidad": "formulario", "patron": "V10",
-    "origen": "McNeill y Krajcik 2008", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "McNeill y Krajcik 2008", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "contraargumento": true, "palabrasMinimasEvidencia": 8, "obligatorias": ["afirmacion", "evidencia"] },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "contraargumento", "tipo": "booleano", "etiqueta": "Con contraargumento y réplica" },
+        { "nombre": "palabrasMinimasEvidencia", "tipo": "entero", "etiqueta": "Mínimo de palabras de la evidencia", "obligatorio": true, "minimo": 1, "maximo": 50,
+          "ayuda": "Una evidencia más corta queda señalada como corta y no cuenta como completa." },
+        { "nombre": "obligatorias", "tipo": "conjunto", "etiqueta": "Piezas obligatorias para evaluar",
+          "opciones": [
+            { "valor": "afirmacion", "etiqueta": "Afirmación" }, { "valor": "evidencia", "etiqueta": "Evidencia" }, { "valor": "razonamiento", "etiqueta": "Razonamiento" },
+            { "valor": "contraargumento", "etiqueta": "Contraargumento" }, { "valor": "replica", "etiqueta": "Réplica" }
+          ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "afirmacion", "tipo": "texto", "etiqueta": "Afirmación", "largoMaximo": 300, "ayuda": "Lo que afirmas." },
+        { "nombre": "evidencia", "tipo": "texto", "etiqueta": "Evidencia", "largoMaximo": 600, "ayuda": "Un dato, un hecho observado o una fuente." },
+        { "nombre": "razonamiento", "tipo": "texto", "etiqueta": "Razonamiento", "largoMaximo": 600, "ayuda": "Por qué esa evidencia sostiene la afirmación." },
+        { "nombre": "contraargumento", "tipo": "texto", "etiqueta": "Contraargumento", "largoMaximo": 300, "visibleSi": "contraargumento",
+          "ayuda": "Lo que diría alguien que no está de acuerdo." },
+        { "nombre": "replica", "tipo": "texto", "etiqueta": "Réplica", "largoMaximo": 600, "visibleSi": "contraargumento",
+          "ayuda": "Lo que le respondes a ese contraargumento." }
+      ]
+    }
   },
   {
     "id": "T04", "familia": "F1", "nombre": "Elementos y estándares de Paul-Elder", "nombreLlano": "Las ocho piezas de un razonamiento",
@@ -82,7 +106,30 @@
     "usalaCuando": "Alguien te da razones y una conclusión y quieres separar dos preguntas: si la conclusión se seguiría de las premisas y si las premisas son verdad.",
     "definicion": "Criterio que etiqueta un argumento como deductivo o inductivo, juzga si su forma es válida o fuerte y si sus premisas están establecidas (solidez).",
     "tipo": "criterio", "operacion": "evaluar", "objeto": "argumento", "modalidad": "lista", "patron": "V10",
-    "origen": "Lógica clásica; Copi 1953", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Lógica clásica; Copi 1953", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "tipoEsperado": "detectar", "umbralSolidez": 0 },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "tipoEsperado", "tipo": "enumeracion", "etiqueta": "Tipo de argumento", "obligatorio": true,
+          "opciones": [ { "valor": "detectar", "etiqueta": "Detectar por sus palabras" }, { "valor": "deductivo", "etiqueta": "Deductivo" }, { "valor": "inductivo", "etiqueta": "Inductivo" } ] },
+        { "nombre": "umbralSolidez", "tipo": "entero", "etiqueta": "Premisas sin establecer que toleras en un argumento inductivo", "obligatorio": true, "minimo": 0, "maximo": 3,
+          "ayuda": "En un argumento deductivo no se tolera ninguna." }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "premisas", "tipo": "filas", "etiqueta": "Premisas", "prefijo": "P", "elemento": "premisa", "minimo": 1, "maximo": 4,
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Premisa", "obligatorio": true, "largoMaximo": 300 },
+            { "nombre": "estado", "tipo": "enumeracion", "etiqueta": "¿Está establecida?", "obligatorio": true,
+              "opciones": [ { "valor": "establecida", "etiqueta": "Establecida: la verifiqué" }, { "valor": "sin_establecer", "etiqueta": "Sin establecer" } ] }
+          ] },
+        { "nombre": "conclusion", "tipo": "texto", "etiqueta": "Conclusión", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "seguimiento", "tipo": "enumeracion", "etiqueta": "Si las premisas fueran ciertas, ¿la conclusión se seguiría?", "obligatorio": true,
+          "opciones": [ { "valor": "se_sigue", "etiqueta": "Se sigue (o sería muy probable)" }, { "valor": "no_se_sigue", "etiqueta": "No se sigue (o sería poco probable)" },
+                        { "valor": "no_lo_se", "etiqueta": "No lo sé todavía" } ] }
+      ]
+    }
   },
   {
     "id": "T06", "familia": "F1", "nombre": "Reconstrucción de premisas ocultas", "nombreLlano": "Encontrar lo que se da por sentado",
@@ -197,7 +244,47 @@
     "usalaCuando": "Vas a decidir o acabas de leer algo y quieres revisar si el anclaje, el costo hundido, la confirmación o el exceso de confianza están empujando tu juicio.",
     "definicion": "Criterio que recorre un catálogo de sesgos y señala, con la señal detectada, cuáles son probables en una decisión o lectura, más el antídoto sugerido.",
     "tipo": "criterio", "operacion": "evaluar", "objeto": "uno_mismo", "modalidad": "lista", "patron": "V13a",
-    "origen": "Tversky y Kahneman 1974", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Tversky y Kahneman 1974", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "sesgos": ["anclaje", "costo_hundido", "confirmacion", "exceso_confianza", "disponibilidad", "statu_quo", "arrastre", "halo"], "contexto": "decision", "modo": "quiz" },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "sesgos", "tipo": "conjunto", "etiqueta": "Sesgos activos",
+          "opciones": [
+            { "valor": "anclaje", "etiqueta": "Anclaje" }, { "valor": "costo_hundido", "etiqueta": "Costo hundido" }, { "valor": "confirmacion", "etiqueta": "Confirmación" },
+            { "valor": "exceso_confianza", "etiqueta": "Exceso de confianza" }, { "valor": "disponibilidad", "etiqueta": "Disponibilidad" },
+            { "valor": "statu_quo", "etiqueta": "Statu quo" }, { "valor": "arrastre", "etiqueta": "Efecto de arrastre" }, { "valor": "halo", "etiqueta": "Efecto halo" }
+          ] },
+        { "nombre": "contexto", "tipo": "enumeracion", "etiqueta": "Contexto", "obligatorio": true,
+          "ayuda": "Al leer algo no aplican los sesgos de decidir (anclaje, costo hundido, statu quo).",
+          "opciones": [ { "valor": "decision", "etiqueta": "Voy a decidir algo" }, { "valor": "lectura", "etiqueta": "Acabo de leer algo" } ] },
+        { "nombre": "modo", "tipo": "enumeracion", "etiqueta": "Modo", "obligatorio": true,
+          "opciones": [ { "valor": "quiz", "etiqueta": "Quiz: una pregunta por sesgo" }, { "valor": "lista", "etiqueta": "Lista: el nombre de cada sesgo" } ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "situacion", "tipo": "texto", "etiqueta": "Tu decisión o lo que leíste, en tus palabras", "obligatorio": true, "largoMaximo": 1200,
+          "ayuda": "Escríbelo como se lo contarías a alguien: las palabras que uses son las que se revisan." },
+        { "nombre": "senales", "tipo": "conjunto", "etiqueta": "Marca a qué respondes que sí", "opcionesSegun": "modo",
+          "opcionesPor": {
+            "quiz": [
+              { "valor": "anclaje", "etiqueta": "¿Comparas todo contra el primer precio o la primera cifra que viste?" },
+              { "valor": "costo_hundido", "etiqueta": "¿Sigues porque ya invertiste tiempo o dinero que no vas a recuperar?" },
+              { "valor": "confirmacion", "etiqueta": "¿Buscaste solo lo que apoya lo que ya pensabas?" },
+              { "valor": "exceso_confianza", "etiqueta": "¿Estás seguro sin tener cómo comprobarlo?" },
+              { "valor": "disponibilidad", "etiqueta": "¿Te guías por un caso que recuerdas fácil y no por cuántas veces pasa?" },
+              { "valor": "statu_quo", "etiqueta": "¿Prefieres dejar todo igual solo porque así ha sido?" },
+              { "valor": "arrastre", "etiqueta": "¿Lo haces porque muchos lo están haciendo?" },
+              { "valor": "halo", "etiqueta": "¿Una cualidad que te gusta tapa las demás?" }
+            ],
+            "lista": [
+              { "valor": "anclaje", "etiqueta": "Anclaje" }, { "valor": "costo_hundido", "etiqueta": "Costo hundido" }, { "valor": "confirmacion", "etiqueta": "Confirmación" },
+              { "valor": "exceso_confianza", "etiqueta": "Exceso de confianza" }, { "valor": "disponibilidad", "etiqueta": "Disponibilidad" },
+              { "valor": "statu_quo", "etiqueta": "Statu quo" }, { "valor": "arrastre", "etiqueta": "Efecto de arrastre" }, { "valor": "halo", "etiqueta": "Efecto halo" }
+            ]
+          } }
+      ]
+    }
   },
   {
     "id": "T15", "familia": "F3", "nombre": "Considera lo opuesto", "nombreLlano": "¿Y si fuera al revés?",
@@ -211,7 +298,39 @@
     "usalaCuando": "Vas a tomar una decisión con dinero o personas de por medio y quieres pasar una lista corta de preguntas antes de cerrarla.",
     "definicion": "Práctica que recorre una lista de ítems (interés personal, alternativas, fuentes independientes, qué pasa si esperamos, quién defendió lo contrario) y bloquea el guardado si falta alguno obligatorio.",
     "tipo": "practica", "operacion": "evaluar", "objeto": "decision", "modalidad": "lista", "patron": "V02",
-    "origen": "Kahneman, Lovallo y Sibony 2011", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Kahneman, Lovallo y Sibony 2011", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "items": ["interes", "alternativas", "cifras", "esperar", "contraria"], "obligatorios": ["alternativas", "cifras", "contraria"], "bloquearGuardado": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "items", "tipo": "conjunto", "etiqueta": "Ítems activos",
+          "opciones": [
+            { "valor": "interes", "etiqueta": "Interés personal de quien propone" }, { "valor": "alternativas", "etiqueta": "Al menos dos alternativas" },
+            { "valor": "cifras", "etiqueta": "Cifras de una fuente independiente" }, { "valor": "esperar", "etiqueta": "Qué pasa si esperamos" },
+            { "valor": "contraria", "etiqueta": "Alguien defendió lo contrario" }, { "valor": "reversible", "etiqueta": "Se puede deshacer" }
+          ] },
+        { "nombre": "obligatorios", "tipo": "conjunto", "etiqueta": "Ítems obligatorios",
+          "opciones": [
+            { "valor": "interes", "etiqueta": "Interés personal de quien propone" }, { "valor": "alternativas", "etiqueta": "Al menos dos alternativas" },
+            { "valor": "cifras", "etiqueta": "Cifras de una fuente independiente" }, { "valor": "esperar", "etiqueta": "Qué pasa si esperamos" },
+            { "valor": "contraria", "etiqueta": "Alguien defendió lo contrario" }, { "valor": "reversible", "etiqueta": "Se puede deshacer" }
+          ] },
+        { "nombre": "bloquearGuardado", "tipo": "booleano", "etiqueta": "Bloquear el guardado si falta un obligatorio",
+          "ayuda": "Puedes evaluar igual para ver qué falta." }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "decision", "tipo": "texto", "etiqueta": "La decisión", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "interes", "tipo": "texto", "etiqueta": "¿Hay interés personal de quien propone?", "largoMaximo": 400 },
+        { "nombre": "alternativas", "tipo": "texto", "etiqueta": "¿Consideramos al menos dos alternativas?", "largoMaximo": 400 },
+        { "nombre": "cifras", "tipo": "texto", "etiqueta": "¿Las cifras vienen de una fuente independiente?", "largoMaximo": 400 },
+        { "nombre": "esperar", "tipo": "texto", "etiqueta": "¿Qué pasaría si esperamos tres meses?", "largoMaximo": 400 },
+        { "nombre": "contraria", "tipo": "texto", "etiqueta": "¿Alguien defendió la postura contraria?", "largoMaximo": 400 },
+        { "nombre": "reversible", "tipo": "texto", "etiqueta": "¿Se puede deshacer la decisión si sale mal?", "largoMaximo": 400 },
+        { "nombre": "firma", "tipo": "texto", "etiqueta": "Quién firma la lista", "largoMaximo": 120 },
+        { "nombre": "fecha", "tipo": "fecha", "etiqueta": "Fecha de la firma" }
+      ]
+    }
   },
   {
     "id": "T17", "familia": "F3", "nombre": "Hecho, inferencia, juicio", "nombreLlano": "Separar lo que pasó de lo que pienso",
@@ -225,7 +344,46 @@
     "usalaCuando": "Te dicen que algo causa otra cosa, o te dan un porcentaje alarmante, y quieres revisar la tasa base y los criterios de causalidad antes de creerlo.",
     "definicion": "Criterio que aplica los criterios de causalidad de Hill, exige tasa base para afirmaciones de riesgo y calcula la probabilidad real con frecuencias naturales.",
     "tipo": "criterio", "operacion": "evaluar", "objeto": "afirmacion", "modalidad": "calculo", "patron": "V08",
-    "origen": "Hill 1965; Kahneman y Tversky 1973", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Hill 1965; Kahneman y Tversky 1973", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "criterios": ["fuerza", "consistencia", "temporalidad", "gradiente", "plausibilidad"], "exigirTasaBase": true, "formato": "frecuencias" },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "criterios", "tipo": "conjunto", "etiqueta": "Criterios de Hill activos",
+          "opciones": [
+            { "valor": "fuerza", "etiqueta": "Fuerza" }, { "valor": "consistencia", "etiqueta": "Consistencia" }, { "valor": "especificidad", "etiqueta": "Especificidad" },
+            { "valor": "temporalidad", "etiqueta": "Temporalidad" }, { "valor": "gradiente", "etiqueta": "Gradiente" }, { "valor": "plausibilidad", "etiqueta": "Plausibilidad" },
+            { "valor": "coherencia", "etiqueta": "Coherencia" }, { "valor": "experimento", "etiqueta": "Experimento" }, { "valor": "analogia", "etiqueta": "Analogía" }
+          ] },
+        { "nombre": "exigirTasaBase", "tipo": "booleano", "etiqueta": "Exigir tasa base para afirmaciones de riesgo" },
+        { "nombre": "formato", "tipo": "enumeracion", "etiqueta": "Formato de la probabilidad", "obligatorio": true,
+          "opciones": [ { "valor": "frecuencias", "etiqueta": "Frecuencias: de cada N positivos, cuántos" }, { "valor": "porcentaje", "etiqueta": "Porcentaje" } ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "afirmacion", "tipo": "texto", "etiqueta": "La afirmación", "obligatorio": true, "largoMaximo": 400 },
+        { "nombre": "esRiesgo", "tipo": "booleano", "etiqueta": "Es una afirmación de riesgo o el resultado de un examen" },
+        { "nombre": "casos", "tipo": "entero", "etiqueta": "Tasa base: casos", "minimo": 0, "maximo": 1000000,
+          "ayuda": "Cuántos tienen la condición de cada tantas personas: 1 de cada 1000." },
+        { "nombre": "deCada", "tipo": "entero", "etiqueta": "Tasa base: de cada", "minimo": 1, "maximo": 1000000 },
+        { "nombre": "sensibilidad", "tipo": "entero", "etiqueta": "Sensibilidad del examen (%)", "minimo": 0, "maximo": 100,
+          "ayuda": "De los que tienen la condición, qué porcentaje da positivo." },
+        { "nombre": "especificidad", "tipo": "entero", "etiqueta": "Especificidad del examen (%)", "minimo": 0, "maximo": 100,
+          "ayuda": "De los que no la tienen, qué porcentaje da negativo." },
+        { "nombre": "cumplidos", "tipo": "conjunto", "etiqueta": "Criterios de Hill que se cumplen",
+          "opciones": [
+            { "valor": "fuerza", "etiqueta": "Fuerza: la relación es grande, no una diferencia mínima" },
+            { "valor": "consistencia", "etiqueta": "Consistencia: se repite en otros lugares o momentos" },
+            { "valor": "especificidad", "etiqueta": "Especificidad: la causa produce este efecto y no muchos otros" },
+            { "valor": "temporalidad", "etiqueta": "Temporalidad: la causa vino antes que el efecto" },
+            { "valor": "gradiente", "etiqueta": "Gradiente: más causa, más efecto" },
+            { "valor": "plausibilidad", "etiqueta": "Plausibilidad: hay un mecanismo que lo explique" },
+            { "valor": "coherencia", "etiqueta": "Coherencia: no contradice lo que ya se sabe" },
+            { "valor": "experimento", "etiqueta": "Experimento: al quitar la causa, baja el efecto" },
+            { "valor": "analogia", "etiqueta": "Analogía: pasa algo parecido en casos parecidos" }
+          ] }
+      ]
+    }
   },
   {
     "id": "T19", "familia": "F4", "nombre": "SIFT", "nombreLlano": "Cuatro movimientos antes de compartir",

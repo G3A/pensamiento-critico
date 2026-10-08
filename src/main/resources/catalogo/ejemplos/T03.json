@@ -1,0 +1,71 @@
+[
+  {
+    "ambito": "personal",
+    "titulo": "La maestría afuera",
+    "versionEsquema": 1,
+    "config": { "contraargumento": true, "palabrasMinimasEvidencia": 8, "obligatorias": ["afirmacion", "evidencia"] },
+    "datos": {
+      "afirmacion": "Mi hija debe estudiar la maestría afuera.",
+      "evidencia": "Tiene dos becas vigentes para estudiar afuera y el programa no existe en el país.",
+      "razonamiento": "Si el programa no existe aquí, estudiar afuera es la única vía para hacerlo.",
+      "contraargumento": "El costo de vida es alto y estaría lejos de la familia."
+    },
+    "resultado": {
+      "piezas": [
+        { "pieza": "afirmacion", "estado": "completa" }, { "pieza": "evidencia", "estado": "completa" },
+        { "pieza": "razonamiento", "estado": "completa" }, { "pieza": "contraargumento", "estado": "completa" },
+        { "pieza": "replica", "estado": "falta", "falta": "¿Qué le respondes a ese contraargumento?" }
+      ],
+      "completas": 4, "total": 5,
+      "pendientes": [ "Responder el contraargumento: El costo de vida es alto y estaría lejos de la familia." ],
+      "resumen": "Completitud 4 de 5: falta réplica."
+    },
+    "nota": "Una familia conversa sobre si la hija mayor debe irse a estudiar. Es la tarjeta de T03 de la sección 7b: la réplica quedó vacía."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El horno nuevo",
+    "versionEsquema": 1,
+    "config": { "contraargumento": false, "palabrasMinimasEvidencia": 8, "obligatorias": ["afirmacion", "evidencia"] },
+    "datos": {
+      "afirmacion": "Conviene cambiar el horno de la panadería este año.",
+      "evidencia": "Lo dijo el técnico.",
+      "razonamiento": "Un horno que falla seguido nos hace perder tandas de pan."
+    },
+    "resultado": {
+      "piezas": [
+        { "pieza": "afirmacion", "estado": "completa" },
+        { "pieza": "evidencia", "estado": "corta", "falta": "La evidencia tiene 4 palabras y pides al menos 8: ¿qué dato concreto la sostiene?" },
+        { "pieza": "razonamiento", "estado": "completa" }
+      ],
+      "completas": 2, "total": 3,
+      "pendientes": [ "Buscar más evidencia para: Conviene cambiar el horno de la panadería este año." ],
+      "resumen": "Completitud 2 de 3: evidencia corta."
+    },
+    "nota": "El encargado de producción de la panadería quiere convencer a la dueña; sin contraargumento y con una evidencia de cuatro palabras."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "El reductor frente al parque",
+    "versionEsquema": 1,
+    "config": { "contraargumento": true, "palabrasMinimasEvidencia": 8, "obligatorias": ["afirmacion", "evidencia"] },
+    "datos": {
+      "afirmacion": "La junta debe pedir un reductor de velocidad frente al parque.",
+      "evidencia": "En el último mes contamos 40 carros que pasaron a más de 50 km/h frente al parque.",
+      "razonamiento": "Con niños cruzando, esa velocidad hace probable un atropello.",
+      "contraargumento": "Un reductor molesta a los vecinos que salen en carro.",
+      "replica": "La molestia es menor que el riesgo de un atropello frente al parque."
+    },
+    "resultado": {
+      "piezas": [
+        { "pieza": "afirmacion", "estado": "completa" }, { "pieza": "evidencia", "estado": "completa" },
+        { "pieza": "razonamiento", "estado": "completa" }, { "pieza": "contraargumento", "estado": "completa" },
+        { "pieza": "replica", "estado": "completa" }
+      ],
+      "completas": 5, "total": 5,
+      "pendientes": [],
+      "resumen": "Completitud 5 de 5: están las cinco piezas."
+    },
+    "nota": "La junta de vecinos prepara la carta a la alcaldía; las cinco piezas están completas."
+  }
+]

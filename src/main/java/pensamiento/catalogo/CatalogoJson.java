@@ -80,6 +80,18 @@ public final class CatalogoJson {
         return leer("esquemas.json", new TypeReference<List<Esquema>>() { });
     }
 
+    /**
+     * Un sesgo del catálogo de T14 · Sesgos cognitivos (contenido): su pregunta, su antídoto y si aplica cuando el
+     * contexto es leer algo. Las señales en el texto son reglas léxicas en código.
+     */
+    public record Sesgo(String id, String nombre, String pregunta, String antidoto, boolean lectura) {
+    }
+
+    /** El catálogo de sesgos, en el orden del archivo. */
+    public List<Sesgo> sesgos() {
+        return leer("sesgos.json", new TypeReference<List<Sesgo>>() { });
+    }
+
     /** Los ejemplos de todas las técnicas que tienen archivo en catalogo/ejemplos/, por técnica y orden. */
     public List<EjemploJson> ejemplos() {
         List<EjemploJson> todos = new ArrayList<>();

@@ -1,0 +1,74 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "El local del centro",
+    "versionEsquema": 1,
+    "config": { "tipoEsperado": "detectar", "umbralSolidez": 0 },
+    "datos": {
+      "premisas": [
+        { "texto": "Todo local con más tráfico vende más.", "estado": "sin_establecer" },
+        { "texto": "El centro tiene más tráfico que el barrio.", "estado": "establecida" }
+      ],
+      "conclusion": "El local del centro venderá más.",
+      "seguimiento": "se_sigue"
+    },
+    "resultado": {
+      "tipo": "deductivo",
+      "estadoForma": "se sigue",
+      "fraseForma": "Si las premisas fueran ciertas, la conclusión se seguiría.",
+      "estadoSolidez": "sin establecer",
+      "preguntas": [ "Falta responder: ¿Es cierto que todo local con más tráfico vende más?" ],
+      "pendientes": [ "Verificar la premisa: Todo local con más tráfico vende más." ],
+      "resumen": "Deductivo · se sigue · 1 premisa sin establecer."
+    },
+    "nota": "La dueña de la panadería escribe su razonamiento para la socia. Es la tarjeta de T05 de la sección 7b."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "La gripa del invierno",
+    "versionEsquema": 1,
+    "config": { "tipoEsperado": "detectar", "umbralSolidez": 0 },
+    "datos": {
+      "premisas": [
+        { "texto": "En los últimos cinco inviernos el niño se enfermó de gripa.", "estado": "establecida" },
+        { "texto": "Este invierno ya empezó con lluvias.", "estado": "establecida" }
+      ],
+      "conclusion": "Probablemente se enferme de gripa este invierno.",
+      "seguimiento": "se_sigue"
+    },
+    "resultado": {
+      "tipo": "inductivo",
+      "estadoForma": "fuerte",
+      "fraseForma": "Si las premisas fueran ciertas, la conclusión sería probable.",
+      "estadoSolidez": "establecida por ti",
+      "preguntas": [],
+      "pendientes": [],
+      "resumen": "Inductivo · fuerte · premisas establecidas."
+    },
+    "nota": "La mamá decide si adelanta la vacuna del niño; «probablemente» hace inductivo el argumento."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras funcionan",
+    "versionEsquema": 1,
+    "config": { "tipoEsperado": "detectar", "umbralSolidez": 0 },
+    "datos": {
+      "premisas": [
+        { "texto": "Si las cámaras funcionan, los robos bajan.", "estado": "establecida" },
+        { "texto": "Este año los robos bajaron.", "estado": "sin_establecer" }
+      ],
+      "conclusion": "Las cámaras funcionan.",
+      "seguimiento": "no_se_sigue"
+    },
+    "resultado": {
+      "tipo": "deductivo",
+      "estadoForma": "no se sigue",
+      "fraseForma": "Aunque las premisas fueran ciertas, la conclusión podría ser falsa: hay un salto en la forma.",
+      "estadoSolidez": "no se evalúa",
+      "preguntas": [],
+      "pendientes": [],
+      "resumen": "Deductivo · no se sigue · solidez no se evalúa."
+    },
+    "nota": "En la asamblea de la junta, un vecino defiende las cámaras instaladas en enero; al escribirlo nota que los robos pudieron bajar por otra razón."
+  }
+]

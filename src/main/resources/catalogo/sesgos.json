@@ -1,0 +1,18 @@
+[
+  { "id": "anclaje", "nombre": "Anclaje", "pregunta": "¿Comparas todo contra el primer precio o la primera cifra que viste?",
+    "antidoto": "Pide un segundo precio de referencia antes de comparar.", "lectura": false },
+  { "id": "costo_hundido", "nombre": "Costo hundido", "pregunta": "¿Sigues porque ya invertiste tiempo o dinero que no vas a recuperar?",
+    "antidoto": "Decide como si empezaras hoy: lo gastado no vuelve con ninguna de las dos opciones.", "lectura": false },
+  { "id": "confirmacion", "nombre": "Confirmación", "pregunta": "¿Buscaste solo lo que apoya lo que ya pensabas?",
+    "antidoto": "Busca a propósito la mejor razón en contra con T15 · Considera lo opuesto.", "lectura": true },
+  { "id": "exceso_confianza", "nombre": "Exceso de confianza", "pregunta": "¿Estás seguro sin tener cómo comprobarlo?",
+    "antidoto": "Escribe qué tendría que pasar para que te equivoques.", "lectura": true },
+  { "id": "disponibilidad", "nombre": "Disponibilidad", "pregunta": "¿Te guías por un caso que recuerdas fácil y no por cuántas veces pasa?",
+    "antidoto": "Busca la tasa base con T18 · Correlación, causalidad y tasas base: ¿de cada cuántos casos pasa?", "lectura": true },
+  { "id": "statu_quo", "nombre": "Statu quo", "pregunta": "¿Prefieres dejar todo igual solo porque así ha sido?",
+    "antidoto": "Compara quedarte igual como si fuera una opción nueva, con sus costos.", "lectura": false },
+  { "id": "arrastre", "nombre": "Efecto de arrastre", "pregunta": "¿Lo haces porque muchos lo están haciendo?",
+    "antidoto": "Pregunta qué razones tiene cada uno, no cuántos son.", "lectura": true },
+  { "id": "halo", "nombre": "Efecto halo", "pregunta": "¿Una cualidad que te gusta tapa las demás?",
+    "antidoto": "Evalúa cada aspecto por separado, con su propia evidencia.", "lectura": true }
+]
