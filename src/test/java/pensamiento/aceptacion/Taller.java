@@ -105,6 +105,85 @@ public final class Taller {
         return persona.postArchivo("/mis-datos/importar", "archivo", "mis-datos.json", json.getBytes(StandardCharsets.UTF_8));
     }
 
+    // -------------------------------------------------------------------------------------------
+    // Taller de argumentos (P14, hito 2)
+    // -------------------------------------------------------------------------------------------
+
+    private static final Pattern EJECUCION_DEL_TALLER = Pattern.compile("data-ejecucion=\"([0-9a-f-]{36})\"");
+
+    /** Abre el Taller de argumentos y devuelve su formulario vacío. */
+    public FormularioTaller tallerDeArgumentos() {
+        return new FormularioTaller((FormElement) abrir("/taller").getElementById("form-taller"));
+    }
+
+    /** Evalúa sin guardar: el formulario vuelve con el mapa, el panel Toulmin y el panel de falacias. */
+    public FormularioTaller evaluarEnElTaller(FormularioTaller f) {
+        ClienteApp.Respuesta r = persona.postPares("/taller/evaluar", f.pares(), true);
+        assertThat(r.estado()).as("evaluar en el Taller").isEqualTo(200);
+        Document d = Jsoup.parseBodyFragment(r.cuerpo());
+        return new FormularioTaller((FormElement) d.getElementById("form-taller"));
+    }
+
+    /** Guarda: una ejecución por técnica usada. Devuelve sus identificadores en orden (T01, T02, T13). */
+    public List<UUID> guardarEnElTaller(FormularioTaller f) {
+        ClienteApp.Respuesta r = persona.postPares("/taller/guardar", f.pares(), true);
+        assertThat(r.estado()).as("guardar en el Taller").isEqualTo(200);
+        assertThat(r.cabecera("HX-Trigger")).contains("ejecucion-guardada");
+        Matcher m = EJECUCION_DEL_TALLER.matcher(r.cuerpo());
+        List<UUID> ids = new java.util.ArrayList<>();
+        while (m.find()) {
+            ids.add(UUID.fromString(m.group(1)));
+        }
+        return ids;
+    }
+
+    /** Asocia todo lo guardado en el Taller a un expediente nuevo y devuelve su identificador. */
+    public UUID asociarLoDelTallerAUnExpedienteNuevo(List<UUID> ejecuciones, String nombre) {
+        List<Map.Entry<String, String>> pares = new java.util.ArrayList<>();
+        ejecuciones.forEach(e -> pares.add(new AbstractMap.SimpleEntry<>("ejecucion", e.toString())));
+        pares.add(new AbstractMap.SimpleEntry<>("nuevo", nombre));
+        ClienteApp.Respuesta r = persona.postPares("/taller/expediente", pares, true);
+        assertThat(r.estado()).as("asociar lo del Taller").isEqualTo(200);
+        assertThat(r.cuerpo()).contains("Asociadas al expediente");
+        Element enlace = abrir("/expedientes").select(".lista-expedientes a").stream().filter(a -> a.text().equals(nombre)).findFirst()
+                .orElseThrow(() -> new AssertionError("El expediente " + nombre + " no aparece en la lista"));
+        return UUID.fromString(enlace.attr("href").substring("/expedientes/".length()));
+    }
+
+    /** El formulario #form-taller tal como lo enviaría el navegador. */
+    public record FormularioTaller(FormElement form) {
+
+        public FormularioTaller {
+            assertThat(form).as("el formulario #form-taller").isNotNull();
+        }
+
+        public List<Map.Entry<String, String>> pares() {
+            return form.formData().stream().map(kv -> (Map.Entry<String, String>) new AbstractMap.SimpleEntry<>(kv.key(), kv.value())).toList();
+        }
+
+        public FormularioTaller escribirArgumento(String argdown) {
+            form.selectFirst("textarea[name=argdown]").text(argdown);
+            return this;
+        }
+
+        public FormularioTaller elegirEstandar(String estandar) {
+            form.select("select[name=estandar] option").forEach(o -> o.attr("selected", o.val().equals(estandar)));
+            return this;
+        }
+
+        /** Marca la casilla de confirmación de una marca de falacia (R06). */
+        public FormularioTaller confirmar(String codigo) {
+            Element casilla = form.getElementById("confirmar-" + codigo);
+            assertThat(casilla).as("casilla para confirmar " + codigo).isNotNull();
+            casilla.attr("checked", true);
+            return this;
+        }
+
+        public Element panel(String id) {
+            return form.getElementById(id).parent();
+        }
+    }
+
     /** El formulario #form-{tecnica} tal como lo enviaría el navegador: campos con valor, radios marcados, ocultos. */
     public record Formulario(String tecnica, FormElement form) {
 

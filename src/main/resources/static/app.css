@@ -331,3 +331,15 @@ pre.argdown { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--
 .codigo-marca { font-weight: 700; font-size: .8rem; }
 .lista-marcas { padding-left: 1.1rem; }
 .lista-marcas .marca p { margin: .2rem 0; }
+
+/* P14 · Taller de argumentos. */
+.taller-editor textarea { width: 100%; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: .95rem; }
+.botones-marcado { display: flex; flex-wrap: wrap; gap: .5rem; margin: .5rem 0 var(--espacio); }
+.extras-toulmin { display: grid; gap: .25rem; border: 1px solid var(--borde); border-radius: var(--radio); margin: 0 0 var(--espacio); }
+.extras-toulmin input { width: 100%; }
+.taller-resultados { display: grid; gap: var(--espacio); margin-top: var(--espacio); }
+.panel-taller { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: var(--espacio); min-width: 0; }
+.confirmar-marcas { border: 1px solid var(--borde); border-radius: var(--radio); }
+.taller-guardado:empty { display: none; }
+.taller-guardado { margin-top: var(--espacio); }
+.taller-todavia-no { margin-top: calc(var(--espacio) * 1.5); }
