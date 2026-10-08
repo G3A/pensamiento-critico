@@ -29,6 +29,11 @@ public final class ModeloLocal {
 
     public static final Duration TIEMPO_CHAT = Duration.ofSeconds(60);
     public static final Duration TIEMPO_CLASIFICACION = Duration.ofSeconds(20);
+    /**
+     * La primera clasificación de un pedido incluye cargar el mensaje de sistema, que en CPU puede tardar más de un minuto
+     * (decisión del hito 3, medida en docs/evaluacion-modelo.md); las siguientes lo reutilizan de la caché de Ollama.
+     */
+    public static final Duration TIEMPO_CARGA = Duration.ofSeconds(120);
     /** Máximo dos reintentos (sección 4, streaming): tres intentos en total. */
     public static final int REINTENTOS = 2;
 
@@ -56,12 +61,16 @@ public final class ModeloLocal {
         }
     }
 
-    /** Clasificación contra un enum cerrado, con hasta dos reintentos si el modelo responde algo que no sirve. */
-    public static Clasificacion clasificar(Ia ia, String instruccion, String texto, List<String> etiquetas) {
+    /**
+     * Clasificación contra un enum cerrado, con hasta dos reintentos si el modelo responde algo que no sirve.
+     *
+     * @param primera si es la primera llamada del pedido: tiene el tiempo de carga del mensaje de sistema
+     */
+    public static Clasificacion clasificar(Ia ia, String instruccion, String texto, List<String> etiquetas, boolean primera) {
         IaRespuestaInvalida ultima = null;
         for (int intento = 0; intento <= REINTENTOS; intento++) {
             try {
-                return ia.clasificar(new PeticionClasificacion(instruccion, texto, etiquetas, TIEMPO_CLASIFICACION));
+                return ia.clasificar(new PeticionClasificacion(instruccion, texto, etiquetas, primera && intento == 0 ? TIEMPO_CARGA : TIEMPO_CLASIFICACION));
             } catch (IaRespuestaInvalida e) {
                 ultima = e;
             }

@@ -289,7 +289,7 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
                 }
                 provisional.accept("F" + (i + 1) + "… ");
                 Clasificacion c = ModeloLocal.clasificar(ia, prompt.sistema(Map.of()),
-                        prompt.pedido(Map.of("afirmacion", entrada.afirmacion().strip(), "pasaje", f.pasaje().strip())), ETIQUETAS);
+                        prompt.pedido(Map.of("afirmacion", entrada.afirmacion().strip(), "pasaje", f.pasaje().strip())), ETIQUETAS, nuevas.isEmpty());
                 nuevas.add(new Propuesta(Propuesta.codigo(primerNumero + nuevas.size()), String.valueOf(i + 1),
                         "F" + (i + 1) + " · " + f.titulo().strip(), c.etiqueta(), c.porQue(), false, c.modelo(), c.digest(), prompt.version()));
             }

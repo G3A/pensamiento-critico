@@ -205,16 +205,21 @@ public class EjecutorFalacias implements Ejecutor<ConfigFalacias, EntradaFalacia
         return etiquetas;
     }
 
-    /** El catálogo de esquemas y preguntas, en llano, para el prompt. */
+    /**
+     * El catálogo de esquemas y preguntas para el prompt, compacto: una línea por esquema con sus preguntas numeradas.
+     * En CPU, cada token del mensaje de sistema cuesta tiempo de carga; el mensaje no cambia entre llamadas, así que
+     * Ollama lo reutiliza de su caché después de la primera.
+     */
     public String catalogo(ConfigFalacias config) {
         StringBuilder sb = new StringBuilder();
         for (String id : ReglasFalacias.ESQUEMAS) {
             if (config.esquemas().contains(id)) {
                 Esquema e = esquemas.porId(id).orElseThrow();
+                sb.append("- ").append(id).append(" (").append(e.nombre()).append("):");
                 for (Esquema.PreguntaCritica p : e.preguntas()) {
-                    sb.append("- ").append(id).append(':').append(p.numero()).append(" · ").append(e.nombre()).append(": ")
-                            .append(p.texto()).append(" (si queda sin responder: ").append(p.falacia()).append(")\n");
+                    sb.append(' ').append(p.numero()).append(' ').append(p.texto());
                 }
+                sb.append('\n');
             }
         }
         return sb.toString().strip();
@@ -248,7 +253,7 @@ public class EjecutorFalacias implements Ejecutor<ConfigFalacias, EntradaFalacia
             int hechas = 0;
             for (int i : aClasificar) {
                 provisional.accept("Oración " + (i + 1) + " de " + oraciones.size() + "… ");
-                Clasificacion c = ModeloLocal.clasificar(ia, sistema, prompt.pedido(Map.of("oracion", oraciones.get(i).texto())), etiquetas);
+                Clasificacion c = ModeloLocal.clasificar(ia, sistema, prompt.pedido(Map.of("oracion", oraciones.get(i).texto())), etiquetas, hechas == 0);
                 hechas++;
                 if (!NINGUNA.equals(c.etiqueta())) {
                     String[] e = etiqueta(c.etiqueta()).orElseThrow();

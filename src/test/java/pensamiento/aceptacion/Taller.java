@@ -106,6 +106,62 @@ public final class Taller {
     }
 
     // -------------------------------------------------------------------------------------------
+    // El modelo local (hito 3): pedir propuestas, esperar por SSE y adoptar
+    // -------------------------------------------------------------------------------------------
+
+    private static final Pattern TURNO = Pattern.compile("sse-connect=\"/ia/turnos/([0-9a-f-]{36})/flujo\"");
+
+    /** Lo que vuelve al pedir propuestas: el turno abierto, o el aviso de que el modelo no está (modo plantillas). */
+    public record Pedido(java.util.Optional<UUID> turno, String cuerpo) {
+    }
+
+    /** "Pedir propuestas al modelo" con lo que el formulario trae. */
+    public Pedido pedirPropuestas(Formulario f) {
+        ClienteApp.Respuesta r = persona.postPares("/tecnicas/" + f.tecnica() + "/propuestas", f.pares(), true);
+        assertThat(r.estado()).as("pedir propuestas").isEqualTo(200);
+        Matcher m = TURNO.matcher(r.cuerpo());
+        return new Pedido(m.find() ? java.util.Optional.of(UUID.fromString(m.group(1))) : java.util.Optional.empty(), r.cuerpo());
+    }
+
+    /** Escucha el turno por SSE hasta el evento final y devuelve su HTML (el aviso y el formulario con las propuestas). */
+    public Document esperarPropuestas(UUID turno) {
+        ClienteApp.Respuesta r = persona.flujoSse("/ia/turnos/" + turno + "/flujo", java.time.Duration.ofMinutes(10));
+        assertThat(r.estado()).as("flujo SSE del turno").isEqualTo(200);
+        assertThat(r.cabecera("Content-Type").orElse("")).startsWith("text/event-stream");
+        for (String evento : r.cuerpo().replace("\r", "").split("\n\n")) {
+            if (evento.startsWith("event:fin")) {
+                StringBuilder datos = new StringBuilder();
+                for (String linea : evento.split("\n")) {
+                    if (linea.startsWith("data:")) {
+                        datos.append(linea.substring("data:".length()));
+                    }
+                }
+                return Jsoup.parseBodyFragment(datos.toString());
+            }
+        }
+        throw new AssertionError("El flujo terminó sin el evento final: " + r.cuerpo());
+    }
+
+    /** El formulario que llegó en el evento final, fuera de banda. */
+    public Formulario formularioDe(String tecnica, Document fin) {
+        return new Formulario(tecnica, (FormElement) fin.getElementById("form-" + tecnica));
+    }
+
+    /** Adopta una propuesta: devuelve el formulario nuevo y, fuera de banda, el resultado evaluado. */
+    public Document adoptar(Formulario f, String codigo) {
+        List<Map.Entry<String, String>> pares = new java.util.ArrayList<>(f.pares());
+        pares.add(new AbstractMap.SimpleEntry<>("_accion", "adoptar:" + codigo));
+        ClienteApp.Respuesta r = persona.postPares("/tecnicas/" + f.tecnica() + "/formulario", pares, true);
+        assertThat(r.estado()).as("adoptar " + codigo).isEqualTo(200);
+        return Jsoup.parseBodyFragment(r.cuerpo());
+    }
+
+    /** Guarda y espera que el guardado quede bloqueado (T16): 422 con el motivo junto al formulario. */
+    public ClienteApp.Respuesta guardarSinPoder(Formulario f) {
+        return persona.postPares("/tecnicas/" + f.tecnica() + "/ejecuciones", f.pares(), true);
+    }
+
+    // -------------------------------------------------------------------------------------------
     // Taller de argumentos (P14, hito 2)
     // -------------------------------------------------------------------------------------------
 

@@ -59,8 +59,8 @@ class EjecutorSteelmanConModeloTest {
         });
         assertThat(ia.chatsRecibidos()).singleElement().satisfies(c -> {
             assertThat(c.reintentosMaximos()).as("máximo dos reintentos").isEqualTo(2);
-            assertThat(c.mensajes().getFirst().contenido()).contains("No pases de 120 palabras").contains("Ejemplo 3");
-            assertThat(c.mensajes().getLast().contenido()).contains("«Los que no quieren cámaras no les importa el barrio.»");
+            assertThat(c.mensajes().getFirst().contenido()).contains("No pases del máximo de palabras").contains("Ejemplo 3");
+            assertThat(c.mensajes().getLast().contenido()).contains("«Los que no quieren cámaras no les importa el barrio.»").contains("Máximo de palabras: 120");
         });
     }
 

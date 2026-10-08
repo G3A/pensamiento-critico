@@ -328,7 +328,7 @@ public class EjecutorPaulElder implements Ejecutor<EjecutorPaulElder.Config, Eje
             for (int i = 0; i < oraciones.size() && i < ORACIONES_MAXIMAS && propuestos.size() < vacios.size(); i++) {
                 provisional.accept("Oración " + (i + 1) + " de " + oraciones.size() + "… ");
                 String oracion = oraciones.get(i).texto();
-                Clasificacion c = ModeloLocal.clasificar(ia, prompt.sistema(Map.of()), prompt.pedido(Map.of("oracion", oracion)), etiquetas);
+                Clasificacion c = ModeloLocal.clasificar(ia, prompt.sistema(Map.of()), prompt.pedido(Map.of("oracion", oracion)), etiquetas, i == 0);
                 Optional<Elemento> e = elemento(c.etiqueta());
                 if (e.isPresent() && vacios.contains(e.get()) && propuestos.add(e.get())) {
                     nuevas.add(new Propuesta(Propuesta.codigo(primerNumero + nuevas.size()), e.get().toString(), e.get().nombre(), oracion, c.porQue(),

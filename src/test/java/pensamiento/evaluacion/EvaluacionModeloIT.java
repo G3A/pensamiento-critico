@@ -98,6 +98,7 @@ class EvaluacionModeloIT {
         int ningunas = 0;
         int fallasModelo = 0;
         List<Long> tiempos = new ArrayList<>();
+        boolean[] primera = {true};
         List<String> detalle = new ArrayList<>();
         for (JsonNode f : raiz.get("fragmentos")) {
             if (n >= limite) {
@@ -123,7 +124,8 @@ class EvaluacionModeloIT {
                 try {
                     Prompts.Prompt prompt = Prompts.de(EjecutorFalacias.PROMPT, EjecutorFalacias.VERSION_PROMPT);
                     Clasificacion c = ModeloLocal.clasificar(ia, prompt.sistema(Map.of("catalogo", t13.catalogo(TODOS))),
-                            prompt.pedido(Map.of("oracion", oraciones.get(i).texto())), t13.etiquetas(TODOS));
+                            prompt.pedido(Map.of("oracion", oraciones.get(i).texto())), t13.etiquetas(TODOS), primera[0]);
+                    primera[0] = false;
                     etiqueta = c.etiqueta();
                 } catch (ExcepcionIa e) {
                     etiqueta = "ninguna";
@@ -181,6 +183,17 @@ class EvaluacionModeloIT {
         int fallas = 0;
         int n = 0;
         List<String> respuestas = new ArrayList<>();
+        // Un turno de calentamiento con el mismo mensaje de sistema: así se mide el turno con el prompt en la caché de
+        // Ollama, como pasa en una conversación real después del primer turno. No cuenta en la latencia.
+        try {
+            JsonNode primero0 = raiz.get("turnos").get(0);
+            String tipo0 = primero0.get("tipo").asText();
+            Map<String, String> datos0 = Map.of("tipo", tipo0, "descripcion", raiz.get("tipos").get(tipo0).asText(), "turno", primero0.get("texto").asText());
+            ia.chat(new PeticionChat(List.of(Mensaje.sistema(prompt.sistema(datos0)), Mensaje.usuario(prompt.pedido(datos0))),
+                    Duration.ofSeconds(300), Optional.empty(), 0), t -> { });
+        } catch (ExcepcionIa e) {
+            respuestas.add("calentamiento: falla " + e.getClass().getSimpleName());
+        }
         for (JsonNode d : raiz.get("turnos")) {
             if (n >= limite) {
                 break;
@@ -248,7 +261,7 @@ class EvaluacionModeloIT {
             String ordena = a.get("ordena").asText();
             try {
                 Clasificacion c = ModeloLocal.clasificar(ia, prompt.sistema(Map.of()),
-                        prompt.pedido(Map.of("afirmacion", a.get("afirmacion").asText(), "pasaje", a.get("pasaje").asText())), EjecutorTriangulacion.ETIQUETAS);
+                        prompt.pedido(Map.of("afirmacion", a.get("afirmacion").asText(), "pasaje", a.get("pasaje").asText())), EjecutorTriangulacion.ETIQUETAS, n == 1);
                 if (c.etiqueta().equals(esperada)) {
                     aciertos++;
                 }

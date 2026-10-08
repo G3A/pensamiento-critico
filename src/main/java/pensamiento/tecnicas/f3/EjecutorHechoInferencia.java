@@ -220,7 +220,7 @@ public class EjecutorHechoInferencia implements Ejecutor<EjecutorHechoInferencia
             for (int i : sinTipo) {
                 provisional.accept("Oración " + (i + 1) + "… ");
                 String texto = oraciones.get(i).texto().strip();
-                Clasificacion c = ModeloLocal.clasificar(ia, prompt.sistema(Map.of()), prompt.pedido(Map.of("oracion", texto)), config.tipos());
+                Clasificacion c = ModeloLocal.clasificar(ia, prompt.sistema(Map.of()), prompt.pedido(Map.of("oracion", texto)), config.tipos(), nuevas.isEmpty());
                 nuevas.add(new Propuesta(Propuesta.codigo(primerNumero + nuevas.size()), String.valueOf(i + 1),
                         "Oración " + (i + 1) + " · " + nombre(tipo(c.etiqueta()).orElseThrow()), c.etiqueta(), c.porQue(), false, c.modelo(), c.digest(),
                         prompt.version()));

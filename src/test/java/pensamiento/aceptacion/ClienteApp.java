@@ -53,6 +53,23 @@ public final class ClienteApp {
         return enviar(HttpRequest.newBuilder(URI.create(base + ruta)).GET());
     }
 
+    /**
+     * Una conexión SSE como la abre htmx: lee el flujo entero hasta que el servidor lo cierra tras el evento "fin" y lo
+     * devuelve como texto ("event:token", "data:…"). El modelo en CPU puede tardar minutos: espera hasta el tiempo dado.
+     */
+    public Respuesta flujoSse(String ruta, Duration tiempoMaximo) {
+        try {
+            HttpResponse<String> r = http.send(HttpRequest.newBuilder(URI.create(base + ruta)).header("Accept", "text/event-stream")
+                    .timeout(tiempoMaximo).GET().build(), HttpResponse.BodyHandlers.ofString());
+            return new Respuesta(r.statusCode(), r.body(), r.headers().map());
+        } catch (IOException e) {
+            throw new IllegalStateException("No se pudo leer el flujo SSE de " + ruta, e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(e);
+        }
+    }
+
     public Respuesta getHtmx(String ruta) {
         return enviar(HttpRequest.newBuilder(URI.create(base + ruta)).header("HX-Request", "true").GET());
     }
