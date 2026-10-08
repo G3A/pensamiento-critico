@@ -15,6 +15,20 @@
         alternar: function () { this.abierto = !this.abierto; }
       };
     });
+    // Mapa (V01): un clic en un nodo del SVG o en la lista lo resalta en ambos; la lista se recorre con teclado.
+    window.Alpine.data('mapa', function () {
+      return {
+        elegir: function (evento) {
+          var origen = evento.target.closest('[data-nodo], g.node');
+          if (!origen) { return; }
+          var id = origen.getAttribute('data-nodo') || origen.id;
+          this.$el.querySelectorAll('g.node').forEach(function (g) { g.classList.toggle('seleccionado', g.id === id); });
+          this.$el.querySelectorAll('[data-nodo]').forEach(function (b) {
+            b.setAttribute('aria-pressed', b.getAttribute('data-nodo') === id ? 'true' : 'false');
+          });
+        }
+      };
+    });
   });
 
   // 2) Cuando la sesión se renueva (bloqueo por inactividad), el servidor manda el token nuevo.

@@ -15,6 +15,7 @@
   --pendiente-fondo: #ebebf7;
   --error: #b42318;
   --error-fondo: #fde8e6;
+  --acento-fondo: #dcecf2;
   --foco: #ff9800;
   --radio: 10px;
   --espacio: 1rem;
@@ -36,9 +37,11 @@
     --pendiente-fondo: #2c2c4d;
     --error: #ff8a80;
     --error-fondo: #4a1b17;
+    --acento-fondo: #12313b;
   }
 }
 :root[data-tema="oscuro"] {
+  --acento-fondo: #12313b;
   --fondo: #15171a;
   --superficie: #1f2327;
   --texto: #e6e8eb;
@@ -284,3 +287,47 @@ fieldset.campo > legend, .campo legend { font-weight: 600; padding: 0 .25rem; }
 .filtros > * { flex: 1 1 200px; }
 .filtros .boton { flex: 0 0 auto; }
 .tecnica .nombre-llano a { color: var(--texto); }
+
+/* V01 · mapa de argumentos. El SVG llega sin fill ni stroke: todo color sale de aquí, por la clase de cada nodo. */
+.mapa-svg { margin: 0 0 .5rem; overflow-x: auto; }
+.mapa-svg svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+.mapa-svg svg g.graph > polygon { fill: none; stroke: none; }
+.mapa-svg svg text { fill: var(--texto); }
+.mapa-svg svg .node path, .mapa-svg svg .node polygon, .mapa-svg svg .node ellipse { fill: var(--superficie); stroke: var(--borde); stroke-width: 1.5; }
+.mapa-svg svg .node.conclusion path, .mapa-svg svg .node.conclusion polygon { fill: var(--acento-fondo); stroke: var(--acento); stroke-width: 2.5; }
+.mapa-svg svg .node.premisa path, .mapa-svg svg .node.premisa polygon { fill: var(--ok-fondo); stroke: var(--ok); }
+.mapa-svg svg .node.objecion path, .mapa-svg svg .node.objecion polygon { fill: var(--error-fondo); stroke: var(--error); }
+.mapa-svg svg .node.oculta path, .mapa-svg svg .node.oculta polygon { fill: var(--pendiente-fondo); stroke: var(--pendiente); stroke-dasharray: 5 3; }
+.mapa.sin-colores .mapa-svg svg .node path, .mapa.sin-colores .mapa-svg svg .node polygon { fill: var(--superficie); stroke: var(--texto-suave); }
+.mapa-svg svg .node.seleccionado path, .mapa-svg svg .node.seleccionado polygon { stroke: var(--foco); stroke-width: 4; }
+.mapa-svg svg .edge path { fill: none; stroke: var(--texto-suave); stroke-width: 1.4; }
+.mapa-svg svg .edge polygon { fill: var(--texto-suave); stroke: var(--texto-suave); }
+.mapa-svg svg .edge text { fill: var(--texto-suave); }
+.mapa-svg svg .edge.ataque path { stroke: var(--error); stroke-dasharray: 6 4; }
+.mapa-svg svg .edge.ataque polygon { fill: var(--error); stroke: var(--error); }
+.lista-nodos { list-style: none; padding: 0; margin: 0 0 var(--espacio); display: grid; gap: .35rem; }
+.nodo-lista { width: 100%; text-align: left; font: inherit; color: var(--texto); background: var(--superficie);
+  border: 1px solid var(--borde); border-left-width: 6px; border-radius: var(--radio); padding: .4rem .6rem; cursor: pointer; }
+.nodo-conclusion .nodo-lista { border-left-color: var(--acento); }
+.nodo-premisa .nodo-lista { border-left-color: var(--ok); }
+.nodo-objecion .nodo-lista { border-left-color: var(--error); }
+.nodo-oculta .nodo-lista { border-left-color: var(--pendiente); border-left-style: dashed; }
+.nodo-lista[aria-pressed="true"] { outline: 3px solid var(--foco); }
+.lista-argumentos, .lista-conclusiones { padding-left: 1.1rem; }
+.lista-argumentos li, .lista-conclusiones li { margin-bottom: .35rem; }
+pre.argdown { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--fondo); padding: .6rem; border-radius: var(--radio); }
+
+/* V02 · lista de verificación con estado. */
+.lista-verificacion { padding-left: 1.2rem; }
+.lista-verificacion .parte { margin-bottom: .5rem; }
+.lista-verificacion .falta { margin: .2rem 0 0; color: var(--texto-suave); }
+.completitud meter { width: min(240px, 100%); vertical-align: middle; margin-left: .5rem; }
+
+/* V05 · texto propio marcado. */
+.texto-marcado { margin: 0 0 var(--espacio); padding: .75rem; background: var(--superficie); border-left: 4px solid var(--borde); line-height: 1.7; }
+.marca-texto { padding: .05rem .2rem; border-radius: 4px; color: var(--texto); }
+.marca-texto.propuesta { background: var(--pendiente-fondo); text-decoration: underline dotted var(--pendiente); }
+.marca-texto.confirmada { background: var(--aviso-fondo); text-decoration: underline var(--aviso); }
+.codigo-marca { font-weight: 700; font-size: .8rem; }
+.lista-marcas { padding-left: 1.1rem; }
+.lista-marcas .marca p { margin: .2rem 0; }

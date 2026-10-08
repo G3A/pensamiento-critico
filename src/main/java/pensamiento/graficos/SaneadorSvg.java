@@ -24,7 +24,8 @@ import org.xml.sax.InputSource;
 /**
  * Saneador de SVG por lista blanca: solo los elementos y atributos que Graphviz necesita para dibujar.
  * Elimina script, foreignObject, manejadores de eventos (on*), enlaces (href, xlink:href) y estilos con
- * url(). Lo que no está en la lista, se quita. El resultado es SVG inerte listo para insertarse por htmx.
+ * url(). Tampoco deja colores (fill, stroke, opacidades): salen de clases CSS de app.css, para que el tema oscuro y
+ * el resaltado funcionen. Lo que no está en la lista, se quita. El resultado es SVG inerte listo para insertarse por htmx.
  */
 public final class SaneadorSvg {
 
@@ -33,8 +34,8 @@ public final class SaneadorSvg {
 
     static final Set<String> ATRIBUTOS = Set.of(
             "id", "class", "width", "height", "viewbox", "xmlns", "version", "transform", "d", "points", "cx", "cy", "rx", "ry", "r",
-            "x", "y", "x1", "y1", "x2", "y2", "fill", "stroke", "stroke-width", "stroke-dasharray", "font-family", "font-size",
-            "font-weight", "text-anchor", "dominant-baseline", "opacity", "fill-opacity", "stroke-opacity", "role", "aria-label");
+            "x", "y", "x1", "y1", "x2", "y2", "stroke-width", "stroke-dasharray", "font-family", "font-size",
+            "font-weight", "text-anchor", "dominant-baseline", "role", "aria-label");
 
     public static class SvgInvalido extends RuntimeException {
         public SvgInvalido(String mensaje, Throwable causa) {

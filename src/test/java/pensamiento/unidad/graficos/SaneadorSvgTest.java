@@ -20,6 +20,14 @@ class SaneadorSvgTest {
     }
 
     @Test
+    void quita_los_colores_porque_salen_de_clases_css() {
+        String svg = "<svg xmlns=\"http://www.w3.org/2000/svg\"><g class=\"node oculta\"><polygon points=\"0,0 1,1\" fill=\"white\" stroke=\"black\" "
+                + "fill-opacity=\"1\" stroke-opacity=\"1\" opacity=\"1\" stroke-width=\"2\"/></g></svg>";
+        String limpio = SaneadorSvg.sanear(svg);
+        assertThat(limpio).doesNotContain("fill", "stroke=", "opacity").contains("stroke-width=\"2\"", "class=\"node oculta\"");
+    }
+
+    @Test
     void quita_script_manejadores_de_eventos_enlaces_y_foreignobject() {
         String svg = "<svg xmlns=\"http://www.w3.org/2000/svg\"><script>alert(1)</script>"
                 + "<a href=\"javascript:alert(1)\"><text onclick=\"alert(1)\" x=\"1\" y=\"1\">hola</text></a>"
@@ -27,7 +35,7 @@ class SaneadorSvgTest {
                 + "<rect x=\"1\" y=\"1\" width=\"2\" height=\"2\" style=\"fill:url(http://malo)\" fill=\"red\"/></svg>";
         String limpio = SaneadorSvg.sanear(svg);
         assertThat(limpio).doesNotContain("<script", "onclick", "javascript:", "href", "foreignObject", "style=", "url(");
-        assertThat(limpio).contains("hola", "<rect", "fill=\"red\"");
+        assertThat(limpio).contains("hola", "<rect");
     }
 
     @Test
