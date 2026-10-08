@@ -30,9 +30,9 @@ services:
       OLLAMA_NUM_PARALLEL: "1"
       OLLAMA_KEEP_ALIVE: "30m"
     entrypoint: ["/bin/sh", "-c",
-      "ollama serve & sleep 3 && ollama pull qwen3:4b && ollama pull bge-m3 && wait"]
+      "ollama serve & sleep 3 && ollama pull qwen3:4b-instruct-2507-q4_K_M && ollama pull bge-m3 && wait"]
     healthcheck:                   # sano solo cuando ambos modelos están listados CON el digest esperado (fijados por digest)
-      test: ["CMD-SHELL", "ollama list | grep -Eq '^qwen3:4b[[:space:]]+359d7dd4bcda' && ollama list | grep -Eq '^bge-m3:latest[[:space:]]+790764642607'"]
+      test: ["CMD-SHELL", "ollama list | grep -Eq '^qwen3:4b-instruct-2507-q4_K_M[[:space:]]+0edcdef34593' && ollama list | grep -Eq '^bge-m3:latest[[:space:]]+790764642607'"]
       interval: 15s
       retries: 80
 
@@ -49,7 +49,7 @@ services:
       SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/db_password
       SPRING_FLYWAY_USER: pensamiento
       SPRING_AI_OLLAMA_BASE_URL: http://ollama:11434
-      SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL: qwen3:4b
+      SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL: qwen3:4b-instruct-2507-q4_K_M
       SPRING_AI_OLLAMA_EMBEDDING_OPTIONS_MODEL: bge-m3
       APP_IA_TIMEOUT_CHAT: 60s
       APP_IA_TIMEOUT_CLASIFICACION: 20s
@@ -90,6 +90,7 @@ services:
       SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/db_password
       SPRING_FLYWAY_USER: pensamiento
       SPRING_AI_OLLAMA_BASE_URL: http://ollama:11434
+      SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL: qwen3:4b-instruct-2507-q4_K_M
       APP_URL: http://app:8080
       CONTRACT_REAL: ${CONTRACT_REAL:-false}   # true solo en el workflow nocturno
       NVD_API_KEY: ${NVD_API_KEY:-}             # opcional: acelera Dependency-Check en -Pgates; vacía, el perfil nvd-clave no se activa

@@ -17,7 +17,7 @@ import pensamiento.nucleo.puertos.Ia;
 import pensamiento.testutil.Entorno;
 
 /**
- * El adaptador Spring AI contra el Ollama del compose (qwen3:4b y bge-m3 fijados por digest).
+ * El adaptador Spring AI contra el Ollama del compose (el modelo de chat configurado y bge-m3, fijados por digest).
  * Corre solo en el workflow nocturno con CONTRACT_REAL=true. La dimensión "JSON inválido" no se puede
  * forzar en un modelo real con salida estructurada, así que esa única dimensión usa un servidor local que
  * imita a Ollama devolviendo basura: lo que se certifica ahí es el mapeo del adaptador, con el mismo código.
@@ -51,12 +51,12 @@ class RealIaContractIT extends IaContract {
 
     @Override
     protected Ia disponible() {
-        return new IaSpringAi(Entorno.urlOllama(), "qwen3:4b", "bge-m3", new SemaforoIa(1));
+        return new IaSpringAi(Entorno.urlOllama(), Entorno.modeloChat(), "bge-m3", new SemaforoIa(1));
     }
 
     @Override
     protected Ia noDisponible() {
-        return new IaSpringAi("http://127.0.0.1:9", "qwen3:4b", "bge-m3", new SemaforoIa(1));
+        return new IaSpringAi("http://127.0.0.1:9", Entorno.modeloChat(), "bge-m3", new SemaforoIa(1));
     }
 
     @Override

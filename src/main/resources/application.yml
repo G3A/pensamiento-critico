@@ -63,7 +63,7 @@ app:
     pin: ${admin_pin:}
   ia:
     base-url: ${SPRING_AI_OLLAMA_BASE_URL:http://localhost:11434}
-    modelo-chat: ${SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL:qwen3:4b}
+    modelo-chat: ${SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL:qwen3:4b-instruct-2507-q4_K_M}
     modelo-embeddings: ${SPRING_AI_OLLAMA_EMBEDDING_OPTIONS_MODEL:bge-m3}
     timeout-chat: ${APP_IA_TIMEOUT_CHAT:60s}
     timeout-clasificacion: ${APP_IA_TIMEOUT_CLASIFICACION:20s}

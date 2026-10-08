@@ -35,6 +35,11 @@ public final class Entorno {
         return variable("APP_URL").orElse("http://localhost:8080");
     }
 
+    /** El modelo de chat del compose (SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL); el fijado por defecto desde el hito 3. */
+    public static String modeloChat() {
+        return variable("SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL").orElse("qwen3:4b-instruct-2507-q4_K_M");
+    }
+
     public static String urlOllama() {
         return variable("SPRING_AI_OLLAMA_BASE_URL").orElse("http://localhost:11434");
     }

@@ -99,7 +99,7 @@
     "usalaCuando": "Quieres revisar un razonamiento completo pieza por pieza: propósito, pregunta, información, supuestos, conceptos, inferencias, implicaciones y puntos de vista, y calificar su claridad, precisión y equidad.",
     "definicion": "Marco de ocho elementos del razonamiento y nueve estándares intelectuales (claridad, exactitud, precisión, relevancia, profundidad, amplitud, lógica, significancia, equidad).",
     "tipo": "marco", "operacion": "evaluar", "objeto": "argumento", "modalidad": "lista", "patron": "V02",
-    "origen": "Paul y Elder 2001", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "origen": "Paul y Elder 2001", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa", "iaExperimental": true,
     "configDefault": { "elementos": ["proposito", "pregunta", "informacion", "supuestos", "conceptos", "inferencias", "implicaciones", "puntos_de_vista"], "estandares": ["claridad", "exactitud", "precision", "relevancia", "profundidad", "amplitud", "logica", "significancia", "equidad"], "umbral": 6, "modo": "plantillas" },
     "esquemaConfig": {
       "campos": [
@@ -199,7 +199,7 @@
     "usalaCuando": "Quieres decidir algo porque a otra persona o negocio parecido le fue bien o mal, y necesitas saber si el caso se parece en lo que importa.",
     "definicion": "Procedimiento que lista similitudes y diferencias relevantes entre dos casos, exige que la diferencia clave sea verificable y califica la fuerza de la analogía.",
     "tipo": "procedimiento", "operacion": "evaluar", "objeto": "argumento", "modalidad": "formulario", "patron": "V04",
-    "origen": "Walton 1996 (esquema de analogía)", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "origen": "Walton 1996 (esquema de analogía)", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa", "iaExperimental": true,
     "configDefault": { "minimoSimilitudes": 2, "minimoDiferencias": 1, "exigirClaveVerificada": true, "modo": "plantillas" },
     "esquemaConfig": {
       "campos": [
@@ -270,7 +270,7 @@
     "usalaCuando": "Lees o escribes un argumento y quieres saber si descalifica a la persona, exagera, presenta solo dos opciones o se apoya en una autoridad que no corresponde.",
     "definicion": "Criterio que reconoce el esquema de argumentación de Walton usado y marca como falacia la pregunta crítica que quedó sin responder; la etiqueta la confirma el usuario (regla R06).",
     "tipo": "criterio", "operacion": "evaluar", "objeto": "argumento", "modalidad": "lista", "patron": "V05",
-    "origen": "Hamblin 1970; Walton 1995", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "origen": "Hamblin 1970; Walton 1995", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa", "iaExperimental": true,
     "configDefault": { "esquemas": ["ad_hominem", "alternativas", "pendiente_resbaladiza", "autoridad", "analogia", "causa_efecto", "signo", "ejemplo", "opinion_popular", "clasificacion_verbal", "consecuencias"], "sensibilidad": "reglas", "mostrarPregunta": true },
     "esquemaConfig": {
       "campos": [
@@ -362,7 +362,7 @@
     "usalaCuando": "Estás muy seguro de algo y quieres obligarte a escribir la postura contraria y qué cambiaría si fuera cierta.",
     "definicion": "Procedimiento de desesgo que genera una o más posturas opuestas a la propia y registra qué cambiaría en cada caso y cómo se mueve la confianza.",
     "tipo": "procedimiento", "operacion": "generar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V04",
-    "origen": "Lord, Lepper y Preston 1984", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "origen": "Lord, Lepper y Preston 1984", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa", "iaExperimental": true,
     "configDefault": { "numeroOpuestas": 1, "modo": "manual" },
     "esquemaConfig": {
       "campos": [
@@ -431,7 +431,7 @@
     "usalaCuando": "Un texto mezcla datos, suposiciones y opiniones y quieres saber qué oraciones se pueden verificar y cuáles no.",
     "definicion": "Criterio que etiqueta cada oración como hecho, inferencia o juicio de valor, con los ocho tipos de afirmación, y dice cuáles son verificables.",
     "tipo": "criterio", "operacion": "analizar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V05",
-    "origen": "Hayakawa 1939", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "origen": "Hayakawa 1939", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa", "iaExperimental": true,
     "configDefault": { "tipos": ["hecho", "dato_estadistico", "testimonio", "causal", "generalizacion", "prediccion", "juicio_de_valor", "definicion"], "modo": "manual" },
     "esquemaConfig": {
       "campos": [
@@ -535,7 +535,7 @@
     "usalaCuando": "Tienes evidencia a favor y en contra de una afirmación y quieres saber en qué estado queda: verificada, refutada, disputada o en verificación.",
     "definicion": "Criterio que aplica la regla R03: una afirmación solo es verificada o refutada con al menos dos fuentes de grupos de origen distintos y fuerza neta fuerte.",
     "tipo": "criterio", "operacion": "evaluar", "objeto": "afirmacion", "modalidad": "calculo", "patron": "V10",
-    "origen": "Denzin 1978", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "origen": "Denzin 1978", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa", "iaExperimental": true,
     "configDefault": { "fuentesMinimas": 2, "modo": "plantillas" },
     "esquemaConfig": {
       "campos": [
@@ -713,7 +713,7 @@
     "usalaCuando": "Vas a discutir con alguien y quieres asegurarte de responder a la versión más fuerte de lo que piensa, no a una caricatura.",
     "definicion": "Procedimiento que reescribe la postura contraria en su versión más sólida, con cita de la original, y marca las diferencias.",
     "tipo": "procedimiento", "operacion": "generar", "objeto": "argumento", "modalidad": "formulario", "patron": "V04",
-    "origen": "Rapoport, en Dennett 2013", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "origen": "Rapoport, en Dennett 2013", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa", "iaExperimental": true,
     "configDefault": { "longitudMaxima": 120, "modo": "manual", "exigirCita": true },
     "esquemaConfig": {
       "campos": [
