@@ -1,0 +1,92 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "El tráfico del centro",
+    "versionEsquema": 1,
+    "config": { "fuentesMinimas": 2, "modo": "plantillas" },
+    "datos": {
+      "afirmacion": "El centro tiene más tráfico peatonal que el barrio.",
+      "tipo": "hecho",
+      "fuentes": [
+        { "titulo": "Conteo peatonal del municipio", "tipoFuente": "primaria", "diseno": "no_aplica", "fecha": "2025-03-15", "grupo": "municipio",
+          "independiente": true, "original": true, "craap": 20,
+          "pasaje": "En el centro pasan en promedio 1.200 personas por hora; en el barrio, 300.", "postura": "apoya" },
+        { "titulo": "Conteo propio de tres sábados", "tipoFuente": "primaria", "diseno": "no_aplica", "fecha": "2026-09-20", "grupo": "panadería",
+          "independiente": false, "original": true,
+          "pasaje": "Contamos 900 personas por hora frente al local del centro y 250 frente al del barrio.", "postura": "apoya" },
+        { "titulo": "Informe de la cámara de comercio", "tipoFuente": "secundaria", "diseno": "no_aplica", "fecha": "2024-11-01", "grupo": "cámara de comercio",
+          "independiente": true, "original": false, "craap": 18,
+          "pasaje": "El centro concentra el mayor flujo de compradores de la ciudad.", "postura": "apoya" }
+      ],
+      "propuestas": []
+    },
+    "resultado": {
+      "fuerzas": [6, 4, 4],
+      "neta": 14,
+      "estado": "verificada",
+      "motivo": "3 grupos de origen distintos a favor y fuerza neta +14 (fuerte) (regla R03).",
+      "pendientes": [],
+      "resumen": "Verificada · fuerza neta +14 (fuerte) · 3 fuentes, 3 cuentan."
+    },
+    "nota": "La dueña de la panadería reúne lo que tiene antes de firmar el arriendo. Es la tarjeta de T22 de la sección 7b; fuerzas calculadas con R01 al 2026-10-07."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Los robos de la cuadra",
+    "versionEsquema": 1,
+    "config": { "fuentesMinimas": 2, "modo": "plantillas_y_modelo" },
+    "datos": {
+      "afirmacion": "Los robos en la cuadra subieron este año.",
+      "tipo": "hecho",
+      "fuentes": [
+        { "titulo": "Acta de la junta de marzo", "tipoFuente": "primaria", "diseno": "no_aplica", "fecha": "2026-03-10", "grupo": "junta de vecinos",
+          "independiente": false, "original": true,
+          "pasaje": "Se registraron 7 robos entre enero y marzo, frente a 3 el año pasado.", "postura": "apoya" },
+        { "titulo": "Resumen del presidente de la junta", "tipoFuente": "secundaria", "diseno": "no_aplica", "fecha": "2026-06-01", "grupo": "junta de vecinos",
+          "independiente": false, "original": false,
+          "pasaje": "Este año ya van el doble de robos que el anterior.", "postura": "apoya" },
+        { "titulo": "Boletín de la estación de policía", "tipoFuente": "primaria", "diseno": "no_aplica", "fecha": "2026-08-30", "grupo": "policía",
+          "independiente": true, "original": true, "craap": 19,
+          "pasaje": "En el sector se denunciaron 12 robos en lo que va del año; el año pasado, 6 en el mismo periodo.", "postura": "sin_etiquetar" }
+      ],
+      "propuestas": []
+    },
+    "resultado": {
+      "fuerzas": [4, 2, 6],
+      "neta": 6,
+      "estado": "en_verificacion",
+      "motivo": "Fuerza neta +6 (fuerte), pero las fuentes a favor son de 1 grupo de origen: falta una fuente independiente (regla R03).",
+      "pendientes": [ "Buscar una fuente independiente para: Los robos en la cuadra subieron este año." ],
+      "resumen": "En verificación · fuerza neta +6 (fuerte) · 3 fuentes, 2 cuentan."
+    },
+    "nota": "La secretaria de la junta revisa si los robos subieron: dos fuentes del mismo grupo y el boletín de la policía sin etiquetar; con el modelo, puede adoptar su etiqueta."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El nivel de matemáticas",
+    "versionEsquema": 1,
+    "config": { "fuentesMinimas": 2, "modo": "plantillas" },
+    "datos": {
+      "afirmacion": "El colegio nuevo tiene mejor nivel en matemáticas que el actual.",
+      "tipo": "dato_estadistico",
+      "fuentes": [
+        { "titulo": "Resultados de la prueba nacional", "tipoFuente": "primaria", "diseno": "observacional", "fecha": "2025-12-01", "grupo": "ministerio de educación",
+          "independiente": true, "original": true, "craap": 21,
+          "pasaje": "El colegio nuevo obtuvo 72 puntos en matemáticas y el actual, 61.", "postura": "apoya" },
+        { "titulo": "Estudio de la universidad regional", "tipoFuente": "primaria", "diseno": "observacional", "fecha": "2024-05-01", "grupo": "universidad regional",
+          "independiente": true, "original": true, "craap": 20,
+          "pasaje": "Al comparar estudiantes con el mismo nivel de entrada, los dos colegios no muestran diferencia en matemáticas.", "postura": "contradice" }
+      ],
+      "propuestas": []
+    },
+    "resultado": {
+      "fuerzas": [6, 6],
+      "neta": 0,
+      "estado": "disputada",
+      "motivo": "Hay evidencia fuerte (6 o más) a favor y en contra: revisa en qué difieren las fuentes.",
+      "pendientes": [ "Revisar la evidencia en conflicto sobre: El colegio nuevo tiene mejor nivel en matemáticas que el actual." ],
+      "resumen": "Disputada · fuerza neta 0 (débil) · 2 fuentes, 2 cuentan."
+    },
+    "nota": "Una familia decide si cambia al hijo de colegio; evidencia fuerte a favor y en contra."
+  }
+]

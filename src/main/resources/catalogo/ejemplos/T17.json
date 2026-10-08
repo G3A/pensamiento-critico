@@ -1,0 +1,76 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Los robos de la cuadra",
+    "versionEsquema": 1,
+    "config": { "tipos": ["hecho", "dato_estadistico", "testimonio", "causal", "generalizacion", "prediccion", "juicio_de_valor", "definicion"], "modo": "manual" },
+    "datos": {
+      "oraciones": [
+        { "texto": "Hubo 12 robos en la cuadra este año.", "tipo": "dato_estadistico" },
+        { "texto": "Seguro son los mismos de siempre.", "tipo": "generalizacion" },
+        { "texto": "Este barrio ya no sirve para vivir.", "tipo": "juicio_de_valor" }
+      ],
+      "propuestas": []
+    },
+    "resultado": {
+      "lineas": [
+        "Oración 1 · dato estadístico (hecho): puede verificarse.",
+        "Oración 2 · generalización (inferencia): necesita evidencia.",
+        "Oración 3 · juicio de valor (juicio): no es verificable."
+      ],
+      "pendientes": [ "Buscar evidencia para la inferencia: Seguro son los mismos de siempre." ],
+      "resumen": "3 oraciones: 1 hecho, 1 inferencia y 1 juicio."
+    },
+    "nota": "Un mensaje en el chat de la junta, separado en oraciones. Es la tarjeta de T17 de la sección 7b."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "Las ventas de septiembre",
+    "versionEsquema": 1,
+    "config": { "tipos": ["hecho", "dato_estadistico", "testimonio", "causal", "generalizacion", "prediccion", "juicio_de_valor", "definicion"], "modo": "manual" },
+    "datos": {
+      "oraciones": [
+        { "texto": "Las ventas de pan bajaron 15% en septiembre.", "tipo": "dato_estadistico" },
+        { "texto": "Según la cajera, varios clientes se quejaron del precio.", "tipo": "testimonio" },
+        { "texto": "Si subimos más el precio, el próximo mes venderemos menos.", "tipo": "prediccion" },
+        { "texto": "Un buen pan es el que se hace con masa madre.", "tipo": "definicion" }
+      ],
+      "propuestas": []
+    },
+    "resultado": {
+      "lineas": [
+        "Oración 1 · dato estadístico (hecho): puede verificarse.",
+        "Oración 2 · testimonio (hecho): puede verificarse.",
+        "Oración 3 · predicción (inferencia): necesita evidencia.",
+        "Oración 4 · definición (juicio): no es verificable."
+      ],
+      "pendientes": [ "Buscar evidencia para la inferencia: Si subimos más el precio, el próximo mes venderemos menos." ],
+      "resumen": "4 oraciones: 2 hechos, 1 inferencia y 1 juicio."
+    },
+    "nota": "El informe de la cajera a la dueña de la panadería."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "La nota de matemáticas",
+    "versionEsquema": 1,
+    "config": { "tipos": ["hecho", "dato_estadistico", "testimonio", "causal", "generalizacion", "prediccion", "juicio_de_valor", "definicion"], "modo": "manual_y_modelo" },
+    "datos": {
+      "oraciones": [
+        { "texto": "Mi hijo sacó 3,2 en matemáticas.", "tipo": "dato_estadistico" },
+        { "texto": "Seguro es porque juega mucho en el celular.", "tipo": "sin_etiquetar" },
+        { "texto": "Es un mal estudiante.", "tipo": "juicio_de_valor" }
+      ],
+      "propuestas": []
+    },
+    "resultado": {
+      "lineas": [
+        "Oración 1 · dato estadístico (hecho): puede verificarse.",
+        "Oración 2 · sin etiquetar: elige un tipo o pide una propuesta.",
+        "Oración 3 · juicio de valor (juicio): no es verificable."
+      ],
+      "pendientes": [],
+      "resumen": "3 oraciones: 1 hecho, 1 juicio y 1 sin etiquetar."
+    },
+    "nota": "Lo que el papá escribió después de la reunión del colegio; la oración 2 queda sin etiquetar y puede pedir una propuesta al modelo."
+  }
+]

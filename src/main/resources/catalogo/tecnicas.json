@@ -99,8 +99,45 @@
     "usalaCuando": "Quieres revisar un razonamiento completo pieza por pieza: propósito, pregunta, información, supuestos, conceptos, inferencias, implicaciones y puntos de vista, y calificar su claridad, precisión y equidad.",
     "definicion": "Marco de ocho elementos del razonamiento y nueve estándares intelectuales (claridad, exactitud, precisión, relevancia, profundidad, amplitud, lógica, significancia, equidad).",
     "tipo": "marco", "operacion": "evaluar", "objeto": "argumento", "modalidad": "lista", "patron": "V02",
-    "origen": "Paul y Elder 2001", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Paul y Elder 2001", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "elementos": ["proposito", "pregunta", "informacion", "supuestos", "conceptos", "inferencias", "implicaciones", "puntos_de_vista"], "estandares": ["claridad", "exactitud", "precision", "relevancia", "profundidad", "amplitud", "logica", "significancia", "equidad"], "umbral": 6, "modo": "plantillas" },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "elementos", "tipo": "conjunto", "etiqueta": "Elementos activos", "opciones": [ { "valor": "proposito", "etiqueta": "Propósito" }, { "valor": "pregunta", "etiqueta": "Pregunta" }, { "valor": "informacion", "etiqueta": "Información" }, { "valor": "supuestos", "etiqueta": "Supuestos" }, { "valor": "conceptos", "etiqueta": "Conceptos" }, { "valor": "inferencias", "etiqueta": "Inferencias" }, { "valor": "implicaciones", "etiqueta": "Implicaciones" }, { "valor": "puntos_de_vista", "etiqueta": "Puntos de vista" } ] },
+        { "nombre": "estandares", "tipo": "conjunto", "etiqueta": "Estándares a puntuar", "opciones": [ { "valor": "claridad", "etiqueta": "Claridad" }, { "valor": "exactitud", "etiqueta": "Exactitud" }, { "valor": "precision", "etiqueta": "Precisión" }, { "valor": "relevancia", "etiqueta": "Relevancia" }, { "valor": "profundidad", "etiqueta": "Profundidad" }, { "valor": "amplitud", "etiqueta": "Amplitud" }, { "valor": "logica", "etiqueta": "Lógica" }, { "valor": "significancia", "etiqueta": "Significancia" }, { "valor": "equidad", "etiqueta": "Equidad" } ] },
+        { "nombre": "umbral", "tipo": "entero", "etiqueta": "Elementos llenos para que sea suficiente", "obligatorio": true, "minimo": 1, "maximo": 8 },
+        { "nombre": "modo", "tipo": "enumeracion", "etiqueta": "Modo", "obligatorio": true, "ayuda": "Con el modelo, puedes pegar un texto libre y pedir que proponga oraciones para los elementos vacíos; no cuentan hasta que las adoptes.",
+          "opciones": [ { "valor": "plantillas", "etiqueta": "Solo plantillas" }, { "valor": "plantillas_y_modelo", "etiqueta": "Plantillas y modelo local" } ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "tema", "tipo": "texto", "etiqueta": "Tema", "obligatorio": true, "largoMaximo": 120 },
+        { "nombre": "proposito", "tipo": "texto", "etiqueta": "Propósito", "largoMaximo": 400, "ayuda": "¿Qué quieres lograr con este razonamiento?" },
+        { "nombre": "pregunta", "tipo": "texto", "etiqueta": "Pregunta", "largoMaximo": 400, "ayuda": "¿Qué pregunta intentas responder?" },
+        { "nombre": "informacion", "tipo": "texto", "etiqueta": "Información", "largoMaximo": 400, "ayuda": "¿Qué datos, hechos u observaciones usas?" },
+        { "nombre": "supuestos", "tipo": "texto", "etiqueta": "Supuestos", "largoMaximo": 400, "ayuda": "¿Qué das por sentado?" },
+        { "nombre": "conceptos", "tipo": "texto", "etiqueta": "Conceptos", "largoMaximo": 400, "ayuda": "¿Qué ideas o palabras clave hay que definir?" },
+        { "nombre": "inferencias", "tipo": "texto", "etiqueta": "Inferencias", "largoMaximo": 400, "ayuda": "¿Qué concluyes a partir de la información?" },
+        { "nombre": "implicaciones", "tipo": "texto", "etiqueta": "Implicaciones", "largoMaximo": 400, "ayuda": "¿Qué pasaría si sigues este razonamiento?" },
+        { "nombre": "puntosDeVista", "tipo": "texto", "etiqueta": "Puntos de vista", "largoMaximo": 400, "ayuda": "¿Desde qué punto de vista miras esto y cuál otro hay?" },
+        { "nombre": "delModelo", "tipo": "oculto" },
+        { "nombre": "claridad", "tipo": "entero", "etiqueta": "Claridad (1 a 10)", "minimo": 1, "maximo": 10 },
+        { "nombre": "exactitud", "tipo": "entero", "etiqueta": "Exactitud (1 a 10)", "minimo": 1, "maximo": 10 },
+        { "nombre": "precision", "tipo": "entero", "etiqueta": "Precisión (1 a 10)", "minimo": 1, "maximo": 10 },
+        { "nombre": "relevancia", "tipo": "entero", "etiqueta": "Relevancia (1 a 10)", "minimo": 1, "maximo": 10 },
+        { "nombre": "profundidad", "tipo": "entero", "etiqueta": "Profundidad (1 a 10)", "minimo": 1, "maximo": 10 },
+        { "nombre": "amplitud", "tipo": "entero", "etiqueta": "Amplitud (1 a 10)", "minimo": 1, "maximo": 10 },
+        { "nombre": "logica", "tipo": "entero", "etiqueta": "Lógica (1 a 10)", "minimo": 1, "maximo": 10 },
+        { "nombre": "significancia", "tipo": "entero", "etiqueta": "Significancia (1 a 10)", "minimo": 1, "maximo": 10 },
+        { "nombre": "equidad", "tipo": "entero", "etiqueta": "Equidad (1 a 10)", "minimo": 1, "maximo": 10 },
+        { "nombre": "textoLibre", "tipo": "texto", "etiqueta": "Texto para extraer elementos", "largoMaximo": 2000, "visibleSi": "modo=plantillas_y_modelo",
+          "ayuda": "Una conversación o una nota. El modelo propone, para los elementos vacíos, la oración que mejor los llena." },
+        { "nombre": "propuestas", "tipo": "propuestas", "etiqueta": "Propuestas del modelo", "visibleSi": "modo=plantillas_y_modelo" }
+      ]
+    }
   },
+
   {
     "id": "T05", "familia": "F1", "nombre": "Validez y solidez", "nombreLlano": "¿La conclusión se sigue y las premisas son ciertas?",
     "usalaCuando": "Alguien te da razones y una conclusión y quieres separar dos preguntas: si la conclusión se seguiría de las premisas y si las premisas son verdad.",
@@ -394,7 +431,37 @@
     "usalaCuando": "Un texto mezcla datos, suposiciones y opiniones y quieres saber qué oraciones se pueden verificar y cuáles no.",
     "definicion": "Criterio que etiqueta cada oración como hecho, inferencia o juicio de valor, con los ocho tipos de afirmación, y dice cuáles son verificables.",
     "tipo": "criterio", "operacion": "analizar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V05",
-    "origen": "Hayakawa 1939", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Hayakawa 1939", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "tipos": ["hecho", "dato_estadistico", "testimonio", "causal", "generalizacion", "prediccion", "juicio_de_valor", "definicion"], "modo": "manual" },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "tipos", "tipo": "conjunto", "etiqueta": "Tipos activos",
+          "opciones": [
+            { "valor": "hecho", "etiqueta": "Hecho" }, { "valor": "dato_estadistico", "etiqueta": "Dato estadístico" }, { "valor": "testimonio", "etiqueta": "Testimonio" },
+            { "valor": "causal", "etiqueta": "Relación causal" }, { "valor": "generalizacion", "etiqueta": "Generalización" }, { "valor": "prediccion", "etiqueta": "Predicción" },
+            { "valor": "juicio_de_valor", "etiqueta": "Juicio de valor" }, { "valor": "definicion", "etiqueta": "Definición" }
+          ] },
+        { "nombre": "modo", "tipo": "enumeracion", "etiqueta": "Modo", "obligatorio": true,
+          "ayuda": "Con el modelo, puedes pedir que proponga el tipo de las oraciones sin etiquetar; no cuenta hasta que lo adoptes.",
+          "opciones": [ { "valor": "manual", "etiqueta": "Etiquetado manual" }, { "valor": "manual_y_modelo", "etiqueta": "Manual y modelo local" } ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "oraciones", "tipo": "filas", "etiqueta": "Oraciones del texto, una por fila", "prefijo": "O", "elemento": "oración", "minimo": 1, "maximo": 12,
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Oración", "obligatorio": true, "largoMaximo": 300 },
+            { "nombre": "tipo", "tipo": "enumeracion", "etiqueta": "Tipo", "obligatorio": true,
+              "opciones": [
+                { "valor": "sin_etiquetar", "etiqueta": "Sin etiquetar" }, { "valor": "hecho", "etiqueta": "Hecho" }, { "valor": "dato_estadistico", "etiqueta": "Dato estadístico" },
+                { "valor": "testimonio", "etiqueta": "Testimonio" }, { "valor": "causal", "etiqueta": "Relación causal" }, { "valor": "generalizacion", "etiqueta": "Generalización" },
+                { "valor": "prediccion", "etiqueta": "Predicción" }, { "valor": "juicio_de_valor", "etiqueta": "Juicio de valor" }, { "valor": "definicion", "etiqueta": "Definición" }
+              ] },
+            { "nombre": "origen", "tipo": "oculto" }
+          ] },
+        { "nombre": "propuestas", "tipo": "propuestas", "etiqueta": "Propuestas del modelo", "visibleSi": "modo=manual_y_modelo" }
+      ]
+    }
   },
   {
     "id": "T18", "familia": "F3", "nombre": "Correlación, causalidad y tasas base", "nombreLlano": "Que dos cosas pasen juntas no significa que una cause la otra",
@@ -468,7 +535,54 @@
     "usalaCuando": "Tienes evidencia a favor y en contra de una afirmación y quieres saber en qué estado queda: verificada, refutada, disputada o en verificación.",
     "definicion": "Criterio que aplica la regla R03: una afirmación solo es verificada o refutada con al menos dos fuentes de grupos de origen distintos y fuerza neta fuerte.",
     "tipo": "criterio", "operacion": "evaluar", "objeto": "afirmacion", "modalidad": "calculo", "patron": "V10",
-    "origen": "Denzin 1978", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Denzin 1978", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "fuentesMinimas": 2, "modo": "plantillas" },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "fuentesMinimas", "tipo": "entero", "etiqueta": "Grupos de origen distintos para «verificada» o «refutada» (R03)", "obligatorio": true, "minimo": 2, "maximo": 4 },
+        { "nombre": "modo", "tipo": "enumeracion", "etiqueta": "Modo", "obligatorio": true,
+          "ayuda": "Con el modelo, puedes pedir que etiquete los pasajes sin etiquetar; su etiqueta no cuenta hasta que la adoptes.",
+          "opciones": [ { "valor": "plantillas", "etiqueta": "Solo plantillas" }, { "valor": "plantillas_y_modelo", "etiqueta": "Plantillas y modelo local" } ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "afirmacion", "tipo": "texto", "etiqueta": "La afirmación", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "tipo", "tipo": "enumeracion", "etiqueta": "Tipo de afirmación", "obligatorio": true,
+          "ayuda": "Un dato estadístico o una relación causal se pesan por el diseño del estudio; lo demás, por el tipo de fuente (R01).",
+          "opciones": [
+            { "valor": "hecho", "etiqueta": "Hecho" }, { "valor": "dato_estadistico", "etiqueta": "Dato estadístico" }, { "valor": "causal", "etiqueta": "Relación causal" },
+            { "valor": "generalizacion", "etiqueta": "Generalización" }, { "valor": "definicion", "etiqueta": "Definición" }, { "valor": "testimonio", "etiqueta": "Testimonio" },
+            { "valor": "prediccion", "etiqueta": "Predicción" }, { "valor": "juicio_de_valor", "etiqueta": "Juicio de valor" }
+          ] },
+        { "nombre": "fuentes", "tipo": "filas", "etiqueta": "Fuentes y pasajes", "prefijo": "F", "elemento": "fuente", "minimo": 1, "maximo": 6,
+          "campos": [
+            { "nombre": "titulo", "tipo": "texto", "etiqueta": "Fuente", "obligatorio": true, "largoMaximo": 160 },
+            { "nombre": "tipoFuente", "tipo": "enumeracion", "etiqueta": "Tipo de fuente", "obligatorio": true,
+              "opciones": [ { "valor": "primaria", "etiqueta": "Primaria" }, { "valor": "secundaria", "etiqueta": "Secundaria" }, { "valor": "terciaria", "etiqueta": "Terciaria" } ] },
+            { "nombre": "diseno", "tipo": "enumeracion", "etiqueta": "Diseño del estudio", "obligatorio": true,
+              "opciones": [
+                { "valor": "no_aplica", "etiqueta": "No aplica" }, { "valor": "revision_sistematica", "etiqueta": "Revisión sistemática" },
+                { "valor": "ensayo_controlado", "etiqueta": "Ensayo controlado" }, { "valor": "observacional", "etiqueta": "Observacional" },
+                { "valor": "opinion_experto", "etiqueta": "Opinión de experto" }, { "valor": "testimonio", "etiqueta": "Testimonio" }
+              ] },
+            { "nombre": "fecha", "tipo": "fecha", "etiqueta": "Fecha" },
+            { "nombre": "grupo", "tipo": "texto", "etiqueta": "Grupo de origen", "largoMaximo": 120,
+              "ayuda": "La organización, el autor o la cadena de citas. Dos fuentes del mismo grupo no son independientes entre sí." },
+            { "nombre": "independiente", "tipo": "booleano", "etiqueta": "Independiente de quien afirma" },
+            { "nombre": "original", "tipo": "booleano", "etiqueta": "Tuve acceso al original" },
+            { "nombre": "craap", "tipo": "entero", "etiqueta": "Puntaje CRAAP (0 a 25)", "minimo": 0, "maximo": 25 },
+            { "nombre": "pasaje", "tipo": "texto", "etiqueta": "Pasaje, copiado tal cual", "obligatorio": true, "largoMaximo": 600 },
+            { "nombre": "postura", "tipo": "enumeracion", "etiqueta": "Qué hace el pasaje con la afirmación", "obligatorio": true,
+              "opciones": [
+                { "valor": "sin_etiquetar", "etiqueta": "Sin etiquetar" }, { "valor": "apoya", "etiqueta": "Apoya" }, { "valor": "contradice", "etiqueta": "Contradice" },
+                { "valor": "matiza", "etiqueta": "Matiza" }, { "valor": "irrelevante", "etiqueta": "Irrelevante" }
+              ] },
+            { "nombre": "etiquetadaPor", "tipo": "oculto" }
+          ] },
+        { "nombre": "propuestas", "tipo": "propuestas", "etiqueta": "Propuestas del modelo", "visibleSi": "modo=plantillas_y_modelo" }
+      ]
+    }
   },
   {
     "id": "T23", "familia": "F4", "nombre": "Jerarquía de evidencia", "nombreLlano": "No toda evidencia pesa igual",

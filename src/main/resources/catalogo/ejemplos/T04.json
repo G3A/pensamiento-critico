@@ -1,0 +1,87 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras del barrio",
+    "versionEsquema": 1,
+    "config": { "elementos": ["proposito", "pregunta", "informacion", "supuestos", "conceptos", "inferencias", "implicaciones", "puntos_de_vista"],
+                "estandares": ["claridad", "exactitud", "precision", "relevancia", "profundidad", "amplitud", "logica", "significancia", "equidad"],
+                "umbral": 6, "modo": "plantillas_y_modelo" },
+    "datos": {
+      "tema": "cámaras en el barrio",
+      "proposito": "Que el barrio sea más seguro de noche.",
+      "pregunta": "¿Conviene que la junta instale cámaras en las esquinas?",
+      "informacion": "Hubo 12 robos en la cuadra este año.",
+      "supuestos": "Las cámaras hacen que los ladrones se vayan.",
+      "inferencias": "Con cámaras habría menos robos.",
+      "claridad": 7, "exactitud": 3, "amplitud": 2,
+      "textoLibre": "Queremos que el barrio sea más seguro. Las cámaras grabarían a todos los que pasan, también a los vecinos. Algunos dicen que es mejor contratar un vigilante.",
+      "propuestas": []
+    },
+    "resultado": {
+      "llenos": 5,
+      "vacios": ["conceptos", "implicaciones", "puntos_de_vista"],
+      "estandares": [ { "estandar": "claridad", "estado": "puntuado" }, { "estandar": "exactitud", "estado": "bajo" }, { "estandar": "precision", "estado": "sin puntuar" },
+                      { "estandar": "relevancia", "estado": "sin puntuar" }, { "estandar": "profundidad", "estado": "sin puntuar" }, { "estandar": "amplitud", "estado": "bajo" },
+                      { "estandar": "logica", "estado": "sin puntuar" }, { "estandar": "significancia", "estado": "sin puntuar" }, { "estandar": "equidad", "estado": "sin puntuar" } ],
+      "suficiente": false,
+      "pendientes": [ "Completar los elementos de «cámaras en el barrio»: conceptos, implicaciones y puntos de vista" ],
+      "resumen": "Tema: cámaras en el barrio · 5 de 8 elementos · 3 de 9 estándares puntuados."
+    },
+    "nota": "Una vecina prepara su intervención en la asamblea de la junta. Es la tarjeta de T04 de la sección 7b; con el modelo, puede adoptar una oración del texto libre como implicación."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Cambiar de trabajo",
+    "versionEsquema": 1,
+    "config": { "elementos": ["proposito", "pregunta", "informacion", "supuestos"], "estandares": ["claridad", "precision"], "umbral": 4, "modo": "plantillas" },
+    "datos": {
+      "tema": "cambiar de trabajo",
+      "proposito": "Pasar más tiempo con los niños.",
+      "pregunta": "¿Acepto el trabajo que queda a quince minutos de la casa?",
+      "informacion": "El trabajo nuevo paga lo mismo y me ahorra dos horas de bus al día.",
+      "supuestos": "El horario que me ofrecen se va a respetar.",
+      "claridad": 8, "precision": 6,
+      "propuestas": []
+    },
+    "resultado": {
+      "llenos": 4,
+      "vacios": [],
+      "estandares": [ { "estandar": "claridad", "estado": "puntuado" }, { "estandar": "precision", "estado": "puntuado" } ],
+      "suficiente": true,
+      "pendientes": [],
+      "resumen": "Tema: cambiar de trabajo · 4 de 4 elementos · 2 de 2 estándares puntuados."
+    },
+    "nota": "Un papá decide si acepta una oferta de trabajo, con cuatro elementos y dos estándares activos."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El precio del pan",
+    "versionEsquema": 1,
+    "config": { "elementos": ["proposito", "pregunta", "informacion", "supuestos", "conceptos", "inferencias", "implicaciones", "puntos_de_vista"],
+                "estandares": ["claridad", "exactitud", "precision", "relevancia", "profundidad", "amplitud", "logica", "significancia", "equidad"],
+                "umbral": 6, "modo": "plantillas" },
+    "datos": {
+      "tema": "subir el precio del pan",
+      "proposito": "Cubrir el aumento de la harina sin perder clientes.",
+      "pregunta": "¿Cuánto podemos subir el precio del pan?",
+      "informacion": "La harina subió 18% desde junio.",
+      "supuestos": "Los clientes del barrio aceptan una subida pequeña.",
+      "conceptos": "«Subida pequeña» es menos de 10%.",
+      "inferencias": "Una subida de 8% cubre casi todo el aumento de la harina.",
+      "implicaciones": "Si subimos 8%, el pan sigue más barato que en el supermercado.",
+      "relevancia": 9, "equidad": 4,
+      "propuestas": []
+    },
+    "resultado": {
+      "llenos": 7,
+      "vacios": ["puntos_de_vista"],
+      "estandares": [ { "estandar": "claridad", "estado": "sin puntuar" }, { "estandar": "exactitud", "estado": "sin puntuar" }, { "estandar": "precision", "estado": "sin puntuar" },
+                      { "estandar": "relevancia", "estado": "puntuado" }, { "estandar": "profundidad", "estado": "sin puntuar" }, { "estandar": "amplitud", "estado": "sin puntuar" },
+                      { "estandar": "logica", "estado": "sin puntuar" }, { "estandar": "significancia", "estado": "sin puntuar" }, { "estandar": "equidad", "estado": "bajo" } ],
+      "suficiente": true,
+      "pendientes": [],
+      "resumen": "Tema: subir el precio del pan · 7 de 8 elementos · 2 de 9 estándares puntuados."
+    },
+    "nota": "La dueña de la panadería piensa subir el precio del pan; sobre el umbral, con la equidad baja."
+  }
+]
