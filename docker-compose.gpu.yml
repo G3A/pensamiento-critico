@@ -1,0 +1,16 @@
+# Ollama con GPU NVIDIA. Solo para máquinas con GPU NVIDIA y el NVIDIA Container Toolkit (o Docker Desktop con WSL2):
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+# Sin este archivo, Ollama corre en CPU y la app funciona igual. Ollama decide cuántas capas caben en la VRAM y deja el
+# resto en CPU, así que una GPU de 4 GB sirve aunque el modelo con su contexto no quepa entero.
+services:
+  ollama:
+    environment:               # contexto a la mitad (flash attention y caché KV en 8 bits): el modelo cabe en 4 GB de VRAM
+      OLLAMA_FLASH_ATTENTION: "1"
+      OLLAMA_KV_CACHE_TYPE: "q8_0"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
