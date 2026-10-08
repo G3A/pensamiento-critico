@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import pensamiento.catalogo.CatalogoJson;
 import pensamiento.catalogo.MapeadorJson;
+import pensamiento.argdown.ParserArgdown;
+import pensamiento.expediente.GuardadoDeEjecuciones;
 import pensamiento.expediente.PaqueteDatos;
 import pensamiento.expediente.ServicioExpedientes;
 import pensamiento.expediente.ServicioRespaldo;
@@ -22,12 +24,15 @@ import pensamiento.nucleo.Json;
 import pensamiento.nucleo.Resultado;
 import pensamiento.nucleo.Uuid7;
 import pensamiento.nucleo.puertos.RegistroAuditoria;
+import pensamiento.tecnicas.f1.EjecutorMapa;
+import pensamiento.tecnicas.f1.ResultadoMapa;
 import pensamiento.tecnicas.f5.ConfigAch;
 import pensamiento.tecnicas.f5.EjecutorAch;
 import pensamiento.tecnicas.f5.EntradaAch;
 import pensamiento.tecnicas.f5.ResultadoAch;
 import pensamiento.testutil.builders.Contextos;
 import pensamiento.testutil.fakes.FakeRegistroAuditoria;
+import pensamiento.testutil.fakes.FakeRepositorioArgumentos;
 import pensamiento.testutil.fakes.FakeRegistroIdentificadores;
 import pensamiento.testutil.fakes.FakeReloj;
 import pensamiento.testutil.fakes.FakeRepositorioConfiguracion;
@@ -51,7 +56,8 @@ class ServicioRespaldoTest {
     private final FakeRegistroIdentificadores identificadores = new FakeRegistroIdentificadores();
     private final FakeRegistroAuditoria auditoria = new FakeRegistroAuditoria();
     private final FakeReloj reloj = new FakeReloj();
-    private final ServicioRespaldo respaldo = new ServicioRespaldo(expedientes, ejecuciones, configuraciones, identificadores, auditoria, reloj);
+    private final FakeRepositorioArgumentos argumentos = new FakeRepositorioArgumentos();
+    private final ServicioRespaldo respaldo = new ServicioRespaldo(expedientes, ejecuciones, argumentos, configuraciones, identificadores, auditoria, reloj);
     private final ServicioExpedientes servicioExpedientes = new ServicioExpedientes(expedientes, ejecuciones, new FakeRepositorioTecnica(), auditoria, reloj);
 
     /** La dueña corre las ventas de los sábados, la guarda en "La segunda sucursal" y personaliza T28. */
@@ -109,7 +115,7 @@ class ServicioRespaldoTest {
         FakeRepositorioExpediente otrosExpedientes = new FakeRepositorioExpediente();
         FakeRepositorioEjecucion otrasEjecuciones = new FakeRepositorioEjecucion();
         FakeRepositorioConfiguracion otrasConfiguraciones = new FakeRepositorioConfiguracion();
-        ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(otrosExpedientes, otrasEjecuciones, otrasConfiguraciones,
+        ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(otrosExpedientes, otrasEjecuciones, new FakeRepositorioArgumentos(), otrasConfiguraciones,
                 new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj);
 
         ServicioRespaldo.Importacion r = enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
@@ -157,5 +163,75 @@ class ServicioRespaldoTest {
         });
         // Las afirmaciones las genera Contextos.sinIa con una secuencia fija de versión 7; el resto, Uuid7.
         assertThat(ids).isNotEmpty().allSatisfy(id -> assertThat(id.version()).isEqualTo(7));
+    }
+
+    /** La dueña guarda el mapa de la segunda sucursal (T01, ejemplo 2): cuatro afirmaciones y dos argumentos. */
+    private Ejecucion dadoQueLaDuenaGuardoElMapaDeLaSucursal() {
+        Ejemplo sucursal = new CatalogoJson().ejemplosDe(EjecutorMapa.ID).get(1);
+        Resultado<ResultadoMapa> r = new EjecutorMapa(new ParserArgdown()).ejecutar(MapeadorJson.leer(sucursal.config(), EjecutorMapa.Config.class),
+                MapeadorJson.leer(sucursal.datos(), EjecutorMapa.Entrada.class), Contextos.sinIa());
+        Ejecucion e = new Ejecucion(Uuid7.en(reloj.ahora()), DUENA, INSTITUCION, EjecutorMapa.ID, 1, Optional.empty(), sucursal.config(),
+                sucursal.datos(), MapeadorJson.escribir(r.valor()), r.resumen(), Optional.empty(), "clave-mapa", reloj.ahora());
+        return new GuardadoDeEjecuciones(ejecuciones, argumentos).guardar(e, r);
+    }
+
+    @Test
+    void exportar_trae_los_argumentos_de_cada_ejecucion_con_sus_premisas() {
+        Ejecucion mapa = dadoQueLaDuenaGuardoElMapaDeLaSucursal();
+
+        PaqueteDatos paquete = respaldo.exportar(DUENA, INSTITUCION, "dueña de la panadería");
+
+        assertThat(paquete.version()).isEqualTo(2);
+        assertThat(paquete.ejecuciones()).singleElement().satisfies(d -> {
+            assertThat(d.id()).isEqualTo(mapa.id());
+            assertThat(d.argumentos()).extracting(PaqueteDatos.ArgumentoDatos::sentido, PaqueteDatos.ArgumentoDatos::peso)
+                    .containsExactly(org.assertj.core.groups.Tuple.tuple("pro", 3), org.assertj.core.groups.Tuple.tuple("contra", 1));
+            assertThat(d.argumentos().getFirst().premisas()).extracting(PaqueteDatos.PremisaDatos::asumible).containsExactly(true, true);
+            assertThat(d.argumentos().getFirst().textoArgdown()).startsWith("[Sucursal]: Conviene abrir la segunda sucursal en el centro.");
+        });
+    }
+
+    @Test
+    void importar_en_una_instalacion_vacia_recrea_los_argumentos_con_los_mismos_identificadores() {
+        Ejecucion mapa = dadoQueLaDuenaGuardoElMapaDeLaSucursal();
+        List<FakeRepositorioArgumentos.ArgumentoGuardado> originales = argumentos.deEjecucion(DUENA, mapa.id());
+        String archivo = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
+        FakeRepositorioArgumentos otrosArgumentos = new FakeRepositorioArgumentos();
+        ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(new FakeRepositorioExpediente(), new FakeRepositorioEjecucion(), otrosArgumentos,
+                new FakeRepositorioConfiguracion(), new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj);
+
+        enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
+        enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
+
+        assertThat(otrosArgumentos.deEjecucion(DUENA, mapa.id())).isEqualTo(originales);
+        assertThat(otrosArgumentos.total()).isEqualTo(2);
+    }
+
+    @Test
+    void un_archivo_de_la_version_1_se_migra_y_se_importa_sin_argumentos() {
+        dadoQueLaDuenaTieneUnExpedienteConUnaEjecucion();
+        String version2 = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
+        // Un archivo exportado en el hito 1: versión 1 y ejecuciones sin el campo argumentos.
+        String version1 = version2.replace("\"version\" : 2", "\"version\" : 1").replaceAll(",\\s*\"argumentos\" : \\[ \\]", "");
+        assertThat(version1).contains("\"version\" : 1").doesNotContain("\"argumentos\"");
+        FakeRepositorioEjecucion otrasEjecuciones = new FakeRepositorioEjecucion();
+        ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(new FakeRepositorioExpediente(), otrasEjecuciones, new FakeRepositorioArgumentos(),
+                new FakeRepositorioConfiguracion(), new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj);
+
+        ServicioRespaldo.Importacion r = enOtraInstalacion.importarTexto(DUENA, INSTITUCION, version1);
+
+        assertThat(r).isEqualTo(new ServicioRespaldo.Importacion(1, 0, 1, 0, 1));
+        assertThat(otrasEjecuciones.recientes(DUENA, 10)).hasSize(1);
+    }
+
+    @Test
+    void un_argumento_de_otra_persona_en_el_archivo_rechaza_la_importacion() {
+        Ejecucion mapa = dadoQueLaDuenaGuardoElMapaDeLaSucursal();
+        String archivo = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
+        identificadores.existe(argumentos.deEjecucion(DUENA, mapa.id()).getFirst().argumento().argumento().id(), DUENA);
+
+        assertThatThrownBy(() -> respaldo.importarTexto(SECRETARIA_DE_LA_JUNTA, INSTITUCION, archivo))
+                .isInstanceOf(ServicioRespaldo.IdentificadorAjeno.class);
+        assertThat(ejecuciones.recientes(SECRETARIA_DE_LA_JUNTA, 10)).isEmpty();
     }
 }

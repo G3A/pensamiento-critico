@@ -13,7 +13,10 @@ import tools.jackson.core.JacksonException;
 
 import pensamiento.catalogo.MapeadorJson;
 import pensamiento.nucleo.AfirmacionConRol;
+import pensamiento.nucleo.Argumento;
+import pensamiento.nucleo.ArgumentoProducido;
 import pensamiento.nucleo.Ejecucion;
+import pensamiento.nucleo.EstandarPrueba;
 import pensamiento.nucleo.Expediente;
 import pensamiento.nucleo.IdTecnica;
 import pensamiento.nucleo.Json;
@@ -27,12 +30,13 @@ import pensamiento.nucleo.TipoPendiente;
 import pensamiento.nucleo.puertos.RegistroAuditoria;
 import pensamiento.nucleo.puertos.RegistroIdentificadores;
 import pensamiento.nucleo.puertos.Reloj;
+import pensamiento.nucleo.puertos.RepositorioArgumentos;
 import pensamiento.nucleo.puertos.RepositorioConfiguracion;
 import pensamiento.nucleo.puertos.RepositorioEjecucion;
 import pensamiento.nucleo.puertos.RepositorioExpediente;
 
 /**
- * Exportar e importar los datos de una persona (RF-12). Importar es idempotente por identificador: lo que ya es
+ * Exportar e importar los datos de una persona (RF-12), con los argumentos de cada ejecución desde el hito 2. Importar es idempotente por identificador: lo que ya es
  * suyo se actualiza (nombre del expediente, asociación de la ejecución) y lo nuevo se agrega; nada se borra. Si
  * algún identificador ya es de otra persona, se rechaza el archivo completo. Ambas acciones quedan en auditoría.
  * La transacción la abre quien llama: si algo falla, no queda nada a medias.
@@ -64,15 +68,18 @@ public class ServicioRespaldo {
 
     private final RepositorioExpediente expedientes;
     private final RepositorioEjecucion ejecuciones;
+    private final RepositorioArgumentos argumentos;
     private final RepositorioConfiguracion configuraciones;
     private final RegistroIdentificadores identificadores;
     private final RegistroAuditoria auditoria;
     private final Reloj reloj;
 
-    public ServicioRespaldo(RepositorioExpediente expedientes, RepositorioEjecucion ejecuciones, RepositorioConfiguracion configuraciones,
-                            RegistroIdentificadores identificadores, RegistroAuditoria auditoria, Reloj reloj) {
+    public ServicioRespaldo(RepositorioExpediente expedientes, RepositorioEjecucion ejecuciones, RepositorioArgumentos argumentos,
+                            RepositorioConfiguracion configuraciones, RegistroIdentificadores identificadores, RegistroAuditoria auditoria,
+                            Reloj reloj) {
         this.expedientes = expedientes;
         this.ejecuciones = ejecuciones;
+        this.argumentos = argumentos;
         this.configuraciones = configuraciones;
         this.identificadores = identificadores;
         this.auditoria = auditoria;
@@ -98,8 +105,9 @@ public class ServicioRespaldo {
                     .map(p -> new PaqueteDatos.PendienteDatos(p.pendiente().tipo().name().toLowerCase(), p.pendiente().objetoId().orElse(null),
                             p.pendiente().vence().orElse(null), p.pendiente().descripcion()))
                     .toList();
+            List<PaqueteDatos.ArgumentoDatos> args = argumentos.deEjecucion(usuarioId, e.id()).stream().map(g -> datos(g.argumento())).toList();
             ejs.add(new PaqueteDatos.EjecucionDatos(e.id(), e.tecnica().valor(), e.versionEsquema(), e.expedienteId().orElse(null),
-                    nodo(e.config()), nodo(e.datos()), nodo(e.resultado()), e.resumen(), e.claveIdempotencia(), e.creadaEn(), afirmaciones, suyos));
+                    nodo(e.config()), nodo(e.datos()), nodo(e.resultado()), e.resumen(), e.claveIdempotencia(), e.creadaEn(), afirmaciones, suyos, args));
         }
         auditoria.registrar(new RegistroAuditoria.Evento(Optional.of(usuarioId), institucionId, RegistroAuditoria.Accion.EXPORTAR,
                 "datos-de-una-persona", Optional.of(usuarioId), reloj.ahora()));
@@ -120,15 +128,19 @@ public class ServicioRespaldo {
         return importar(usuarioId, institucionId, paquete);
     }
 
-    public Importacion importar(UUID usuarioId, UUID institucionId, PaqueteDatos paquete) {
-        if (paquete == null || !PaqueteDatos.FORMATO.equals(paquete.formato()) || paquete.version() != PaqueteDatos.VERSION) {
-            throw new ArchivoInvalido("El archivo no es un respaldo de datos de esta aplicación (versión " + PaqueteDatos.VERSION + ").");
+    public Importacion importar(UUID usuarioId, UUID institucionId, PaqueteDatos recibido) {
+        if (recibido == null || !PaqueteDatos.FORMATO.equals(recibido.formato())
+                || (recibido.version() != PaqueteDatos.VERSION && recibido.version() != PaqueteDatos.VERSION_ANTERIOR)) {
+            throw new ArchivoInvalido("El archivo no es un respaldo de datos de esta aplicación (versión " + PaqueteDatos.VERSION_ANTERIOR
+                    + " o " + PaqueteDatos.VERSION + ").");
         }
+        PaqueteDatos paquete = recibido.migrado();
         Set<UUID> ids = new LinkedHashSet<>();
         paquete.expedientes().forEach(x -> ids.add(exigir(x.id())));
         for (PaqueteDatos.EjecucionDatos e : paquete.ejecuciones()) {
             ids.add(exigir(e.id()));
             listaSegura(e.afirmaciones()).forEach(a -> ids.add(exigir(a.id())));
+            listaSegura(e.argumentos()).forEach(a -> ids.add(exigir(a.id())));
         }
         long ajenos = ids.stream().filter(id -> identificadores.deOtroUsuario(usuarioId, id)).count();
         if (ajenos > 0) {
@@ -166,6 +178,15 @@ public class ServicioRespaldo {
             List<Pendiente> pendientes = listaSegura(d.pendientes()).stream().map(p -> new Pendiente(TipoPendiente.valueOf(p.tipo().toUpperCase()),
                     Optional.ofNullable(p.objetoId()), Optional.ofNullable(p.vence()), p.descripcion() == null ? "" : p.descripcion())).toList();
             ejecuciones.guardar(e, afirmaciones, pendientes);
+            List<ArgumentoProducido> suyos = listaSegura(d.argumentos()).stream().map(ServicioRespaldo::producido).toList();
+            Set<UUID> deLaEjecucion = new java.util.HashSet<>(afirmaciones.stream().map(AfirmacionConRol::afirmacionId).toList());
+            for (ArgumentoProducido p : suyos) {
+                if (!deLaEjecucion.contains(p.argumento().conclusionId())
+                        || p.argumento().premisas().stream().anyMatch(x -> !deLaEjecucion.contains(x.afirmacionId()))) {
+                    throw new ArchivoInvalido("Un argumento del archivo apunta a una afirmación que no es de su ejecución.");
+                }
+            }
+            argumentos.guardar(usuarioId, institucionId, e.id(), suyos);
             ejNuevas++;
         }
         for (PaqueteDatos.Configuracion c : paquete.configuraciones()) {
@@ -174,6 +195,24 @@ public class ServicioRespaldo {
         auditoria.registrar(new RegistroAuditoria.Evento(Optional.of(usuarioId), institucionId, RegistroAuditoria.Accion.IMPORTAR,
                 "datos-de-una-persona", Optional.of(usuarioId), reloj.ahora()));
         return new Importacion(expNuevos, expActualizados, ejNuevas, ejYaEstaban, paquete.configuraciones().size());
+    }
+
+    private static PaqueteDatos.ArgumentoDatos datos(ArgumentoProducido p) {
+        Argumento a = p.argumento();
+        return new PaqueteDatos.ArgumentoDatos(a.id(), a.conclusionId(), p.esquemaId().orElse(null), a.peso(), a.sentido().name().toLowerCase(),
+                p.estandar().enBaseDeDatos(), p.textoArgdown().orElse(null),
+                a.premisas().stream().map(x -> new PaqueteDatos.PremisaDatos(x.afirmacionId(), x.orden(), x.asumible())).toList());
+    }
+
+    private static ArgumentoProducido producido(PaqueteDatos.ArgumentoDatos d) {
+        try {
+            return new ArgumentoProducido(new Argumento(exigir(d.id()), exigir(d.conclusionId()),
+                    d.premisas().stream().map(x -> new Argumento.Premisa(exigir(x.afirmacionId()), x.orden(), x.asumible())).toList(), d.peso(),
+                    Argumento.Sentido.valueOf(d.sentido().toUpperCase())), EstandarPrueba.valueOf(d.estandar().toUpperCase()),
+                    Optional.ofNullable(d.esquemaId()), Optional.ofNullable(d.textoArgdown()));
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new ArchivoInvalido("Un argumento del archivo no es válido.");
+        }
     }
 
     private static UUID exigir(UUID id) {

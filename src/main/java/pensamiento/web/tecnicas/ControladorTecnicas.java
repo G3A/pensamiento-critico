@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import pensamiento.nucleo.Contexto;
+import pensamiento.expediente.GuardadoDeEjecuciones;
 import pensamiento.nucleo.Ejecucion;
 import pensamiento.nucleo.Ejemplo;
 import pensamiento.nucleo.IdTecnica;
@@ -94,16 +95,19 @@ public class ControladorTecnicas {
     private final RepositorioTecnica tecnicas;
     private final RepositorioEjecucion ejecuciones;
     private final RepositorioExpediente expedientes;
+    private final GuardadoDeEjecuciones guardado;
     private final MotorTecnicas motor;
     private final Renderizadores renderizadores;
     private final Reloj reloj;
     private final Pagina.Fabrica paginas;
 
     public ControladorTecnicas(RepositorioTecnica tecnicas, RepositorioEjecucion ejecuciones, RepositorioExpediente expedientes,
-                               MotorTecnicas motor, Renderizadores renderizadores, Reloj reloj, Pagina.Fabrica paginas) {
+                               GuardadoDeEjecuciones guardado, MotorTecnicas motor, Renderizadores renderizadores, Reloj reloj,
+                               Pagina.Fabrica paginas) {
         this.tecnicas = tecnicas;
         this.ejecuciones = ejecuciones;
         this.expedientes = expedientes;
+        this.guardado = guardado;
         this.motor = motor;
         this.renderizadores = renderizadores;
         this.reloj = reloj;
@@ -260,7 +264,7 @@ public class ControladorTecnicas {
         return "fragmentos/ficha/resultado";
     }
 
-    /** Guardar en historial: transacción corta con ejecución, afirmaciones y pendientes; idempotente por clave. */
+    /** Guardar en historial: transacción corta con ejecución, afirmaciones, pendientes y argumentos; idempotente por clave. */
     @PostMapping("/tecnicas/{id}/ejecuciones")
     @Transactional
     public String guardar(@PathVariable String id, @RequestParam MultiValueMap<String, String> parametros,
@@ -278,7 +282,7 @@ public class ControladorTecnicas {
         Ejecucion nueva = new Ejecucion(Uuid7.en(reloj.ahora()), yo.id(), yo.institucionId(), t.id(), r.versionEsquema(), Optional.empty(),
                 ev.config(), ev.entrada(), pensamiento.catalogo.MapeadorJson.escribir(r.valor()), r.resumen(), Optional.empty(),
                 clave(parametros), reloj.ahora());
-        Ejecucion guardada = ejecuciones.guardar(nueva, r.afirmaciones(), r.pendientes());
+        Ejecucion guardada = guardado.guardar(nueva, r);
         respuesta.setHeader("HX-Trigger", "ejecucion-guardada");
         modelo.addAttribute("resultado", renderizadores.render(t, Optional.of(guardada.id()), "", motor.valorDe(guardada), Modo.COMPLETO));
         modelo.addAttribute("tecnica", t);
