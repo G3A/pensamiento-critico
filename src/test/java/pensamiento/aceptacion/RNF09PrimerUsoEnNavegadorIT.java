@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import pensamiento.testutil.Entorno;
 
 /**
- * RNF-09 y RF-08: la única prueba de humo en navegador real. Una persona nueva entra, pulsa "Empieza con un
+ * RNF-09 y RF-08: las pruebas de humo en navegador real. Una persona nueva entra, pulsa "Empieza con un
  * ejemplo", evalúa y ve la matriz de T28 · Análisis de hipótesis en competencia (ACH). Corre en Chromium sin
  * pantalla dentro del perfil test; cualquier error de consola (por ejemplo, una violación de la CSP) la hace fallar.
  */
@@ -59,6 +59,58 @@ class RNF09PrimerUsoEnNavegadorIT {
             assertThat(erroresDeConsola).as("errores de consola, incluidas violaciones de la CSP").isEmpty();
         }
     }
+
+    /**
+     * Hito 2 (RF-09, RF-10, RNF-06): en el Taller, a 360 px, el ejemplo de la panadería con una réplica que descalifica a
+     * quien objeta se evalúa; aparecen el mapa dibujado, el panel Toulmin y una marca de falacia; elegir un nodo en la
+     * lista lo resalta también en el SVG (componente Alpine registrado en app.js, bajo la CSP). Sin errores de consola.
+     */
+    @Test
+    void en_el_taller_se_evalua_el_argumento_y_se_ve_el_mapa_y_una_marca_de_falacia() {
+        ClienteApp admin = Instalacion.administrador();
+        String persona = Instalacion.personaNueva(admin, "dueña", "1470");
+        String base = urlConIp(Entorno.urlApp());
+
+        try (Playwright playwright = Playwright.create();
+             Browser navegador = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true))) {
+            Page pagina = navegador.newContext(new Browser.NewContextOptions().setViewportSize(360, 780)).newPage();
+            List<String> erroresDeConsola = new ArrayList<>();
+            pagina.onConsoleMessage(m -> {
+                if ("error".equals(m.type())) {
+                    erroresDeConsola.add(m.text());
+                }
+            });
+            pagina.navigate(base + "/bloqueo");
+            pagina.getByLabel("Tu PIN").fill("1470");
+            pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(persona).setExact(true)).click();
+            pagina.waitForURL(base + "/");
+
+            pagina.navigate(base + "/taller?ejemplo=sucursal");
+            String texto = pagina.locator("#taller-argdown").inputValue();
+            assertThat(texto).startsWith("[Sucursal]: Conviene abrir la segunda sucursal en el centro.");
+            pagina.locator("#taller-argdown").fill(texto + "\n    - El empleado que lo dice es un perezoso, así que su objeción no sirve.");
+            pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Evaluar").setExact(true)).click();
+            pagina.locator("#form-taller [data-patron=V01] svg g.node").first().waitFor();
+
+            assertThat(pagina.locator("#form-taller [data-patron=V01] svg g.node").count()).isEqualTo(5);
+            assertThat(pagina.locator("#form-taller [data-patron=V02] li[data-parte=respaldo] .chip").textContent()).isEqualTo("falta");
+            assertThat(pagina.locator("#form-taller [data-patron=V05] mark.propuesta").textContent()).contains("es un perezoso");
+
+            var primero = pagina.locator("#form-taller button.nodo-lista").first();
+            String id = primero.getAttribute("data-nodo");
+            primero.click();
+            assertThat(primero.getAttribute("aria-pressed")).isEqualTo("true");
+            assertThat(pagina.locator("[id=\"" + id + "\"]").getAttribute("class")).contains("seleccionado");
+
+            assertThat(pagina.evaluate("document.documentElement.scrollWidth")).as("sin desplazamiento horizontal a 360 px; se salen: " + pagina.evaluate(SE_SALEN)).isEqualTo(360);
+            assertThat(erroresDeConsola).as("errores de consola, incluidas violaciones de la CSP").isEmpty();
+        }
+    }
+
+    /** Los elementos más profundos que pasan del borde derecho de la ventana, para saber qué arreglar. */
+    private static final String SE_SALEN = "Array.from(document.querySelectorAll(\"body *\")).filter(e => e.getBoundingClientRect().right > "
+            + "window.innerWidth + 1 && !Array.from(e.children).some(h => h.getBoundingClientRect().right > window.innerWidth + 1))"
+            + ".slice(0, 8).map(e => e.tagName + \"#\" + e.id + \".\" + e.className + \" \" + Math.round(e.getBoundingClientRect().right))";
 
     /**
      * En la red del compose la app es http://app:8080, y "app" es un dominio de nivel superior en la lista de precarga

@@ -11,7 +11,7 @@
   @if(!v.valor().marcas().isEmpty())
     <ol class="lista-marcas">
       @for(ResultadoFalacias.Marca m : v.valor().marcas())
-        <li id="${v.idMarca(m)}" class="marca marca-${m.estado().toString()}" data-marca="${m.codigo()}">
+        <li id="${v.idMarca(m)}" class="marca-falacia marca-${m.estado().toString()}" data-marca="${m.codigo()}">
           <p><strong>${m.codigo()}</strong> <span class="${v.claseEstado(m)}">${v.estado(m)}</span> · ${m.esquemaNombre()}</p>
           @if(v.valor().mostrarPregunta())
             <p class="pregunta-critica"><span class="detalle">Pregunta crítica sin responder:</span> ${m.preguntaTexto()}</p>

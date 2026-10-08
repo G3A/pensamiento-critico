@@ -289,7 +289,7 @@ fieldset.campo > legend, .campo legend { font-weight: 600; padding: 0 .25rem; }
 .tecnica .nombre-llano a { color: var(--texto); }
 
 /* V01 · mapa de argumentos. El SVG llega sin fill ni stroke: todo color sale de aquí, por la clase de cada nodo. */
-.mapa-svg { margin: 0 0 .5rem; overflow-x: auto; }
+.mapa-svg { margin: 0 0 .5rem; overflow-x: auto; max-width: 100%; }
 .mapa-svg svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
 .mapa-svg svg g.graph > polygon { fill: none; stroke: none; }
 .mapa-svg svg text { fill: var(--texto); }
@@ -330,14 +330,15 @@ pre.argdown { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--
 .marca-texto.confirmada { background: var(--aviso-fondo); text-decoration: underline var(--aviso); }
 .codigo-marca { font-weight: 700; font-size: .8rem; }
 .lista-marcas { padding-left: 1.1rem; }
-.lista-marcas .marca p { margin: .2rem 0; }
+.lista-marcas .marca-falacia p { margin: .2rem 0; }
 
 /* P14 · Taller de argumentos. */
 .taller-editor textarea { width: 100%; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: .95rem; }
 .botones-marcado { display: flex; flex-wrap: wrap; gap: .5rem; margin: .5rem 0 var(--espacio); }
 .extras-toulmin { display: grid; gap: .25rem; border: 1px solid var(--borde); border-radius: var(--radio); margin: 0 0 var(--espacio); }
 .extras-toulmin input { width: 100%; }
-.taller-resultados { display: grid; gap: var(--espacio); margin-top: var(--espacio); }
+.taller-resultados { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--espacio); margin-top: var(--espacio); }
+.taller-form fieldset, .resultado { min-width: 0; }
 .panel-taller { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: var(--espacio); min-width: 0; }
 .confirmar-marcas { border: 1px solid var(--borde); border-radius: var(--radio); }
 .taller-guardado:empty { display: none; }
