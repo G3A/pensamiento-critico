@@ -5,12 +5,47 @@ más flujos guiados que las encadenan. Todo funciona offline, sin ninguna API ex
 docker-compose. La única IA es Ollama local con modelos de 4 GB o menos (qwen3:4b y bge-m3), y la
 aplicación funciona igual sin ella ("modo plantillas").
 
-Estado: **hito 1, "Una técnica de punta a punta"**: T28 · Análisis de hipótesis en competencia (ACH) completa,
-del catálogo al Expediente, más las 49 fichas "Qué es". La especificación completa está en
-[`docs/investigacion-y-propuestas.html`](docs/investigacion-y-propuestas.html); los prompts con que se
-construyó cada hito, en [`docs/prompt-hito-0.md`](docs/prompt-hito-0.md) y [`docs/prompt-hito-1.md`](docs/prompt-hito-1.md).
-Pendiente para cerrar RF-08: las sesiones moderadas de primer uso, con el guion en
-[`docs/sesiones-primer-uso.md`](docs/sesiones-primer-uso.md).
+Estado: **hito 2, "El mapa". Fin de la versión 1** (hitos 0 a 2): T28 · Análisis de hipótesis en competencia
+(ACH), T01 · Mapeo de argumentos, T02 · Modelo de Toulmin, T06 · Reconstrucción de premisas ocultas y T13 · Falacias
+como esquemas fallidos (solo con reglas), más el Taller de argumentos y las 49 fichas "Qué es". La especificación
+completa está en [`docs/investigacion-y-propuestas.html`](docs/investigacion-y-propuestas.html); los prompts con que
+se construyó cada hito, en [`docs/prompt-hito-0.md`](docs/prompt-hito-0.md), [`docs/prompt-hito-1.md`](docs/prompt-hito-1.md)
+y [`docs/prompt-hito-2.md`](docs/prompt-hito-2.md). Pendiente para cerrar RF-08: las sesiones moderadas de primer
+uso, con el guion en [`docs/sesiones-primer-uso.md`](docs/sesiones-primer-uso.md); al cerrar este hito todavía no
+se habían hecho, así que no hay hallazgos que aplicar a las fichas.
+
+## Fin de la versión 1
+
+Verificado el 2026-10-07 al cerrar el hito 2 (detalle en [Pruebas](#pruebas) y [Mediciones del hito 2](#mediciones-del-hito-2)):
+
+- Los ejemplos de T01, T02, T06 y T13 pasan como oráculo, desde el JSON del catálogo y desde la tabla `ejemplo`.
+- Pasa la propiedad de ida y vuelta del subconjunto Argdown (300 árboles generados por corrida, en las dos direcciones).
+- Pasa el contrato de Graphviz con etiqueta hostil (`<script>`, comillas y llaves de DOT) contra el Fake y contra
+  Graphviz real: el texto sale literal, el SVG sale inerte y sin `fill`, `stroke` ni `style`.
+- Las reglas de T13 cumplen el umbral escrito antes de medir sobre el banco de 50 fragmentos (ver la advertencia en
+  [Mediciones](#mediciones-del-hito-2)).
+- k6 en verde: 10 personas, p95 de las pantallas sin IA en 65 ms (umbral 500 ms), 0 % de errores.
+- Aceptación por HTTP del flujo del Taller en verde, con RF-03 extendido al argumento.
+- Perfil test completo, también con `CONTRACT_REAL=true`, y gates en verde; ArchUnit, Fakes sin contrato y voseo pasan.
+
+Lo que no entró: RF-08 queda abierto hasta las sesiones moderadas; la "1 sesión con Ollama activa" de RNF-03 no se
+puede ejercitar porque ninguna técnica usa Ollama en la versión 1 (llega en el hito 3).
+
+## Qué se puede hacer en el hito 2
+
+- **Taller de argumentos** (`/taller`, P14 reducido): escribes el argumento en el subconjunto Argdown
+  ([`docs/argdown-subconjunto.md`](docs/argdown-subconjunto.md)) con botones para agregar conclusión, premisa,
+  objeción o premisa oculta. Evaluar redibuja tres paneles sobre el mismo texto: el mapa (T01, SVG de Graphviz con
+  la lista de nodos navegable por teclado), el panel Toulmin (T02) y el de falacias por reglas (T13), donde
+  confirmas cada marca. Guardar crea una ejecución por técnica, idempotente, y las asocias juntas a un expediente.
+  Lo demás del mockup (Wigmore, estándar por afirmación, CER, steelman) dice en pantalla que llegará más adelante.
+- **Fichas de T01, T02, T06 y T13** con sus tres ejemplos, configuración plegable, historial y Expediente, como T28.
+  Patrones nuevos: V01 (grafo), V02 (lista de verificación con estado) y V05 (texto propio marcado).
+- **Estándar de prueba** (R04): el mapa dice por cada argumento si es aplicable y por cada conclusión si es aceptable
+  bajo el estándar elegido, y por qué no lo es todavía.
+- **Argumentos guardados**: `/argumentos/{id}` muestra uno; el respaldo de cada persona los exporta e importa.
+
+Los ejemplos están en prosa, con el cálculo a mano, en [`docs/ejemplos/`](docs/ejemplos/).
 
 ## Qué se puede hacer en el hito 1
 
@@ -106,9 +141,9 @@ Paquetes (sección 4 del documento), verificados con ArchUnit en el perfil test:
 |---|---|---|
 | `nucleo` | Afirmación, Evidencia, Fuente, Argumento, Técnica, reglas R01 a R04 como código puro, puertos (`Ia`, `Grafico`, `Reloj`, repositorios), el contrato `Ejecutor<C, E, R>` y el record `Resultado<R>` | nadie: sin Spring, sin JPA, sin Ollama |
 | `catalogo` | lectura del JSON del repo, semilla repeatable de Flyway, repositorio de técnicas, verificación al arrancar, intenciones | `nucleo` |
-| `tecnicas.f1` a `f8` | un ejecutor por técnica; en el hito 1, `tecnicas.f5.EjecutorAch` (T28) | `nucleo`, `catalogo` |
-| `flujos`, `expediente` | flujos guiados; Expediente (`ServicioExpedientes`), respaldo de cada persona (`ServicioRespaldo`) y los repositorios JDBC de ejecución, expediente e identificadores | `tecnicas`, `catalogo`, `nucleo` |
-| `argdown`, `graficos`, `ia`, `biblioteca`, `trabajos` | adaptadores: Graphviz como proceso hijo con saneador de SVG, Ollama vía Spring AI, extractor de PDF con límites | solo puertos de `nucleo` |
+| `tecnicas.f1` a `f8` | un ejecutor por técnica: `f1` T01, T02 y T06 (con el mapa argumental y R04), `f3` T13 con sus reglas léxicas, `f5` T28 | `nucleo`, `catalogo` |
+| `flujos`, `expediente` | flujos guiados (el Taller de argumentos arma T02 y T13 desde el mapa); Expediente, respaldo de cada persona, guardado de ejecuciones con argumentos y los repositorios JDBC de ejecución, argumento, expediente e identificadores | `tecnicas`, `catalogo`, `nucleo` |
+| `argdown`, `graficos`, `ia`, `biblioteca`, `trabajos` | adaptadores: parser del subconjunto Argdown, Graphviz como proceso hijo con saneador de SVG, Ollama vía Spring AI, extractor de PDF con límites | solo puertos de `nucleo` |
 | `web` | controladores, plantillas JTE, seguridad (Spring Security, RLS, CSRF, CSP), usuarios | `flujos`, `tecnicas`, `catalogo` |
 
 Stack fijado: Spring Boot 4.1.1 sobre Java 25 con hilos virtuales, JTE 3.2.4 precompilado, htmx 2.0.11 y
@@ -136,23 +171,23 @@ Dos velocidades, al estilo Rainsberger (Fakes, sin `verify`), bajo `src/test/jav
 
 | Raíz | Qué hay | Cuándo corre |
 |---|---|---|
-| `unidad/` | collaboration tests de R01 a R04 con los ejemplos de la sección 5b como oráculo, propiedades jqwik (fuerza entre 0 y 8, estado total, R04 sin peso en ciclos), verificador del catálogo, servicio de usuarios, saneador de SVG; en el hito 1, el oráculo de T28 con sus ejemplos y sus propiedades jqwik, el formulario por lenguaje de campos, Expediente y respaldo con Fakes, y las pruebas de plantilla con jsoup | `mvn test` (sin red ni base) |
-| `contrato/` | una suite abstracta por puerto (`Ia`, `Grafico`, `Reloj`, repositorios de técnica, ejecución, usuarios, expediente, configuración y auditoría, registro de identificadores), `Fake*ContractTest` | cada PR |
+| `unidad/` | collaboration tests de R01 a R04 con los ejemplos de la sección 5b como oráculo, propiedades jqwik (fuerza entre 0 y 8, estado total, R04 sin peso en ciclos), verificador del catálogo, servicio de usuarios, saneador de SVG; en el hito 1, el oráculo de T28 con sus ejemplos y sus propiedades jqwik, el formulario por lenguaje de campos, Expediente y respaldo con Fakes, y las pruebas de plantilla con jsoup; en el hito 2, los oráculos de T01, T02, T06 y T13, propiedades jqwik del mapa (R04 monótona entre estándares, una afirmación por nodo), el banco de 50 fragmentos con su umbral, el flujo del Taller, el guardado con argumentos y las plantillas V01, V02, V05 y del Taller | `mvn test` (sin red ni base) |
+| `contrato/` | una suite abstracta por puerto (`Ia`, `Grafico`, `Reloj`, repositorios de técnica, ejecución, usuarios, expediente, configuración y auditoría, registro de identificadores; en el hito 2, esquemas de Walton, argumentos y `Argdown`, este último con la propiedad de ida y vuelta contra el parser real, que es puro), `Fake*ContractTest` | cada PR |
 | `contrato/real/` | `Real*ContractIT` contra Ollama, Graphviz y PostgreSQL del compose | nocturno, `CONTRACT_REAL=true` |
-| `integracion/`, `aceptacion/` | RLS por SQL; proyección de pendientes en la misma transacción (RF-07); oráculo de T28 sobre la tabla `ejemplo`; RF-01, RF-02, RF-03, RF-11 y el flujo completo de T28 por HTTP contra `app:8080`; prueba de humo en Chromium con Playwright (RNF-09) | perfil test del compose |
+| `integracion/`, `aceptacion/` | RLS por SQL; proyección de pendientes en la misma transacción (RF-07); oráculos de T28, T01, T02, T06 y T13 sobre la tabla `ejemplo`; RF-01, RF-02, RF-03, RF-11, el flujo completo de T28 y el del Taller por HTTP contra `app:8080`; dos pruebas de humo en Chromium con Playwright (RNF-09): primer uso y Taller a 360 px | perfil test del compose |
 | `arquitectura/`, `sensores/` | ArchUnit; Fakes sin contrato; voseo sobre plantillas, catálogo y código; configuración segura | cada PR |
 
-Última corrida local del perfil completo (2026-10-07, hito 1), con `CONTRACT_REAL=true`: 225 pruebas rápidas y 81 de integración y aceptación en verde, 0 omitidas; 58 de ellas son contratos reales en 10 `Real*ContractIT` (10 contra Ollama). Gates `-Pgates` (SpotBugs con FindSecBugs y Dependency-Check) en verde el mismo día.
+Última corrida local del perfil completo (2026-10-07, hito 2), con `CONTRACT_REAL=true`: 340 pruebas rápidas y 101 de integración y aceptación en verde, 0 omitidas; 70 de ellas son contratos reales en 12 `Real*ContractIT` (10 contra Ollama). Gates `-Pgates` (SpotBugs con FindSecBugs y Dependency-Check) en verde el mismo día. La carga con k6 se corre aparte (`docker compose --profile test run --rm k6`).
 
 Sensores de línea de comandos: `sensores/voseo.sh` (mismo listado que `VoseoTest`, en `sensores/voseo-prohibido.txt`).
 
 ### Pipeline
 
-- **PR** (`.github/workflows/pr.yml`): compose levantado, perfil test, sensores y gates `-Pgates`
+- **PR** (`.github/workflows/pr.yml`): compose levantado, perfil test, carga básica con k6 (resumen como artefacto), sensores y gates `-Pgates`
   (Dependency-Check con `NVD_API_KEY` opcional como secreto del repo; SpotBugs con FindSecBugs).
 - **Nocturno** (`.github/workflows/nocturno.yml`, cron `0 7 * * *` UTC): `CONTRACT_REAL=true` contra el
   Ollama y el PostgreSQL del compose, con caché de los modelos.
-- **Última corrida nocturna en verde**: 2026-10-07 22:10 UTC en GitHub Actions, run [37693730669](https://github.com/G3A/pensamiento-critico/actions/runs/37693730669), lanzado a mano. Los 8 `Real*ContractIT` corrieron completos: 42 pruebas, 0 omitidas, 10 de ellas contra Ollama real. El paso "Sensor contra el falso verde" falla el workflow si algún contrato real queda omitido.
+- **Última corrida nocturna en verde**: 2026-10-07 22:10 UTC en GitHub Actions, run [37693730669](https://github.com/G3A/pensamiento-critico/actions/runs/37693730669), lanzado a mano. Los 8 `Real*ContractIT` corrieron completos: 42 pruebas, 0 omitidas, 10 de ellas contra Ollama real. El paso "Sensor contra el falso verde" falla el workflow si algún contrato real queda omitido; desde el hito 2 su lista incluye `RepositorioEsquemas` y `RepositorioArgumentos`. Esa corrida es anterior al hito 2: los 12 contratos reales del hito 2 pasaron en local con `CONTRACT_REAL=true`, y el nocturno de GitHub los correrá cuando el hito llegue al repositorio remoto.
 
 ## Mediciones del hito 0
 
@@ -194,6 +229,33 @@ variante que razona en voz alta dentro del contenido ("Okay, let's tackle this p
 de uno a cinco minutos. El primer token sí cumple los 3 s en caliente; el turno completo no cumple los 15 s.
 Para el hito 3 hay que evaluar `qwen3:4b-instruct-2507` (misma familia, sin razonamiento) y `gemma3:4b` con
 el banco de 30 diálogos antes de fijar el modelo por defecto.
+
+## Mediciones del hito 2
+
+Misma máquina que en el hito 0, el 7 de octubre de 2026.
+
+**Carga básica con k6 (RNF-03)**: `docker compose --profile test run --rm k6`, script
+[`sensores/k6/navegacion.js`](sensores/k6/navegacion.js). Diez personas a la vez (`constant-vus`, 60 s, cada una con
+su sesión) recorren catálogo, ficha de T28, su pestaña Usar, el Taller y evalúan el argumento de la panadería (Graphviz
+dibuja el mapa en cada iteración).
+
+| Métrica | Primera corrida (línea base) | Umbral que falla el build |
+|---|---|---|
+| p95 de las pantallas sin IA | 65 ms (media 19 ms, máximo 78 ms) | menos de 500 ms (RNF-03) |
+| Peticiones fallidas | 0 de 664 | 0 % |
+| Chequeos de contenido | 600 de 600 | 100 % |
+
+**Reglas de T13 sobre el banco de 50 fragmentos (RF-10)**, con el umbral escrito antes de medir en el propio banco:
+
+| Métrica | Medido | Umbral |
+|---|---|---|
+| Acierto de esquema | 50 de 50 | al menos 35 |
+| Acierto de esquema y pregunta crítica | 50 de 50 | al menos 30 |
+| Marcas sobre los 10 fragmentos sin esquema | 0 | como máximo 3 |
+
+Advertencia: las reglas se escribieron con el banco a la vista, así que el 100 % mide el piso, no la generalización.
+Un texto nuevo con otras palabras puede no marcarse. El hito 3 debe sumar fragmentos que nadie haya visto al escribir
+las reglas antes de comparar las reglas con el modelo.
 
 ## Licencia
 
@@ -254,3 +316,29 @@ Igual que en el hito 0: lo que el documento no fijaba se resolvió con la opció
 | 2026-10-07 | La comparación del historial es genérica: empareja los elementos de cada lista del resultado por su `texto` e ignora identificadores y códigos de posición. | Sirve para cualquier técnica cuyo resultado tenga listas con texto, sin código por técnica. |
 | 2026-10-07 | El sensor `sensores/voseo.sh` usaba `grep -E` y `-P` a la vez: grep abortaba y el error se leía como "sin hallazgos". Ahora usa solo `-P`, sale con 2 si grep falla y revisa también `docs/ejemplos`. | Desde el hito 0 el sensor de línea de comandos no detectaba nada; `VoseoTest`, el de Maven, sí funcionaba. |
 | 2026-10-07 | El contrato real del catálogo ya no borra la fila que reescribe: guarda una copia y la restaura. | Borrar T28 se llevaba en cascada sus ejemplos y fallaba con ejecuciones de usuarios. |
+
+## Decisiones tomadas en el hito 2
+
+Igual que en los hitos anteriores: lo que el documento no fijaba se resolvió con la opción más simple que respeta las
+reglas. Las decisiones de cálculo de cada técnica están, además, en su archivo de [`docs/ejemplos/`](docs/ejemplos/).
+
+| Fecha | Decisión | Por qué |
+|---|---|---|
+| 2026-10-07 | Subconjunto Argdown: enunciados con título opcional, referencias por título, argumentos con nombre, `+` y `-` por indentación de dos espacios, las marcas `#oculta` y `#asumible` y `{peso: N}` de 0 a 9 ([gramática](docs/argdown-subconjunto.md)). | Cubre lo que pide RF-09 (premisa oculta marcada, título del argumento) y lo que R04 necesita (supuestos y pesos) con sintaxis de Argdown. |
+| 2026-10-07 | El árbol Argdown y el puerto `Argdown` viven en `nucleo`; el parser, en `argdown`. No hay Fake: el adaptador es puro y su contrato (`ParserArgdownContractTest`) corre en cada PR, sin `Real*ContractIT`. | Los ejecutores de `tecnicas` solo pueden depender de `nucleo`; un Fake de un parser en memoria no aislaría ningún I/O. |
+| 2026-10-07 | Roles del mapa por bando: lo que apoya queda del bando de lo apoyado y lo que ataca, del contrario; una réplica a una objeción es premisa. `#oculta` manda sobre el bando. Si un enunciado aparece dos veces, manda la primera. | La clase por rol (`conclusion`, `premisa`, `objecion`, `oculta`) debe decir de qué lado juega cada nodo, también en cadenas de ataques. |
+| 2026-10-07 | En este hito ninguna afirmación llega a "verificada": para R04, `#asumible` y `#oculta` son supuestos aceptados si nadie los ataca; lo demás está sin verificar. El ejemplo "conviene abrir la sucursal" de la sección 5b se reproduce con el tráfico como supuesto. | La ficha de verificación es posterior; marcar algo como verificado a mano contradice "la app nunca dice verdadero". |
+| 2026-10-07 | Las afirmaciones del mapa se guardan con tipo `hecho`. | El subconjunto no dice el tipo; la ficha de verificación lo pedirá. |
+| 2026-10-07 | V4 agrega `argumento.ejecucion_id` (cascada) y `argumento.orden`, y amplía `app_id_de_otro_usuario` a `argumento`. Cada argumento guarda en `texto_argdown` el texto completo del mapa. | V1 no ligaba el argumento con la ejecución que lo produjo; sin eso no se puede volver a leer el mapa, exportarlo ni darle 404 a otra persona. |
+| 2026-10-07 | `Resultado` declara también los argumentos producidos; `GuardadoDeEjecuciones` los guarda en la misma transacción que la ejecución y no los repite en el doble clic. | Un solo lugar para "todo o nada", igual para la ficha y el Taller. |
+| 2026-10-07 | El saneador de SVG ya no deja `fill`, `stroke` ni opacidades; los colores salen de `app.css` por clase, en tema claro y oscuro. `Grafico.cadena` escapa todo texto que entra al DOT. | Convención de Graphviz de la sección 7 y prueba de plantilla "sin `fill` ni `style`". |
+| 2026-10-07 | Catálogo de once esquemas de Walton: los diez más comunes más `alternativas` (falso dilema, que nombra el "úsala cuando" de T13). El orden del catálogo pone primero los más específicos. Las preguntas viven en `catalogo/esquemas.json`; las reglas léxicas, en código (`tecnicas.f3.ReglasFalacias`). | Las preguntas son contenido versionado; las reglas son expresiones regulares con pruebas. |
+| 2026-10-07 | T13 se confirma por códigos de marca (M1 a M12) en la entrada, como conjunto del lenguaje de campos; en el Taller, con casillas que solo valen si el texto no cambió desde la última evaluación. La fila del hito 2 nombra V01 y V02, pero T13 usa V05, como dicen el catálogo y la sección 7b. | Con el mismo texto los códigos no cambian; si el texto cambia, una confirmación vieja podría caer sobre otra marca. |
+| 2026-10-07 | T06 en este hito: la persona escribe la premisa oculta; el argumento se llama "Argumento". | Proponerla es trabajo del modelo (hito 3). |
+| 2026-10-07 | T02: niveles básico (tres partes) y completo (seis), estados completa, falta, sin fuente y sin responder; la garantía entra al argumento como supuesto. En el Taller ninguna parte es obligatoria. | El panel del Taller debe señalar lo que falta, no impedir evaluar. |
+| 2026-10-07 | Taller: un texto Argdown alimenta T01; T02 se arma del mapa (datos, supuestos como garantía, primera objeción y su réplica) más calificador y respaldo que la persona escribe; T13 revisa los enunciados en orden. Cada técnica guarda sus propias afirmaciones. | La opción más simple que deja una ejecución por técnica; que T02 y T13 consuman las afirmaciones de T01 queda para cuando la verificación las comparta. |
+| 2026-10-07 | El paquete de datos de una persona sube a la versión 2 con los argumentos de cada ejecución; un archivo de la versión 1 se migra al importarlo (sus ejecuciones quedan sin argumentos). | RF-12 con el mapa incluido, sin romper los respaldos del hito 1. |
+| 2026-10-07 | La configuración oculta del formulario de Usar lleva los conjuntos como parámetro repetido. | T02 y T13 son las primeras técnicas con un conjunto en la configuración; la aceptación encontró que viajaba como el texto de la lista. |
+| 2026-10-07 | k6 2.3.0 (versión vigente según sus notas de versión, consultadas el 2026-10-07) como imagen `grafana/k6` fijada por digest en el perfil test; no es dependencia de Maven. Modelo cerrado (`constant-vus`) con `noCookiesReset` para que cada usuario virtual conserve su sesión. | Son personas que esperan cada pantalla; sin `noCookiesReset` k6 borra la sesión en cada iteración. |
+| 2026-10-07 | El estándar de prueba quedó completo, no en modo lectura: el mapa dice por cada argumento si es aplicable y por cada conclusión si es aceptable, en la ficha y en el Taller. | Alcanzó el tiempo; el documento permitía dejarlo en lectura si apretaba. |
+| 2026-10-07 | Ninguna dependencia nueva de Maven en el hito 2. | Parser, reglas y patrones se escribieron con lo que ya estaba. |

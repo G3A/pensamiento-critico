@@ -205,12 +205,15 @@ public class ServicioRespaldo {
     }
 
     private static ArgumentoProducido producido(PaqueteDatos.ArgumentoDatos d) {
+        if (d == null || d.sentido() == null || d.estandar() == null || d.premisas().stream().anyMatch(java.util.Objects::isNull)) {
+            throw new ArchivoInvalido("Un argumento del archivo no es válido.");
+        }
         try {
             return new ArgumentoProducido(new Argumento(exigir(d.id()), exigir(d.conclusionId()),
                     d.premisas().stream().map(x -> new Argumento.Premisa(exigir(x.afirmacionId()), x.orden(), x.asumible())).toList(), d.peso(),
                     Argumento.Sentido.valueOf(d.sentido().toUpperCase())), EstandarPrueba.valueOf(d.estandar().toUpperCase()),
                     Optional.ofNullable(d.esquemaId()), Optional.ofNullable(d.textoArgdown()));
-        } catch (IllegalArgumentException | NullPointerException e) {
+        } catch (IllegalArgumentException e) {
             throw new ArchivoInvalido("Un argumento del archivo no es válido.");
         }
     }
