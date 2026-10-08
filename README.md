@@ -342,3 +342,14 @@ reglas. Las decisiones de cálculo de cada técnica están, además, en su archi
 | 2026-10-07 | k6 2.3.0 (versión vigente según sus notas de versión, consultadas el 2026-10-07) como imagen `grafana/k6` fijada por digest en el perfil test; no es dependencia de Maven. Modelo cerrado (`constant-vus`) con `noCookiesReset` para que cada usuario virtual conserve su sesión. | Son personas que esperan cada pantalla; sin `noCookiesReset` k6 borra la sesión en cada iteración. |
 | 2026-10-07 | El estándar de prueba quedó completo, no en modo lectura: el mapa dice por cada argumento si es aplicable y por cada conclusión si es aceptable, en la ficha y en el Taller. | Alcanzó el tiempo; el documento permitía dejarlo en lectura si apretaba. |
 | 2026-10-07 | Ninguna dependencia nueva de Maven en el hito 2. | Parser, reglas y patrones se escribieron con lo que ya estaba. |
+
+## Decisiones tomadas en el hito 3
+
+Igual que en los hitos anteriores: lo que el documento no fijaba se resolvió con la opción más simple que respeta las
+reglas. Las mediciones que sostienen las decisiones del modelo están en [`docs/evaluacion-modelo.md`](docs/evaluacion-modelo.md).
+
+| Fecha | Decisión | Por qué |
+|---|---|---|
+| 2026-10-08 | Ollama sube de 0.12.3 a 0.40.1 (última versión estable en sus notas de versión de GitHub, consultadas el 2026-10-08; la 0.40.2 es todavía pre-release), fijado por digest. Los 10 contratos reales de Ia pasan con ella. | La 0.12.3 no carga la arquitectura `mistral3` de Ministral 3B ni la familia qwen3.5, dos de los candidatos medidos. |
+| 2026-10-08 | `docker-compose.gpu.yml`, opcional: le da a Ollama la GPU NVIDIA y guarda el contexto con flash attention y caché KV en 8 bits. Sin ese archivo todo corre en CPU, como antes. | En una T600 de 4 GB no mejora (el modelo no cabe entero y partirlo entre GPU y CPU es más lento que la CPU sola), pero con 6 GB o más de VRAM el modelo cabe entero; queda versionado para esas máquinas. |
+| 2026-10-08 | Prompts `t13-esquema.v2` (dos ejemplos más de "ninguna" y la regla "conclusión sacada de una razón") y `t22-postura.v2` (el pasaje va entre `<<<PASAJE` y `PASAJE>>>`; el ejecutor quita esas marcas del texto del pasaje). Las propuestas guardadas con v1 conservan su versión. | En T22 · Triangulación bajaron las instrucciones obedecidas en CPU de 2 a 0 (con 2 sin respuesta). En T13 · Falacias como esquemas fallidos no cambiaron las marcas sobre "ninguna", pero tampoco empeoró el acierto. |

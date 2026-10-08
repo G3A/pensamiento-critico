@@ -24,7 +24,7 @@ services:
       retries: 10
 
   ollama:
-    image: ollama/ollama:0.12.3@sha256:36ccf1b4c161179a198a19e897aa0a1acd54cd5eeb6ab99c80f2ef50ba7fa106
+    image: ollama/ollama:0.40.1@sha256:69f27594d8127cb43db1edcafa5e2d3cd8f88bdbc54a2cf3ceb11b8d138a24b1
     volumes: [ollama:/root/.ollama]
     environment:
       OLLAMA_NUM_PARALLEL: "1"
