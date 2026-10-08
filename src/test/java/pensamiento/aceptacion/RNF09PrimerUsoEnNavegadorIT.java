@@ -107,6 +107,58 @@ class RNF09PrimerUsoEnNavegadorIT {
         }
     }
 
+    /**
+     * Hito 3 (RF-14, corrección 11): la prueba de humo de SSE. En T34 · Steelmanning, con el ejemplo de las cámaras,
+     * pedir una propuesta muestra la espera (indicador, tiempo, Cancelar y el botón deshabilitado) con su conexión SSE;
+     * el evento final trae la propuesta sin adoptar; adoptarla hace que cuente. A 360 px y sin errores de consola.
+     * Necesita el modelo: sin Ollama, el botón está deshabilitado y la prueba se salta.
+     */
+    @Test
+    void en_t34_se_pide_un_steelman_se_espera_por_sse_y_se_adopta() {
+        ClienteApp admin = Instalacion.administrador();
+        String persona = Instalacion.personaNueva(admin, "presidenta", "3690");
+        String base = urlConIp(Entorno.urlApp());
+
+        try (Playwright playwright = Playwright.create();
+             Browser navegador = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true))) {
+            Page pagina = navegador.newContext(new Browser.NewContextOptions().setViewportSize(360, 780)).newPage();
+            List<String> erroresDeConsola = new ArrayList<>();
+            pagina.onConsoleMessage(m -> {
+                if ("error".equals(m.type())) {
+                    erroresDeConsola.add(m.text());
+                }
+            });
+            pagina.navigate(base + "/bloqueo");
+            pagina.getByLabel("Tu PIN").fill("3690");
+            pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(persona).setExact(true)).click();
+            pagina.waitForURL(base + "/");
+
+            pagina.navigate(base + "/tecnicas/T34?pestana=usar");
+            pagina.locator("nav.barra-ejemplos a.ejemplo", new Page.LocatorOptions().setHasText("Los que no quieren cámaras")).click();
+            pagina.locator("#form-T34 #pedir-T34").waitFor();
+            org.junit.jupiter.api.Assumptions.assumeTrue(pagina.locator("#pedir-T34 button").isEnabled(), "Ollama no responde: el humo de SSE necesita el modelo");
+
+            pagina.locator("#pedir-T34 button").click();
+            pagina.locator("#espera-T34 .espera[sse-connect]").waitFor();
+            assertThat(pagina.locator("#espera-T34 .estado-espera").getAttribute("role")).isEqualTo("status");
+            assertThat(pagina.locator("#pedir-T34 button").isDisabled()).as("el botón queda deshabilitado mientras el modelo trabaja").isTrue();
+            assertThat(pagina.locator("#espera-T34 button[data-accion=cancelar]").isVisible()).isTrue();
+
+            pagina.locator("#form-T34 li.propuesta[data-propuesta=IA1]").waitFor(new com.microsoft.playwright.Locator.WaitForOptions().setTimeout(300_000));
+            assertThat(pagina.locator("#espera-T34 .aviso-ia").textContent()).contains("propuesta del modelo");
+            assertThat(pagina.locator("#form-T34 li.propuesta[data-propuesta=IA1] .chip").textContent())
+                    .isEqualTo("propuesta del modelo · sin adoptar · no cuenta");
+
+            pagina.locator("#form-T34 button.adoptar").click();
+            pagina.locator("#resultado-T34 [data-patron=V04]").waitFor();
+            assertThat(pagina.locator("#resultado-T34 .tarjeta-resultado .titular").textContent()).startsWith("Steelman de ");
+            assertThat(pagina.locator("#form-T34 li.propuesta[data-propuesta=IA1] .chip").textContent()).isEqualTo("adoptada por ti · cuenta");
+
+            assertThat(pagina.evaluate("document.documentElement.scrollWidth")).as("sin desplazamiento horizontal a 360 px; se salen: " + pagina.evaluate(SE_SALEN)).isEqualTo(360);
+            assertThat(erroresDeConsola).as("errores de consola, incluidas violaciones de la CSP").isEmpty();
+        }
+    }
+
     /** Los elementos más profundos que pasan del borde derecho de la ventana, para saber qué arreglar. */
     private static final String SE_SALEN = "Array.from(document.querySelectorAll(\"body *\")).filter(e => e.getBoundingClientRect().right > "
             + "window.innerWidth + 1 && !Array.from(e.children).some(h => h.getBoundingClientRect().right > window.innerWidth + 1))"
