@@ -34,7 +34,7 @@
       @if(a.siguiente().isPresent())
         <a class="boton" href="${a.siguiente().get()}" data-accion="siguiente-paso">Continuar al paso ${a.paso().numero() + 1}</a>
       @endif
-      @if("T43".equals(id) && a.ultima().isPresent())
+      @if("T43".equals(id))
         <a class="boton boton-secundario" href="/diario/decisiones/${a.expediente().id().toString()}?paso=0&tecnica=T42">Ver como árbol MECE</a>
       @endif
       <a href="/expedientes/${a.expediente().id().toString()}">Ver el expediente</a> · <a href="/diario">Volver al Diario</a>

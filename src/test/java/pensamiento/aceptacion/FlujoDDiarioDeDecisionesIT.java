@@ -135,6 +135,40 @@ class FlujoDDiarioDeDecisionesIT {
         assertThat(otra.tablero().select(".lista-decisiones li")).isEmpty();
     }
 
+    /** RNF-06: identificadores únicos, hx-* del refresco de pasos, ARIA, etiquetas y nada de style ni fill. */
+    @Test
+    void las_pantallas_del_diario_cumplen_la_accesibilidad() {
+        Diario.adelantarElReloj(admin, 0);
+        String vecino = Instalacion.personaNueva(admin, "vecino de la cuadra", "9517");
+        Diario diario = Diario.de(Instalacion.entraComo(vecino, "9517"));
+        UUID decision = diario.nuevaDecision("Poner luces en la cuadra");
+
+        for (Document d : java.util.List.of(diario.tablero(), diario.paso(decision, 0, "T40"), diario.paso(decision, 2, "T29"))) {
+            assertThat(d.select("[style], [fill], [stroke], script:not([src])")).as("sin style, fill ni scripts en línea").isEmpty();
+            java.util.List<String> ids = d.select("[id]").eachAttr("id");
+            assertThat(ids).as("identificadores únicos").doesNotHaveDuplicates();
+            assertThat(d.select(".chip")).allSatisfy(c -> assertThat(c.text()).as("todo estado lleva texto").isNotBlank());
+            assertThat(d.select("input[type=text], input[type=number], input[type=date], textarea, select")).allSatisfy(campo ->
+                    assertThat(d.select("label[for=" + campo.id() + "]")).as("etiqueta de " + campo.id()).isNotEmpty());
+        }
+        Document tablero = diario.tablero();
+        assertThat(tablero.select("#revisiones").attr("aria-labelledby")).isEqualTo("revisiones-titulo");
+        Document asistente = diario.paso(decision, 0, "T40");
+        org.jsoup.nodes.Element pasos = asistente.getElementById("pasos-decision");
+        assertThat(pasos.attr("hx-get")).isEqualTo("/diario/decisiones/" + decision + "/pasos?paso=0&tecnica=T40");
+        assertThat(pasos.attr("hx-trigger")).isEqualTo("ejecucion-guardada from:body");
+        assertThat(pasos.select("li[aria-current=step]").text()).startsWith("0 · Problema");
+        assertThat(pasos.select(".tecnicas-paso a[aria-current=page]").text()).isEqualTo("T40 · Definición del problema");
+        assertThat(asistente.select("#form-T40 input[name=_expediente]").val()).isEqualTo(decision.toString());
+        assertThat(asistente.select("#form-T40").attr("hx-post")).isEqualTo("/tecnicas/T40/evaluar");
+        Document bloqueado = diario.paso(decision, 2, "T29");
+        assertThat(bloqueado.select("[role=alert]").text()).contains("Primero define el problema");
+        assertThat(bloqueado.select("#form-T29")).as("sin el paso 0, el formulario no se ofrece").isEmpty();
+        ClienteApp.Respuesta fragmento = diario.cliente().getHtmx("/diario/decisiones/" + decision + "/pasos?paso=0&tecnica=T40");
+        assertThat(fragmento.estado()).isEqualTo(200);
+        assertThat(Jsoup.parseBodyFragment(fragmento.cuerpo()).select("nav#pasos-decision")).hasSize(1);
+    }
+
     @Test
     void una_fecha_de_revision_demasiado_cercana_no_deja_guardar_la_decision() {
         Diario.adelantarElReloj(admin, 0);

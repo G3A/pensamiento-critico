@@ -49,6 +49,7 @@
       </svg>
       <figcaption class="frase-grafico">${v.frase()}</figcaption>
     </figure>
+    <div class="tabla-desplazable" tabindex="0" role="region" aria-label="Tabla de la curva: desplázala si no cabe">
     <table class="tabla-frecuencias">
       <caption>La curva con números: lo que declaras contra lo que se cumple</caption>
       <thead><tr><th scope="col">Tramo</th><th scope="col">Resueltas</th><th scope="col">Declaras</th><th scope="col">Se cumple</th></tr></thead>
@@ -59,6 +60,7 @@
         @endfor
       </tbody>
     </table>
+    </div>
   @elseif(v.frase() != null)
     <p class="frase-grafico aviso-ia"><span class="chip chip-pendiente">sin tasa base</span> ${v.frase()}</p>
   @endif
