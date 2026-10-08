@@ -192,10 +192,10 @@ public class EjecutorTasasBase implements Ejecutor<EjecutorTasasBase.Config, Eje
     static ResultadoTasasBase.Calculo calcular(int casos, int deCada, int sensibilidad, int especificidad) {
         int enfermos = casos;
         int sanos = deCada - casos;
-        int detectados = redondear(enfermos * sensibilidad, 100);
-        int positivosFalsos = redondear(sanos * (100 - especificidad), 100);
+        int detectados = redondear((long) enfermos * sensibilidad, 100);
+        int positivosFalsos = redondear((long) sanos * (100 - especificidad), 100);
         int positivos = detectados + positivosFalsos;
-        int probabilidad = positivos == 0 ? 0 : redondear(detectados * 100, positivos);
+        int probabilidad = positivos == 0 ? 0 : redondear((long) detectados * 100, positivos);
         return new ResultadoTasasBase.Calculo(deCada, enfermos, sanos, detectados, enfermos - detectados, positivosFalsos, sanos - positivosFalsos,
                 positivos, probabilidad, sensibilidad);
     }

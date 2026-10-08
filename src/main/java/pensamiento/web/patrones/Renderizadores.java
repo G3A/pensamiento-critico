@@ -17,7 +17,7 @@ import pensamiento.nucleo.Tecnica;
  * reflexión ni descubrimiento por nombre. El patrón del renderizador debe ser el que la técnica declara en el catálogo.
  */
 @Component
-public class Renderizadores {
+public final class Renderizadores {
 
     private final Map<Class<?>, RenderizadorResultado<?>> porTipo = new HashMap<>();
 
