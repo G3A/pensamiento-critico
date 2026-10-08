@@ -30,6 +30,7 @@ public final class FakeIa implements Ia {
     private boolean lento = false;
     private int dimension = 1024;
     private final List<PeticionChat> chatsRecibidos = new ArrayList<>();
+    private final List<PeticionClasificacion> clasificacionesRecibidas = new ArrayList<>();
 
     public void programarRespuesta(String texto) {
         respuestasChat.add(texto);
@@ -61,6 +62,10 @@ public final class FakeIa implements Ia {
         return List.copyOf(chatsRecibidos);
     }
 
+    public List<PeticionClasificacion> clasificacionesRecibidas() {
+        return List.copyOf(clasificacionesRecibidas);
+    }
+
     @Override
     public EstadoIa estado() {
         return disponible ? new EstadoIa(true, List.of("qwen3:4b", "bge-m3"), "fake listo") : EstadoIa.noDisponible("fake apagado");
@@ -89,6 +94,7 @@ public final class FakeIa implements Ia {
     @Override
     public Clasificacion clasificar(PeticionClasificacion peticion) {
         exigirDisponible();
+        clasificacionesRecibidas.add(peticion);
         String crudo = respuestasCrudasClasificacion.isEmpty()
                 ? "{\"etiqueta\":\"" + peticion.etiquetas().getFirst() + "\",\"por_que\":\"fake\"}"
                 : respuestasCrudasClasificacion.poll();

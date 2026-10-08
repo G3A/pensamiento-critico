@@ -48,7 +48,7 @@ class EjecutorFalaciasConModeloTest {
             assertThat(p.destino()).isEqualTo("1");
             assertThat(p.valor()).isEqualTo("causa_efecto:2");
             assertThat(p.rotulo()).isEqualTo("Oración 1 · Argumento de causa a efecto, pregunta 2");
-            assertThat(p.prompt()).isEqualTo("t13-esquema.v1");
+            assertThat(p.prompt()).isEqualTo("t13-esquema.v2");
         });
 
         EntradaFalacias conPropuesta = new EntradaFalacias(MERCADO, List.of(), propuestas.nuevas());

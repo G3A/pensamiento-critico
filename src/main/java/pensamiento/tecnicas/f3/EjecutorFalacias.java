@@ -42,7 +42,7 @@ public class EjecutorFalacias implements Ejecutor<ConfigFalacias, EntradaFalacia
     public static final int VERSION_ESQUEMA = 1;
     public static final int LARGO_TEXTO = 2000;
     public static final String PROMPT = "t13-esquema";
-    public static final int VERSION_PROMPT = 1;
+    public static final int VERSION_PROMPT = 2;
     public static final String NINGUNA = "ninguna";
     /** Decisión: a lo sumo 12 oraciones por pedido, para que la espera no pase de unos minutos en CPU. */
     public static final int ORACIONES_MAXIMAS = 12;

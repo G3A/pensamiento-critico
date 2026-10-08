@@ -51,7 +51,7 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
     public static final IdTecnica ID = IdTecnica.de("T22");
     public static final int VERSION_ESQUEMA = 1;
     public static final String PROMPT = "t22-postura";
-    public static final int VERSION_PROMPT = 1;
+    public static final int VERSION_PROMPT = 2;
     public static final String SIN_ETIQUETAR = "sin_etiquetar";
     public static final String IRRELEVANTE = "irrelevante";
     public static final List<String> ETIQUETAS = List.of("apoya", "contradice", "matiza", IRRELEVANTE);
@@ -289,12 +289,17 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
                 }
                 provisional.accept("F" + (i + 1) + "… ");
                 Clasificacion c = ModeloLocal.clasificar(ia, prompt.sistema(Map.of()),
-                        prompt.pedido(Map.of("afirmacion", entrada.afirmacion().strip(), "pasaje", f.pasaje().strip())), ETIQUETAS, nuevas.isEmpty());
+                        prompt.pedido(Map.of("afirmacion", entrada.afirmacion().strip(), "pasaje", sinMarcas(f.pasaje()))), ETIQUETAS, nuevas.isEmpty());
                 nuevas.add(new Propuesta(Propuesta.codigo(primerNumero + nuevas.size()), String.valueOf(i + 1),
                         "F" + (i + 1) + " · " + f.titulo().strip(), c.etiqueta(), c.porQue(), false, c.modelo(), c.digest(), prompt.version()));
             }
             return nuevas;
         });
+    }
+
+    /** El pasaje va entre <<<PASAJE y PASAJE>>> en el prompt: un pasaje que trae esas marcas no puede cerrarlas antes. */
+    static String sinMarcas(String pasaje) {
+        return pasaje.replace("<<<", "").replace(">>>", "").strip();
     }
 
     /** Adoptar pone la postura propuesta en el pasaje, etiquetado por el modelo; irrelevante lo deja fuera del cálculo. */
