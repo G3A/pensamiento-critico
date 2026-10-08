@@ -4,6 +4,7 @@
 // personas que esperan cada pantalla y la leen antes de seguir.
 // Hito 3: una persona más tiene una sesión con Ollama activa (RNF-03): pide al modelo un steelman en T34 y espera el
 // evento final por SSE, mientras las otras diez navegan. El p95 que se exige sigue siendo el de las pantallas sin IA.
+// Hito 4: cada persona abre además el tablero del Diario y evalúa T43 · Diagrama de Ishikawa (Graphviz dibuja la espina).
 // Se corre con: docker compose --profile test run --rm k6
 import http from 'k6/http';
 import { check, sleep, fail } from 'k6';
@@ -93,8 +94,25 @@ export default function (datos) {
   const evaluado = http.post(`${BASE}/taller/evaluar`, { argdown: SUCURSAL, estandar: 'preponderancia', textoEvaluado: '' },
     Object.assign({ headers: { 'X-CSRF-TOKEN': csrf, 'HX-Request': 'true' } }, pantalla));
   check(evaluado, { 'Taller evaluado con el mapa dibujado': (r) => r.status === 200 && r.body.includes('data-patron="V01"') && r.body.includes('<svg') });
+  sleep(1);
+
+  // Hito 4: el tablero del Diario (R05 sobre las predicciones de la persona) y T43 · Diagrama de Ishikawa con Graphviz.
+  const diario = http.get(`${BASE}/diario`, pantalla);
+  check(diario, { 'Diario: tablero con las revisiones al entrar': (r) => r.status === 200 && r.body.includes('id="revisiones"') });
+  const ishikawa = http.post(`${BASE}/tecnicas/T43/evaluar`, ISHIKAWA,
+    Object.assign({ headers: { 'X-CSRF-TOKEN': csrf, 'HX-Request': 'true' } }, pantalla));
+  check(ishikawa, { 'T43 evaluada con la espina dibujada': (r) => r.status === 200 && r.body.includes('data-patron="V07"') && r.body.includes('<svg') });
   sleep(2);
 }
+
+/** El pan quemado de la sucursal original (docs/ejemplos/T43.md, ejemplo 1). */
+const ISHIKAWA = {
+  'config.categorias': 'Máquina, Método, Material, Personas, Medición, Entorno', 'config.causasMinimas': '1',
+  efecto: 'Pan quemado en la sucursal original.',
+  'causas[0].texto': 'El termostato marca de más', 'causas[0].categoria': 'Máquina',
+  'causas[1].texto': 'No hay tiempos de horneado escritos', 'causas[1].categoria': 'Método',
+  'causas[2].texto': 'Turno nuevo sin entrenar', 'causas[2].categoria': 'Personas',
+};
 
 const TURNO = /sse-connect="\/ia\/turnos\/([0-9a-f-]{36})\/flujo"/;
 
