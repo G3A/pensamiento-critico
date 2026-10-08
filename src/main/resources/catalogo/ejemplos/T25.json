@@ -1,0 +1,103 @@
+[
+  {
+    "ambito": "personal",
+    "titulo": "Las apuestas de la casa",
+    "versionEsquema": 1,
+    "config": { "tramos": 20, "horizonteMeses": 0, "puntaje": "brier", "umbral": 5 },
+    "datos": {
+      "predicciones": [
+        { "texto": "El auto pasa la revisión técnica", "confianza": 80, "resultado": "se_cumplio" },
+        { "texto": "La hija termina el semestre sin materias pendientes", "confianza": 90, "resultado": "se_cumplio" },
+        { "texto": "Llegamos al fin de mes sin usar la tarjeta", "confianza": 60, "resultado": "no_se_cumplio" },
+        { "texto": "El arreglo del techo cuesta menos de lo presupuestado", "confianza": 70, "resultado": "se_cumplio" },
+        { "texto": "La abuela viene en diciembre", "confianza": 90, "resultado": "se_cumplio" },
+        { "texto": "Ahorramos para las vacaciones de julio", "confianza": 70, "resultado": "no_se_cumplio" },
+        { "texto": "El vecino devuelve la escalera esta semana", "confianza": 80, "resultado": "sin_resolver" }
+      ]
+    },
+    "resultado": {
+      "puntaje": "0,17",
+      "tramos": [ { "desde": 60, "hasta": 79, "n": 3, "confianzaMedia": 67, "porcentajeCumplido": 33, "provisional": true },
+                  { "desde": 80, "hasta": 100, "n": 3, "confianzaMedia": 87, "porcentajeCumplido": 100, "provisional": true } ],
+      "avisos": [
+        "Cuando dices entre 60 y 79%, se cumple el 33% (declaras 67% en promedio): exceso de confianza. Aviso provisional: 6 resueltas, solo 3 en ese tramo.",
+        "Cuando dices entre 80 y 100%, se cumple el 100% (declaras 87% en promedio): falta de confianza. Aviso provisional: 6 resueltas, solo 3 en ese tramo."
+      ],
+      "pendientes": [],
+      "resumen": "Brier 0,17 con 6 resueltas y 1 sin resolver · 2 avisos."
+    },
+    "nota": "La familia anota en la nevera lo que cree que va a pasar; con pocas resueltas, todos los avisos son provisionales. El cálculo está en docs/ejemplos/T25.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "La puntería de la panadería",
+    "versionEsquema": 1,
+    "config": { "tramos": 10, "horizonteMeses": 0, "puntaje": "brier", "umbral": 10 },
+    "datos": {
+      "predicciones": [
+        { "texto": "Vendemos más de 250 panes el sábado 5", "confianza": 60, "resultado": "se_cumplio" },
+        { "texto": "El proveedor de harina mantiene el precio en julio", "confianza": 60, "resultado": "se_cumplio" },
+        { "texto": "La vitrina nueva llega en dos semanas", "confianza": 60, "resultado": "no_se_cumplio" },
+        { "texto": "El pan integral se agota antes de las 11", "confianza": 60, "resultado": "no_se_cumplio" },
+        { "texto": "El encargado de la mañana llega a tiempo toda la semana", "confianza": 70, "resultado": "se_cumplio" },
+        { "texto": "Las tortas de cumpleaños pasan de 20 en el mes", "confianza": 70, "resultado": "se_cumplio" },
+        { "texto": "La promoción del martes sube las ventas", "confianza": 70, "resultado": "se_cumplio" },
+        { "texto": "No se daña la batidora este mes", "confianza": 70, "resultado": "se_cumplio" },
+        { "texto": "El banco aprueba el crédito en un mes", "confianza": 70, "resultado": "no_se_cumplio" },
+        { "texto": "Los domicilios pasan de 30 por semana", "confianza": 70, "resultado": "no_se_cumplio" },
+        { "texto": "El arriendo sube menos de 10%", "confianza": 80, "resultado": "se_cumplio" },
+        { "texto": "Vendemos todo el pan de Navidad", "confianza": 80, "resultado": "se_cumplio" },
+        { "texto": "La revisión de sanidad sale sin observaciones", "confianza": 80, "resultado": "se_cumplio" },
+        { "texto": "La nueva receta de mogolla gusta", "confianza": 80, "resultado": "se_cumplio" },
+        { "texto": "No faltan empleados en diciembre", "confianza": 80, "resultado": "se_cumplio" },
+        { "texto": "El horno viejo aguanta hasta enero", "confianza": 80, "resultado": "se_cumplio" },
+        { "texto": "La feria del barrio nos compra pan", "confianza": 80, "resultado": "no_se_cumplio" },
+        { "texto": "El cliente del hotel renueva el pedido", "confianza": 90, "resultado": "se_cumplio" },
+        { "texto": "Abrimos el 24 de diciembre sin problemas", "confianza": 90, "resultado": "se_cumplio" },
+        { "texto": "La luz no se va en la semana", "confianza": 90, "resultado": "se_cumplio" },
+        { "texto": "El precio del azúcar no sube este mes", "confianza": 90, "resultado": "no_se_cumplio" },
+        { "texto": "Terminamos el inventario antes del 31", "confianza": 90, "resultado": "no_se_cumplio" }
+      ]
+    },
+    "resultado": {
+      "puntaje": "0,22",
+      "tramos": [ { "desde": 60, "hasta": 69, "n": 4, "confianzaMedia": 60, "porcentajeCumplido": 50, "provisional": true },
+                  { "desde": 70, "hasta": 79, "n": 6, "confianzaMedia": 70, "porcentajeCumplido": 67, "provisional": true },
+                  { "desde": 80, "hasta": 89, "n": 7, "confianzaMedia": 80, "porcentajeCumplido": 86, "provisional": true },
+                  { "desde": 90, "hasta": 100, "n": 5, "confianzaMedia": 90, "porcentajeCumplido": 60, "provisional": true } ],
+      "avisos": [
+        "Cuando dices entre 90 y 100%, se cumple el 60% (declaras 90% en promedio): exceso de confianza. Aviso provisional: 22 resueltas, solo 5 en ese tramo."
+      ],
+      "pendientes": [],
+      "resumen": "Brier 0,22 con 22 resueltas · 1 aviso."
+    },
+    "nota": "La dueña lleva un año anotando predicciones del negocio. Es la tarjeta de T25 de la sección 7b: 22 resueltas, solo 5 en el tramo de 90 a 100."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Las promesas de la junta",
+    "versionEsquema": 1,
+    "config": { "tramos": 20, "horizonteMeses": 12, "puntaje": "logaritmico", "umbral": 5 },
+    "datos": {
+      "predicciones": [
+        { "texto": "La asamblea de marzo tiene quórum", "confianza": 70, "resultado": "se_cumplio", "fecha": "2026-03-20" },
+        { "texto": "La alcaldía arregla los dos postes antes de junio", "confianza": 60, "resultado": "se_cumplio", "fecha": "2026-06-01" },
+        { "texto": "La rifa junta lo de la pintura", "confianza": 80, "resultado": "se_cumplio", "fecha": "2026-05-10" },
+        { "texto": "Los robos bajan después de la ronda vecinal", "confianza": 60, "resultado": "no_se_cumplio", "fecha": "2026-08-30" },
+        { "texto": "El parque se inaugura en diciembre", "confianza": 90, "resultado": "no_se_cumplio", "fecha": "2025-12-15" },
+        { "texto": "La fiesta de fin de año se hace en la cancha", "confianza": 90, "resultado": "se_cumplio", "fecha": "2025-01-10" }
+      ]
+    },
+    "resultado": {
+      "puntaje": "0,86",
+      "tramos": [ { "desde": 60, "hasta": 79, "n": 3, "confianzaMedia": 63, "porcentajeCumplido": 67, "provisional": true },
+                  { "desde": 80, "hasta": 100, "n": 2, "confianzaMedia": 85, "porcentajeCumplido": 50, "provisional": true } ],
+      "avisos": [
+        "Cuando dices entre 80 y 100%, se cumple el 50% (declaras 85% en promedio): exceso de confianza. Aviso provisional: 5 resueltas, solo 2 en ese tramo."
+      ],
+      "pendientes": [],
+      "resumen": "Puntaje logarítmico 0,86 con 5 resueltas · 1 aviso."
+    },
+    "nota": "La secretaria de la junta anota lo que la junta promete. Con el reloj de la aplicación, el horizonte de 12 meses deja afuera más predicciones a medida que pasa el tiempo; el oráculo se corre con el reloj fijo de las pruebas (7 de octubre de 2026)."
+  }
+]

@@ -56,9 +56,16 @@ class PlantillasDelHito4Test {
     private static final FakeGrafico GRAFICO = new FakeGrafico();
     private static final Renderizadores RENDERIZADORES = new Renderizadores(List.<RenderizadorResultado<?>>of(
             new RenderizadorDefinicionProblema(PLANTILLAS), new RenderizadorPrimerosPrincipios(PLANTILLAS),
-            new RenderizadorArbolMece(PLANTILLAS, GRAFICO), new RenderizadorIshikawa(PLANTILLAS, GRAFICO), new RenderizadorScamper(PLANTILLAS)));
+            new RenderizadorArbolMece(PLANTILLAS, GRAFICO), new RenderizadorIshikawa(PLANTILLAS, GRAFICO), new RenderizadorScamper(PLANTILLAS),
+            new pensamiento.web.patrones.RenderizadorBayes(PLANTILLAS), new pensamiento.web.patrones.RenderizadorCalibracion(PLANTILLAS),
+            new pensamiento.web.patrones.RenderizadorFermi(PLANTILLAS, GRAFICO), new pensamiento.web.patrones.RenderizadorValorEsperado(PLANTILLAS),
+            new pensamiento.web.patrones.RenderizadorPremortem(PLANTILLAS), new pensamiento.web.patrones.RenderizadorInversion(PLANTILLAS),
+            new pensamiento.web.patrones.RenderizadorMatriz(PLANTILLAS), new pensamiento.web.patrones.RenderizadorDiario(PLANTILLAS)));
     private static final List<Ejecutor<?, ?, ?>> EJECUTORES = List.of(new EjecutorDefinicionProblema(), new EjecutorPrimerosPrincipios(),
-            new EjecutorArbolMece(), new EjecutorIshikawa(), new EjecutorScamper());
+            new EjecutorArbolMece(), new EjecutorIshikawa(), new EjecutorScamper(), new pensamiento.tecnicas.f5.EjecutorBayes(),
+            new pensamiento.tecnicas.f5.EjecutorCalibracion(), new pensamiento.tecnicas.f5.EjecutorFermi(), new pensamiento.tecnicas.f5.EjecutorValorEsperado(),
+            new pensamiento.tecnicas.f5.EjecutorPremortem(), new pensamiento.tecnicas.f5.EjecutorInversion(), new pensamiento.tecnicas.f5.EjecutorMatrizPonderada(),
+            new pensamiento.tecnicas.f5.EjecutorDiarioDecisiones(), new pensamiento.tecnicas.f5.EjecutorMejorExplicacion());
     private static final UUID ID = UUID.fromString("01a118b3-94cc-76f0-afe1-daab7018e19b");
 
     static Stream<Arguments> ejemplos() {
@@ -148,6 +155,80 @@ class PlantillasDelHito4Test {
         assertThat(d.getElementById("res-" + ID + "-espina-1").classNames()).contains("espina");
         assertThat(d.getElementById(ishikawa.categorias().getFirst().causas().getFirst().afirmacionId().toString()).classNames()).contains("causa");
         assertThat(d.select("ul.categorias-ishikawa > li .chip").eachText()).containsExactly("vacía", "vacía", "vacía");
+    }
+
+    private static Document ejemplo(Ejecutor<?, ?, ?> e, int i) {
+        return pintar(e, valor(e, CATALOGO.ejemplosDe(e.id()).get(i)), Modo.COMPLETO);
+    }
+
+    @Test
+    void v08_de_t24_dibuja_una_barra_por_paso_escalada_a_100_y_la_tabla_con_los_mismos_numeros() {
+        Document d = ejemplo(new pensamiento.tecnicas.f5.EjecutorBayes(), 0);
+
+        assertThat(d.select("figure.grafico-frecuencias svg rect.barra")).hasSize(3);
+        assertThat(d.select("[data-barra=prior] .valor-barra").text()).isEqualTo("70");
+        assertThat(d.select("[data-barra=E2] .valor-barra").text()).isEqualTo("65");
+        assertThat(d.select("[data-barra=E1] rect").attr("width")).isEqualTo("96");
+        assertThat(d.select("table.tabla-frecuencias td").eachText()).containsExactly("70", "48", "65");
+        assertThat(d.select("li[data-item=E1] .chip").text()).isEqualTo("razón 0,4");
+    }
+
+    @Test
+    void v08_de_t25_dibuja_la_curva_con_la_diagonal_y_los_tramos_provisionales_huecos_y_con_texto() {
+        Document d = ejemplo(new pensamiento.tecnicas.f5.EjecutorCalibracion(), 1);
+
+        Element svg = d.selectFirst("figure.grafico-curva svg");
+        assertThat(svg.attr("role")).isEqualTo("img");
+        assertThat(svg.select("line.diagonal")).hasSize(1);
+        assertThat(svg.select("circle.punto")).hasSize(4);
+        assertThat(svg.select("circle.punto.provisional")).hasSize(4);
+        assertThat(svg.select("polyline.linea-curva")).hasSize(1);
+        assertThat(d.select("table.tabla-frecuencias tbody tr")).hasSize(4);
+        assertThat(d.select("table.tabla-frecuencias tbody tr").last().text()).isEqualTo("90 a 100% 5 provisional 90% 60%");
+        assertThat(d.select("figcaption").text()).isEqualTo("Brier 0,22 con 22 resueltas. Sobre la diagonal estarías bien calibrado.");
+    }
+
+    @Test
+    void v12_de_t27_dibuja_las_barras_desde_el_cero_y_las_negativas_hacia_la_izquierda() {
+        Document d = ejemplo(new pensamiento.tecnicas.f5.EjecutorValorEsperado(), 1);
+
+        assertThat(d.select("ol.ranking li strong").eachText()).containsExactly("1º Subarrendar el local", "2º No hacer nada", "3º Abrir la sucursal");
+        assertThat(d.select("figure.grafico-ranking rect.barra-negativa")).hasSize(1);
+        assertThat(d.select("figure.grafico-ranking rect.barra-positiva")).hasSize(2);
+        assertThat(d.select(".aviso-nota").text()).contains("sin ella, primero iría Abrir la sucursal (+8,5)");
+    }
+
+    @Test
+    void v03b_de_t31_es_una_tabla_con_caption_encabezados_y_la_sensibilidad_por_criterio() {
+        Document d = ejemplo(new pensamiento.tecnicas.f5.EjecutorMatrizPonderada(), 1);
+
+        assertThat(d.select("table.matriz-ponderada caption").text()).isNotBlank();
+        assertThat(d.select("table.matriz-ponderada thead th").eachText()).containsExactly("Puesto", "Opción", "Cercanía (2)", "Calidad (3)",
+                "Costo (5 = barato) (2)", "Probabilidad", "Total esperado");
+        assertThat(d.select("table.matriz-ponderada tbody th[scope=row]").eachText()).containsExactly("Colegio del barrio", "Colegio de la loma",
+                "Colegio del centro");
+        assertThat(d.select("table.matriz-ponderada tbody tr").first().select("td").eachText()).containsExactly("1º", "5", "3", "4", "100%", "27,0");
+        assertThat(d.select("ul.sensibilidad li")).hasSize(3);
+        assertThat(d.select(".tabla-desplazable").attr("tabindex")).isEqualTo("0");
+    }
+
+    @Test
+    void v03b_de_t31_con_empate_lo_dice_con_texto() {
+        Document d = ejemplo(new pensamiento.tecnicas.f5.EjecutorMatrizPonderada(), 2);
+
+        assertThat(d.select("table.matriz-ponderada .chip").eachText()).containsExactly("empate", "empate");
+        assertThat(d.select("ul.sensibilidad li").text()).isEqualTo("Empate en el primer lugar: la sensibilidad no aplica.");
+    }
+
+    @Test
+    void v11_de_t32_es_un_registro_con_la_linea_de_tiempo_y_el_bloqueo_con_texto() {
+        Document sucursal = ejemplo(new pensamiento.tecnicas.f5.EjecutorDiarioDecisiones(), 0);
+        assertThat(sucursal.select(".registro dt").eachText()).contains("Decisión", "Predicción", "Me haría cambiar de opinión");
+        assertThat(sucursal.select("ol.linea-tiempo time").eachAttr("datetime")).containsExactly("2026-10-07", "2027-04-15");
+        assertThat(sucursal.select(".estado-resultado .chip").text()).isEqualTo("pendiente de revisión");
+
+        Document camaras = ejemplo(new pensamiento.tecnicas.f5.EjecutorDiarioDecisiones(), 2);
+        assertThat(camaras.select("[role=alert]").text()).startsWith("bloqueado Guardado bloqueado: la fecha de revisión");
     }
 
     @Test

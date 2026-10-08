@@ -1,0 +1,79 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "Las ventas del sábado",
+    "versionEsquema": 1,
+    "config": { "criterios": ["alcance", "simplicidad", "coherencia"], "pesoAlcance": 1, "pesoSimplicidad": 1, "pesoCoherencia": 1, "pesoFecundidad": 1 },
+    "datos": {
+      "hecho": "¿Por qué bajaron las ventas del sábado?",
+      "explicaciones": [
+        { "texto": "Feria nueva a dos cuadras", "alcance": 3, "simplicidad": 3, "coherencia": 3,
+          "tambienExplica": "La baja de los domingos, cuando la feria también abre" },
+        { "texto": "Subió el precio del pan", "alcance": 2, "simplicidad": 3, "coherencia": 1 },
+        { "texto": "Clientes de vacaciones", "alcance": 1, "simplicidad": 2, "coherencia": 2 }
+      ]
+    },
+    "resultado": {
+      "ranking": [ { "puesto": 1, "opcion": "Feria nueva a dos cuadras", "valor": "9" }, { "puesto": 2, "opcion": "Subió el precio del pan", "valor": "6" },
+                   { "puesto": 3, "opcion": "Clientes de vacaciones", "valor": "5" } ],
+      "sensibilidad": [ "Alcance: ningún peso entre 0 y 10 cambia la mejor.", "Simplicidad: ningún peso entre 0 y 10 cambia la mejor.",
+                        "Coherencia: ningún peso entre 0 y 10 cambia la mejor." ],
+      "nivelSensibilidad": "baja",
+      "justificacion": "Explica más con menos: 9 de 9. También explicaría: La baja de los domingos, cuando la feria también abre.",
+      "pendientes": ["Comprobar lo que predice la mejor explicación: La baja de los domingos, cuando la feria también abre"],
+      "resumen": "Mejor explicación: Feria nueva a dos cuadras (9 de 9) · sensibilidad baja."
+    },
+    "nota": "El mismo caso que T28 · Análisis de hipótesis en competencia (ACH), ahora para elegir. Es la tarjeta de T33 de la sección 7b; las reglas están en docs/ejemplos/T33.md."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "La factura de luz",
+    "versionEsquema": 1,
+    "config": { "criterios": ["alcance", "simplicidad", "coherencia", "fecundidad"], "pesoAlcance": 2, "pesoSimplicidad": 1, "pesoCoherencia": 1,
+                "pesoFecundidad": 1 },
+    "datos": {
+      "hecho": "¿Por qué subió la factura de luz?",
+      "explicaciones": [
+        { "texto": "La nevera vieja gasta más", "alcance": 3, "simplicidad": 2, "coherencia": 3, "fecundidad": 2,
+          "tambienExplica": "Que la factura suba también en los meses fríos" },
+        { "texto": "Subió la tarifa", "alcance": 2, "simplicidad": 3, "coherencia": 3, "fecundidad": 1 },
+        { "texto": "Hay una conexión ilegal del vecino", "alcance": 2, "simplicidad": 1, "coherencia": 1, "fecundidad": 3 }
+      ]
+    },
+    "resultado": {
+      "ranking": [ { "puesto": 1, "opcion": "La nevera vieja gasta más", "valor": "13" }, { "puesto": 2, "opcion": "Subió la tarifa", "valor": "11" },
+                   { "puesto": 3, "opcion": "Hay una conexión ilegal del vecino", "valor": "9" } ],
+      "sensibilidad": [ "Alcance: ningún peso entre 0 y 10 cambia la mejor.", "Simplicidad: si pesa 4 en vez de 1, gana Subió la tarifa.",
+                        "Coherencia: ningún peso entre 0 y 10 cambia la mejor.", "Fecundidad: si pesa 6 en vez de 1, gana Hay una conexión ilegal del vecino." ],
+      "nivelSensibilidad": "media",
+      "justificacion": "Explica más con menos: 13 de 15. También explicaría: Que la factura suba también en los meses fríos.",
+      "pendientes": ["Comprobar lo que predice la mejor explicación: Que la factura suba también en los meses fríos"],
+      "resumen": "Mejor explicación: La nevera vieja gasta más (13 de 15) · sensibilidad media."
+    },
+    "nota": "La factura de luz de la familia subió; los cuatro criterios activos y el alcance pesa el doble."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "La asamblea vacía",
+    "versionEsquema": 1,
+    "config": { "criterios": ["alcance", "coherencia"], "pesoAlcance": 1, "pesoSimplicidad": 1, "pesoCoherencia": 1, "pesoFecundidad": 1 },
+    "datos": {
+      "hecho": "¿Por qué no vino casi nadie a la asamblea?",
+      "explicaciones": [
+        { "texto": "Se avisó solo por el grupo de mensajes", "alcance": 3, "coherencia": 2 },
+        { "texto": "Coincidió con el partido", "alcance": 2, "coherencia": 3 },
+        { "texto": "La gente ya no confía en la junta", "alcance": 2, "coherencia": 1 }
+      ]
+    },
+    "resultado": {
+      "ranking": [ { "puesto": 1, "opcion": "Se avisó solo por el grupo de mensajes", "valor": "5" }, { "puesto": 1, "opcion": "Coincidió con el partido", "valor": "5" },
+                   { "puesto": 3, "opcion": "La gente ya no confía en la junta", "valor": "3" } ],
+      "sensibilidad": [ "Empate en el primer lugar: la sensibilidad no aplica." ],
+      "nivelSensibilidad": null,
+      "justificacion": null,
+      "pendientes": ["Buscar un hecho que distinga: Se avisó solo por el grupo de mensajes y Coincidió con el partido"],
+      "resumen": "Empate: Se avisó solo por el grupo de mensajes y Coincidió con el partido (5 de 6)."
+    },
+    "nota": "A la asamblea de la junta vinieron siete personas; con dos criterios activos, dos explicaciones empatan."
+  }
+]

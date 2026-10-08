@@ -596,28 +596,125 @@
     "usalaCuando": "Tienes una creencia con cierta confianza y llega evidencia nueva; quieres saber cuánto debería moverse esa confianza.",
     "definicion": "Procedimiento que parte de un prior, aplica la verosimilitud de cada evidencia y obtiene el posterior, con gráfico de actualización.",
     "tipo": "procedimiento", "operacion": "evaluar", "objeto": "afirmacion", "modalidad": "calculo", "patron": "V08",
-    "origen": "Bayes 1763; Laplace 1812", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Bayes 1763; Laplace 1812", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "priorInicial": 50, "formato": "porcentaje", "maxEvidencias": 4 },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "priorInicial", "tipo": "entero", "etiqueta": "Prior inicial (%) si no escribes uno", "obligatorio": true, "minimo": 1, "maximo": 99 },
+        { "nombre": "formato", "tipo": "enumeracion", "etiqueta": "Formato", "obligatorio": true,
+          "opciones": [ { "valor": "porcentaje", "etiqueta": "Porcentaje" }, { "valor": "odds", "etiqueta": "Porcentaje y odds (3 a 1)" } ] },
+        { "nombre": "maxEvidencias", "tipo": "entero", "etiqueta": "Máximo de evidencias", "obligatorio": true, "minimo": 1, "maximo": 8 }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "afirmacion", "tipo": "texto", "etiqueta": "La afirmación", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "prior", "tipo": "entero", "etiqueta": "Tu confianza antes de la evidencia (%)", "minimo": 1, "maximo": 99,
+          "ayuda": "Si sabes cada cuántos casos pasa, usa ese porcentaje. Vacío usa el de tu configuración." },
+        { "nombre": "evidencias", "tipo": "filas", "etiqueta": "Evidencias", "prefijo": "E", "elemento": "evidencia", "minimo": 1, "maximoDesdeConfig": "maxEvidencias",
+          "ayuda": "Para cada evidencia: qué tan probable sería verla si la afirmación es cierta y si es falsa.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Evidencia", "obligatorio": true, "largoMaximo": 200 },
+            { "nombre": "siCierta", "tipo": "entero", "etiqueta": "Si es cierta (%)", "obligatorio": true, "minimo": 0, "maximo": 100 },
+            { "nombre": "siFalsa", "tipo": "entero", "etiqueta": "Si es falsa (%)", "obligatorio": true, "minimo": 0, "maximo": 100 }
+          ] }
+      ]
+    }
   },
   {
     "id": "T25", "familia": "F5", "nombre": "Calibración y puntaje Brier", "nombreLlano": "Medir mi puntería",
     "usalaCuando": "Llevas tiempo registrando predicciones con porcentaje y quieres saber si cuando dices 90% aciertas el 90% de las veces.",
     "definicion": "Práctica que agrupa predicciones resueltas por intervalo de confianza, calcula el puntaje Brier y avisa de exceso o falta de confianza (regla R05).",
     "tipo": "practica", "operacion": "reflexionar", "objeto": "uno_mismo", "modalidad": "calculo", "patron": "V08",
-    "origen": "Brier 1950; Tetlock y Gardner 2015", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Brier 1950; Tetlock y Gardner 2015", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "tramos": 10, "horizonteMeses": 0, "puntaje": "brier", "umbral": 10 },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "tramos", "tipo": "entero", "etiqueta": "Ancho de los tramos de confianza (10 o 20 puntos)", "obligatorio": true, "minimo": 10, "maximo": 20 },
+        { "nombre": "horizonteMeses", "tipo": "entero", "etiqueta": "Horizonte en meses (0 son todas)", "obligatorio": true, "minimo": 0, "maximo": 120 },
+        { "nombre": "puntaje", "tipo": "enumeracion", "etiqueta": "Puntaje", "obligatorio": true,
+          "opciones": [ { "valor": "brier", "etiqueta": "Brier: 0 es perfecto, 0,25 es decir siempre 50%" },
+                        { "valor": "logaritmico", "etiqueta": "Logarítmico: 0 es perfecto, 0,69 es decir siempre 50%" } ] },
+        { "nombre": "umbral", "tipo": "entero", "etiqueta": "Predicciones por tramo para que el aviso no sea provisional", "obligatorio": true,
+          "minimo": 1, "maximo": 50 }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "predicciones", "tipo": "filas", "etiqueta": "Predicciones", "prefijo": "P", "elemento": "predicción", "minimo": 1, "maximo": 60,
+          "ayuda": "En el Diario de decisiones la curva sale sola de tus predicciones guardadas.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Predicción", "obligatorio": true, "largoMaximo": 200 },
+            { "nombre": "confianza", "tipo": "entero", "etiqueta": "Confianza (%)", "obligatorio": true, "minimo": 0, "maximo": 100 },
+            { "nombre": "resultado", "tipo": "enumeracion", "etiqueta": "Resultado", "obligatorio": true,
+              "opciones": [ { "valor": "se_cumplio", "etiqueta": "Se cumplió" }, { "valor": "no_se_cumplio", "etiqueta": "No se cumplió" },
+                            { "valor": "sin_resolver", "etiqueta": "Sin resolver" } ] },
+            { "nombre": "fecha", "tipo": "fecha", "etiqueta": "Resuelta el" }
+          ] }
+      ]
+    }
   },
   {
     "id": "T26", "familia": "F5", "nombre": "Estimación de Fermi", "nombreLlano": "Estimar por partes cuando no hay dato",
     "usalaCuando": "Necesitas un número que nadie tiene (cuántos panes vendería una sucursal nueva) y prefieres descomponerlo en factores que sí puedes estimar.",
     "definicion": "Procedimiento que descompone una cantidad desconocida en factores con rango mínimo y máximo y produce una estimación con rango.",
     "tipo": "procedimiento", "operacion": "generar", "objeto": "afirmacion", "modalidad": "calculo", "patron": "V06",
-    "origen": "Fermi, años 40", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Fermi, años 40", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "pasosMinimos": 3, "exigirUnidades": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "pasosMinimos", "tipo": "entero", "etiqueta": "Factores mínimos de la descomposición", "obligatorio": true, "minimo": 1, "maximo": 8 },
+        { "nombre": "exigirUnidades", "tipo": "booleano", "etiqueta": "Exigir la unidad de cada factor" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "pregunta", "tipo": "texto", "etiqueta": "¿Qué cantidad quieres estimar?", "obligatorio": true, "largoMaximo": 200 },
+        { "nombre": "unidad", "tipo": "texto", "etiqueta": "Unidad del resultado", "obligatorio": true, "largoMaximo": 60 },
+        { "nombre": "factores", "tipo": "filas", "etiqueta": "Factores que se multiplican", "prefijo": "F", "elemento": "factor", "minimo": 1, "maximo": 8,
+          "ayuda": "Cada factor con un mínimo y un máximo creíbles. Marca porcentaje si el número es un %.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Factor", "obligatorio": true, "largoMaximo": 120 },
+            { "nombre": "minimo", "tipo": "entero", "etiqueta": "Mínimo", "obligatorio": true, "minimo": 0, "maximo": 1000000 },
+            { "nombre": "maximo", "tipo": "entero", "etiqueta": "Máximo", "obligatorio": true, "minimo": 0, "maximo": 1000000 },
+            { "nombre": "unidad", "tipo": "texto", "etiqueta": "Unidad", "largoMaximo": 60 },
+            { "nombre": "porcentaje", "tipo": "booleano", "etiqueta": "Es un porcentaje" }
+          ] },
+        { "nombre": "referencia", "tipo": "entero", "etiqueta": "Un número conocido para comparar (opcional)", "minimo": 0, "maximo": 1000000000 },
+        { "nombre": "deDondeReferencia", "tipo": "texto", "etiqueta": "¿De dónde sale ese número?", "largoMaximo": 160 }
+      ]
+    }
   },
   {
     "id": "T27", "familia": "F5", "nombre": "Valor esperado", "nombreLlano": "Comparar opciones por lo que suelen rendir",
     "usalaCuando": "Tienes varias opciones con resultados inciertos y quieres compararlas multiplicando la probabilidad de cada escenario por su impacto.",
     "definicion": "Criterio que calcula, para cada opción, la suma de probabilidad por impacto de sus escenarios en una misma unidad, y las ordena.",
     "tipo": "criterio", "operacion": "decidir", "objeto": "decision", "modalidad": "calculo", "patron": "V12",
-    "origen": "Bernoulli 1738", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Bernoulli 1738", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "unidad": "puntos", "aversionPerdidas": false },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "unidad", "tipo": "texto", "etiqueta": "Unidad del impacto", "obligatorio": true, "largoMaximo": 60,
+          "ayuda": "La misma para todos los escenarios: meses de gastos, millones de pesos, robos evitados…" },
+        { "nombre": "aversionPerdidas", "tipo": "booleano", "etiqueta": "Aversión a pérdidas: las pérdidas cuentan el doble" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "pregunta", "tipo": "texto", "etiqueta": "La decisión", "obligatorio": true, "largoMaximo": 200 },
+        { "nombre": "opciones", "tipo": "filas", "etiqueta": "Opciones", "prefijo": "O", "elemento": "opción", "minimo": 2, "maximo": 6,
+          "ayuda": "Tres escenarios por opción; sus probabilidades suman 100. Un escenario que no aplica va con 0.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Opción", "obligatorio": true, "largoMaximo": 120 },
+            { "nombre": "pBueno", "tipo": "entero", "etiqueta": "Bueno: probabilidad (%)", "obligatorio": true, "minimo": 0, "maximo": 100 },
+            { "nombre": "iBueno", "tipo": "entero", "etiqueta": "Bueno: impacto", "obligatorio": true, "minimo": -1000000, "maximo": 1000000 },
+            { "nombre": "pMedio", "tipo": "entero", "etiqueta": "Medio: probabilidad (%)", "obligatorio": true, "minimo": 0, "maximo": 100 },
+            { "nombre": "iMedio", "tipo": "entero", "etiqueta": "Medio: impacto", "obligatorio": true, "minimo": -1000000, "maximo": 1000000 },
+            { "nombre": "pMalo", "tipo": "entero", "etiqueta": "Malo: probabilidad (%)", "obligatorio": true, "minimo": 0, "maximo": 100 },
+            { "nombre": "iMalo", "tipo": "entero", "etiqueta": "Malo: impacto", "obligatorio": true, "minimo": -1000000, "maximo": 1000000 }
+          ] }
+      ]
+    }
   },
   {
     "id": "T28", "familia": "F5", "nombre": "Análisis de hipótesis en competencia (ACH)", "nombreLlano": "Descartar explicaciones con la evidencia",
@@ -678,35 +775,173 @@
     "usalaCuando": "Vas a arrancar un proyecto o una decisión y quieres imaginar que ya salió mal para encontrar las causas antes de que ocurran.",
     "definicion": "Procedimiento que pide causas probables de un fracaso imaginado, las prioriza y exige una mitigación por causa.",
     "tipo": "procedimiento", "operacion": "generar", "objeto": "decision", "modalidad": "formulario", "patron": "V13a",
-    "origen": "Klein 2007", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Klein 2007", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "causasMinimas": 3, "exigirMitigacion": true, "categorias": ["personas", "dinero", "tiempo", "terceros"] },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "causasMinimas", "tipo": "entero", "etiqueta": "Causas mínimas", "obligatorio": true, "minimo": 1, "maximo": 10 },
+        { "nombre": "exigirMitigacion", "tipo": "booleano", "etiqueta": "Exigir una mitigación por causa" },
+        { "nombre": "categorias", "tipo": "conjunto", "etiqueta": "Categorías de ayuda",
+          "opciones": [
+            { "valor": "personas", "etiqueta": "Personas" }, { "valor": "dinero", "etiqueta": "Dinero" }, { "valor": "tiempo", "etiqueta": "Tiempo" },
+            { "valor": "terceros", "etiqueta": "Proveedores y terceros" }, { "valor": "clientes", "etiqueta": "Clientes y usuarios" },
+            { "valor": "reglas", "etiqueta": "Reglas y permisos" }, { "valor": "salud", "etiqueta": "Salud y energía" }
+          ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "decision", "tipo": "texto", "etiqueta": "La decisión", "obligatorio": true, "largoMaximo": 200 },
+        { "nombre": "fecha", "tipo": "fecha", "etiqueta": "La fecha en que imaginas el fracaso" },
+        { "nombre": "causas", "tipo": "filas", "etiqueta": "¿Por qué fracasó?", "prefijo": "C", "elemento": "causa", "minimo": 1, "maximo": 10,
+          "ayuda": "Imagina que ya fracasó y escribe por qué. Las categorías ayudan a no olvidar ninguna.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Causa", "obligatorio": true, "largoMaximo": 160 },
+            { "nombre": "probabilidad", "tipo": "enumeracion", "etiqueta": "Probabilidad", "obligatorio": true,
+              "opciones": [ { "valor": "alta", "etiqueta": "alta" }, { "valor": "media", "etiqueta": "media" }, { "valor": "baja", "etiqueta": "baja" } ] },
+            { "nombre": "categoria", "tipo": "enumeracion", "etiqueta": "Categoría", "opcionesDesde": "categorias",
+              "opciones": [
+                { "valor": "personas", "etiqueta": "Personas" }, { "valor": "dinero", "etiqueta": "Dinero" }, { "valor": "tiempo", "etiqueta": "Tiempo" },
+                { "valor": "terceros", "etiqueta": "Proveedores y terceros" }, { "valor": "clientes", "etiqueta": "Clientes y usuarios" },
+                { "valor": "reglas", "etiqueta": "Reglas y permisos" }, { "valor": "salud", "etiqueta": "Salud y energía" }
+              ] },
+            { "nombre": "mitigacion", "tipo": "texto", "etiqueta": "Mitigación", "largoMaximo": 200 }
+          ] }
+      ]
+    }
   },
   {
     "id": "T30", "familia": "F5", "nombre": "Inversión", "nombreLlano": "¿Cómo garantizo que fracase?",
     "usalaCuando": "Quieres encontrar los errores evitables de un plan preguntando qué harías para asegurarte de que salga mal.",
     "definicion": "Procedimiento que lista formas de garantizar el fracaso y exige la acción contraria por cada una.",
     "tipo": "procedimiento", "operacion": "generar", "objeto": "decision", "modalidad": "formulario", "patron": "V04",
-    "origen": "Jacobi, siglo XIX; Munger 1986", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Jacobi, siglo XIX; Munger 1986", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "formasMinimas": 3, "exigirAccionContraria": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "formasMinimas", "tipo": "entero", "etiqueta": "Formas mínimas de fracasar", "obligatorio": true, "minimo": 1, "maximo": 10 },
+        { "nombre": "exigirAccionContraria", "tipo": "booleano", "etiqueta": "Exigir la acción contraria por cada una" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "meta", "tipo": "texto", "etiqueta": "La meta que quieres proteger", "obligatorio": true, "largoMaximo": 200 },
+        { "nombre": "formas", "tipo": "filas", "etiqueta": "¿Cómo garantizo que fracase?", "prefijo": "F", "elemento": "forma", "minimo": 1, "maximo": 10,
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Cómo fracasar", "obligatorio": true, "largoMaximo": 160 },
+            { "nombre": "contraria", "tipo": "texto", "etiqueta": "Acción contraria", "largoMaximo": 160 }
+          ] }
+      ]
+    }
   },
   {
     "id": "T31", "familia": "F5", "nombre": "Matriz de decisión ponderada", "nombreLlano": "Puntuar opciones con criterios y pesos",
     "usalaCuando": "Tienes dos o más opciones y varios criterios que no pesan igual, y quieres un ranking que diga además qué tan sensible es a los pesos.",
     "definicion": "Procedimiento que puntúa cada opción por criterio, multiplica por el peso del criterio y ordena; informa si el ranking cambia con pesos distintos.",
     "tipo": "procedimiento", "operacion": "decidir", "objeto": "decision", "modalidad": "calculo", "patron": "V03b",
-    "origen": "Kepner y Tregoe 1965; Pugh 1981", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Kepner y Tregoe 1965; Pugh 1981", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "escala": "1a5", "probabilidadPorImpacto": false },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "escala", "tipo": "enumeracion", "etiqueta": "Escala de puntaje", "obligatorio": true,
+          "opciones": [ { "valor": "1a5", "etiqueta": "1 a 5" }, { "valor": "1a10", "etiqueta": "1 a 10" } ] },
+        { "nombre": "probabilidadPorImpacto", "tipo": "booleano", "etiqueta": "Probabilidad × impacto: cada total por la probabilidad de la opción" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "pregunta", "tipo": "texto", "etiqueta": "La decisión", "obligatorio": true, "largoMaximo": 200 },
+        { "nombre": "criterios", "tipo": "filas", "etiqueta": "Criterios", "prefijo": "K", "elemento": "criterio", "minimo": 1, "maximo": 8,
+          "ayuda": "Más puntaje es mejor: escribe «Costo (5 = barato)» y no «Costo».",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Criterio", "obligatorio": true, "largoMaximo": 80 },
+            { "nombre": "peso", "tipo": "entero", "etiqueta": "Peso", "obligatorio": true, "minimo": 1, "maximo": 10 }
+          ] },
+        { "nombre": "opciones", "tipo": "filas", "etiqueta": "Opciones", "prefijo": "O", "elemento": "opción", "minimo": 2, "maximo": 8,
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Opción", "obligatorio": true, "largoMaximo": 120 },
+            { "nombre": "puntajes", "tipo": "enumeracion", "etiqueta": "Puntaje en", "obligatorio": true, "porCadaFilaDe": "criterios",
+              "opcionesSegun": "escala",
+              "opcionesPor": {
+                "1a5": [ { "valor": "1", "etiqueta": "1" }, { "valor": "2", "etiqueta": "2" }, { "valor": "3", "etiqueta": "3" },
+                         { "valor": "4", "etiqueta": "4" }, { "valor": "5", "etiqueta": "5" } ],
+                "1a10": [ { "valor": "1", "etiqueta": "1" }, { "valor": "2", "etiqueta": "2" }, { "valor": "3", "etiqueta": "3" },
+                          { "valor": "4", "etiqueta": "4" }, { "valor": "5", "etiqueta": "5" }, { "valor": "6", "etiqueta": "6" },
+                          { "valor": "7", "etiqueta": "7" }, { "valor": "8", "etiqueta": "8" }, { "valor": "9", "etiqueta": "9" },
+                          { "valor": "10", "etiqueta": "10" } ]
+              } },
+            { "nombre": "probabilidad", "tipo": "entero", "etiqueta": "Probabilidad (%)", "obligatorio": true, "minimo": 0, "maximo": 100,
+              "visibleSi": "probabilidadPorImpacto" }
+          ] }
+      ]
+    }
   },
   {
     "id": "T32", "familia": "F5", "nombre": "Diario de decisiones", "nombreLlano": "Anotar la decisión para revisarla después",
     "usalaCuando": "Vas a decidir algo importante y quieres dejar escrito el contexto, las alternativas, tu predicción y qué te haría cambiar de opinión, con fecha de revisión.",
     "definicion": "Práctica que registra una decisión con campos obligatorios y una fecha de revisión; al llegar la fecha, se registra el resultado y alimenta la calibración.",
     "tipo": "practica", "operacion": "reflexionar", "objeto": "decision", "modalidad": "formulario", "patron": "V11",
-    "origen": "Kahneman 2011; Parrish 2014", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Kahneman 2011; Parrish 2014", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "diasMinimosRevision": 7 },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "diasMinimosRevision", "tipo": "entero", "etiqueta": "Días mínimos hasta la revisión", "obligatorio": true, "minimo": 1, "maximo": 365,
+          "ayuda": "Contexto, alternativas, predicción y qué te haría cambiar de opinión siempre son obligatorios." }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "decision", "tipo": "texto", "etiqueta": "La decisión", "obligatorio": true, "largoMaximo": 200 },
+        { "nombre": "contexto", "tipo": "texto", "etiqueta": "Contexto: qué sabías al decidir", "obligatorio": true, "largoMaximo": 600 },
+        { "nombre": "alternativas", "tipo": "texto", "etiqueta": "Alternativas que descartaste", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "prediccion", "tipo": "texto", "etiqueta": "Qué predices que va a pasar", "obligatorio": true, "largoMaximo": 200 },
+        { "nombre": "confianza", "tipo": "entero", "etiqueta": "Tu confianza en la predicción (%)", "obligatorio": true, "minimo": 0, "maximo": 100 },
+        { "nombre": "cambiarOpinion", "tipo": "texto", "etiqueta": "¿Qué me haría cambiar de opinión?", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "fechaRevision", "tipo": "fecha", "etiqueta": "Fecha de revisión", "obligatorio": true }
+      ]
+    }
   },
   {
     "id": "T33", "familia": "F5", "nombre": "Inferencia a la mejor explicación", "nombreLlano": "Elegir la explicación que más cosas explica",
     "usalaCuando": "Tienes varias explicaciones de un hecho y no basta con descartar: necesitas elegir una por su alcance, simplicidad, coherencia y fecundidad.",
     "definicion": "Procedimiento que puntúa explicaciones candidatas por criterios explicativos con pesos y elige la mejor con su justificación.",
     "tipo": "procedimiento", "operacion": "evaluar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V03b",
-    "origen": "Harman 1965; Lipton 1991", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Harman 1965; Lipton 1991", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "criterios": ["alcance", "simplicidad", "coherencia"], "pesoAlcance": 1, "pesoSimplicidad": 1, "pesoCoherencia": 1,
+                       "pesoFecundidad": 1 },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "criterios", "tipo": "conjunto", "etiqueta": "Criterios activos",
+          "opciones": [
+            { "valor": "alcance", "etiqueta": "Alcance: cuántos de los hechos explica" },
+            { "valor": "simplicidad", "etiqueta": "Simplicidad: cuántas cosas hay que suponer" },
+            { "valor": "coherencia", "etiqueta": "Coherencia: encaja con lo que ya se sabe" },
+            { "valor": "fecundidad", "etiqueta": "Fecundidad: predice algo nuevo que se puede comprobar" }
+          ] },
+        { "nombre": "pesoAlcance", "tipo": "entero", "etiqueta": "Peso del alcance", "obligatorio": true, "minimo": 1, "maximo": 3 },
+        { "nombre": "pesoSimplicidad", "tipo": "entero", "etiqueta": "Peso de la simplicidad", "obligatorio": true, "minimo": 1, "maximo": 3 },
+        { "nombre": "pesoCoherencia", "tipo": "entero", "etiqueta": "Peso de la coherencia", "obligatorio": true, "minimo": 1, "maximo": 3 },
+        { "nombre": "pesoFecundidad", "tipo": "entero", "etiqueta": "Peso de la fecundidad", "obligatorio": true, "minimo": 1, "maximo": 3 }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "hecho", "tipo": "texto", "etiqueta": "El hecho que quieres explicar", "obligatorio": true, "largoMaximo": 200 },
+        { "nombre": "explicaciones", "tipo": "filas", "etiqueta": "Explicaciones candidatas", "prefijo": "X", "elemento": "explicación", "minimo": 2, "maximo": 6,
+          "ayuda": "Puntúa cada una de 1 a 3 en los criterios activos.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Explicación", "obligatorio": true, "largoMaximo": 160 },
+            { "nombre": "alcance", "tipo": "entero", "etiqueta": "Alcance", "obligatorio": true, "minimo": 1, "maximo": 3, "visibleSi": "criterios~alcance" },
+            { "nombre": "simplicidad", "tipo": "entero", "etiqueta": "Simplicidad", "obligatorio": true, "minimo": 1, "maximo": 3,
+              "visibleSi": "criterios~simplicidad" },
+            { "nombre": "coherencia", "tipo": "entero", "etiqueta": "Coherencia", "obligatorio": true, "minimo": 1, "maximo": 3,
+              "visibleSi": "criterios~coherencia" },
+            { "nombre": "fecundidad", "tipo": "entero", "etiqueta": "Fecundidad", "obligatorio": true, "minimo": 1, "maximo": 3,
+              "visibleSi": "criterios~fecundidad" },
+            { "nombre": "tambienExplica", "tipo": "texto", "etiqueta": "¿Qué más explicaría que se pueda comprobar?", "largoMaximo": 200 }
+          ] }
+      ]
+    }
   },
   {
     "id": "T34", "familia": "F6", "nombre": "Steelmanning", "nombreLlano": "La mejor versión del argumento contrario",

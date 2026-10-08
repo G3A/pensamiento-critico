@@ -1,0 +1,72 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "El horno de la sucursal",
+    "versionEsquema": 1,
+    "config": { "priorInicial": 50, "formato": "porcentaje", "maxEvidencias": 4 },
+    "datos": {
+      "afirmacion": "El proveedor entrega el horno antes del 15 de noviembre.",
+      "prior": 70,
+      "evidencias": [
+        { "texto": "Ya se atrasó una vez con la sucursal original", "siCierta": 20, "siFalsa": 50 },
+        { "texto": "Confirmó la fecha por escrito", "siCierta": 80, "siFalsa": 40 }
+      ]
+    },
+    "resultado": {
+      "posteriores": [48, 65],
+      "razones": ["0,4", "2"],
+      "odds": [null, null],
+      "avisos": [],
+      "pendientes": ["Verificar la evidencia que más te movió: Ya se atrasó una vez con la sucursal original"],
+      "resumen": "De 70% a 65% con 2 evidencias."
+    },
+    "nota": "La dueña necesita que el horno nuevo llegue antes de abrir la segunda sucursal. Es la tarjeta de T24 de la sección 7b; el cálculo paso a paso está en docs/ejemplos/T24.md."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "La beca de la hija",
+    "versionEsquema": 1,
+    "config": { "priorInicial": 50, "formato": "odds", "maxEvidencias": 4 },
+    "datos": {
+      "afirmacion": "La hija consigue la beca completa.",
+      "evidencias": [
+        { "texto": "Pasó a la entrevista final", "siCierta": 90, "siFalsa": 30 },
+        { "texto": "El correo de la universidad tardó más de lo anunciado", "siCierta": 40, "siFalsa": 40 }
+      ]
+    },
+    "resultado": {
+      "posteriores": [75, 75],
+      "razones": ["3", "1"],
+      "odds": ["3 a 1", "3 a 1"],
+      "avisos": [ "Usaste el prior por defecto (50%): si sabes cada cuántos casos pasa, escribe ese porcentaje.",
+                  "E2 no distingue: es igual de probable si la afirmación es cierta o falsa." ],
+      "pendientes": ["Verificar la evidencia que más te movió: Pasó a la entrevista final"],
+      "resumen": "De 50% (1 a 1) a 75% (3 a 1) con 2 evidencias."
+    },
+    "nota": "La familia espera la respuesta de una beca; sin prior escrito se usa el de la configuración y la tarjeta lo dice."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Los robos de la cuadra",
+    "versionEsquema": 1,
+    "config": { "priorInicial": 50, "formato": "porcentaje", "maxEvidencias": 4 },
+    "datos": {
+      "afirmacion": "Los robos los hace alguien de afuera del barrio.",
+      "prior": 60,
+      "evidencias": [
+        { "texto": "Las cámaras de un vecino muestran un auto que no es de la cuadra", "siCierta": 70, "siFalsa": 10 },
+        { "texto": "El ladrón sabía en qué casas no había nadie", "siCierta": 30, "siFalsa": 60 },
+        { "texto": "Una vecina vio a alguien saltar desde el patio de al lado", "siCierta": 20, "siFalsa": 40 }
+      ]
+    },
+    "resultado": {
+      "posteriores": [91, 84, 72],
+      "razones": ["7", "0,5", "0,5"],
+      "odds": [null, null, null],
+      "avisos": [],
+      "pendientes": ["Verificar la evidencia que más te movió: Las cámaras de un vecino muestran un auto que no es de la cuadra"],
+      "resumen": "De 60% a 72% con 3 evidencias."
+    },
+    "nota": "En la junta se discute quién está robando de noche; una evidencia sube mucho y dos bajan."
+  }
+]

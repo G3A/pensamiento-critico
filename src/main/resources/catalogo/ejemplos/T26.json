@@ -1,0 +1,79 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "Los panes del centro",
+    "versionEsquema": 1,
+    "config": { "pasosMinimos": 3, "exigirUnidades": true },
+    "datos": {
+      "pregunta": "¿Cuántos panes vendería la sucursal del centro por día?", "unidad": "panes por día",
+      "factores": [
+        { "texto": "Peatones por hora frente al local", "minimo": 300, "maximo": 600, "unidad": "peatones por hora", "porcentaje": false },
+        { "texto": "Horas de apertura", "minimo": 10, "maximo": 10, "unidad": "horas", "porcentaje": false },
+        { "texto": "Fracción de peatones que entra", "minimo": 2, "maximo": 4, "porcentaje": true },
+        { "texto": "Panes por compra", "minimo": 2, "maximo": 3, "unidad": "panes", "porcentaje": false }
+      ],
+      "referencia": 260, "deDondeReferencia": "lo que vende hoy la sucursal original"
+    },
+    "resultado": {
+      "minimo": "120", "maximo": "720", "central": "290",
+      "rangos": ["300 a 600 peatones por hora", "10 horas", "2% a 4%", "2 a 3 panes"],
+      "masAncho": "F1",
+      "referencia": "260 está dentro del rango.",
+      "avisos": [],
+      "pendientes": ["Buscar un dato para el factor más incierto: Peatones por hora frente al local"],
+      "resumen": "Entre 120 y 720 panes por día, central 290 · 4 factores."
+    },
+    "nota": "La dueña quiere saber si la sucursal del centro vendería lo suficiente. Es la tarjeta de T26 de la sección 7b (que dice «mediana 300»: con dos cifras significativas da 290); el DOT esperado está en docs/ejemplos/T26.md."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El agua de la casa",
+    "versionEsquema": 1,
+    "config": { "pasosMinimos": 5, "exigirUnidades": true },
+    "datos": {
+      "pregunta": "¿Cuántos litros de agua se van en duchas por semana?", "unidad": "litros por semana",
+      "factores": [
+        { "texto": "Personas en la casa", "minimo": 4, "maximo": 4, "unidad": "personas", "porcentaje": false },
+        { "texto": "Minutos de ducha por persona al día", "minimo": 5, "maximo": 10, "unidad": "minutos", "porcentaje": false },
+        { "texto": "Litros por minuto de la regadera", "minimo": 8, "maximo": 12, "unidad": "litros por minuto", "porcentaje": false },
+        { "texto": "Días de la semana", "minimo": 7, "maximo": 7, "unidad": "días", "porcentaje": false }
+      ]
+    },
+    "resultado": {
+      "minimo": "1120", "maximo": "3360", "central": "1900",
+      "rangos": ["4 personas", "5 a 10 minutos", "8 a 12 litros por minuto", "7 días"],
+      "masAncho": "F2",
+      "referencia": null,
+      "avisos": ["Con 4 factores: la configuración pide al menos 5. Descompón el factor más incierto."],
+      "pendientes": ["Buscar un dato para el factor más incierto: Minutos de ducha por persona al día"],
+      "resumen": "Entre 1120 y 3360 litros por semana, central 1900 · 4 factores."
+    },
+    "nota": "La familia quiere saber cuánta agua se va en duchas antes de cambiar la regadera; la configuración pide más factores de los que escribió."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "La feria del barrio",
+    "versionEsquema": 1,
+    "config": { "pasosMinimos": 3, "exigirUnidades": true },
+    "datos": {
+      "pregunta": "¿Cuántas personas vendrían a la feria del barrio?", "unidad": "personas",
+      "factores": [
+        { "texto": "Casas en el barrio", "minimo": 400, "maximo": 500, "unidad": "casas", "porcentaje": false },
+        { "texto": "Personas por casa", "minimo": 2, "maximo": 4, "unidad": "personas", "porcentaje": false },
+        { "texto": "Fracción que se entera", "minimo": 10, "maximo": 80, "porcentaje": true },
+        { "texto": "Fracción de los que se enteran que viene", "minimo": 5, "maximo": 50, "porcentaje": true }
+      ],
+      "referencia": 150, "deDondeReferencia": "a la feria del año pasado vinieron"
+    },
+    "resultado": {
+      "minimo": "4", "maximo": "800", "central": "57",
+      "rangos": ["400 a 500 casas", "2 a 4 personas", "10% a 80%", "5% a 50%"],
+      "masAncho": "F4",
+      "referencia": "150 está dentro del rango.",
+      "avisos": ["El rango va de 4 a 800: más de 100 veces. Parte el factor más ancho en dos."],
+      "pendientes": ["Buscar un dato para el factor más incierto: Fracción de los que se enteran que viene"],
+      "resumen": "Entre 4 y 800 personas, central 57 · 4 factores."
+    },
+    "nota": "La junta quiere saber cuántas sillas alquilar para la feria; el rango es tan ancho que la tarjeta pide partir el factor más incierto."
+  }
+]

@@ -154,6 +154,25 @@ public abstract class GraficoContract {
     }
 
     @Test
+    void la_cadena_de_fermi_con_una_etiqueta_hostil_conserva_id_y_clase_por_nodo_y_sale_inerte() {
+        java.util.UUID resultado = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000c1");
+        java.util.UUID f1 = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000c2");
+        java.util.UUID f2 = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000c3");
+        var fermi = new pensamiento.tecnicas.f5.ResultadoFermi("¿Cuántos panes?", HOSTIL, resultado, java.util.List.of(
+                new pensamiento.tecnicas.f5.ResultadoFermi.FactorEn(f1, "F1", HOSTIL, "300 a 600 peatones", true),
+                new pensamiento.tecnicas.f5.ResultadoFermi.FactorEn(f2, "F2", "Horas de apertura", "10 horas", false)),
+                "3000", "6000", "4200", null, null, java.util.List.of(), "Entre 3000 y 6000.");
+
+        Document svg = parsear(crearSut().svg(pensamiento.web.patrones.GeneradorDotDiagramas.cadena(fermi)));
+
+        assertThat(svg.getElementById(f1.toString()).classNames()).contains("factor", "ancho");
+        assertThat(svg.getElementById(f1.toString()).text()).contains("<script>alert(1)</script>");
+        assertThat(svg.getElementById(f2.toString()).classNames()).contains("factor");
+        assertThat(svg.getElementById(resultado.toString()).classNames()).contains("resultado");
+        inerte(svg);
+    }
+
+    @Test
     void el_svg_no_trae_colores_ni_estilos_porque_salen_de_clases_css() {
         Document svg = parsear(crearSut().svg(DOT_SIMPLE));
         for (Element e : svg.getAllElements()) {

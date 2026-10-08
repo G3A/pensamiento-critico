@@ -1,0 +1,67 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "La segunda sucursal",
+    "versionEsquema": 1,
+    "config": { "causasMinimas": 3, "exigirMitigacion": true, "categorias": ["personas", "dinero", "tiempo", "terceros"] },
+    "datos": {
+      "decision": "Abrir la segunda sucursal antes del 15 de diciembre.", "fecha": "2026-12-15",
+      "causas": [
+        { "texto": "La sucursal original se descuidó", "probabilidad": "media", "categoria": "personas", "mitigacion": "Nombrar un encargado antes del 1 de noviembre." },
+        { "texto": "El horno no llegó a tiempo", "probabilidad": "alta", "categoria": "terceros", "mitigacion": "Fecha por escrito y un proveedor alterno." },
+        { "texto": "El flujo de caja no aguantó", "probabilidad": "media", "categoria": "dinero", "mitigacion": "Reserva de tres meses de gastos." }
+      ]
+    },
+    "resultado": {
+      "enunciado": "Es 15 de diciembre de 2026 y abrir la segunda sucursal antes del 15 de diciembre fracasó. ¿Por qué?",
+      "orden": ["El horno no llegó a tiempo", "La sucursal original se descuidó", "El flujo de caja no aguantó"],
+      "avisos": ["Ninguna causa de: tiempo. ¿Seguro que por ahí no falla?"],
+      "pendientes": [],
+      "resumen": "3 causas · 3 con mitigación."
+    },
+    "nota": "La dueña imagina que la segunda sucursal no abrió. Es la tarjeta de T29 de la sección 7b; las reglas están en docs/ejemplos/T29.md."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "La mudanza",
+    "versionEsquema": 1,
+    "config": { "causasMinimas": 3, "exigirMitigacion": true, "categorias": ["personas", "dinero", "tiempo", "terceros"] },
+    "datos": {
+      "decision": "Mudarnos a otra ciudad en marzo.", "fecha": "2027-03-31",
+      "causas": [
+        { "texto": "La hija no se adaptó al colegio nuevo", "probabilidad": "alta", "categoria": "personas", "mitigacion": "Visitar el colegio con ella en enero." },
+        { "texto": "La venta de la casa no alcanzó", "probabilidad": "media", "categoria": "dinero" }
+      ]
+    },
+    "resultado": {
+      "enunciado": "Es 31 de marzo de 2027 y mudarnos a otra ciudad en marzo fracasó. ¿Por qué?",
+      "orden": ["La hija no se adaptó al colegio nuevo", "La venta de la casa no alcanzó"],
+      "avisos": ["Falta 1 causa: la configuración pide al menos 3.", "Ninguna causa de: tiempo, terceros. ¿Seguro que por ahí no falla?"],
+      "pendientes": ["Escribir una mitigación para: La venta de la casa no alcanzó"],
+      "resumen": "2 causas · 1 con mitigación."
+    },
+    "nota": "La familia piensa mudarse a otra ciudad; faltan causas y una no tiene mitigación."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras de la junta",
+    "versionEsquema": 1,
+    "config": { "causasMinimas": 2, "exigirMitigacion": false, "categorias": ["personas", "dinero", "reglas"] },
+    "datos": {
+      "decision": "La junta instala cámaras en enero.",
+      "causas": [
+        { "texto": "Nadie se encargó de mirar las grabaciones", "probabilidad": "media", "categoria": "personas" },
+        { "texto": "Los vecinos de la otra cuadra se opusieron", "probabilidad": "baja", "categoria": "reglas", "mitigacion": "Asamblea con todas las cuadras." },
+        { "texto": "Se robaron una cámara la primera semana", "probabilidad": "alta", "categoria": "dinero" }
+      ]
+    },
+    "resultado": {
+      "enunciado": "Ya pasó el tiempo y la junta instala cámaras en enero fracasó. ¿Por qué?",
+      "orden": ["Se robaron una cámara la primera semana", "Nadie se encargó de mirar las grabaciones", "Los vecinos de la otra cuadra se opusieron"],
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "3 causas · 1 con mitigación."
+    },
+    "nota": "La junta va a votar la compra de cámaras; la mitigación no se exige y las tres categorías activas tienen causa."
+  }
+]

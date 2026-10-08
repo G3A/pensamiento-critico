@@ -54,7 +54,8 @@ class CatalogoJsonTest {
 
     @Test
     void solo_las_tecnicas_construidas_estan_activas_y_todas_tienen_nombre_llano_y_usala_cuando() {
-        assertThat(catalogo.tecnicas().stream().filter(t -> !t.estaPendiente()).map(t -> t.id().valor())).containsExactly("T01", "T02", "T03", "T04", "T05", "T06", "T07", "T13", "T14", "T15", "T16", "T17", "T18", "T22", "T28", "T34", "T40",
+        assertThat(catalogo.tecnicas().stream().filter(t -> !t.estaPendiente()).map(t -> t.id().valor())).containsExactly("T01", "T02", "T03", "T04", "T05", "T06", "T07", "T13", "T14", "T15", "T16", "T17", "T18", "T22", "T24", "T25", "T26",
+                "T27", "T28", "T29", "T30", "T31", "T32", "T33", "T34", "T40",
                 "T41", "T42", "T43", "T44");
         for (Tecnica t : catalogo.tecnicas()) {
             assertThat(t.nombreLlano()).as(t.cita()).isNotBlank();

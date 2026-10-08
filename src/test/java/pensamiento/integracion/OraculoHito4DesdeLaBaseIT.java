@@ -36,9 +36,12 @@ class OraculoHito4DesdeLaBaseIT {
     }
 
     static final List<Ejecutor<?, ?, ?>> EJECUTORES = List.of(new EjecutorDefinicionProblema(), new EjecutorPrimerosPrincipios(),
-            new EjecutorArbolMece(), new EjecutorIshikawa(), new EjecutorScamper());
+            new EjecutorArbolMece(), new EjecutorIshikawa(), new EjecutorScamper(), new pensamiento.tecnicas.f5.EjecutorBayes(),
+            new pensamiento.tecnicas.f5.EjecutorCalibracion(), new pensamiento.tecnicas.f5.EjecutorFermi(), new pensamiento.tecnicas.f5.EjecutorValorEsperado(),
+            new pensamiento.tecnicas.f5.EjecutorPremortem(), new pensamiento.tecnicas.f5.EjecutorInversion(), new pensamiento.tecnicas.f5.EjecutorMatrizPonderada(),
+            new pensamiento.tecnicas.f5.EjecutorDiarioDecisiones(), new pensamiento.tecnicas.f5.EjecutorMejorExplicacion());
 
-    static final List<String> DEL_HITO_4 = List.of("T40", "T41", "T42", "T43", "T44");
+    static final List<String> DEL_HITO_4 = List.of("T24", "T25", "T26", "T27", "T29", "T30", "T31", "T32", "T33", "T40", "T41", "T42", "T43", "T44");
 
     private final BaseDatosDePrueba bd = new BaseDatosDePrueba();
     private final TransactionTemplate tx = new TransactionTemplate(new GestorTransaccionesRls(bd.dataSourceApp()));

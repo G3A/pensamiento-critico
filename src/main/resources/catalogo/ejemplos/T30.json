@@ -1,0 +1,64 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras que sirvan",
+    "versionEsquema": 1,
+    "config": { "formasMinimas": 3, "exigirAccionContraria": true },
+    "datos": {
+      "meta": "Que las cámaras de la junta de vecinos sirvan.",
+      "formas": [
+        { "texto": "Comprarlas sin saber quién las monitorea", "contraria": "Definir responsable y horario antes de comprar." },
+        { "texto": "No preguntar a los vecinos de la cuadra sin cámaras", "contraria": "Asamblea con todas las cuadras." },
+        { "texto": "Pagar todo por adelantado", "contraria": "Pago por etapas contra instalación." }
+      ]
+    },
+    "resultado": {
+      "estado": "completa",
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "3 formas de fracasar · 3 con acción contraria."
+    },
+    "nota": "La presidenta de la junta propone pensar al revés la compra de cámaras. Es la tarjeta de T30 de la sección 7b; las reglas están en docs/ejemplos/T30.md."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El ahorro para la maestría",
+    "versionEsquema": 1,
+    "config": { "formasMinimas": 3, "exigirAccionContraria": true },
+    "datos": {
+      "meta": "Ahorrar para la maestría de la hija.",
+      "formas": [
+        { "texto": "Ahorrar lo que sobre a fin de mes", "contraria": "Separar el ahorro el día de pago." },
+        { "texto": "No saber cuánto cuesta" }
+      ]
+    },
+    "resultado": {
+      "estado": "incompleta: falta 1 forma y 1 acción contraria",
+      "avisos": ["Falta 1 forma de fracasar: la configuración pide al menos 3."],
+      "pendientes": ["Escribir la acción contraria de: No saber cuánto cuesta"],
+      "resumen": "2 formas de fracasar · 1 con acción contraria."
+    },
+    "nota": "La familia quiere juntar la plata de la maestría de la hija; falta una forma y una acción contraria."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El pan de la sucursal nueva",
+    "versionEsquema": 1,
+    "config": { "formasMinimas": 2, "exigirAccionContraria": false },
+    "datos": {
+      "meta": "Que el pan de la sucursal nueva salga igual que el de la original.",
+      "formas": [
+        { "texto": "Cambiar de harina para ahorrar", "contraria": "Mantener el mismo proveedor de harina el primer año." },
+        { "texto": "Poner a hornear a alguien sin entrenar", "contraria": "Dos semanas de práctica en la original." },
+        { "texto": "No probar el horno nuevo antes de abrir" }
+      ]
+    },
+    "resultado": {
+      "estado": "completa",
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "3 formas de fracasar · 2 con acción contraria."
+    },
+    "nota": "La dueña quiere que el pan de la sucursal nueva salga igual; la acción contraria no se exige."
+  }
+]

@@ -70,6 +70,22 @@ public final class GeneradorDotDiagramas {
         return sb.append("}\n").toString();
     }
 
+    /** V06, cadena de T26 · Estimación de Fermi: los factores en fila, multiplicados, hasta el resultado. */
+    public static String cadena(pensamiento.tecnicas.f5.ResultadoFermi fermi) {
+        StringBuilder sb = cabecera("fermi", "nodesep=0.3, ranksep=0.4");
+        for (var f : fermi.factores()) {
+            nodo(sb, f.afirmacionId().toString(), f.masAncho() ? "factor ancho" : "factor", f.codigo() + " · " + f.texto() + "\n" + f.rango()
+                    + (f.masAncho() ? "\nel más incierto" : ""));
+        }
+        String resultado = fermi.resultadoId().toString();
+        nodo(sb, resultado, "resultado", "Entre " + fermi.minimo() + " y " + fermi.maximo() + " " + fermi.unidad() + "\ncentral " + fermi.central());
+        for (int i = 0; i + 1 < fermi.factores().size(); i++) {
+            arista(sb, fermi.factores().get(i).afirmacionId().toString(), fermi.factores().get(i + 1).afirmacionId().toString(), "multiplica", "×");
+        }
+        arista(sb, fermi.factores().getLast().afirmacionId().toString(), resultado, "da", "=");
+        return sb.append("}\n").toString();
+    }
+
     static StringBuilder cabecera(String nombre, String separacion) {
         StringBuilder sb = new StringBuilder("digraph ").append(nombre).append(" {\n");
         sb.append("  graph [rankdir=LR, ").append(separacion).append("];\n");

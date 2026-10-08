@@ -1,0 +1,71 @@
+[
+  {
+    "ambito": "personal",
+    "titulo": "Los ahorros de la familia",
+    "versionEsquema": 1,
+    "config": { "unidad": "meses de gastos cubiertos", "aversionPerdidas": false },
+    "datos": {
+      "pregunta": "¿A dónde van los ahorros de la familia?",
+      "opciones": [
+        { "texto": "Fondo de emergencia", "pBueno": 60, "iBueno": 10, "pMedio": 30, "iMedio": 4, "pMalo": 10, "iMalo": 0 },
+        { "texto": "Maestría de la hija", "pBueno": 40, "iBueno": 20, "pMedio": 20, "iMedio": 2, "pMalo": 40, "iMalo": -5 },
+        { "texto": "Auto usado", "pBueno": 30, "iBueno": 6, "pMedio": 50, "iMedio": 0, "pMalo": 20, "iMalo": 0 }
+      ]
+    },
+    "resultado": {
+      "ranking": [ { "puesto": 1, "opcion": "Fondo de emergencia", "valor": "+7,2", "peorCaso": 0, "empate": false },
+                   { "puesto": 2, "opcion": "Maestría de la hija", "valor": "+6,4", "peorCaso": -5, "empate": false },
+                   { "puesto": 3, "opcion": "Auto usado", "valor": "+1,8", "peorCaso": 0, "empate": false } ],
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "1º Fondo de emergencia (+7,2 meses de gastos cubiertos) · 3 opciones."
+    },
+    "nota": "La familia tiene unos ahorros y discute en qué usarlos. Es la tarjeta de T27 de la sección 7b; el cálculo está en docs/ejemplos/T27.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El local del centro",
+    "versionEsquema": 1,
+    "config": { "unidad": "millones de pesos al año", "aversionPerdidas": true },
+    "datos": {
+      "pregunta": "¿Qué hacemos con el local del centro?",
+      "opciones": [
+        { "texto": "Abrir la sucursal", "pBueno": 40, "iBueno": 40, "pMedio": 30, "iMedio": 5, "pMalo": 30, "iMalo": -30 },
+        { "texto": "Subarrendar el local", "pBueno": 70, "iBueno": 8, "pMedio": 30, "iMedio": 4, "pMalo": 0, "iMalo": 0 },
+        { "texto": "No hacer nada", "pBueno": 100, "iBueno": 0, "pMedio": 0, "iMedio": 0, "pMalo": 0, "iMalo": 0 }
+      ]
+    },
+    "resultado": {
+      "ranking": [ { "puesto": 1, "opcion": "Subarrendar el local", "valor": "+6,8", "peorCaso": 4, "empate": false },
+                   { "puesto": 2, "opcion": "No hacer nada", "valor": "0,0", "peorCaso": 0, "empate": false },
+                   { "puesto": 3, "opcion": "Abrir la sucursal", "valor": "−0,5", "peorCaso": -30, "empate": false } ],
+      "avisos": ["Con la aversión a pérdidas el orden cambia: sin ella, primero iría Abrir la sucursal (+8,5)."],
+      "pendientes": [],
+      "resumen": "1º Subarrendar el local (+6,8 millones de pesos al año, con aversión a pérdidas) · 3 opciones."
+    },
+    "nota": "Al lado de la panadería se desocupó un local; la aversión a pérdidas cambia el orden."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "El fondo de la junta",
+    "versionEsquema": 1,
+    "config": { "unidad": "robos evitados al año", "aversionPerdidas": false },
+    "datos": {
+      "pregunta": "¿En qué gastamos el fondo de la junta?",
+      "opciones": [
+        { "texto": "Cámaras en la esquina", "pBueno": 30, "iBueno": 6, "pMedio": 40, "iMedio": 2, "pMalo": 30, "iMalo": 0 },
+        { "texto": "Luces con sensor", "pBueno": 50, "iBueno": 4, "pMedio": 50, "iMedio": 2, "pMalo": 0, "iMalo": 0 },
+        { "texto": "Ronda vecinal", "pBueno": 40, "iBueno": 5, "pMedio": 30, "iMedio": 2, "pMalo": 30, "iMalo": 0 }
+      ]
+    },
+    "resultado": {
+      "ranking": [ { "puesto": 1, "opcion": "Luces con sensor", "valor": "+3,0", "peorCaso": 2, "empate": false },
+                   { "puesto": 2, "opcion": "Cámaras en la esquina", "valor": "+2,6", "peorCaso": 0, "empate": true },
+                   { "puesto": 2, "opcion": "Ronda vecinal", "valor": "+2,6", "peorCaso": 0, "empate": true } ],
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "1º Luces con sensor (+3,0 robos evitados al año) · 3 opciones."
+    },
+    "nota": "La junta tiene un fondo pequeño para seguridad; dos opciones empatan en el segundo lugar."
+  }
+]

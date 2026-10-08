@@ -1,0 +1,76 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "Dónde abrir la sucursal",
+    "versionEsquema": 1,
+    "config": { "escala": "1a5", "probabilidadPorImpacto": false },
+    "datos": {
+      "pregunta": "¿Dónde abrimos la segunda sucursal?",
+      "criterios": [ { "texto": "Tráfico", "peso": 3 }, { "texto": "Alquiler (5 = barato)", "peso": 2 }, { "texto": "Poco riesgo", "peso": 3 } ],
+      "opciones": [
+        { "texto": "Centro", "puntajes": ["5", "2", "2"] },
+        { "texto": "Terminal", "puntajes": ["4", "4", "3"] },
+        { "texto": "Esperar un año", "puntajes": ["1", "5", "5"] }
+      ]
+    },
+    "resultado": {
+      "ranking": [ { "puesto": 1, "opcion": "Terminal", "valor": "29" }, { "puesto": 2, "opcion": "Esperar un año", "valor": "28" },
+                   { "puesto": 3, "opcion": "Centro", "valor": "25" } ],
+      "sensibilidad": [ "Tráfico: si pesa 2 en vez de 3, gana Esperar un año.", "Alquiler (5 = barato): si pesa 4 en vez de 2, gana Esperar un año.",
+                        "Poco riesgo: si pesa 4 en vez de 3, gana Esperar un año." ],
+      "nivelSensibilidad": "alta",
+      "pendientes": [],
+      "resumen": "1º Terminal (29) · sensibilidad alta."
+    },
+    "nota": "La dueña compara tres caminos para la segunda sucursal. Es la tarjeta de T31 de la sección 7b; la sensibilidad está calculada a mano en docs/ejemplos/T31.md."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El colegio de la hija",
+    "versionEsquema": 1,
+    "config": { "escala": "1a5", "probabilidadPorImpacto": true },
+    "datos": {
+      "pregunta": "¿A qué colegio va la hija el año que viene?",
+      "criterios": [ { "texto": "Cercanía", "peso": 2 }, { "texto": "Calidad", "peso": 3 }, { "texto": "Costo (5 = barato)", "peso": 2 } ],
+      "opciones": [
+        { "texto": "Colegio del barrio", "puntajes": ["5", "3", "4"], "probabilidad": 100 },
+        { "texto": "Colegio del centro", "puntajes": ["3", "5", "2"], "probabilidad": 60 },
+        { "texto": "Colegio de la loma", "puntajes": ["2", "4", "5"], "probabilidad": 90 }
+      ]
+    },
+    "resultado": {
+      "ranking": [ { "puesto": 1, "opcion": "Colegio del barrio", "valor": "27,0" }, { "puesto": 2, "opcion": "Colegio de la loma", "valor": "23,4" },
+                   { "puesto": 3, "opcion": "Colegio del centro", "valor": "15,0" } ],
+      "sensibilidad": [ "Cercanía: si pesa 0 en vez de 2, gana Colegio de la loma.", "Calidad: si pesa 10 en vez de 3, gana Colegio de la loma.",
+                        "Costo (5 = barato): si pesa 10 en vez de 2, gana Colegio de la loma." ],
+      "nivelSensibilidad": "media",
+      "pendientes": [],
+      "resumen": "1º Colegio del barrio (27,0) · sensibilidad media."
+    },
+    "nota": "La familia elige colegio y no en todos hay cupo seguro: cada total se multiplica por la probabilidad de conseguir cupo."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "La plata de la rifa",
+    "versionEsquema": 1,
+    "config": { "escala": "1a5", "probabilidadPorImpacto": false },
+    "datos": {
+      "pregunta": "¿En qué usamos la plata de la rifa?",
+      "criterios": [ { "texto": "Beneficia a más vecinos", "peso": 3 }, { "texto": "Costo (5 = barato)", "peso": 1 } ],
+      "opciones": [
+        { "texto": "Pintar la cancha", "puntajes": ["4", "3"] },
+        { "texto": "Arreglar el parque", "puntajes": ["4", "3"] },
+        { "texto": "Luces con sensor", "puntajes": ["3", "5"] }
+      ]
+    },
+    "resultado": {
+      "ranking": [ { "puesto": 1, "opcion": "Pintar la cancha", "valor": "15" }, { "puesto": 1, "opcion": "Arreglar el parque", "valor": "15" },
+                   { "puesto": 3, "opcion": "Luces con sensor", "valor": "14" } ],
+      "sensibilidad": [ "Empate en el primer lugar: la sensibilidad no aplica." ],
+      "nivelSensibilidad": null,
+      "pendientes": ["Buscar un criterio que distinga: Pintar la cancha y Arreglar el parque"],
+      "resumen": "Empate en el 1º lugar: Pintar la cancha y Arreglar el parque (15)."
+    },
+    "nota": "La junta tiene la plata de la rifa y tres ideas; dos empatan en el primer lugar."
+  }
+]

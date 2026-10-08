@@ -1,0 +1,77 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "La sucursal de la terminal",
+    "versionEsquema": 1,
+    "config": { "diasMinimosRevision": 7 },
+    "datos": {
+      "decision": "Abrir en la terminal, no en el centro.",
+      "contexto": "La matriz ponderada dio Terminal 29, Esperar 28 y Centro 25; el alquiler del centro es el doble.",
+      "alternativas": "Centro · esperar un año.",
+      "prediccion": "La sucursal de la terminal cubre sus costos en 6 meses.",
+      "confianza": 70,
+      "cambiarOpinion": "Tres meses seguidos por debajo de 200 panes por día.",
+      "fechaRevision": "2027-04-15"
+    },
+    "resultado": {
+      "linea": [ { "fecha": "2026-10-07", "texto": "7 de octubre de 2026", "que": "registrada" },
+                 { "fecha": "2027-04-15", "texto": "15 de abril de 2027", "que": "revisión programada" } ],
+      "bloqueo": null,
+      "avisos": [],
+      "pendientes": ["Revisar la decisión: Abrir en la terminal, no en el centro."],
+      "vence": "2027-04-15",
+      "resumen": "Abrir en la terminal, no en el centro · predicción 70% · revisar el 15 de abril de 2027."
+    },
+    "nota": "Después de la matriz ponderada, la dueña decide. El ejemplo de punta a punta, con la revisión del 15 de abril de 2027 y el Brier de 0,13 a 0,12, está en docs/ejemplos/T32.md. Las fechas del ejemplo son las del reloj fijo de las pruebas (7 de octubre de 2026)."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Estudiar afuera",
+    "versionEsquema": 1,
+    "config": { "diasMinimosRevision": 7 },
+    "datos": {
+      "decision": "Mandar a la hija a estudiar afuera.",
+      "contexto": "Le ofrecieron cupo en una universidad de otra ciudad; tenemos ahorros para el primer año.",
+      "alternativas": "Universidad de la ciudad · un año sabático.",
+      "prediccion": "Termina el primer año sin perder materias.",
+      "confianza": 60,
+      "cambiarOpinion": "Que en el primer semestre pierda dos materias o pida volver.",
+      "fechaRevision": "2027-03-01"
+    },
+    "resultado": {
+      "linea": [ { "fecha": "2026-10-07", "texto": "7 de octubre de 2026", "que": "registrada" },
+                 { "fecha": "2027-03-01", "texto": "1 de marzo de 2027", "que": "revisión programada" } ],
+      "bloqueo": null,
+      "avisos": [],
+      "pendientes": ["Revisar la decisión: Mandar a la hija a estudiar afuera."],
+      "vence": "2027-03-01",
+      "resumen": "Mandar a la hija a estudiar afuera · predicción 60% · revisar el 1 de marzo de 2027."
+    },
+    "nota": "La familia decide si la hija estudia en otra ciudad."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras en la asamblea",
+    "versionEsquema": 1,
+    "config": { "diasMinimosRevision": 7 },
+    "datos": {
+      "decision": "Llevar la propuesta de cámaras a la asamblea.",
+      "contexto": "Hubo 12 robos nocturnos este año; la junta tiene fondo para cuatro cámaras.",
+      "alternativas": "Luces con sensor · ronda vecinal.",
+      "prediccion": "La asamblea aprueba las cámaras con más de la mitad de los votos.",
+      "confianza": 95,
+      "cambiarOpinion": "Que la cuadra sin cámaras vote en contra.",
+      "fechaRevision": "2026-10-10"
+    },
+    "resultado": {
+      "linea": [ { "fecha": "2026-10-07", "texto": "7 de octubre de 2026", "que": "registrada" },
+                 { "fecha": "2026-10-10", "texto": "10 de octubre de 2026", "que": "revisión programada" } ],
+      "bloqueo": "Guardado bloqueado: la fecha de revisión tiene que ser al menos 7 días después de hoy (desde el 14 de octubre de 2026).",
+      "avisos": ["Con 95%, si no se cumple, esta predicción suma 0,90 al Brier (el peor es 1)."],
+      "pendientes": ["Revisar la decisión: Llevar la propuesta de cámaras a la asamblea."],
+      "vence": "2026-10-10",
+      "resumen": "Llevar la propuesta de cámaras a la asamblea · predicción 95% · revisar el 10 de octubre de 2026."
+    },
+    "nota": "La presidenta de la junta anota lo que espera de la asamblea del sábado; la fecha de revisión es demasiado cercana y el guardado se bloquea."
+  }
+]
