@@ -49,7 +49,7 @@ public class RenderizadorTriangulacion implements RenderizadorResultado<Resultad
         };
         String tarjeta = "verificada".equals(r.estado())
                 ? "Verificada por ti, con " + r.grupos() + " grupos de fuentes, bajo R03. Si aparece evidencia en contra, vuelve a evaluar."
-                : "La app nunca dice «verdadero»: dice qué tanto sostienen tus fuentes la afirmación bajo R03.";
+                : "La app no decide si es cierta: dice qué tanto la sostienen tus fuentes bajo R03.";
         int maximo = Math.max(8, Math.abs(r.neta()));
         V10 v = new V10(idEjecucion, sufijo, modo, "Triangulación de fuentes", "Afirmación: «" + r.afirmacion() + "»",
                 List.of(new V10.Barra("neta", "Fuerza neta " + (r.neta() > 0 ? "+" : "") + r.neta() + " (" + r.magnitud() + ")", -maximo, maximo, r.neta())),

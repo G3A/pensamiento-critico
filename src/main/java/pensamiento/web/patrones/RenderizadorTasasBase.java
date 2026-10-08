@@ -41,7 +41,7 @@ public class RenderizadorTasasBase implements RenderizadorResultado<ResultadoTas
         String titulo = "";
         ResultadoTasasBase.Calculo c = r.calculo();
         if (c != null) {
-            List<V08.Fila> positivos = List.of(new V08.Fila("Positivos verdaderos", c.detectados()), new V08.Fila("Positivos falsos", c.positivosFalsos()));
+            List<V08.Fila> positivos = List.of(new V08.Fila("Positivos con la condición", c.detectados()), new V08.Fila("Positivos falsos", c.positivosFalsos()));
             barras = V08.escalar(positivos, List.of("detectados", "falsos"), List.of("barra-verdaderos", "barra-falsos"));
             tabla = List.of(new V08.Fila("Personas", c.deCada()), new V08.Fila("Con la condición", c.enfermos()),
                     new V08.Fila("Detectadas por el examen", c.detectados()), new V08.Fila("No detectadas", c.noDetectados()),
