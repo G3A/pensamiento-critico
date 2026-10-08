@@ -51,6 +51,19 @@ jobs:
       - name: Perfil test (rápidos, contratos Fake, IT, aceptación, ArchUnit, sensores)
         run: docker compose -f docker-compose.yml -f docker-compose.ci.yml --profile test run --rm tests
 
+      - name: Carga básica con k6 (RNF-03, 10 personas, p95 bajo 500 ms y 0 % de errores)
+        run: |
+          mkdir -p sensores/k6/resultados && chmod 777 sensores/k6/resultados
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml --profile test run --rm k6
+
+      - name: Resumen de k6
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-resumen
+          path: sensores/k6/resultados/resumen.json
+          if-no-files-found: ignore
+
       - name: Gates de seguridad (Dependency-Check y SpotBugs con FindSecBugs)
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}

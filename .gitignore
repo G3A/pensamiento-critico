@@ -21,3 +21,5 @@ respaldos/*
 
 # Capturas de sesiones de IA
 .ia/
+# Resúmenes de k6: artefacto de cada corrida, no van al repo
+sensores/k6/resultados/
