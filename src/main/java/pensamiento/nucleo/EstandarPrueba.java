@@ -7,4 +7,20 @@ public enum EstandarPrueba {
     public String enBaseDeDatos() {
         return name().toLowerCase();
     }
+
+    /** En minúscula, como en el catálogo y en el JSONB ("preponderancia"). */
+    @Override
+    public String toString() {
+        return enBaseDeDatos();
+    }
+
+    /** "más allá de duda razonable", para las tarjetas. */
+    public String nombre() {
+        return switch (this) {
+            case ESCRUTINIO -> "escrutinio";
+            case PREPONDERANCIA -> "preponderancia";
+            case CLARO_Y_CONVINCENTE -> "claro y convincente";
+            case MAS_ALLA_DE_DUDA_RAZONABLE -> "más allá de duda razonable";
+        };
+    }
 }

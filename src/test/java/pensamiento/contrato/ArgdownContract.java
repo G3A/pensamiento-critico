@@ -172,7 +172,7 @@ public abstract class ArgdownContract {
     // ------------------------------------------------------------------------------------------------
 
     /** Árboles válidos al azar: títulos únicos, referencias a títulos definidos, argumentos con premisas. */
-    static final class Generador {
+    public static final class Generador {
 
         private static final String[] PALABRAS = {"pan", "sucursal", "vecinos", "año", "más", "tráfico", "ñandú", "¿por", "qué?", "«sí»",
                 "30%", "x:y", "{llave}", "#etiqueta", "[nota]", "<menor>", "-3", "+2", "#oculta", "{peso: 3}", "café", "Ü"};
@@ -184,11 +184,11 @@ public abstract class ArgdownContract {
         private int argumentos;
         private int enunciados;
 
-        Generador(Random azar) {
+        public Generador(Random azar) {
             this.azar = azar;
         }
 
-        DocumentoArgdown documento() {
+        public DocumentoArgdown documento() {
             int n = 1 + azar.nextInt(3);
             List<Enunciado> raices = new ArrayList<>();
             for (int i = 0; i < n; i++) {

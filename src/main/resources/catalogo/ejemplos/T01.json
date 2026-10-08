@@ -1,0 +1,109 @@
+[
+  {
+    "ambito": "personal",
+    "titulo": "El carro usado",
+    "versionEsquema": 1,
+    "config": { "direccion": "izquierda_derecha", "coloresPorRol": true, "mostrarPesos": false, "estandar": "preponderancia" },
+    "datos": {
+      "argdown": "[Carro]: Nos conviene comprar un carro usado este año.\n  + [Trayectos]: Los trayectos al colegio en bus toman hora y media al día.\n  + [Ahorro]: Tenemos ahorrado el 60% del precio de un carro usado.\n  - [Reparaciones]: Un carro usado puede salir caro en reparaciones.\n    - [Revisión]: El mecánico de confianza lo revisaría antes de comprarlo."
+    },
+    "resultado": {
+      "argdown": "[Carro]: Nos conviene comprar un carro usado este año.\n  + [Trayectos]: Los trayectos al colegio en bus toman hora y media al día.\n  + [Ahorro]: Tenemos ahorrado el 60% del precio de un carro usado.\n  - [Reparaciones]: Un carro usado puede salir caro en reparaciones.\n    - [Revisión]: El mecánico de confianza lo revisaría antes de comprarlo.",
+      "nodos": [
+        { "codigo": "N1", "texto": "Nos conviene comprar un carro usado este año.", "rol": "conclusion" },
+        { "codigo": "N2", "texto": "Los trayectos al colegio en bus toman hora y media al día.", "rol": "premisa" },
+        { "codigo": "N3", "texto": "Tenemos ahorrado el 60% del precio de un carro usado.", "rol": "premisa" },
+        { "codigo": "N4", "texto": "Un carro usado puede salir caro en reparaciones.", "rol": "objecion" },
+        { "codigo": "N5", "texto": "El mecánico de confianza lo revisaría antes de comprarlo.", "rol": "premisa" }
+      ],
+      "argumentos": [
+        { "codigo": "A1", "titulo": null, "sentido": "pro", "peso": 1, "conclusion": "N1", "premisas": ["N2"], "aplicable": false,
+          "motivo": "No aplicable todavía: falta verificar «Los trayectos al colegio en bus toman hora y media al día.»." },
+        { "codigo": "A2", "titulo": null, "sentido": "pro", "peso": 1, "conclusion": "N1", "premisas": ["N3"], "aplicable": false,
+          "motivo": "No aplicable todavía: falta verificar «Tenemos ahorrado el 60% del precio de un carro usado.»." },
+        { "codigo": "A3", "titulo": null, "sentido": "contra", "peso": 1, "conclusion": "N1", "premisas": ["N4"], "aplicable": false,
+          "motivo": "No aplicable todavía: falta verificar «Un carro usado puede salir caro en reparaciones.»." },
+        { "codigo": "A4", "titulo": null, "sentido": "contra", "peso": 1, "conclusion": "N4", "premisas": ["N5"], "aplicable": false,
+          "motivo": "No aplicable todavía: falta verificar «El mecánico de confianza lo revisaría antes de comprarlo.»." }
+      ],
+      "conclusiones": [
+        { "conclusion": "N1", "aceptable": false, "frase": "No aceptable bajo preponderancia todavía: ningún argumento a favor es aplicable." }
+      ],
+      "apoyos": 2,
+      "ataques": 2,
+      "objecionesSinResponder": [],
+      "pendientes": [],
+      "resumen": "Mapa de 5 afirmaciones: 2 apoyos, 2 ataques y ninguna objeción sin responder."
+    },
+    "nota": "Una familia discute si comprar un carro usado este año. La objeción de las reparaciones tiene respuesta: la réplica queda en el bando de la conclusión."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "La segunda sucursal",
+    "versionEsquema": 1,
+    "config": { "direccion": "arriba_abajo", "coloresPorRol": true, "mostrarPesos": true, "estandar": "preponderancia" },
+    "datos": {
+      "argdown": "[Sucursal]: Conviene abrir la segunda sucursal en el centro.\n  + <Más ventas>: Con más gente pasando, se vende más. {peso: 3}\n    + [Tráfico]: El centro tiene más tráfico peatonal que el barrio. #asumible\n    + [Conversión]: Más tráfico da más ventas. #asumible\n  - [Personal]: Falta personal para atender dos locales."
+    },
+    "resultado": {
+      "argdown": "[Sucursal]: Conviene abrir la segunda sucursal en el centro.\n  + <Más ventas>: Con más gente pasando, se vende más. {peso: 3}\n    + [Tráfico]: El centro tiene más tráfico peatonal que el barrio. #asumible\n    + [Conversión]: Más tráfico da más ventas. #asumible\n  - [Personal]: Falta personal para atender dos locales.",
+      "nodos": [
+        { "codigo": "N1", "texto": "Conviene abrir la segunda sucursal en el centro.", "rol": "conclusion" },
+        { "codigo": "N2", "texto": "El centro tiene más tráfico peatonal que el barrio.", "rol": "premisa" },
+        { "codigo": "N3", "texto": "Más tráfico da más ventas.", "rol": "premisa" },
+        { "codigo": "N4", "texto": "Falta personal para atender dos locales.", "rol": "objecion" }
+      ],
+      "argumentos": [
+        { "codigo": "A1", "titulo": "Más ventas", "sentido": "pro", "peso": 3, "conclusion": "N1", "premisas": ["N2", "N3"], "aplicable": true,
+          "motivo": "Aplicable: sus premisas son supuestos sin objeción." },
+        { "codigo": "A2", "titulo": null, "sentido": "contra", "peso": 1, "conclusion": "N1", "premisas": ["N4"], "aplicable": false,
+          "motivo": "No aplicable todavía: falta verificar «Falta personal para atender dos locales.»." }
+      ],
+      "conclusiones": [
+        { "conclusion": "N1", "aceptable": true,
+          "frase": "Aceptable bajo preponderancia, siempre que se sostengan los supuestos «El centro tiene más tráfico peatonal que el barrio.» y «Más tráfico da más ventas.»." }
+      ],
+      "apoyos": 1,
+      "ataques": 1,
+      "objecionesSinResponder": ["N4"],
+      "pendientes": ["Responder la objeción: Falta personal para atender dos locales."],
+      "resumen": "Mapa de 4 afirmaciones: 1 apoyo, 1 ataque y 1 objeción sin responder."
+    },
+    "nota": "La dueña de la panadería piensa abrir una segunda sucursal en el centro. Es el ejemplo de R04 de la sección 5b; como en este hito no hay ficha de verificación, el tráfico queda como supuesto."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras del barrio",
+    "versionEsquema": 1,
+    "config": { "direccion": "arriba_abajo", "coloresPorRol": true, "mostrarPesos": false, "estandar": "escrutinio" },
+    "datos": {
+      "argdown": "[Cámaras]: La junta debe instalar cámaras en la entrada del barrio.\n  + [Robos]: Hubo cuatro robos de bicicletas en el último mes.\n  + [Vecino]: En el barrio vecino bajaron los robos después de poner cámaras.\n  - [Costo]: Las cámaras cuestan lo que la junta recauda en un año."
+    },
+    "resultado": {
+      "argdown": "[Cámaras]: La junta debe instalar cámaras en la entrada del barrio.\n  + [Robos]: Hubo cuatro robos de bicicletas en el último mes.\n  + [Vecino]: En el barrio vecino bajaron los robos después de poner cámaras.\n  - [Costo]: Las cámaras cuestan lo que la junta recauda en un año.",
+      "nodos": [
+        { "codigo": "N1", "texto": "La junta debe instalar cámaras en la entrada del barrio.", "rol": "conclusion" },
+        { "codigo": "N2", "texto": "Hubo cuatro robos de bicicletas en el último mes.", "rol": "premisa" },
+        { "codigo": "N3", "texto": "En el barrio vecino bajaron los robos después de poner cámaras.", "rol": "premisa" },
+        { "codigo": "N4", "texto": "Las cámaras cuestan lo que la junta recauda en un año.", "rol": "objecion" }
+      ],
+      "argumentos": [
+        { "codigo": "A1", "titulo": null, "sentido": "pro", "peso": 1, "conclusion": "N1", "premisas": ["N2"], "aplicable": false,
+          "motivo": "No aplicable todavía: falta verificar «Hubo cuatro robos de bicicletas en el último mes.»." },
+        { "codigo": "A2", "titulo": null, "sentido": "pro", "peso": 1, "conclusion": "N1", "premisas": ["N3"], "aplicable": false,
+          "motivo": "No aplicable todavía: falta verificar «En el barrio vecino bajaron los robos después de poner cámaras.»." },
+        { "codigo": "A3", "titulo": null, "sentido": "contra", "peso": 1, "conclusion": "N1", "premisas": ["N4"], "aplicable": false,
+          "motivo": "No aplicable todavía: falta verificar «Las cámaras cuestan lo que la junta recauda en un año.»." }
+      ],
+      "conclusiones": [
+        { "conclusion": "N1", "aceptable": false, "frase": "No aceptable bajo escrutinio todavía: ningún argumento a favor es aplicable." }
+      ],
+      "apoyos": 2,
+      "ataques": 1,
+      "objecionesSinResponder": ["N4"],
+      "pendientes": ["Responder la objeción: Las cámaras cuestan lo que la junta recauda en un año."],
+      "resumen": "Mapa de 4 afirmaciones: 2 apoyos, 1 ataque y 1 objeción sin responder."
+    },
+    "nota": "En la junta de vecinos se propone instalar cámaras. Un vecino objeta el costo y nadie le responde."
+  }
+]

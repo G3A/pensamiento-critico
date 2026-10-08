@@ -1,0 +1,82 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "Venderá más en el centro",
+    "versionEsquema": 1,
+    "config": { "exigirOculta": true, "maxOcultas": 2 },
+    "datos": {
+      "conclusion": "Venderé más en el centro.",
+      "premisas": [ { "texto": "Por el centro pasa más gente que por el barrio." } ],
+      "ocultas": [ { "texto": "La gente que pasa se convierte en clientes." } ]
+    },
+    "resultado": {
+      "argdown": "Venderé más en el centro.\n  + <Argumento>\n    + Por el centro pasa más gente que por el barrio.\n    + La gente que pasa se convierte en clientes. #oculta",
+      "nodos": [
+        { "codigo": "N1", "texto": "Venderé más en el centro.", "rol": "conclusion" },
+        { "codigo": "N2", "texto": "Por el centro pasa más gente que por el barrio.", "rol": "premisa" },
+        { "codigo": "N3", "texto": "La gente que pasa se convierte en clientes.", "rol": "oculta" }
+      ],
+      "argumentos": [
+        { "codigo": "A1", "titulo": "Argumento", "sentido": "pro", "peso": 1, "conclusion": "N1", "premisas": ["N2", "N3"], "aplicable": false,
+          "motivo": "No aplicable todavía: falta verificar «Por el centro pasa más gente que por el barrio.»." }
+      ],
+      "pendientes": ["Verificar la premisa oculta: La gente que pasa se convierte en clientes."],
+      "resumen": "1 premisa oculta reconstruida: «La gente que pasa se convierte en clientes.»."
+    },
+    "nota": "La dueña de la panadería razona que por el centro pasa más gente y por eso venderá más. Es la tarjeta de T06 de la sección 7b; la premisa oculta la escribe ella."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El cambio de colegio",
+    "versionEsquema": 1,
+    "config": { "exigirOculta": true, "maxOcultas": 2 },
+    "datos": {
+      "conclusion": "Hay que cambiar al niño de colegio.",
+      "premisas": [ { "texto": "Sus notas bajaron este año." } ],
+      "ocultas": [ { "texto": "Las notas bajaron por algo del colegio." }, { "texto": "En otro colegio le iría mejor." } ]
+    },
+    "resultado": {
+      "argdown": "Hay que cambiar al niño de colegio.\n  + <Argumento>\n    + Sus notas bajaron este año.\n    + Las notas bajaron por algo del colegio. #oculta\n    + En otro colegio le iría mejor. #oculta",
+      "nodos": [
+        { "codigo": "N1", "texto": "Hay que cambiar al niño de colegio.", "rol": "conclusion" },
+        { "codigo": "N2", "texto": "Sus notas bajaron este año.", "rol": "premisa" },
+        { "codigo": "N3", "texto": "Las notas bajaron por algo del colegio.", "rol": "oculta" },
+        { "codigo": "N4", "texto": "En otro colegio le iría mejor.", "rol": "oculta" }
+      ],
+      "argumentos": [
+        { "codigo": "A1", "titulo": "Argumento", "sentido": "pro", "peso": 1, "conclusion": "N1", "premisas": ["N2", "N3", "N4"], "aplicable": false,
+          "motivo": "No aplicable todavía: falta verificar «Sus notas bajaron este año.»." }
+      ],
+      "pendientes": ["Verificar la premisa oculta: Las notas bajaron por algo del colegio.", "Verificar la premisa oculta: En otro colegio le iría mejor."],
+      "resumen": "2 premisas ocultas reconstruidas: «Las notas bajaron por algo del colegio.» y «En otro colegio le iría mejor.»."
+    },
+    "nota": "En una familia, la mamá propone cambiar al hijo menor de colegio porque le bajaron las notas."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "La calle cerrada los domingos",
+    "versionEsquema": 1,
+    "config": { "exigirOculta": false, "maxOcultas": 1 },
+    "datos": {
+      "conclusion": "La junta debe cerrar la calle del parque los domingos.",
+      "premisas": [ { "texto": "Los domingos pasan pocos carros por esa calle." }, { "texto": "Los niños del barrio no tienen dónde jugar." } ],
+      "ocultas": [ { "texto": "Cerrar la calle no perjudica a quienes viven en ella." } ]
+    },
+    "resultado": {
+      "argdown": "La junta debe cerrar la calle del parque los domingos.\n  + <Argumento>\n    + Los domingos pasan pocos carros por esa calle.\n    + Los niños del barrio no tienen dónde jugar.\n    + Cerrar la calle no perjudica a quienes viven en ella. #oculta",
+      "nodos": [
+        { "codigo": "N1", "texto": "La junta debe cerrar la calle del parque los domingos.", "rol": "conclusion" },
+        { "codigo": "N2", "texto": "Los domingos pasan pocos carros por esa calle.", "rol": "premisa" },
+        { "codigo": "N3", "texto": "Los niños del barrio no tienen dónde jugar.", "rol": "premisa" },
+        { "codigo": "N4", "texto": "Cerrar la calle no perjudica a quienes viven en ella.", "rol": "oculta" }
+      ],
+      "argumentos": [
+        { "codigo": "A1", "titulo": "Argumento", "sentido": "pro", "peso": 1, "conclusion": "N1", "premisas": ["N2", "N3", "N4"], "aplicable": false,
+          "motivo": "No aplicable todavía: falta verificar «Los domingos pasan pocos carros por esa calle.» y «Los niños del barrio no tienen dónde jugar.»." }
+      ],
+      "pendientes": ["Verificar la premisa oculta: Cerrar la calle no perjudica a quienes viven en ella."],
+      "resumen": "1 premisa oculta reconstruida: «Cerrar la calle no perjudica a quienes viven en ella.»."
+    },
+    "nota": "En la junta de vecinos se propone cerrar la calle del parque los domingos. Aunque la configuración no lo exige, el secretario escribe el supuesto que nadie dijo."
+  }
+]

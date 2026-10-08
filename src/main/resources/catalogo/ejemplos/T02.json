@@ -1,0 +1,93 @@
+[
+  {
+    "ambito": "personal",
+    "titulo": "Las vacaciones con los abuelos",
+    "versionEsquema": 1,
+    "config": { "nivel": "completo", "obligatorios": ["afirmacion", "datos"], "exigirFuenteRespaldo": true },
+    "datos": {
+      "afirmacion": "Este año nos conviene pasar las vacaciones en la casa de los abuelos.",
+      "datos": "Los pasajes de avión para los cuatro cuestan el doble que el año pasado.",
+      "garantia": "Si viajar cuesta el doble, el dinero rinde más quedándonos cerca.",
+      "respaldo": "El presupuesto familiar que armamos en enero deja para vacaciones la mitad de lo que cuestan los pasajes.",
+      "fuenteRespaldo": "Hoja de gastos de la familia, enero.",
+      "calificador": "probablemente",
+      "refutacion": "Salvo que aparezca una promoción de pasajes antes de junio.",
+      "respuestaRefutacion": "Revisamos promociones hasta el 31 de mayo; si no aparece ninguna, reservamos con los abuelos."
+    },
+    "resultado": {
+      "partes": [
+        { "parte": "afirmacion", "estado": "completa", "falta": null },
+        { "parte": "datos", "estado": "completa", "falta": null },
+        { "parte": "garantia", "estado": "completa", "falta": null },
+        { "parte": "respaldo", "estado": "completa", "falta": null },
+        { "parte": "calificador", "estado": "completa", "falta": null },
+        { "parte": "refutacion", "estado": "completa", "falta": null }
+      ],
+      "completas": 6,
+      "total": 6,
+      "pendientes": [],
+      "resumen": "Completitud 6 de 6: están las seis partes."
+    },
+    "nota": "Una familia decide dónde pasar las vacaciones de mitad de año. Que estén las seis partes no las hace ciertas."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "El reductor frente al parque",
+    "versionEsquema": 1,
+    "config": { "nivel": "completo", "obligatorios": ["afirmacion", "datos", "garantia"], "exigirFuenteRespaldo": false },
+    "datos": {
+      "afirmacion": "La junta debe pedir un reductor de velocidad frente al parque.",
+      "datos": "Esta semana dos carros pasaron a más de 60 km/h frente al parque.",
+      "garantia": "Donde los carros van rápido cerca de niños, un reductor baja el riesgo.",
+      "calificador": "casi con seguridad",
+      "refutacion": "Salvo que la alcaldía ya tenga previsto un semáforo.",
+      "respuestaRefutacion": "La alcaldía respondió que no hay semáforo previsto este año."
+    },
+    "resultado": {
+      "partes": [
+        { "parte": "afirmacion", "estado": "completa", "falta": null },
+        { "parte": "datos", "estado": "completa", "falta": null },
+        { "parte": "garantia", "estado": "completa", "falta": null },
+        { "parte": "respaldo", "estado": "falta", "falta": "¿Qué respalda la garantía? Por ejemplo, una norma, un estudio o la experiencia registrada." },
+        { "parte": "calificador", "estado": "completa", "falta": null },
+        { "parte": "refutacion", "estado": "completa", "falta": null }
+      ],
+      "completas": 5,
+      "total": 6,
+      "pendientes": ["Buscar respaldo para la garantía: Donde los carros van rápido cerca de niños, un reductor baja el riesgo."],
+      "resumen": "Completitud 5 de 6: falta respaldo."
+    },
+    "nota": "La junta de vecinos quiere pedir a la alcaldía un reductor de velocidad. La garantía queda sin respaldo."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "La segunda sucursal",
+    "versionEsquema": 1,
+    "config": { "nivel": "completo", "obligatorios": ["afirmacion", "datos"], "exigirFuenteRespaldo": true },
+    "datos": {
+      "afirmacion": "Conviene abrir la segunda sucursal en el centro.",
+      "datos": "Por el centro pasa más gente que por el barrio y hay ahorros para dos meses de arriendo.",
+      "garantia": "Más tráfico produce más ventas.",
+      "respaldo": "La experiencia de otras panaderías del centro.",
+      "refutacion": "Salvo que falte personal."
+    },
+    "resultado": {
+      "partes": [
+        { "parte": "afirmacion", "estado": "completa", "falta": null },
+        { "parte": "datos", "estado": "completa", "falta": null },
+        { "parte": "garantia", "estado": "completa", "falta": null },
+        { "parte": "respaldo", "estado": "sin_fuente", "falta": "¿De dónde sale el respaldo? Anota la fuente." },
+        { "parte": "calificador", "estado": "falta", "falta": "¿Qué tan seguro estás? Por ejemplo: probablemente, casi siempre, en la mayoría de los casos." },
+        { "parte": "refutacion", "estado": "sin_responder", "falta": "¿Qué respondes a esa excepción?" }
+      ],
+      "completas": 3,
+      "total": 6,
+      "pendientes": [
+        "Buscar una fuente para el respaldo: La experiencia de otras panaderías del centro.",
+        "Responder la refutación: Salvo que falte personal."
+      ],
+      "resumen": "Completitud 3 de 6: respaldo sin fuente; falta calificador; refutación sin responder."
+    },
+    "nota": "La tarjeta de T02 de la sección 7b, con el caso de la panadería: «conviene» sin calificador, un respaldo sin fuente y una excepción sin respuesta."
+  }
+]

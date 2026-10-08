@@ -10,16 +10,23 @@ import java.util.List;
  * @param afirmaciones   consumidas y producidas, con origen
  * @param pendientes     tipos cerrados: revisión, verificación, objeción, repaso
  * @param resumen        una línea para Expediente e Inicio
+ * @param argumentos     argumentos producidos sobre esas afirmaciones (tabla argumento); vacía si la técnica no arma argumentos
  */
 public record Resultado<R>(
         int versionEsquema,
         R valor,
         List<AfirmacionConRol> afirmaciones,
         List<Pendiente> pendientes,
-        String resumen) {
+        String resumen,
+        List<ArgumentoProducido> argumentos) {
 
     public Resultado {
         afirmaciones = List.copyOf(afirmaciones);
         pendientes = List.copyOf(pendientes);
+        argumentos = List.copyOf(argumentos);
+    }
+
+    public Resultado(int versionEsquema, R valor, List<AfirmacionConRol> afirmaciones, List<Pendiente> pendientes, String resumen) {
+        this(versionEsquema, valor, afirmaciones, pendientes, resumen, List.of());
     }
 }

@@ -90,7 +90,7 @@ public final class R04Aceptabilidad {
     }
 
     /** Aplicable si todas sus premisas están aceptadas; en escrutinio basta con que ninguna esté no aceptada. */
-    static boolean aplicable(Argumento a, Map<UUID, EstadoPremisa> premisas, EstandarPrueba estandar) {
+    public static boolean aplicable(Argumento a, Map<UUID, EstadoPremisa> premisas, EstandarPrueba estandar) {
         for (Argumento.Premisa premisa : a.premisas()) {
             Juicio juicio = juzgar(premisa, premisas);
             if (juicio == Juicio.NO_ACEPTADA) {
@@ -104,7 +104,7 @@ public final class R04Aceptabilidad {
     }
 
     /** Ciclo: desde alguna premisa de a se llega, siguiendo "conclusión → premisas de sus argumentos", a la conclusión de a. */
-    static boolean esCiclico(Argumento a, List<Argumento> todos) {
+    public static boolean esCiclico(Argumento a, List<Argumento> todos) {
         Set<UUID> visitadas = new HashSet<>();
         Deque<UUID> porVisitar = new ArrayDeque<>();
         a.premisas().forEach(pr -> porVisitar.push(pr.afirmacionId()));

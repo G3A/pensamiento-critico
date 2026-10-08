@@ -4,14 +4,64 @@
     "usalaCuando": "Tienes un texto o una discusión con varias razones y objeciones y quieres ver cómo se conectan antes de decidir si te convence.",
     "definicion": "Representación de un argumento como grafo: enunciados conectados por relaciones de apoyo y ataque, con premisas, conclusiones, objeciones y refutaciones como nodos.",
     "tipo": "representacion", "operacion": "analizar", "objeto": "argumento", "modalidad": "diagrama", "patron": "V01",
-    "origen": "Wigmore 1913; van Gelder 2003", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Wigmore 1913; van Gelder 2003", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "direccion": "arriba_abajo", "coloresPorRol": true, "mostrarPesos": false, "estandar": "preponderancia" },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "direccion", "tipo": "enumeracion", "etiqueta": "Dirección del mapa", "obligatorio": true,
+          "opciones": [ { "valor": "arriba_abajo", "etiqueta": "De arriba a abajo" }, { "valor": "izquierda_derecha", "etiqueta": "De izquierda a derecha" } ] },
+        { "nombre": "coloresPorRol", "tipo": "booleano", "etiqueta": "Colores por rol (conclusión, premisa, objeción, oculta)",
+          "ayuda": "Apagados, el rol se sigue leyendo en el texto de cada nodo." },
+        { "nombre": "mostrarPesos", "tipo": "booleano", "etiqueta": "Mostrar el peso de cada argumento" },
+        { "nombre": "estandar", "tipo": "enumeracion", "etiqueta": "Estándar de prueba", "obligatorio": true,
+          "ayuda": "Qué tanto tiene que pesar lo que apoya para que la conclusión sea aceptable (R04).",
+          "opciones": [
+            { "valor": "escrutinio", "etiqueta": "Escrutinio: basta un argumento a favor aplicable" },
+            { "valor": "preponderancia", "etiqueta": "Preponderancia: pesa más lo que apoya" },
+            { "valor": "claro_y_convincente", "etiqueta": "Claro y convincente: además, un apoyo fuerte" },
+            { "valor": "mas_alla_de_duda_razonable", "etiqueta": "Más allá de duda razonable: además, sin supuestos" }
+          ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "argdown", "tipo": "texto", "etiqueta": "El argumento, en Argdown", "obligatorio": true, "largoMaximo": 8000,
+          "ayuda": "Primera línea: la conclusión. Debajo, con dos espacios, + para lo que apoya y - para lo que ataca. #asumible marca un supuesto; #oculta, una premisa oculta." }
+      ]
+    }
   },
   {
     "id": "T02", "familia": "F1", "nombre": "Modelo de Toulmin", "nombreLlano": "Revisar las seis partes de un argumento",
     "usalaCuando": "Quieres saber si a tu argumento le falta algo: datos, una garantía que una los datos con la afirmación, respaldo, un calificador o la respuesta a una objeción.",
     "definicion": "Marco que descompone un argumento en afirmación, datos, garantía, respaldo, calificador y refutación, y señala los huecos.",
     "tipo": "marco", "operacion": "analizar", "objeto": "argumento", "modalidad": "lista", "patron": "V02",
-    "origen": "Toulmin 1958", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Toulmin 1958", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "nivel": "completo", "obligatorios": ["afirmacion", "datos"], "exigirFuenteRespaldo": false },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "nivel", "tipo": "enumeracion", "etiqueta": "Nivel", "obligatorio": true,
+          "opciones": [ { "valor": "basico", "etiqueta": "Básico: afirmación, datos y garantía" }, { "valor": "completo", "etiqueta": "Completo: las seis partes" } ] },
+        { "nombre": "obligatorios", "tipo": "conjunto", "etiqueta": "Partes obligatorias para evaluar",
+          "opciones": [
+            { "valor": "afirmacion", "etiqueta": "Afirmación" }, { "valor": "datos", "etiqueta": "Datos" }, { "valor": "garantia", "etiqueta": "Garantía" },
+            { "valor": "respaldo", "etiqueta": "Respaldo" }, { "valor": "calificador", "etiqueta": "Calificador" }, { "valor": "refutacion", "etiqueta": "Refutación" }
+          ] },
+        { "nombre": "exigirFuenteRespaldo", "tipo": "booleano", "etiqueta": "Exigir fuente para el respaldo",
+          "ayuda": "Un respaldo sin fuente queda señalado como incompleto." }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "afirmacion", "tipo": "texto", "etiqueta": "Afirmación", "largoMaximo": 300, "ayuda": "Lo que quieres que el otro acepte." },
+        { "nombre": "datos", "tipo": "texto", "etiqueta": "Datos", "largoMaximo": 300, "ayuda": "Los hechos en que te apoyas." },
+        { "nombre": "garantia", "tipo": "texto", "etiqueta": "Garantía", "largoMaximo": 300, "ayuda": "Por qué esos datos llevan a la afirmación." },
+        { "nombre": "respaldo", "tipo": "texto", "etiqueta": "Respaldo", "largoMaximo": 300, "ayuda": "Qué sostiene la garantía: una norma, un estudio, la experiencia registrada." },
+        { "nombre": "fuenteRespaldo", "tipo": "texto", "etiqueta": "Fuente del respaldo", "largoMaximo": 300 },
+        { "nombre": "calificador", "tipo": "texto", "etiqueta": "Calificador", "largoMaximo": 300, "ayuda": "Qué tan seguro estás: probablemente, casi siempre…" },
+        { "nombre": "refutacion", "tipo": "texto", "etiqueta": "Refutación", "largoMaximo": 300, "ayuda": "En qué casos no se cumpliría: «salvo que…»." },
+        { "nombre": "respuestaRefutacion", "tipo": "texto", "etiqueta": "Respuesta a la refutación", "largoMaximo": 300 }
+      ]
+    }
   },
   {
     "id": "T03", "familia": "F1", "nombre": "Afirmación, evidencia, razonamiento (CER)", "nombreLlano": "Afirmo, muestro, explico",
@@ -39,7 +89,26 @@
     "usalaCuando": "Un argumento salta de los datos a la conclusión y sospechas que hay un supuesto sin decir que lo sostiene.",
     "definicion": "Procedimiento para reconstruir la premisa implícita (entimema) que hace que la conclusión se siga de lo dicho, y marcarla en el mapa para verificarla.",
     "tipo": "procedimiento", "operacion": "analizar", "objeto": "argumento", "modalidad": "formulario", "patron": "V01",
-    "origen": "Aristóteles (entimema); Walton 2001", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Aristóteles (entimema); Walton 2001", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "exigirOculta": true, "maxOcultas": 2 },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "exigirOculta", "tipo": "booleano", "etiqueta": "Exigir al menos una premisa oculta" },
+        { "nombre": "maxOcultas", "tipo": "entero", "etiqueta": "Máximo de premisas ocultas", "obligatorio": true, "minimo": 1, "maximo": 3 }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "conclusion", "tipo": "texto", "etiqueta": "Conclusión", "obligatorio": true, "largoMaximo": 200,
+          "ayuda": "Lo que el argumento quiere que aceptes." },
+        { "nombre": "premisas", "tipo": "filas", "etiqueta": "Premisas explícitas", "prefijo": "P", "elemento": "premisa", "minimo": 1, "maximo": 4,
+          "ayuda": "Lo que el argumento sí dice.",
+          "campos": [ { "nombre": "texto", "tipo": "texto", "etiqueta": "Premisa", "obligatorio": true, "largoMaximo": 200 } ] },
+        { "nombre": "ocultas", "tipo": "filas", "etiqueta": "Premisas ocultas", "prefijo": "O", "elemento": "premisa oculta", "minimo": 0, "maximoDesdeConfig": "maxOcultas",
+          "ayuda": "Lo que el argumento da por sentado sin decirlo: lo que tendría que ser cierto para pasar de las premisas a la conclusión.",
+          "campos": [ { "nombre": "texto", "tipo": "texto", "etiqueta": "Premisa oculta", "obligatorio": true, "largoMaximo": 200 } ] }
+      ]
+    }
   },
   {
     "id": "T07", "familia": "F1", "nombre": "Razonamiento por analogía", "nombreLlano": "A ellos les funcionó, ¿a mí también?",
