@@ -206,7 +206,7 @@ public class EjecutorFalacias implements Ejecutor<ConfigFalacias, EntradaFalacia
     }
 
     /** El catálogo de esquemas y preguntas, en llano, para el prompt. */
-    String catalogo(ConfigFalacias config) {
+    public String catalogo(ConfigFalacias config) {
         StringBuilder sb = new StringBuilder();
         for (String id : ReglasFalacias.ESQUEMAS) {
             if (config.esquemas().contains(id)) {
