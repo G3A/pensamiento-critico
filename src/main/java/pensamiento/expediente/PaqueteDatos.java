@@ -9,16 +9,17 @@ import tools.jackson.databind.JsonNode;
 
 /**
  * El archivo JSON con los datos de una persona (RF-12, P21): configuraciones, expedientes y ejecuciones con sus
- * afirmaciones, pendientes y argumentos. Todos los identificadores son uuidv7, así que importar en otra
- * instalación no choca. La versión 2 (hito 2) agrega los argumentos; un archivo de la versión 1 se migra al
- * leerlo: sus ejecuciones quedan sin argumentos, que es lo que tenían.
+ * afirmaciones, pendientes, argumentos y predicciones. Todos los identificadores son uuidv7, así que importar en otra
+ * instalación no choca. La versión 2 (hito 2) agrega los argumentos y la 3 (hito 4) las predicciones del Diario; un
+ * archivo de una versión anterior se migra al leerlo: sus ejecuciones quedan sin lo que todavía no existía.
  */
 public record PaqueteDatos(String formato, int version, Instant exportadoEn, String persona,
                            List<Configuracion> configuraciones, List<ExpedienteDatos> expedientes, List<EjecucionDatos> ejecuciones) {
 
     public static final String FORMATO = "taller-de-pensamiento-critico/datos-de-una-persona";
-    public static final int VERSION = 2;
-    public static final int VERSION_ANTERIOR = 1;
+    public static final int VERSION = 3;
+    /** Las versiones que se pueden importar, de la más vieja a la vigente. */
+    public static final List<Integer> VERSIONES_LEIBLES = List.of(1, 2, 3);
 
     public record Configuracion(String tecnica, int versionEsquema, JsonNode valores) {
     }
@@ -48,13 +49,22 @@ public record PaqueteDatos(String formato, int version, Instant exportadoEn, Str
         }
     }
 
+    /**
+     * Una predicción del Diario (versión 3): la afirmación de la ejecución que predice, la confianza declarada, la fecha de
+     * revisión y, si ya se revisó, el resultado ("acierto" o "fallo") y cuándo; resuelta sigue inmutable al importarse.
+     */
+    public record PrediccionDatos(UUID id, UUID afirmacionId, int confianza, LocalDate fechaRevision, String resultado, Instant resueltaEn) {
+    }
+
     public record EjecucionDatos(UUID id, String tecnica, int versionEsquema, UUID expedienteId, JsonNode config, JsonNode datos,
                                  JsonNode resultado, String resumen, String claveIdempotencia, Instant creadaEn, RegistroModeloDatos modelo,
-                                 List<AfirmacionDatos> afirmaciones, List<PendienteDatos> pendientes, List<ArgumentoDatos> argumentos) {
+                                 List<AfirmacionDatos> afirmaciones, List<PendienteDatos> pendientes, List<ArgumentoDatos> argumentos,
+                                 List<PrediccionDatos> predicciones) {
         public EjecucionDatos {
             afirmaciones = afirmaciones == null ? List.of() : List.copyOf(afirmaciones);
             pendientes = pendientes == null ? List.of() : List.copyOf(pendientes);
             argumentos = argumentos == null ? List.of() : List.copyOf(argumentos);
+            predicciones = predicciones == null ? List.of() : List.copyOf(predicciones);
         }
     }
 
@@ -64,9 +74,12 @@ public record PaqueteDatos(String formato, int version, Instant exportadoEn, Str
         ejecuciones = ejecuciones == null ? List.of() : List.copyOf(ejecuciones);
     }
 
-    /** Un archivo de la versión 1 pasa a la vigente: el mismo contenido, sin argumentos. Otra versión no se toca. */
+    /**
+     * Un archivo de una versión anterior pasa a la vigente: el mismo contenido, sin argumentos (versión 1) ni predicciones
+     * (versiones 1 y 2), que las listas vacías ya representan. Otra versión no se toca.
+     */
     public PaqueteDatos migrado() {
-        if (version != VERSION_ANTERIOR) {
+        if (version == VERSION || !VERSIONES_LEIBLES.contains(version)) {
             return this;
         }
         return new PaqueteDatos(formato, VERSION, exportadoEn, persona, configuraciones, expedientes, ejecuciones);

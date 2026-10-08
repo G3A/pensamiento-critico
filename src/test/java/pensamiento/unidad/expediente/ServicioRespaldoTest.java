@@ -38,6 +38,7 @@ import pensamiento.testutil.fakes.FakeReloj;
 import pensamiento.testutil.fakes.FakeRepositorioConfiguracion;
 import pensamiento.testutil.fakes.FakeRepositorioEjecucion;
 import pensamiento.testutil.fakes.FakeRepositorioExpediente;
+import pensamiento.testutil.fakes.FakeRepositorioPredicciones;
 import pensamiento.testutil.fakes.FakeRepositorioTecnica;
 
 /**
@@ -57,7 +58,9 @@ class ServicioRespaldoTest {
     private final FakeRegistroAuditoria auditoria = new FakeRegistroAuditoria();
     private final FakeReloj reloj = new FakeReloj();
     private final FakeRepositorioArgumentos argumentos = new FakeRepositorioArgumentos();
-    private final ServicioRespaldo respaldo = new ServicioRespaldo(expedientes, ejecuciones, argumentos, configuraciones, identificadores, auditoria, reloj);
+    private final FakeRepositorioPredicciones predicciones = new FakeRepositorioPredicciones(ejecuciones);
+    private final ServicioRespaldo respaldo = new ServicioRespaldo(expedientes, ejecuciones, argumentos, configuraciones, identificadores, auditoria, reloj,
+            predicciones);
     private final ServicioExpedientes servicioExpedientes = new ServicioExpedientes(expedientes, ejecuciones, new FakeRepositorioTecnica(), auditoria, reloj);
 
     /** La dueña corre las ventas de los sábados, la guarda en "La segunda sucursal" y personaliza T28. */
@@ -116,7 +119,7 @@ class ServicioRespaldoTest {
         FakeRepositorioEjecucion otrasEjecuciones = new FakeRepositorioEjecucion();
         FakeRepositorioConfiguracion otrasConfiguraciones = new FakeRepositorioConfiguracion();
         ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(otrosExpedientes, otrasEjecuciones, new FakeRepositorioArgumentos(), otrasConfiguraciones,
-                new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj);
+                new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj, new FakeRepositorioPredicciones(new FakeRepositorioEjecucion()));
 
         ServicioRespaldo.Importacion r = enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
 
@@ -181,7 +184,7 @@ class ServicioRespaldoTest {
 
         PaqueteDatos paquete = respaldo.exportar(DUENA, INSTITUCION, "dueña de la panadería");
 
-        assertThat(paquete.version()).isEqualTo(2);
+        assertThat(paquete.version()).isEqualTo(3);
         assertThat(paquete.ejecuciones()).singleElement().satisfies(d -> {
             assertThat(d.id()).isEqualTo(mapa.id());
             assertThat(d.argumentos()).extracting(PaqueteDatos.ArgumentoDatos::sentido, PaqueteDatos.ArgumentoDatos::peso)
@@ -198,7 +201,8 @@ class ServicioRespaldoTest {
         String archivo = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
         FakeRepositorioArgumentos otrosArgumentos = new FakeRepositorioArgumentos();
         ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(new FakeRepositorioExpediente(), new FakeRepositorioEjecucion(), otrosArgumentos,
-                new FakeRepositorioConfiguracion(), new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj);
+                new FakeRepositorioConfiguracion(), new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj,
+                new FakeRepositorioPredicciones(new FakeRepositorioEjecucion()));
 
         enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
         enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
@@ -210,18 +214,52 @@ class ServicioRespaldoTest {
     @Test
     void un_archivo_de_la_version_1_se_migra_y_se_importa_sin_argumentos() {
         dadoQueLaDuenaTieneUnExpedienteConUnaEjecucion();
-        String version2 = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
-        // Un archivo exportado en el hito 1: versión 1 y ejecuciones sin el campo argumentos.
-        String version1 = version2.replace("\"version\" : 2", "\"version\" : 1").replaceAll(",\\s*\"argumentos\" : \\[ \\]", "");
-        assertThat(version1).contains("\"version\" : 1").doesNotContain("\"argumentos\"");
+        String version3 = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
+        // Un archivo exportado en el hito 1: versión 1 y ejecuciones sin los campos argumentos ni predicciones.
+        String version1 = version3.replace("\"version\" : 3", "\"version\" : 1").replaceAll(",\\s*\"argumentos\" : \\[ \\]", "")
+                .replaceAll(",\\s*\"predicciones\" : \\[ \\]", "");
+        assertThat(version1).contains("\"version\" : 1").doesNotContain("\"argumentos\"").doesNotContain("\"predicciones\"");
         FakeRepositorioEjecucion otrasEjecuciones = new FakeRepositorioEjecucion();
         ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(new FakeRepositorioExpediente(), otrasEjecuciones, new FakeRepositorioArgumentos(),
-                new FakeRepositorioConfiguracion(), new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj);
+                new FakeRepositorioConfiguracion(), new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj,
+                new FakeRepositorioPredicciones(new FakeRepositorioEjecucion()));
 
         ServicioRespaldo.Importacion r = enOtraInstalacion.importarTexto(DUENA, INSTITUCION, version1);
 
         assertThat(r).isEqualTo(new ServicioRespaldo.Importacion(1, 0, 1, 0, 1));
         assertThat(otrasEjecuciones.recientes(DUENA, 10)).hasSize(1);
+    }
+
+    @Test
+    void una_decision_del_diario_viaja_con_su_prediccion_resuelta_y_al_importarse_sigue_resuelta() {
+        var ejemplo = new pensamiento.catalogo.CatalogoJson().ejemplosDe(pensamiento.tecnicas.f5.EjecutorDiarioDecisiones.ID).getFirst();
+        var t32 = new pensamiento.tecnicas.f5.EjecutorDiarioDecisiones();
+        Resultado<pensamiento.tecnicas.f5.ResultadoDiario> r = t32.ejecutar(
+                MapeadorJson.leer(ejemplo.config(), pensamiento.tecnicas.f5.EjecutorDiarioDecisiones.Config.class),
+                MapeadorJson.leer(ejemplo.datos(), pensamiento.tecnicas.f5.EjecutorDiarioDecisiones.Entrada.class), Contextos.sinIa());
+        Ejecucion e = new Ejecucion(Uuid7.en(reloj.ahora()), DUENA, INSTITUCION, pensamiento.tecnicas.f5.EjecutorDiarioDecisiones.ID, 1, Optional.empty(),
+                pensamiento.nucleo.Json.VACIO, pensamiento.nucleo.Json.VACIO, MapeadorJson.escribir(r.valor()), r.resumen(), Optional.empty(), "diario",
+                reloj.ahora());
+        new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones).guardar(e, r);
+        java.util.UUID id = predicciones.deEjecucion(DUENA, e.id()).getFirst().id();
+        predicciones.resolver(DUENA, id, true, java.time.Instant.parse("2027-04-15T15:00:00Z"));
+        String archivo = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
+        assertThat(archivo).contains("\"predicciones\"").contains(id.toString()).contains("\"resultado\" : \"acierto\"");
+
+        FakeRepositorioEjecucion otrasEjecuciones = new FakeRepositorioEjecucion();
+        FakeRepositorioPredicciones otrasPredicciones = new FakeRepositorioPredicciones(otrasEjecuciones);
+        ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(new FakeRepositorioExpediente(), otrasEjecuciones, new FakeRepositorioArgumentos(),
+                new FakeRepositorioConfiguracion(), new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj, otrasPredicciones);
+        enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
+        enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
+
+        assertThat(otrasPredicciones.deUsuario(DUENA)).singleElement().satisfies(p -> {
+            assertThat(p.id()).isEqualTo(id);
+            assertThat(p.texto()).isEqualTo("La sucursal de la terminal cubre sus costos en 6 meses.");
+            assertThat(p.estado()).isEqualTo(pensamiento.nucleo.Prediccion.Estado.ACIERTO);
+            assertThat(p.resueltaEn()).contains(java.time.Instant.parse("2027-04-15T15:00:00Z"));
+            assertThat(p.confianza()).isEqualTo(70);
+        });
     }
 
     @Test

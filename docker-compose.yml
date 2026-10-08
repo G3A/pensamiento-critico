@@ -57,6 +57,7 @@ services:
       APP_GRAPHVIZ_TIMEOUT: 5s
       APP_PDF_TIMEOUT: 60s
       APP_ZONA: ${APP_ZONA:-America/Bogota}
+      APP_RELOJ_AJUSTABLE: ${APP_RELOJ_AJUSTABLE:-false}
     secrets: [db_password, admin_pin]
     healthcheck:
       test: ["CMD-SHELL", "curl -fs http://127.0.0.1:8080/actuator/health | grep -q UP"]

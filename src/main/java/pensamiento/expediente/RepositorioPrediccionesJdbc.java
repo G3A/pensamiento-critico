@@ -51,6 +51,19 @@ public class RepositorioPrediccionesJdbc implements RepositorioPredicciones {
     }
 
     @Override
+    public void restaurar(UUID usuarioId, UUID institucionId, Prediccion p) {
+        jdbc.sql("""
+                INSERT INTO prediccion (id, usuario_id, institucion_id, afirmacion_id, confianza, fecha_revision, resultado, resuelta_en, ejecucion_id)
+                VALUES (:id, :usuario, :institucion, :afirmacion, :confianza, :fecha, :resultado, :resuelta, :ejecucion)
+                ON CONFLICT (id) DO NOTHING
+                """)
+                .param("id", p.id()).param("usuario", usuarioId).param("institucion", institucionId).param("afirmacion", p.afirmacionId())
+                .param("confianza", p.confianza()).param("fecha", Date.valueOf(p.fechaRevision())).param("resultado", p.estado().toString())
+                .param("resuelta", p.resueltaEn().map(Timestamp::from).orElse(null)).param("ejecucion", p.ejecucionId())
+                .update();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Optional<Prediccion> porId(UUID usuarioId, UUID prediccionId) {
         return jdbc.sql("SELECT " + COLUMNAS + " WHERE p.usuario_id = :usuario AND p.id = :id")

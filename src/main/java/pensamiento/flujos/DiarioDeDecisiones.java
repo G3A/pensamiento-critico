@@ -108,6 +108,16 @@ public class DiarioDeDecisiones {
                 enPreparacion);
     }
 
+    /** Solo las revisiones vencidas, para el Inicio: lo mismo que la lista al entrar del Diario, sin calcular la curva. */
+    public List<Decision> porRevisar(UUID usuarioId) {
+        LocalDate hoy = reloj.hoy();
+        return predicciones.deUsuario(usuarioId).stream().filter(p -> p.vencida(hoy)).map(p -> {
+            Optional<Ejecucion> ejecucion = ejecuciones.porId(usuarioId, p.ejecucionId());
+            return new Decision(p, ejecucion.map(DiarioDeDecisiones::decisionDe).orElse(p.texto()), ejecucion.flatMap(Ejecucion::expedienteId),
+                    Textos.fecha(p.fechaRevision()), Optional.empty());
+        }).toList();
+    }
+
     /**
      * R05: registra si la predicción se cumplió, con la fecha del reloj, y cierra su pendiente de revisión.
      *
@@ -115,6 +125,11 @@ public class DiarioDeDecisiones {
      * @throws Prediccion.YaResuelta si ya estaba resuelta: no se modifica nada
      */
     public Prediccion resolver(UUID usuarioId, UUID prediccionId, boolean seCumplio) {
+        // Se revisa antes de escribir: así el rechazo no atraviesa la transacción del repositorio ni la deja marcada para deshacer.
+        Prediccion actual = predicciones.porId(usuarioId, prediccionId).orElseThrow(NoEncontrada::new);
+        if (actual.resuelta()) {
+            throw new Prediccion.YaResuelta();
+        }
         Prediccion resuelta = predicciones.resolver(usuarioId, prediccionId, seCumplio, reloj.ahora()).orElseThrow(NoEncontrada::new);
         ejecuciones.cerrarPendientes(usuarioId, TipoPendiente.REVISION, resuelta.afirmacionId());
         return resuelta;

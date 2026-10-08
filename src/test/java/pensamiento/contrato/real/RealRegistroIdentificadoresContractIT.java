@@ -46,6 +46,20 @@ class RealRegistroIdentificadoresContractIT extends RegistroIdentificadoresContr
     }
 
     @Override
+    protected UUID prediccionDe(UUID usuarioId) {
+        UUID ejecucion = ejecucionDe(usuarioId);
+        UUID afirmacion = bd.jdbcAdmin().sql("""
+                INSERT INTO afirmacion (usuario_id, institucion_id, texto, tipo, origen, adoptada)
+                VALUES (:u, :i, 'La sucursal cubre sus costos en seis meses', 'prediccion', 'usuario', true) RETURNING id
+                """).param("u", usuarioId).param("i", personas.institucion()).query(UUID.class).single();
+        return bd.jdbcAdmin().sql("""
+                INSERT INTO prediccion (usuario_id, institucion_id, afirmacion_id, confianza, fecha_revision, ejecucion_id)
+                VALUES (:u, :i, :a, 70, DATE '2027-04-15', :e) RETURNING id
+                """).param("u", usuarioId).param("i", personas.institucion()).param("a", afirmacion).param("e", ejecucion)
+                .query(UUID.class).single();
+    }
+
+    @Override
     protected UUID ejecucionDe(UUID usuarioId) {
         return bd.jdbcAdmin().sql("""
                 INSERT INTO ejecucion (usuario_id, institucion_id, tecnica_id, version_esquema, clave_idempotencia)

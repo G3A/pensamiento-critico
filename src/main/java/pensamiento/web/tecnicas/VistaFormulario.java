@@ -15,6 +15,7 @@ import pensamiento.web.formulario.VistaCampo;
  *
  * @param origenConfig    "tu configuración" o "la configuración del ejemplo …"
  * @param erroresConfig   errores de la configuración que viaja oculta (no tienen campo visible en este formulario)
+ * @param expediente      el expediente del asistente del Diario al que se asocia lo guardado; nulo en la ficha
  */
 public record VistaFormulario(
         String tecnica,
@@ -25,7 +26,8 @@ public record VistaFormulario(
         String origenConfig,
         String resumenConfig,
         List<String> erroresConfig,
-        Modelo modelo) {
+        Modelo modelo,
+        String expediente) {
 
     public record Oculto(String nombre, String valor) {
     }
@@ -39,7 +41,13 @@ public record VistaFormulario(
     }
 
     public VistaFormulario conModelo(Modelo m) {
-        return new VistaFormulario(tecnica, idFormulario, campos, config, clave, origenConfig, resumenConfig, erroresConfig, m);
+        return new VistaFormulario(tecnica, idFormulario, campos, config, clave, origenConfig, resumenConfig, erroresConfig, m, expediente);
+    }
+
+    /** El formulario dentro del asistente del Diario: guardar asocia la ejecución a ese expediente (viaja oculto como _expediente). */
+    public VistaFormulario conExpediente(java.util.Optional<java.util.UUID> x) {
+        return new VistaFormulario(tecnica, idFormulario, campos, config, clave, origenConfig, resumenConfig, erroresConfig, modelo,
+                x.map(java.util.UUID::toString).orElse(null));
     }
 
     public String idEspera() {
@@ -78,7 +86,7 @@ public record VistaFormulario(
         }
         List<String> erroresConfig = errores.entrySet().stream().filter(e -> e.getKey().startsWith("config.") || e.getKey().startsWith("_"))
                 .map(Map.Entry::getValue).toList();
-        return new VistaFormulario(t.id().valor(), "form-" + t.id(), campos, ocultos, clave, origenConfig, resumen(camposConfig, config), erroresConfig, Modelo.NINGUNO);
+        return new VistaFormulario(t.id().valor(), "form-" + t.id(), campos, ocultos, clave, origenConfig, resumen(camposConfig, config), erroresConfig, Modelo.NINGUNO, null);
     }
 
     /** "Escala de cada celda: C, I, N · Máximo de hipótesis: 4 · Pesos de evidencia activos: sí". */

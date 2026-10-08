@@ -28,6 +28,13 @@ class FakeRegistroIdentificadoresContractTest extends RegistroIdentificadoresCon
     }
 
     @Override
+    protected UUID prediccionDe(UUID usuarioId) {
+        UUID id = UUID.randomUUID();
+        fake.existe(id, usuarioId);
+        return id;
+    }
+
+    @Override
     protected UUID ejecucionDe(UUID usuarioId) {
         UUID id = UUID.randomUUID();
         fake.existe(id, usuarioId);

@@ -30,7 +30,15 @@
       <div class="inicio-columnas">
         <section aria-labelledby="pendientes-titulo">
           <h2 id="pendientes-titulo">Pendientes</h2>
-          @if(v.pendientes().isEmpty())
+          @if(!v.revisiones().isEmpty())
+            <ul class="pendientes revisiones-diario" aria-label="Revisiones del Diario">
+              @for(var d : v.revisiones())
+                <li data-prediccion="${d.prediccion().id().toString()}"><span class="chip chip-aviso">revisión</span>
+                  <a href="/diario#revisiones">Revisar la decisión: ${d.decision()}</a> <span class="detalle">· tocaba el ${d.revisarEl()}</span></li>
+              @endfor
+            </ul>
+          @endif
+          @if(v.pendientes().isEmpty() && v.revisiones().isEmpty())
             <p class="detalle">Nada pendiente.</p>
           @else
             <ul class="pendientes">

@@ -213,7 +213,7 @@ public class ControladorTecnicas {
     }
 
     /** Un formulario vacío con el mínimo de filas que pide cada campo de filas, para empezar a escribir. */
-    private static Map<String, Object> vacio(List<Campo> campos) {
+    public static Map<String, Object> vacio(List<Campo> campos) {
         Map<String, Object> valores = new LinkedHashMap<>();
         for (Campo c : campos) {
             if (c.tipo() == Campo.Tipo.FILAS) {
@@ -257,7 +257,7 @@ public class ControladorTecnicas {
             LectorFormulario.aplicar(accion, motor.camposEntrada(t), valores, config);
         }
         VistaFormulario f = VistaFormulario.de(t, motor.camposConfig(t), motor.camposEntrada(t), config, valores, Map.of(),
-                clave(parametros), origen(parametros)).conModelo(modeloEn(t, config));
+                clave(parametros), origen(parametros)).conModelo(modeloEn(t, config)).conExpediente(expediente(parametros));
         modelo.addAttribute("f", f);
         modelo.addAttribute("resultadoOob", resultado);
         return "fragmentos/ficha/formulario-con-resultado";
@@ -307,7 +307,12 @@ public class ControladorTecnicas {
         if (r.bloqueoGuardado().isPresent()) {
             return conErrores(t, config, valores, Map.of("_guardado", r.bloqueoGuardado().get()), parametros, respuesta, modelo);
         }
-        Ejecucion nueva = new Ejecucion(Uuid7.en(reloj.ahora()), yo.id(), yo.institucionId(), t.id(), r.versionEsquema(), Optional.empty(),
+        // Dentro del asistente del Diario, lo guardado queda en el expediente de la decisión, si es de esta persona.
+        Optional<UUID> expediente = expediente(parametros);
+        if (expediente.isPresent() && expedientes.porId(yo.id(), expediente.get()).isEmpty()) {
+            throw new ObjetoNoEncontrado("expediente");
+        }
+        Ejecucion nueva = new Ejecucion(Uuid7.en(reloj.ahora()), yo.id(), yo.institucionId(), t.id(), r.versionEsquema(), expediente,
                 ev.config(), ev.entrada(), pensamiento.catalogo.MapeadorJson.escribir(r.valor()), r.resumen(), r.modelo(),
                 clave(parametros), reloj.ahora());
         Ejecucion guardada = guardado.guardar(nueva, r);
@@ -326,7 +331,7 @@ public class ControladorTecnicas {
         respuesta.setHeader("HX-Retarget", "#form-" + t.id());
         respuesta.setHeader("HX-Reswap", "outerHTML");
         modelo.addAttribute("f", VistaFormulario.de(t, motor.camposConfig(t), motor.camposEntrada(t), config, valores, errores,
-                clave(parametros), origen(parametros)).conModelo(modeloEn(t, config)));
+                clave(parametros), origen(parametros)).conModelo(modeloEn(t, config)).conExpediente(expediente(parametros)));
         return "fragmentos/ficha/formulario";
     }
 
@@ -368,7 +373,7 @@ public class ControladorTecnicas {
         Map<String, Object> valores = LectorFormulario.leer(motor.camposEntrada(t), parametros, "");
         LectorFormulario.igualarCeldas(motor.camposEntrada(t), valores);
         modelo.addAttribute("f", VistaFormulario.de(t, motor.camposConfig(t), motor.camposEntrada(t), config, valores, Map.of(),
-                clave(parametros), "tu configuración").conModelo(modeloEn(t, config)));
+                clave(parametros), "tu configuración").conModelo(modeloEn(t, config)).conExpediente(expediente(parametros)));
         return "fragmentos/ficha/configuracion-guardada";
     }
 
@@ -427,6 +432,19 @@ public class ControladorTecnicas {
     static String clave(MultiValueMap<String, String> parametros) {
         String clave = parametros.getFirst("_clave");
         return clave == null || clave.isBlank() || clave.length() > 64 ? nuevaClave() : clave;
+    }
+
+    /** El expediente del asistente del Diario que viaja oculto; vacío en la ficha o si no es un identificador. */
+    static Optional<UUID> expediente(MultiValueMap<String, String> parametros) {
+        String x = parametros.getFirst("_expediente");
+        if (x == null || x.isBlank()) {
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(UUID.fromString(x.strip()));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
     }
 
     static String origen(MultiValueMap<String, String> parametros) {

@@ -18,6 +18,12 @@ public interface RepositorioPredicciones {
     /** Guarda las predicciones de la ejecución; volver a guardar los mismos identificadores no duplica ni cambia nada. */
     void guardar(UUID usuarioId, UUID institucionId, UUID ejecucionId, List<PrediccionDeclarada> predicciones);
 
+    /**
+     * Importa una predicción con su estado tal como estaba en el respaldo (resuelta incluida, con su fecha de resolución).
+     * Si el identificador ya existe, no cambia nada: una resuelta sigue inmutable. El texto sale de la afirmación guardada.
+     */
+    void restaurar(UUID usuarioId, UUID institucionId, Prediccion prediccion);
+
     /** Vacío si no existe o si es de otra persona: para quien pregunta, es lo mismo. */
     Optional<Prediccion> porId(UUID usuarioId, UUID prediccionId);
 

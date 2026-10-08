@@ -63,7 +63,7 @@ public class ConfiguracionSeguridad {
                 .requestMatchers("/bloqueo", "/sesion", "/salir", "/error").permitAll()
                 .requestMatchers("/htmx.min.js", "/alpine-csp.min.js", "/app.css", "/app.js", "/ext/*.js", "/favicon.svg").permitAll()
                 .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
-                .requestMatchers("/usuarios", "/usuarios/**").hasRole("ADMINISTRADOR")
+                .requestMatchers("/usuarios", "/usuarios/**", "/administracion/**").hasRole("ADMINISTRADOR")
                 .anyRequest().authenticated())
             .formLogin(login -> login
                 .loginPage("/bloqueo")

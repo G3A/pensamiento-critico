@@ -42,7 +42,8 @@ public class ControladorInicio {
 
     /** Lo que pinta el Inicio. */
     public record VistaInicio(Intencion[] intenciones, boolean vacio, String primerEjemplo, String nombreMuestra,
-                              List<PendienteGuardado> pendientes, List<Reciente> recientes, List<Expediente> expedientes) {
+                              List<PendienteGuardado> pendientes, List<Reciente> recientes, List<Expediente> expedientes,
+                              List<pensamiento.flujos.DiarioDeDecisiones.Decision> revisiones) {
     }
 
     private final RepositorioEjecucion ejecuciones;
@@ -50,9 +51,11 @@ public class ControladorInicio {
     private final RepositorioTecnica tecnicas;
     private final Reloj reloj;
     private final Pagina.Fabrica paginas;
+    private final pensamiento.flujos.DiarioDeDecisiones diario;
 
     public ControladorInicio(RepositorioEjecucion ejecuciones, RepositorioExpediente expedientes, RepositorioTecnica tecnicas, Reloj reloj,
-                             Pagina.Fabrica paginas) {
+                             Pagina.Fabrica paginas, pensamiento.flujos.DiarioDeDecisiones diario) {
+        this.diario = diario;
         this.ejecuciones = ejecuciones;
         this.expedientes = expedientes;
         this.tecnicas = tecnicas;
@@ -70,9 +73,12 @@ public class ControladorInicio {
         List<Expediente> suyos = expedientes.deUsuario(yo.id());
         String primerEjemplo = tecnicas.ejemplos(PRIMER_EJEMPLO_TECNICA).stream().filter(e -> e.titulo().equals(PRIMER_EJEMPLO_TITULO))
                 .findFirst().map(e -> "/tecnicas/" + PRIMER_EJEMPLO_TECNICA + "?ejemplo=" + e.id()).orElse("/tecnicas/" + PRIMER_EJEMPLO_TECNICA);
+        // Las revisiones del Diario (T32) salen en su propia lista cuando vencen; las que todavía no vencen esperan en el Diario.
+        List<PendienteGuardado> pendientes = ejecuciones.pendientes(yo.id()).stream()
+                .filter(p -> !(p.pendiente().tipo() == pensamiento.nucleo.TipoPendiente.REVISION && p.pendiente().vence().isPresent())).toList();
         modelo.addAttribute("pagina", paginas.crear("Inicio", request));
         modelo.addAttribute("v", new VistaInicio(Intencion.values(), recientes.isEmpty() && suyos.isEmpty(), primerEjemplo,
-                MuestraExpediente.NOMBRE, ejecuciones.pendientes(yo.id()), recientes, suyos));
+                MuestraExpediente.NOMBRE, pendientes, recientes, suyos, diario.porRevisar(yo.id())));
         return "inicio";
     }
 }

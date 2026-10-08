@@ -1,7 +1,5 @@
 package pensamiento.web;
 
-import java.time.Clock;
-import java.time.Instant;
 import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,21 +11,14 @@ import pensamiento.nucleo.puertos.Reloj;
 @Configuration
 public class ConfiguracionWeb {
 
-    /** Reloj real del sistema en la zona configurada (APP_ZONA). */
+    /** Reloj real del sistema en la zona configurada (APP_ZONA); ajustable solo si APP_RELOJ_AJUSTABLE es verdadero. */
     @Bean
-    public Reloj reloj(@Value("${app.zona:America/Bogota}") String zona) {
-        ZoneId zonaId = ZoneId.of(zona);
-        Clock reloj = Clock.system(zonaId);
-        return new Reloj() {
-            @Override
-            public Instant ahora() {
-                return reloj.instant();
-            }
+    public RelojDelSistema relojDelSistema(@Value("${app.zona:America/Bogota}") String zona, @Value("${app.reloj.ajustable:false}") boolean ajustable) {
+        return new RelojDelSistema(ZoneId.of(zona), ajustable);
+    }
 
-            @Override
-            public ZoneId zona() {
-                return zonaId;
-            }
-        };
+    /** El mismo reloj sin ajuste, para el contrato real del puerto. */
+    public Reloj reloj(String zona) {
+        return new RelojDelSistema(ZoneId.of(zona), false);
     }
 }

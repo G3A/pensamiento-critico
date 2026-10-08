@@ -439,3 +439,19 @@ pre.argdown { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--
 @media (max-width: 480px) { .registro dl { grid-template-columns: minmax(0, 1fr); } }
 .linea-tiempo { list-style: none; padding-left: 0; border-left: 3px solid var(--borde); margin-left: .5rem; }
 .linea-tiempo li { padding: .25rem 0 .25rem 1rem; }
+
+/* Flujo D · Diario de decisiones (P17) y asistente (P18). */
+.nueva-decision { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: 1rem 0; }
+.nueva-decision input[type="text"] { flex: 1 1 16rem; min-width: 0; }
+.diario-columnas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--espacio); margin-top: var(--espacio); }
+@media (max-width: 800px) { .diario-columnas { grid-template-columns: minmax(0, 1fr); } }
+.lista-decisiones { list-style: none; padding: 0; }
+.lista-decisiones > li { padding: .5rem 0; border-bottom: 1px solid var(--borde); }
+.revisar { display: flex; flex-wrap: wrap; gap: .5rem; }
+.pasos { display: flex; flex-wrap: wrap; gap: .25rem .75rem; list-style: none; padding: 0; margin: .5rem 0; counter-reset: none; }
+.pasos .paso { padding: .25rem .5rem; border: 1px solid var(--borde); border-radius: var(--radio); }
+.pasos .paso.actual { border-color: var(--acento); background: var(--acento-fondo); font-weight: 700; }
+.pasos .inhabilitado { color: var(--texto-suave); }
+.tecnicas-paso { display: flex; flex-wrap: wrap; gap: .25rem 1rem; list-style: none; padding: 0; }
+.tecnicas-paso li.actual a { font-weight: 700; }
+.migas { color: var(--texto-suave); margin: 0; }

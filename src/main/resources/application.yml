@@ -59,6 +59,8 @@ management:
 
 app:
   zona: ${APP_ZONA:America/Bogota}
+  reloj:
+    ajustable: ${APP_RELOJ_AJUSTABLE:false}   # solo pruebas de aceptación y demostraciones: el administrador puede adelantarlo
   admin:
     pin: ${admin_pin:}
   ia:

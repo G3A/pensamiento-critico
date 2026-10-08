@@ -23,6 +23,7 @@ import pensamiento.nucleo.Json;
 import pensamiento.nucleo.OrigenAfirmacion;
 import pensamiento.nucleo.Pendiente;
 import pensamiento.nucleo.PendienteGuardado;
+import pensamiento.nucleo.Prediccion;
 import pensamiento.nucleo.RolAfirmacion;
 import pensamiento.nucleo.SentidoAfirmacion;
 import pensamiento.nucleo.TipoAfirmacion;
@@ -34,9 +35,11 @@ import pensamiento.nucleo.puertos.RepositorioArgumentos;
 import pensamiento.nucleo.puertos.RepositorioConfiguracion;
 import pensamiento.nucleo.puertos.RepositorioEjecucion;
 import pensamiento.nucleo.puertos.RepositorioExpediente;
+import pensamiento.nucleo.puertos.RepositorioPredicciones;
 
 /**
- * Exportar e importar los datos de una persona (RF-12), con los argumentos de cada ejecución desde el hito 2. Importar es idempotente por identificador: lo que ya es
+ * Exportar e importar los datos de una persona (RF-12), con los argumentos de cada ejecución desde el hito 2 y sus
+ * predicciones desde el hito 4. Importar es idempotente por identificador: lo que ya es
  * suyo se actualiza (nombre del expediente, asociación de la ejecución) y lo nuevo se agrega; nada se borra. Si
  * algún identificador ya es de otra persona, se rechaza el archivo completo. Ambas acciones quedan en auditoría.
  * La transacción la abre quien llama: si algo falla, no queda nada a medias.
@@ -73,10 +76,11 @@ public class ServicioRespaldo {
     private final RegistroIdentificadores identificadores;
     private final RegistroAuditoria auditoria;
     private final Reloj reloj;
+    private final RepositorioPredicciones predicciones;
 
     public ServicioRespaldo(RepositorioExpediente expedientes, RepositorioEjecucion ejecuciones, RepositorioArgumentos argumentos,
                             RepositorioConfiguracion configuraciones, RegistroIdentificadores identificadores, RegistroAuditoria auditoria,
-                            Reloj reloj) {
+                            Reloj reloj, RepositorioPredicciones predicciones) {
         this.expedientes = expedientes;
         this.ejecuciones = ejecuciones;
         this.argumentos = argumentos;
@@ -84,6 +88,7 @@ public class ServicioRespaldo {
         this.identificadores = identificadores;
         this.auditoria = auditoria;
         this.reloj = reloj;
+        this.predicciones = predicciones;
     }
 
     public PaqueteDatos exportar(UUID usuarioId, UUID institucionId, String persona) {
@@ -106,10 +111,13 @@ public class ServicioRespaldo {
                             p.pendiente().vence().orElse(null), p.pendiente().descripcion()))
                     .toList();
             List<PaqueteDatos.ArgumentoDatos> args = argumentos.deEjecucion(usuarioId, e.id()).stream().map(g -> datos(g.argumento())).toList();
+            List<PaqueteDatos.PrediccionDatos> preds = predicciones.deEjecucion(usuarioId, e.id()).stream()
+                    .map(p -> new PaqueteDatos.PrediccionDatos(p.id(), p.afirmacionId(), p.confianza(), p.fechaRevision(), p.estado().toString(),
+                            p.resueltaEn().orElse(null))).toList();
             ejs.add(new PaqueteDatos.EjecucionDatos(e.id(), e.tecnica().valor(), e.versionEsquema(), e.expedienteId().orElse(null),
                     nodo(e.config()), nodo(e.datos()), nodo(e.resultado()), e.resumen(), e.claveIdempotencia(), e.creadaEn(),
                     e.modelo().map(m -> new PaqueteDatos.RegistroModeloDatos(m.modelo(), m.digest(), m.promptVersion(), m.temperatura(), m.semilla())).orElse(null),
-                    afirmaciones, suyos, args));
+                    afirmaciones, suyos, args, preds));
         }
         auditoria.registrar(new RegistroAuditoria.Evento(Optional.of(usuarioId), institucionId, RegistroAuditoria.Accion.EXPORTAR,
                 "datos-de-una-persona", Optional.of(usuarioId), reloj.ahora()));
@@ -132,9 +140,8 @@ public class ServicioRespaldo {
 
     public Importacion importar(UUID usuarioId, UUID institucionId, PaqueteDatos recibido) {
         if (recibido == null || !PaqueteDatos.FORMATO.equals(recibido.formato())
-                || (recibido.version() != PaqueteDatos.VERSION && recibido.version() != PaqueteDatos.VERSION_ANTERIOR)) {
-            throw new ArchivoInvalido("El archivo no es un respaldo de datos de esta aplicación (versión " + PaqueteDatos.VERSION_ANTERIOR
-                    + " o " + PaqueteDatos.VERSION + ").");
+                || !PaqueteDatos.VERSIONES_LEIBLES.contains(recibido.version())) {
+            throw new ArchivoInvalido("El archivo no es un respaldo de datos de esta aplicación (versión 1 a " + PaqueteDatos.VERSION + ").");
         }
         PaqueteDatos paquete = recibido.migrado();
         Set<UUID> ids = new LinkedHashSet<>();
@@ -143,6 +150,7 @@ public class ServicioRespaldo {
             ids.add(exigir(e.id()));
             listaSegura(e.afirmaciones()).forEach(a -> ids.add(exigir(a.id())));
             listaSegura(e.argumentos()).forEach(a -> ids.add(exigir(a.id())));
+            listaSegura(e.predicciones()).forEach(p -> ids.add(exigir(p == null ? null : p.id())));
         }
         long ajenos = ids.stream().filter(id -> identificadores.deOtroUsuario(usuarioId, id)).count();
         if (ajenos > 0) {
@@ -191,6 +199,9 @@ public class ServicioRespaldo {
                 }
             }
             argumentos.guardar(usuarioId, institucionId, e.id(), suyos);
+            for (PaqueteDatos.PrediccionDatos p : listaSegura(d.predicciones())) {
+                predicciones.restaurar(usuarioId, institucionId, prediccion(p, e.id(), deLaEjecucion));
+            }
             ejNuevas++;
         }
         for (PaqueteDatos.Configuracion c : paquete.configuraciones()) {
@@ -199,6 +210,20 @@ public class ServicioRespaldo {
         auditoria.registrar(new RegistroAuditoria.Evento(Optional.of(usuarioId), institucionId, RegistroAuditoria.Accion.IMPORTAR,
                 "datos-de-una-persona", Optional.of(usuarioId), reloj.ahora()));
         return new Importacion(expNuevos, expActualizados, ejNuevas, ejYaEstaban, paquete.configuraciones().size());
+    }
+
+    /** Una predicción del archivo, validada: su afirmación es de la ejecución y una resuelta trae su fecha de resolución. */
+    private static Prediccion prediccion(PaqueteDatos.PrediccionDatos d, UUID ejecucionId, Set<UUID> deLaEjecucion) {
+        if (d.afirmacionId() == null || !deLaEjecucion.contains(d.afirmacionId()) || d.fechaRevision() == null || d.resultado() == null) {
+            throw new ArchivoInvalido("Una predicción del archivo apunta a una afirmación que no es de su ejecución.");
+        }
+        try {
+            Prediccion.Estado estado = Prediccion.Estado.valueOf(d.resultado().toUpperCase());
+            return new Prediccion(d.id(), ejecucionId, d.afirmacionId(), "", d.confianza(), d.fechaRevision(), estado,
+                    Optional.ofNullable(d.resueltaEn()));
+        } catch (IllegalArgumentException e) {
+            throw new ArchivoInvalido("Una predicción del archivo no es válida.");
+        }
     }
 
     private static PaqueteDatos.ArgumentoDatos datos(ArgumentoProducido p) {

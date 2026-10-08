@@ -18,6 +18,9 @@
   @endfor
   <input type="hidden" id="clave-${f.tecnica()}" name="_clave" value="${f.clave()}">
   <input type="hidden" name="_origen" value="${f.origenConfig()}">
+  @if(f.expediente() != null)
+    <input type="hidden" name="_expediente" value="${f.expediente()}">
+  @endif
   @for(VistaCampo c : f.campos())
     @template.tag.campo.campo(c = c)
   @endfor

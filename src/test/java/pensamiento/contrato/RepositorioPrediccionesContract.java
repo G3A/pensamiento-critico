@@ -110,6 +110,23 @@ public abstract class RepositorioPrediccionesContract {
     }
 
     @Test
+    void restaurar_importa_una_resuelta_con_su_estado_y_si_ya_existe_no_cambia_nada() {
+        Personas p = personas();
+        EjecucionConAfirmaciones e = dadaUnaEjecucionConAfirmaciones(p.usuarioA(), List.of("La rifa junta lo de la pintura"));
+        Prediccion resuelta = new Prediccion(UUID.randomUUID(), e.ejecucionId(), e.afirmaciones().getFirst(), "texto que no manda", 80,
+                LocalDate.of(2026, 5, 10), Prediccion.Estado.ACIERTO, Optional.of(RESUELTA_EN));
+        RepositorioPredicciones repo = comoUsuario(p.usuarioA());
+
+        repo.restaurar(p.usuarioA(), p.institucion(), resuelta);
+        repo.restaurar(p.usuarioA(), p.institucion(), new Prediccion(resuelta.id(), e.ejecucionId(), e.afirmaciones().getFirst(), "otro", 10,
+                LocalDate.of(2030, 1, 1), Prediccion.Estado.PENDIENTE, Optional.empty()));
+
+        assertThat(repo.porId(p.usuarioA(), resuelta.id())).contains(new Prediccion(resuelta.id(), e.ejecucionId(), e.afirmaciones().getFirst(),
+                "La rifa junta lo de la pintura", 80, LocalDate.of(2026, 5, 10), Prediccion.Estado.ACIERTO, Optional.of(RESUELTA_EN)));
+        assertThat(repo.deEjecucion(p.usuarioA(), e.ejecucionId())).hasSize(1);
+    }
+
+    @Test
     void resolver_registra_el_resultado_y_una_resuelta_ya_no_se_puede_modificar() {
         Personas p = personas();
         EjecucionConAfirmaciones e = dadaUnaEjecucionConAfirmaciones(p.usuarioA(), List.of("La sucursal de la terminal cubre sus costos"));

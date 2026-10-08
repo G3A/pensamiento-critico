@@ -2,6 +2,10 @@
 # runner que actions/cache guarda entre corridas. Uso:
 #   docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
 services:
+  app:
+    environment:
+      # La aceptación del flujo D revisa una decisión con el reloj adelantado (solo el administrador lo mueve).
+      APP_RELOJ_AJUSTABLE: "true"
   ollama:
     volumes:
       - ~/ollama-modelos:/root/.ollama

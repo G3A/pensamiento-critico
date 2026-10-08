@@ -64,6 +64,14 @@ class RealRepositorioPrediccionesContractIT extends RepositorioPrediccionesContr
             }
 
             @Override
+            public void restaurar(UUID u, UUID i, Prediccion p) {
+                bd.comoUsuario(usuarioId, inst, () -> {
+                    real.restaurar(u, i, p);
+                    return null;
+                });
+            }
+
+            @Override
             public Optional<Prediccion> porId(UUID u, UUID id) {
                 return bd.comoUsuario(usuarioId, inst, () -> real.porId(u, id));
             }

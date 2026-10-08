@@ -41,6 +41,15 @@ public final class FakeRepositorioPredicciones implements RepositorioPrediccione
     }
 
     @Override
+    public void restaurar(UUID usuarioId, UUID institucionId, Prediccion p) {
+        String texto = ejecuciones.afirmacionesDe(usuarioId, p.ejecucionId()).stream().filter(a -> a.afirmacionId().equals(p.afirmacionId()))
+                .map(AfirmacionConRol::texto).findFirst()
+                .orElseThrow(() -> new IllegalStateException("La afirmación de la predicción no está guardada con su ejecución"));
+        porId.putIfAbsent(p.id(), new Fila(usuarioId, new Prediccion(p.id(), p.ejecucionId(), p.afirmacionId(), texto, p.confianza(),
+                p.fechaRevision(), p.estado(), p.resueltaEn())));
+    }
+
+    @Override
     public Optional<Prediccion> porId(UUID usuarioId, UUID prediccionId) {
         return Optional.ofNullable(porId.get(prediccionId)).filter(f -> f.usuarioId().equals(usuarioId)).map(Fila::prediccion);
     }

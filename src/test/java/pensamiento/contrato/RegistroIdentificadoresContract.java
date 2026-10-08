@@ -27,6 +27,17 @@ public abstract class RegistroIdentificadoresContract {
     /** Deja una ejecución del usuario y devuelve su identificador. */
     protected abstract UUID ejecucionDe(UUID usuarioId);
 
+    /** Deja una predicción del Diario del usuario (con su ejecución y su afirmación) y devuelve su identificador. */
+    protected abstract UUID prediccionDe(UUID usuarioId);
+
+    @Test
+    void la_prediccion_del_usuario_a_es_de_otro_para_el_usuario_b_y_propia_para_a() {
+        Personas p = personas();
+        UUID prediccion = prediccionDe(p.usuarioA());
+        assertThat(comoUsuario(p.usuarioB()).deOtroUsuario(p.usuarioB(), prediccion)).isTrue();
+        assertThat(comoUsuario(p.usuarioA()).deOtroUsuario(p.usuarioA(), prediccion)).isFalse();
+    }
+
     @Test
     void un_identificador_que_no_existe_no_es_de_otro() {
         Personas p = personas();

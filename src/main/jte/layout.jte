@@ -47,7 +47,7 @@
         <li><span class="pendiente-menu">Consejero <small>hito 5</small></span></li>
         <li><a href="/taller" class="${pagina.titulo().equals("Taller") ? "activo" : ""}">Taller</a></li>
         <li><span class="pendiente-menu">Verificación <small>hito 6</small></span></li>
-        <li><span class="pendiente-menu">Diario <small>hito 4</small></span></li>
+        <li><a href="/diario" class="${pagina.titulo().equals("Diario") ? "activo" : ""}">Diario</a></li>
         <li><span class="pendiente-menu">Dojo <small>hito 7</small></span></li>
         <li><span class="pendiente-menu">Cambios de opinión <small>hito 7</small></span></li>
         @if(pagina.esAdministrador())
