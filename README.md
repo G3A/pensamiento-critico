@@ -229,7 +229,7 @@ Dos velocidades, al estilo Rainsberger (Fakes, sin `verify`), bajo `src/test/jav
 | `integracion/`, `aceptacion/` | RLS por SQL; proyección de pendientes en la misma transacción (RF-07); oráculos de T28, T01, T02, T06 y T13 sobre la tabla `ejemplo`; RF-01, RF-02, RF-03, RF-11, el flujo completo de T28 y el del Taller por HTTP contra `app:8080`; pruebas de humo en Chromium con Playwright (RNF-09): primer uso, Taller, SSE de T34 y, en el hito 4, el flujo D a 360 px; en el hito 4, el oráculo de las catorce desde la tabla `ejemplo`, la predicción inmutable por SQL y el flujo D por HTTP con el reloj adelantado | perfil test del compose |
 | `arquitectura/`, `sensores/` | ArchUnit; Fakes sin contrato; voseo sobre plantillas, catálogo y código; configuración segura | cada PR |
 
-Última corrida local del perfil completo (2026-10-08, hito 3), con `CONTRACT_REAL=true` y `-Pgates`: 471 pruebas rápidas y 111 de integración y aceptación en verde; 70 de ellas son contratos reales en 12 `Real*ContractIT` (10 contra Ollama 0.40.1). Dos omitidas a propósito: la aceptación con el servicio de Ollama detenido (pasó en una corrida aparte, con Ollama apagado) y el arnés de evaluación del modelo, que se corre a mano. SpotBugs con FindSecBugs y Dependency-Check en verde. La carga con k6 se corre aparte (`docker compose --profile test run --rm k6`).
+Última corrida local del perfil completo (2026-10-08, hito 4), con `CONTRACT_REAL=true` y `-Pgates`: 592 pruebas rápidas y 130 de integración y aceptación en verde; 82 de ellas son contratos reales en 13 `Real*ContractIT` (10 contra Ollama 0.40.1). Dos omitidas a propósito: la aceptación con el servicio de Ollama detenido y el arnés de evaluación del modelo, que se corre a mano. SpotBugs con FindSecBugs sin hallazgos y Dependency-Check en verde. Con Ollama detenido (`docker compose stop ollama`) pasaron en una corrida aparte la aceptación del modelo apagado, el flujo D por HTTP y en Chromium y el oráculo de las catorce técnicas del hito 4 desde la tabla `ejemplo`. La aceptación del flujo D necesita la app con `APP_RELOJ_AJUSTABLE=true`. La carga con k6 se corre aparte (`docker compose --profile test run --rm k6`).
 
 Sensores de línea de comandos: `sensores/voseo.sh` (mismo listado que `VoseoTest`, en `sensores/voseo-prohibido.txt`).
 
@@ -239,6 +239,9 @@ Sensores de línea de comandos: `sensores/voseo.sh` (mismo listado que `VoseoTes
   (Dependency-Check con `NVD_API_KEY` opcional como secreto del repo; SpotBugs con FindSecBugs).
 - **Nocturno** (`.github/workflows/nocturno.yml`, cron `0 7 * * *` UTC): `CONTRACT_REAL=true` contra el
   Ollama y el PostgreSQL del compose, con caché de los modelos.
+- **Hito 4 todavía sin nocturno**: los commits del hito 4 están en `main` local y no se subieron; el nocturno de GitHub corre
+  lo que está en `main` remoto, así que `RealRepositorioPrediccionesContractIT` (ya en la lista del sensor) y las dimensiones
+  nuevas de `Grafico` y del registro de identificadores solo corrieron en local. Tras subir, lanzar el workflow a mano.
 - **Última corrida nocturna en verde**: 2026-10-08 21:15 UTC en GitHub Actions, run [37844617747](https://github.com/G3A/pensamiento-critico/actions/runs/37844617747), lanzado a mano tras subir el hito 3. Los 12 `Real*ContractIT` corrieron completos: 70 pruebas, 0 omitidas, 10 de ellas contra Ollama 0.40.1 real con `qwen3:4b-instruct-2507-q4_K_M`. El paso "Sensor contra el falso verde" falla el workflow si algún contrato real queda omitido.
 
 ## Mediciones del hito 0
