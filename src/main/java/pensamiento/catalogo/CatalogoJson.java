@@ -32,7 +32,7 @@ public final class CatalogoJson {
     }
 
     /** Un ejemplo tal como está en catalogo/ejemplos/T##.json, con su técnica y su orden en el archivo. */
-    public record EjemploJson(String tecnica, int orden, String ambito, String titulo, Integer versionEsquema,
+    public record EjemploJson(String tecnica, int orden, String ambito, String titulo, int versionEsquema,
                               Map<String, Object> config, Map<String, Object> datos, Map<String, Object> resultado, String nota) {
     }
 
@@ -82,7 +82,7 @@ public final class CatalogoJson {
             List<EjemploArchivo> lista = leer(archivo, new TypeReference<List<EjemploArchivo>>() { });
             for (int i = 0; i < lista.size(); i++) {
                 EjemploArchivo e = lista.get(i);
-                todos.add(new EjemploJson(tecnica, i + 1, e.ambito(), e.titulo(), e.versionEsquema() == null ? 1 : e.versionEsquema(),
+                todos.add(new EjemploJson(tecnica, i + 1, e.ambito(), e.titulo(), e.versionEsquema() == null ? 1 : e.versionEsquema().intValue(),
                         e.config(), e.datos(), e.resultado(), e.nota()));
             }
         }

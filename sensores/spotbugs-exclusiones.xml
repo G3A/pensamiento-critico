@@ -9,6 +9,12 @@
   <Match>
     <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
   </Match>
+  <!-- MapeadorJson comparte un JsonMapper de Jackson 3, que es inmutable (se reconfigura solo con rebuild()):
+       devolverlo no expone estado modificable. Revisada el 7 de octubre de 2026 (hito 1). -->
+  <Match>
+    <Class name="pensamiento.catalogo.MapeadorJson" />
+    <Bug pattern="MS_EXPOSE_REP" />
+  </Match>
   <!-- Procesos hijo: el comando es una lista fija escrita en código (dot, pdftotext) con tiempo máximo y límites;
        el DOT entra por stdin, nunca como argumento, y la ruta del PDF la produce la aplicación, no el usuario. -->
   <Match>

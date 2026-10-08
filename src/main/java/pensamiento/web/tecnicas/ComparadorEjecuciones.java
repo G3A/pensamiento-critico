@@ -59,17 +59,17 @@ public final class ComparadorEjecuciones {
         Map<String, Object> configA = LenguajeCampos.mapa(anterior.config());
         Map<String, Object> configB = LenguajeCampos.mapa(posterior.config());
         List<String> cambiosConfig = new ArrayList<>();
-        for (String clave : union(configA.keySet(), configB.keySet())) {
-            if (!Objects.equals(configA.get(clave), configB.get(clave))) {
-                cambiosConfig.add(clave + ": " + texto(configA.get(clave)) + " → " + texto(configB.get(clave)));
+        for (String nombre : union(configA.keySet(), configB.keySet())) {
+            if (!Objects.equals(configA.get(nombre), configB.get(nombre))) {
+                cambiosConfig.add(nombre + ": " + texto(configA.get(nombre)) + " → " + texto(configB.get(nombre)));
             }
         }
         Map<String, Object> resA = LenguajeCampos.mapa(anterior.resultado());
         Map<String, Object> resB = LenguajeCampos.mapa(posterior.resultado());
         List<Seccion> secciones = new ArrayList<>();
-        for (String clave : union(resA.keySet(), resB.keySet())) {
-            if (esListaDeObjetosConTexto(resA.get(clave)) || esListaDeObjetosConTexto(resB.get(clave))) {
-                secciones.add(new Seccion(clave, listas(lista(resA.get(clave)), lista(resB.get(clave)))));
+        for (String nombre : union(resA.keySet(), resB.keySet())) {
+            if (esListaDeObjetosConTexto(resA.get(nombre)) || esListaDeObjetosConTexto(resB.get(nombre))) {
+                secciones.add(new Seccion(nombre, listas(lista(resA.get(nombre)), lista(resB.get(nombre)))));
             }
         }
         return new Comparacion(anterior, posterior, cambiosConfig, secciones, anterior.resumen(), posterior.resumen());
@@ -111,9 +111,9 @@ public final class ComparadorEjecuciones {
     }
 
     private static List<String> union(Set<String> a, Set<String> b) {
-        List<String> claves = new ArrayList<>(a);
-        b.stream().filter(k -> !a.contains(k)).forEach(claves::add);
-        return claves;
+        List<String> nombres = new ArrayList<>(a);
+        b.stream().filter(k -> !a.contains(k)).forEach(nombres::add);
+        return nombres;
     }
 
     private static String texto(Object valor) {
