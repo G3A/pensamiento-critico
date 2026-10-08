@@ -253,8 +253,8 @@
             { "valor": "consecuencias", "etiqueta": "Argumento por las consecuencias" }
           ] },
         { "nombre": "sensibilidad", "tipo": "enumeracion", "etiqueta": "Sensibilidad", "obligatorio": true,
-          "ayuda": "Por ahora solo reglas léxicas en español; la clasificación con el modelo local llegará después.",
-          "opciones": [ { "valor": "reglas", "etiqueta": "Solo reglas léxicas" } ] },
+          "ayuda": "Con el modelo, además de las reglas, puedes pedir que clasifique las oraciones que las reglas no marcaron; sus propuestas no cuentan hasta que las adoptes.",
+          "opciones": [ { "valor": "reglas", "etiqueta": "Solo reglas léxicas" }, { "valor": "reglas_y_modelo", "etiqueta": "Reglas y modelo local" } ] },
         { "nombre": "mostrarPregunta", "tipo": "booleano", "etiqueta": "Mostrar la pregunta crítica que quedó sin responder" }
       ]
     },
@@ -264,7 +264,12 @@
           "ayuda": "Pega o escribe el argumento que quieres revisar. Puede ser tuyo o de alguien más." },
         { "nombre": "confirmadas", "tipo": "conjunto", "etiqueta": "Marcas que confirmas como falacia",
           "ayuda": "Evalúa primero. Después marca aquí los códigos que confirmas y vuelve a evaluar o guarda: la etiqueta de falacia solo cuenta si la confirmas.",
-          "opciones": [ { "valor": "M1", "etiqueta": "M1" }, { "valor": "M2", "etiqueta": "M2" }, { "valor": "M3", "etiqueta": "M3" }, { "valor": "M4", "etiqueta": "M4" }, { "valor": "M5", "etiqueta": "M5" }, { "valor": "M6", "etiqueta": "M6" }, { "valor": "M7", "etiqueta": "M7" }, { "valor": "M8", "etiqueta": "M8" }, { "valor": "M9", "etiqueta": "M9" }, { "valor": "M10", "etiqueta": "M10" }, { "valor": "M11", "etiqueta": "M11" }, { "valor": "M12", "etiqueta": "M12" } ] }
+          "opcionesSegun": "sensibilidad",
+          "opcionesPor": {
+            "reglas": [ { "valor": "M1", "etiqueta": "M1" }, { "valor": "M2", "etiqueta": "M2" }, { "valor": "M3", "etiqueta": "M3" }, { "valor": "M4", "etiqueta": "M4" }, { "valor": "M5", "etiqueta": "M5" }, { "valor": "M6", "etiqueta": "M6" }, { "valor": "M7", "etiqueta": "M7" }, { "valor": "M8", "etiqueta": "M8" }, { "valor": "M9", "etiqueta": "M9" }, { "valor": "M10", "etiqueta": "M10" }, { "valor": "M11", "etiqueta": "M11" }, { "valor": "M12", "etiqueta": "M12" } ],
+            "reglas_y_modelo": [ { "valor": "M1", "etiqueta": "M1" }, { "valor": "M2", "etiqueta": "M2" }, { "valor": "M3", "etiqueta": "M3" }, { "valor": "M4", "etiqueta": "M4" }, { "valor": "M5", "etiqueta": "M5" }, { "valor": "M6", "etiqueta": "M6" }, { "valor": "M7", "etiqueta": "M7" }, { "valor": "M8", "etiqueta": "M8" }, { "valor": "M9", "etiqueta": "M9" }, { "valor": "M10", "etiqueta": "M10" }, { "valor": "M11", "etiqueta": "M11" }, { "valor": "M12", "etiqueta": "M12" }, { "valor": "IA1", "etiqueta": "IA1" }, { "valor": "IA2", "etiqueta": "IA2" }, { "valor": "IA3", "etiqueta": "IA3" }, { "valor": "IA4", "etiqueta": "IA4" }, { "valor": "IA5", "etiqueta": "IA5" }, { "valor": "IA6", "etiqueta": "IA6" }, { "valor": "IA7", "etiqueta": "IA7" }, { "valor": "IA8", "etiqueta": "IA8" }, { "valor": "IA9", "etiqueta": "IA9" }, { "valor": "IA10", "etiqueta": "IA10" }, { "valor": "IA11", "etiqueta": "IA11" }, { "valor": "IA12", "etiqueta": "IA12" } ]
+          } },
+        { "nombre": "propuestas", "tipo": "propuestas", "etiqueta": "Propuestas del modelo", "visibleSi": "sensibilidad=reglas_y_modelo" }
       ]
     }
   },
