@@ -12,8 +12,8 @@ La versión 1 trajo T28 · Análisis de hipótesis en competencia
 como esquemas fallidos (solo con reglas), más el Taller de argumentos y las 49 fichas "Qué es". La especificación
 completa está en [`docs/investigacion-y-propuestas.html`](docs/investigacion-y-propuestas.html); los prompts con que
 se construyó cada hito, en [`docs/prompt-hito-0.md`](docs/prompt-hito-0.md), [`docs/prompt-hito-1.md`](docs/prompt-hito-1.md),
-[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md) y [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md). Pendiente para cerrar
-RF-08: las sesiones moderadas de primer uso, con el guion en [`docs/sesiones-primer-uso.md`](docs/sesiones-primer-uso.md);
+[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md) y [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md); el del siguiente, en [`docs/prompt-hito-4.md`](docs/prompt-hito-4.md).
+Pendiente para cerrar RF-08: las sesiones moderadas de primer uso, con el guion en [`docs/sesiones-primer-uso.md`](docs/sesiones-primer-uso.md);
 al cerrar este hito todavía no se habían hecho, así que no hay hallazgos que aplicar a las fichas.
 
 ## Qué se puede hacer en el hito 3
