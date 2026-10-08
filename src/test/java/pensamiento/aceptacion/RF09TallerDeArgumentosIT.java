@@ -107,6 +107,26 @@ class RF09TallerDeArgumentosIT {
     }
 
     @Test
+    void en_la_ficha_cada_ejemplo_de_las_cuatro_tecnicas_se_carga_y_se_evalua_con_su_patron() {
+        ClienteApp admin = Instalacion.administrador();
+        String hija = Instalacion.personaNueva(admin, "hija mayor", "3691");
+        Taller taller = Taller.de(Instalacion.entraComo(hija, "3691"));
+        java.util.Map<String, List<String>> ejemplos = java.util.Map.of(
+                "T01", List.of("El carro usado", "La segunda sucursal", "Las cámaras del barrio"),
+                "T02", List.of("Las vacaciones con los abuelos", "El reductor frente al parque", "La segunda sucursal"),
+                "T06", List.of("Venderá más en el centro", "El cambio de colegio", "La calle cerrada los domingos"),
+                "T13", List.of("Los que se oponen a las cámaras", "La harina del proveedor", "El mercado del mes"));
+        java.util.Map<String, String> patron = java.util.Map.of("T01", "V01", "T02", "V02", "T06", "V01", "T13", "V05");
+
+        ejemplos.forEach((tecnica, titulos) -> titulos.forEach(titulo -> {
+            ClienteApp.Respuesta r = taller.evaluar(taller.cargarEjemplo(tecnica, titulo));
+            assertThat(r.estado()).as(tecnica + " · " + titulo + ": " + org.jsoup.Jsoup.parseBodyFragment(r.cuerpo()).select(".error-campo").eachText()).isEqualTo(200);
+            Document d = org.jsoup.Jsoup.parseBodyFragment(r.cuerpo());
+            assertThat(d.select("[data-patron=" + patron.get(tecnica) + "]")).as(tecnica + " · " + titulo).hasSize(1);
+        }));
+    }
+
+    @Test
     void un_texto_fuera_del_subconjunto_vuelve_con_422_y_el_error_con_linea_y_columna_junto_al_editor() {
         ClienteApp admin = Instalacion.administrador();
         String vecino = Instalacion.personaNueva(admin, "vecino", "8642");

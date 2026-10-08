@@ -45,7 +45,15 @@ public record VistaFormulario(
         List<Oculto> ocultos = new ArrayList<>();
         for (Campo c : camposConfig) {
             Object v = config.get(c.nombre());
-            ocultos.add(new Oculto("config." + c.nombre(), v == null ? "" : v.toString()));
+            if (v instanceof List<?> lista) {
+                // Un conjunto viaja como un parámetro repetido; una lista ordenada, con su posición.
+                for (int i = 0; i < lista.size(); i++) {
+                    String nombre = c.tipo() == Campo.Tipo.LISTA_ORDENADA ? "config." + c.nombre() + "[" + i + "]" : "config." + c.nombre();
+                    ocultos.add(new Oculto(nombre, String.valueOf(lista.get(i))));
+                }
+            } else {
+                ocultos.add(new Oculto("config." + c.nombre(), v == null ? "" : v.toString()));
+            }
         }
         List<String> erroresConfig = errores.entrySet().stream().filter(e -> e.getKey().startsWith("config."))
                 .map(Map.Entry::getValue).toList();
@@ -62,6 +70,9 @@ public record VistaFormulario(
                 case BOOLEANO -> Boolean.TRUE.equals(v) ? "sí" : "no";
                 case ENUMERACION -> c.opcionesCon(config).stream().filter(o -> o.valor().equals(String.valueOf(v)))
                         .map(o -> corta(o.etiqueta())).findFirst().orElse(String.valueOf(v));
+                case CONJUNTO, LISTA_ORDENADA -> v instanceof List<?> lista ? String.join(", ", lista.stream()
+                        .map(x -> c.opcionesCon(config).stream().filter(o -> o.valor().equals(String.valueOf(x))).map(o -> corta(o.etiqueta()))
+                                .findFirst().orElse(String.valueOf(x))).toList()) : "";
                 default -> v == null ? "" : v.toString();
             };
             partes.add(etiqueta + ": " + valor);
