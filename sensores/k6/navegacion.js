@@ -2,6 +2,8 @@
 // Usar y el Taller de argumentos (evaluar dibuja el mapa con Graphviz). Riesgo que se mide: que las pantallas sin
 // IA pasen de 500 ms en p95 o fallen con 10 sesiones concurrentes. Modelo cerrado (constant-vus) a propósito: son
 // personas que esperan cada pantalla y la leen antes de seguir.
+// Hito 3: una persona más tiene una sesión con Ollama activa (RNF-03): pide al modelo un steelman en T34 y espera el
+// evento final por SSE, mientras las otras diez navegan. El p95 que se exige sigue siendo el de las pantallas sin IA.
 // Se corre con: docker compose --profile test run --rm k6
 import http from 'k6/http';
 import { check, sleep, fail } from 'k6';
@@ -24,6 +26,7 @@ export const options = {
   noCookiesReset: true,
   scenarios: {
     navegacion: { executor: 'constant-vus', vus: PERSONAS, duration: __ENV.DURACION || '60s' },
+    sesion_con_ollama: { executor: 'constant-vus', vus: 1, duration: __ENV.DURACION || '60s', gracefulStop: '300s', exec: 'sesionConOllama' },
   },
   thresholds: {
     'http_req_duration{pantalla:sin_ia}': ['p(95)<500'],
@@ -53,7 +56,7 @@ export function setup() {
   const csrf = entrar('administrador', PIN_ADMIN);
   const sufijo = Date.now().toString(36);
   const nombres = [];
-  for (let i = 1; i <= PERSONAS; i++) {
+  for (let i = 1; i <= PERSONAS + 1; i++) {
     const nombre = `vecino k6 ${sufijo} ${i}`;
     const r = http.post(`${BASE}/usuarios`, { nombre: nombre, pin: '4826' }, { headers: { 'X-CSRF-TOKEN': csrf } });
     if (r.status !== 200) {
@@ -90,5 +93,30 @@ export default function (datos) {
   const evaluado = http.post(`${BASE}/taller/evaluar`, { argdown: SUCURSAL, estandar: 'preponderancia', textoEvaluado: '' },
     Object.assign({ headers: { 'X-CSRF-TOKEN': csrf, 'HX-Request': 'true' } }, pantalla));
   check(evaluado, { 'Taller evaluado con el mapa dibujado': (r) => r.status === 200 && r.body.includes('data-patron="V01"') && r.body.includes('<svg') });
+  sleep(2);
+}
+
+const TURNO = /sse-connect="\/ia\/turnos\/([0-9a-f-]{36})\/flujo"/;
+
+/** La sesión con Ollama activa: pedir un steelman a T34 y leer el turno por SSE hasta el evento final. */
+export function sesionConOllama(datos) {
+  if (csrf === null) {
+    csrf = entrar(datos.nombres[PERSONAS], '4826');
+  }
+  const conIa = { tags: { pantalla: 'con_ia' } };
+  const pedido = http.post(`${BASE}/tecnicas/T34/propuestas`, {
+    'config.longitudMaxima': '120', 'config.modo': 'manual_y_modelo', 'config.exigirCita': 'true',
+    posturaOriginal: 'Los que no quieren camaras no les importa el barrio.',
+    cita: 'Prefiero que no me graben cada vez que salgo de mi casa.',
+    _clave: `k6-${__VU}-${__ITER}`, _origen: 'tu configuracion',
+  }, Object.assign({ headers: { 'X-CSRF-TOKEN': csrf, 'HX-Request': 'true' } }, conIa));
+  const m = TURNO.exec(pedido.body || '');
+  check(pedido, { 'T34: pedir abre un turno con el modelo': (r) => r.status === 200 && m !== null });
+  if (m === null) {
+    sleep(5);
+    return;
+  }
+  const flujo = http.get(`${BASE}/ia/turnos/${m[1]}/flujo`, Object.assign({ timeout: '300s', headers: { Accept: 'text/event-stream' } }, conIa));
+  check(flujo, { 'T34: el turno termina con el evento final': (r) => r.status === 200 && r.body.includes('event:fin') });
   sleep(2);
 }
