@@ -1,0 +1,63 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "La sucursal del vecino",
+    "versionEsquema": 1,
+    "config": { "minimoSimilitudes": 2, "minimoDiferencias": 1, "exigirClaveVerificada": true, "modo": "plantillas" },
+    "datos": {
+      "caso": "La panadería del barrio vecino abrió sucursal y le fue bien.",
+      "conclusion": "A nosotros también nos irá bien con una sucursal.",
+      "similitudes": [ { "texto": "Mismo rubro." }, { "texto": "Mismo tamaño." }, { "texto": "Misma ciudad." } ],
+      "diferencias": [ { "texto": "Ellos tenían un socio con capital.", "clave": true, "verificada": false },
+                       { "texto": "Abrieron en temporada alta.", "clave": false, "verificada": false } ],
+      "propuestas": []
+    },
+    "resultado": {
+      "fuerza": "debil",
+      "motivo": "La diferencia clave no está verificada: Ellos tenían un socio con capital.",
+      "pendientes": [ "Verificar la diferencia clave: Ellos tenían un socio con capital." ],
+      "resumen": "3 similitudes y 2 diferencias · fuerza débil."
+    },
+    "nota": "La dueña de la panadería piensa abrir sucursal porque al vecino le fue bien. Es la tarjeta de T07 de la sección 7b."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El carro de la prima",
+    "versionEsquema": 1,
+    "config": { "minimoSimilitudes": 2, "minimoDiferencias": 1, "exigirClaveVerificada": true, "modo": "plantillas" },
+    "datos": {
+      "caso": "Mi prima vendió su carro por internet en una semana.",
+      "conclusion": "Yo también puedo vender el mío por internet en una semana.",
+      "similitudes": [ { "texto": "Es el mismo modelo de carro." }, { "texto": "Vivimos en la misma ciudad." } ],
+      "diferencias": [ { "texto": "El de ella tenía menos kilómetros.", "clave": false, "verificada": false } ],
+      "propuestas": []
+    },
+    "resultado": {
+      "fuerza": "fuerte",
+      "motivo": "2 similitudes contra 1 diferencia y ninguna clave. Revisa que las similitudes importen para la conclusión.",
+      "pendientes": [],
+      "resumen": "2 similitudes y 1 diferencia · fuerza fuerte."
+    },
+    "nota": "Un papá quiere vender el carro de la familia como lo hizo su prima."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras del barrio de al lado",
+    "versionEsquema": 1,
+    "config": { "minimoSimilitudes": 2, "minimoDiferencias": 1, "exigirClaveVerificada": true, "modo": "plantillas_y_modelo" },
+    "datos": {
+      "caso": "El barrio de al lado puso cámaras y bajaron los robos.",
+      "conclusion": "Si ponemos cámaras, también bajarán los robos aquí.",
+      "similitudes": [ { "texto": "Los dos barrios tienen calles parecidas." }, { "texto": "Los dos tienen junta de vecinos." } ],
+      "diferencias": [],
+      "propuestas": []
+    },
+    "resultado": {
+      "fuerza": "incompleta",
+      "motivo": "Falta 1 diferencia para juzgar la analogía.",
+      "pendientes": [],
+      "resumen": "2 similitudes y 0 diferencias · fuerza incompleta."
+    },
+    "nota": "En la junta de vecinos; sin diferencias escritas, puede pedir una propuesta al modelo y adoptarla."
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "ambito": "personal",
+    "titulo": "El auto usado",
+    "versionEsquema": 1,
+    "config": { "numeroOpuestas": 1, "modo": "manual" },
+    "datos": {
+      "postura": "Comprar ese auto: buen precio, lo conocemos.",
+      "confianzaAntes": 80,
+      "opuestas": [ { "texto": "No comprarlo: tiene 180.000 km, no hay historial de taller y el único dueño lo vende rápido.",
+                      "queCambiaria": "El buen precio sería el precio de un auto con problemas." } ],
+      "confianzaDespues": 60,
+      "propuestas": []
+    },
+    "resultado": {
+      "faltas": [ null ],
+      "faltantes": null,
+      "confianza": "confianza 80% → 60% (bajó 20 puntos)",
+      "pendientes": [],
+      "resumen": "1 postura opuesta de 1 · confianza 80% → 60%."
+    },
+    "nota": "Una familia piensa comprar un auto usado. Es la tarjeta de T15 de la sección 7b."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "Subir el precio del pan",
+    "versionEsquema": 1,
+    "config": { "numeroOpuestas": 2, "modo": "manual" },
+    "datos": {
+      "postura": "Subir el precio del pan en 10% no nos hará perder clientes.",
+      "confianzaAntes": 70,
+      "opuestas": [
+        { "texto": "Los clientes del barrio se irán al supermercado, que vende más barato.", "queCambiaria": "Perderíamos las ventas de la mañana, que son la mitad del día." },
+        { "texto": "Subir el precio hará que cada cliente compre menos pan por visita." }
+      ],
+      "propuestas": []
+    },
+    "resultado": {
+      "faltas": [ null, "¿Qué cambiaría en tu decisión si esto fuera cierto?" ],
+      "faltantes": null,
+      "confianza": "confianza 70% antes; falta la de después",
+      "pendientes": [ "Volver a estimar tu confianza en: Subir el precio del pan en 10% no nos hará perder clientes." ],
+      "resumen": "2 posturas opuestas de 2 · confianza 70% antes."
+    },
+    "nota": "La dueña de la panadería piensa subir el precio del pan; una de las dos posturas opuestas queda sin «qué cambiaría»."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras bajan los robos",
+    "versionEsquema": 1,
+    "config": { "numeroOpuestas": 1, "modo": "manual_y_modelo" },
+    "datos": {
+      "postura": "Las cámaras van a bajar los robos en la cuadra.",
+      "confianzaAntes": 90,
+      "opuestas": [],
+      "propuestas": []
+    },
+    "resultado": {
+      "faltas": [],
+      "faltantes": "Falta 1 postura opuesta: ¿qué diría alguien que piensa lo contrario?",
+      "confianza": "confianza 90% antes; falta la de después",
+      "pendientes": [ "Volver a estimar tu confianza en: Las cámaras van a bajar los robos en la cuadra." ],
+      "resumen": "0 posturas opuestas de 1 · confianza 90% antes."
+    },
+    "nota": "Un vecino que defiende las cámaras en la junta; sin postura opuesta escrita, puede pedir una propuesta al modelo y adoptarla."
+  }
+]

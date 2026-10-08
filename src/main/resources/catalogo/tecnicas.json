@@ -162,7 +162,36 @@
     "usalaCuando": "Quieres decidir algo porque a otra persona o negocio parecido le fue bien o mal, y necesitas saber si el caso se parece en lo que importa.",
     "definicion": "Procedimiento que lista similitudes y diferencias relevantes entre dos casos, exige que la diferencia clave sea verificable y califica la fuerza de la analogía.",
     "tipo": "procedimiento", "operacion": "evaluar", "objeto": "argumento", "modalidad": "formulario", "patron": "V04",
-    "origen": "Walton 1996 (esquema de analogía)", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Walton 1996 (esquema de analogía)", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "minimoSimilitudes": 2, "minimoDiferencias": 1, "exigirClaveVerificada": true, "modo": "plantillas" },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "minimoSimilitudes", "tipo": "entero", "etiqueta": "Mínimo de similitudes", "obligatorio": true, "minimo": 1, "maximo": 5 },
+        { "nombre": "minimoDiferencias", "tipo": "entero", "etiqueta": "Mínimo de diferencias", "obligatorio": true, "minimo": 1, "maximo": 5 },
+        { "nombre": "exigirClaveVerificada", "tipo": "booleano", "etiqueta": "Exigir que la diferencia clave esté verificada",
+          "ayuda": "Sin verificar, la analogía queda débil." },
+        { "nombre": "modo", "tipo": "enumeracion", "etiqueta": "Modo", "obligatorio": true,
+          "ayuda": "Con el modelo, puedes pedir que proponga una diferencia; no cuenta hasta que la adoptes.",
+          "opciones": [ { "valor": "plantillas", "etiqueta": "Solo plantillas" }, { "valor": "plantillas_y_modelo", "etiqueta": "Plantillas y modelo local" } ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "caso", "tipo": "texto", "etiqueta": "El caso de origen", "obligatorio": true, "largoMaximo": 300,
+          "ayuda": "A quién le funcionó o no: «la panadería del barrio vecino abrió sucursal y le fue bien»." },
+        { "nombre": "conclusion", "tipo": "texto", "etiqueta": "Lo que concluyes para tu caso", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "similitudes", "tipo": "filas", "etiqueta": "Similitudes", "prefijo": "S", "elemento": "similitud", "minimo": 0, "maximo": 6,
+          "campos": [ { "nombre": "texto", "tipo": "texto", "etiqueta": "Similitud", "obligatorio": true, "largoMaximo": 200 } ] },
+        { "nombre": "diferencias", "tipo": "filas", "etiqueta": "Diferencias relevantes", "prefijo": "D", "elemento": "diferencia", "minimo": 0, "maximo": 6,
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Diferencia", "obligatorio": true, "largoMaximo": 200 },
+            { "nombre": "clave", "tipo": "booleano", "etiqueta": "Es la diferencia clave: si fuera real, la conclusión no se sostendría" },
+            { "nombre": "verificada", "tipo": "booleano", "etiqueta": "Ya verifiqué que esta diferencia existe" },
+            { "nombre": "origen", "tipo": "oculto" }
+          ] },
+        { "nombre": "propuestas", "tipo": "propuestas", "etiqueta": "Propuestas del modelo", "visibleSi": "modo=plantillas_y_modelo" }
+      ]
+    }
   },
   {
     "id": "T08", "familia": "F2", "nombre": "Preguntas socráticas", "nombreLlano": "Que te hagan preguntas, no que te den respuestas",
@@ -291,7 +320,30 @@
     "usalaCuando": "Estás muy seguro de algo y quieres obligarte a escribir la postura contraria y qué cambiaría si fuera cierta.",
     "definicion": "Procedimiento de desesgo que genera una o más posturas opuestas a la propia y registra qué cambiaría en cada caso y cómo se mueve la confianza.",
     "tipo": "procedimiento", "operacion": "generar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V04",
-    "origen": "Lord, Lepper y Preston 1984", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Lord, Lepper y Preston 1984", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "numeroOpuestas": 1, "modo": "manual" },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "numeroOpuestas", "tipo": "entero", "etiqueta": "Número de posturas opuestas", "obligatorio": true, "minimo": 1, "maximo": 3 },
+        { "nombre": "modo", "tipo": "enumeracion", "etiqueta": "Modo", "obligatorio": true,
+          "ayuda": "Con el modelo, puedes pedir que redacte una postura opuesta; no cuenta hasta que la adoptes.",
+          "opciones": [ { "valor": "manual", "etiqueta": "Solo manual" }, { "valor": "manual_y_modelo", "etiqueta": "Manual y modelo local" } ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "postura", "tipo": "texto", "etiqueta": "Tu postura", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "confianzaAntes", "tipo": "entero", "etiqueta": "Tu confianza antes (%)", "obligatorio": true, "minimo": 0, "maximo": 100 },
+        { "nombre": "opuestas", "tipo": "filas", "etiqueta": "Posturas opuestas", "prefijo": "O", "elemento": "postura opuesta", "minimo": 0, "maximoDesdeConfig": "numeroOpuestas",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Postura opuesta", "obligatorio": true, "largoMaximo": 300 },
+            { "nombre": "queCambiaria", "tipo": "texto", "etiqueta": "Qué cambiaría si fuera cierta", "largoMaximo": 300 },
+            { "nombre": "origen", "tipo": "oculto" }
+          ] },
+        { "nombre": "confianzaDespues", "tipo": "entero", "etiqueta": "Tu confianza después (%)", "minimo": 0, "maximo": 100 },
+        { "nombre": "propuestas", "tipo": "propuestas", "etiqueta": "Propuestas del modelo", "visibleSi": "modo=manual_y_modelo" }
+      ]
+    }
   },
   {
     "id": "T16", "familia": "F3", "nombre": "Lista de verificación antes de decidir", "nombreLlano": "Revisión rápida antes de firmar",
