@@ -40,6 +40,7 @@
 
   <div class="usar-cuerpo">
     @template.fragmentos.ficha.formulario(f = u.formulario(), oob = false)
+    <div id="${u.formulario().idEspera()}" class="zona-espera" aria-live="polite"></div>
     <div id="${u.formulario().idResultado()}" class="zona-resultado" aria-live="polite">
       <p class="detalle">El resultado aparece aquí al evaluar.</p>
     </div>

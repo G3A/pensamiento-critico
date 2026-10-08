@@ -99,7 +99,7 @@ public class ServicioRespaldo {
         for (Ejecucion e : ejecuciones.recientes(usuarioId, TOPE_EJECUCIONES).reversed()) {
             List<PaqueteDatos.AfirmacionDatos> afirmaciones = ejecuciones.afirmacionesDe(usuarioId, e.id()).stream()
                     .map(a -> new PaqueteDatos.AfirmacionDatos(a.afirmacionId(), a.texto(), a.tipo().enBaseDeDatos(),
-                            a.rol().name().toLowerCase(), a.sentido().name().toLowerCase(), a.origen().name().toLowerCase()))
+                            a.rol().name().toLowerCase(), a.sentido().name().toLowerCase(), a.origen().name().toLowerCase(), a.adoptada()))
                     .toList();
             List<PaqueteDatos.PendienteDatos> suyos = pendientes.stream().filter(p -> p.ejecucionId().equals(e.id()))
                     .map(p -> new PaqueteDatos.PendienteDatos(p.pendiente().tipo().name().toLowerCase(), p.pendiente().objetoId().orElse(null),
@@ -107,7 +107,9 @@ public class ServicioRespaldo {
                     .toList();
             List<PaqueteDatos.ArgumentoDatos> args = argumentos.deEjecucion(usuarioId, e.id()).stream().map(g -> datos(g.argumento())).toList();
             ejs.add(new PaqueteDatos.EjecucionDatos(e.id(), e.tecnica().valor(), e.versionEsquema(), e.expedienteId().orElse(null),
-                    nodo(e.config()), nodo(e.datos()), nodo(e.resultado()), e.resumen(), e.claveIdempotencia(), e.creadaEn(), afirmaciones, suyos, args));
+                    nodo(e.config()), nodo(e.datos()), nodo(e.resultado()), e.resumen(), e.claveIdempotencia(), e.creadaEn(),
+                    e.modelo().map(m -> new PaqueteDatos.RegistroModeloDatos(m.modelo(), m.digest(), m.promptVersion(), m.temperatura(), m.semilla())).orElse(null),
+                    afirmaciones, suyos, args));
         }
         auditoria.registrar(new RegistroAuditoria.Evento(Optional.of(usuarioId), institucionId, RegistroAuditoria.Accion.EXPORTAR,
                 "datos-de-una-persona", Optional.of(usuarioId), reloj.ahora()));
@@ -169,12 +171,14 @@ public class ServicioRespaldo {
                 continue;
             }
             Ejecucion e = new Ejecucion(d.id(), usuarioId, institucionId, IdTecnica.de(d.tecnica()), d.versionEsquema(), expediente,
-                    json(d.config()), json(d.datos()), json(d.resultado()), d.resumen() == null ? "" : d.resumen(), Optional.empty(),
+                    json(d.config()), json(d.datos()), json(d.resultado()), d.resumen() == null ? "" : d.resumen(),
+                    Optional.ofNullable(d.modelo()).map(m -> new Ejecucion.RegistroModelo(m.modelo(), m.digest(), m.promptVersion(), m.temperatura(), m.semilla())),
                     d.claveIdempotencia() == null || d.claveIdempotencia().isBlank() ? "importada-" + d.id() : d.claveIdempotencia(),
                     d.creadaEn() == null ? reloj.ahora() : d.creadaEn());
             List<AfirmacionConRol> afirmaciones = listaSegura(d.afirmaciones()).stream().map(a -> new AfirmacionConRol(a.id(), a.texto(),
                     TipoAfirmacion.valueOf(a.tipo().toUpperCase()), RolAfirmacion.valueOf(a.rol().toUpperCase()),
-                    SentidoAfirmacion.valueOf(a.sentido().toUpperCase()), OrigenAfirmacion.valueOf(a.origen().toUpperCase()))).toList();
+                    SentidoAfirmacion.valueOf(a.sentido().toUpperCase()), OrigenAfirmacion.valueOf(a.origen().toUpperCase()),
+                    a.adoptada() == null ? !"modelo".equalsIgnoreCase(a.origen()) : a.adoptada())).toList();
             List<Pendiente> pendientes = listaSegura(d.pendientes()).stream().map(p -> new Pendiente(TipoPendiente.valueOf(p.tipo().toUpperCase()),
                     Optional.ofNullable(p.objetoId()), Optional.ofNullable(p.vence()), p.descripcion() == null ? "" : p.descripcion())).toList();
             ejecuciones.guardar(e, afirmaciones, pendientes);

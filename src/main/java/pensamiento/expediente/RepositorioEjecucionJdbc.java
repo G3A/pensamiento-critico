@@ -134,7 +134,7 @@ public class RepositorioEjecucionJdbc implements RepositorioEjecucion {
     @Override
     public List<AfirmacionConRol> afirmacionesDe(UUID usuarioId, UUID ejecucionId) {
         return jdbc.sql("""
-                SELECT a.id, a.texto, a.tipo, a.origen, ea.rol, ea.sentido
+                SELECT a.id, a.texto, a.tipo, a.origen, a.adoptada, ea.rol, ea.sentido
                 FROM ejecucion_afirmacion ea
                 JOIN ejecucion e ON e.id = ea.ejecucion_id
                 JOIN afirmacion a ON a.id = ea.afirmacion_id
@@ -147,7 +147,7 @@ public class RepositorioEjecucionJdbc implements RepositorioEjecucion {
                         TipoAfirmacion.valueOf(rs.getString("tipo").toUpperCase()),
                         RolAfirmacion.valueOf(rs.getString("rol").toUpperCase()),
                         SentidoAfirmacion.valueOf(rs.getString("sentido").toUpperCase()),
-                        OrigenAfirmacion.valueOf(rs.getString("origen").toUpperCase())))
+                        OrigenAfirmacion.valueOf(rs.getString("origen").toUpperCase()), rs.getBoolean("adoptada")))
                 .list();
     }
 

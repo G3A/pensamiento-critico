@@ -55,6 +55,7 @@ public class IaSpringAi implements Ia {
     private final String modeloEmbeddings;
     private final SemaforoIa semaforo;
     private final JsonMapper json = JsonMapper.builder().build();
+    private final java.util.Map<String, String> digests = new java.util.concurrent.ConcurrentHashMap<>();
 
     public IaSpringAi(String baseUrl, String modeloChat, String modeloEmbeddings, SemaforoIa semaforo) {
         this.api = OllamaApi.builder().baseUrl(baseUrl).build();
@@ -84,21 +85,34 @@ public class IaSpringAi implements Ia {
     @Override
     public EstadoIa estado() {
         try {
-            List<String> modelos = api.listModels().models().stream().map(OllamaApi.Model::name).toList();
-            boolean ambos = modelos.stream().anyMatch(m -> m.startsWith(modeloChat))
-                    && modelos.stream().anyMatch(m -> m.startsWith(modeloEmbeddings));
-            return new EstadoIa(ambos, modelos, ambos ? "qwen3:4b y bge-m3 listos" : "faltan modelos: " + modelos);
+            List<String> todos = api.listModels().models().stream().map(OllamaApi.Model::name).toList();
+            // Solo los dos configurados: el volumen puede tener otros (los candidatos de la evaluación del hito 3).
+            List<String> modelos = todos.stream().filter(m -> esModelo(m, modeloChat) || esModelo(m, modeloEmbeddings)).toList();
+            boolean ambos = modelos.stream().anyMatch(m -> esModelo(m, modeloChat))
+                    && modelos.stream().anyMatch(m -> esModelo(m, modeloEmbeddings));
+            return new EstadoIa(ambos, modelos, ambos ? modeloChat + " y " + modeloEmbeddings + " listos" : "faltan modelos: " + todos);
         } catch (RuntimeException e) {
             return EstadoIa.noDisponible("Ollama no responde: " + e.getClass().getSimpleName());
         }
     }
 
+    private static boolean esModelo(String listado, String configurado) {
+        return listado.equals(configurado) || listado.equals(configurado + ":latest");
+    }
+
+    /** Digest del modelo, consultado una vez y guardado: el healthcheck del compose ya exige el fijado. */
     public Optional<String> digest(String modelo) {
+        String guardado = digests.get(modelo);
+        if (guardado != null) {
+            return Optional.of(guardado);
+        }
         try {
-            return api.listModels().models().stream()
-                    .filter(m -> m.name().startsWith(modelo))
+            Optional<String> leido = api.listModels().models().stream()
+                    .filter(m -> m.name().equals(modelo) || m.name().equals(modelo + ":latest"))
                     .map(OllamaApi.Model::digest)
                     .findFirst();
+            leido.ifPresent(d -> digests.put(modelo, d));
+            return leido;
         } catch (RuntimeException e) {
             return Optional.empty();
         }
@@ -175,7 +189,7 @@ public class IaSpringAi implements Ia {
             throw new IaRespuestaInvalida("Etiqueta fuera del enum: " + etiqueta);
         }
         String porQue = nodo.has("por_que") ? nodo.get("por_que").asText() : "";
-        return new Clasificacion(etiqueta, porQue);
+        return new Clasificacion(etiqueta, porQue, modeloChat, digest(modeloChat).orElse(""));
     }
 
     @Override

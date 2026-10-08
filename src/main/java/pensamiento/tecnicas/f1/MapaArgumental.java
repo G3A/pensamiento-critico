@@ -1,5 +1,6 @@
 package pensamiento.tecnicas.f1;
 
+import pensamiento.tecnicas.comun.Textos;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;

@@ -24,9 +24,30 @@ public record VistaFormulario(
         String clave,
         String origenConfig,
         String resumenConfig,
-        List<String> erroresConfig) {
+        List<String> erroresConfig,
+        Modelo modelo) {
 
     public record Oculto(String nombre, String valor) {
+    }
+
+    /**
+     * El modelo local en este formulario: si la configuración lo pide, si responde ahora mismo y si la técnica quedó
+     * marcada experimental en el informe de evaluación.
+     */
+    public record Modelo(boolean pide, boolean disponible, boolean experimental) {
+        public static final Modelo NINGUNO = new Modelo(false, false, false);
+    }
+
+    public VistaFormulario conModelo(Modelo m) {
+        return new VistaFormulario(tecnica, idFormulario, campos, config, clave, origenConfig, resumenConfig, erroresConfig, m);
+    }
+
+    public String idEspera() {
+        return "espera-" + tecnica;
+    }
+
+    public String idPedir() {
+        return "pedir-" + tecnica;
     }
 
     public String id() {
@@ -55,9 +76,9 @@ public record VistaFormulario(
                 ocultos.add(new Oculto("config." + c.nombre(), v == null ? "" : v.toString()));
             }
         }
-        List<String> erroresConfig = errores.entrySet().stream().filter(e -> e.getKey().startsWith("config."))
+        List<String> erroresConfig = errores.entrySet().stream().filter(e -> e.getKey().startsWith("config.") || e.getKey().startsWith("_"))
                 .map(Map.Entry::getValue).toList();
-        return new VistaFormulario(t.id().valor(), "form-" + t.id(), campos, ocultos, clave, origenConfig, resumen(camposConfig, config), erroresConfig);
+        return new VistaFormulario(t.id().valor(), "form-" + t.id(), campos, ocultos, clave, origenConfig, resumen(camposConfig, config), erroresConfig, Modelo.NINGUNO);
     }
 
     /** "Escala de cada celda: C, I, N · Máximo de hipótesis: 4 · Pesos de evidencia activos: sí". */

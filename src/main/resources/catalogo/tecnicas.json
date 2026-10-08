@@ -384,7 +384,31 @@
     "usalaCuando": "Vas a discutir con alguien y quieres asegurarte de responder a la versión más fuerte de lo que piensa, no a una caricatura.",
     "definicion": "Procedimiento que reescribe la postura contraria en su versión más sólida, con cita de la original, y marca las diferencias.",
     "tipo": "procedimiento", "operacion": "generar", "objeto": "argumento", "modalidad": "formulario", "patron": "V04",
-    "origen": "Rapoport, en Dennett 2013", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Rapoport, en Dennett 2013", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "longitudMaxima": 120, "modo": "manual", "exigirCita": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "longitudMaxima", "tipo": "entero", "etiqueta": "Longitud máxima del steelman, en palabras", "obligatorio": true, "minimo": 20, "maximo": 200 },
+        { "nombre": "modo", "tipo": "enumeracion", "etiqueta": "Modo", "obligatorio": true,
+          "ayuda": "Con el modelo, puedes pedir una propuesta de steelman; no cuenta hasta que la adoptes.",
+          "opciones": [ { "valor": "manual", "etiqueta": "Solo manual" }, { "valor": "manual_y_modelo", "etiqueta": "Manual y modelo local" } ] },
+        { "nombre": "exigirCita", "tipo": "booleano", "etiqueta": "Exigir la cita de quien sostiene la postura",
+          "ayuda": "Sin sus palabras es difícil saber si tu versión lo representa." }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "posturaOriginal", "tipo": "texto", "etiqueta": "La postura contraria, como la escribiste o la oíste", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "cita", "tipo": "texto", "etiqueta": "Cita de quien la sostiene", "largoMaximo": 300,
+          "ayuda": "Sus palabras, tal cual. Sirve para comparar tu versión con la suya." },
+        { "nombre": "steelman", "tipo": "texto", "etiqueta": "Tu steelman: la mejor versión de esa postura", "largoMaximo": 1500,
+          "ayuda": "Lo que diría quien la sostiene de verdad, con sus mejores razones." },
+        { "nombre": "origenSteelman", "tipo": "oculto" },
+        { "nombre": "razones", "tipo": "filas", "etiqueta": "Razones que tu versión agrega a la original", "prefijo": "R", "elemento": "razón", "minimo": 0, "maximo": 5,
+          "campos": [ { "nombre": "texto", "tipo": "texto", "etiqueta": "Razón", "obligatorio": true, "largoMaximo": 200 } ] },
+        { "nombre": "propuestas", "tipo": "propuestas", "etiqueta": "Propuestas del modelo", "visibleSi": "modo=manual_y_modelo" }
+      ]
+    }
   },
   {
     "id": "T35", "familia": "F6", "nombre": "Seis Sombreros", "nombreLlano": "Mirar un tema desde seis ángulos",

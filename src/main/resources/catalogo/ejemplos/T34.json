@@ -1,0 +1,73 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Los que no quieren cámaras",
+    "versionEsquema": 1,
+    "config": { "longitudMaxima": 120, "modo": "manual_y_modelo", "exigirCita": true },
+    "datos": {
+      "posturaOriginal": "Los que no quieren cámaras no les importa el barrio.",
+      "cita": "Prefiero que no me graben cada vez que salgo de mi casa.",
+      "razones": [],
+      "propuestas": []
+    },
+    "resultado": {
+      "estado": "incompleto",
+      "preguntas": [
+        "Falta el steelman: ¿cuál es la mejor razón que tendría quien piensa así?",
+        "¿Quien sostiene esa postura la reconocería como suya? Eso solo lo puedes responder tú, preguntándole o comparando con su cita."
+      ],
+      "pendientes": [],
+      "resumen": "Falta el steelman."
+    },
+    "nota": "En el chat de la junta, una vecina escribió sobre quienes se oponen a las cámaras. Sin steelman escrito; con el modelo, puede pedir una propuesta y adoptarla. Es la tarjeta de T34 de la sección 7b."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "La segunda sucursal",
+    "versionEsquema": 1,
+    "config": { "longitudMaxima": 120, "modo": "manual", "exigirCita": true },
+    "datos": {
+      "posturaOriginal": "No hay que abrir otra sucursal, eso es pura ambición.",
+      "cita": "Con un solo local ya trabajamos doce horas al día.",
+      "steelman": "Abrir una segunda sucursal ahora pondría en riesgo el local que ya funciona, porque no hay personal ni tiempo para atender dos.",
+      "razones": [ { "texto": "No hay personal para dos locales." }, { "texto": "El local actual podría descuidarse." } ],
+      "propuestas": []
+    },
+    "resultado": {
+      "estado": "por_confirmar",
+      "preguntas": [
+        "¿Quien sostiene esa postura la reconocería como suya? Eso solo lo puedes responder tú, preguntándole o comparando con su cita."
+      ],
+      "pendientes": [
+        "Responder al steelman: Abrir una segunda sucursal ahora pondría en riesgo el local que ya funciona, porque no hay personal ni tiempo para atender dos."
+      ],
+      "resumen": "Steelman de 22 palabras · 2 razones añadidas · por confirmar."
+    },
+    "nota": "La dueña de la panadería quiere entender a su socia, que no quiere abrir otra sucursal."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "La mudanza de mamá",
+    "versionEsquema": 1,
+    "config": { "longitudMaxima": 40, "modo": "manual", "exigirCita": true },
+    "datos": {
+      "posturaOriginal": "Mi hermano no quiere que mamá se mude con nosotros porque es egoísta.",
+      "steelman": "Mi hermano piensa que mamá estaría más tranquila en su casa, aunque en el fondo solo quiere evitarse problemas.",
+      "razones": [ { "texto": "Mamá conoce a sus vecinos y tiene su rutina." } ],
+      "propuestas": []
+    },
+    "resultado": {
+      "estado": "incompleto",
+      "preguntas": [
+        "Posible caricatura: «solo quiere». ¿Lo diría así quien sostiene esa postura?",
+        "Falta la cita: ¿con qué palabras lo dice quien sostiene esa postura?",
+        "¿Quien sostiene esa postura la reconocería como suya? Eso solo lo puedes responder tú, preguntándole o comparando con su cita."
+      ],
+      "pendientes": [
+        "Responder al steelman: Mi hermano piensa que mamá estaría más tranquila en su casa, aunque en el fondo solo quiere evitarse problemas."
+      ],
+      "resumen": "Steelman de 19 palabras · 1 razón añadida · incompleto."
+    },
+    "nota": "Una hija intenta entender por qué su hermano no quiere que la mamá se mude con ellos."
+  }
+]

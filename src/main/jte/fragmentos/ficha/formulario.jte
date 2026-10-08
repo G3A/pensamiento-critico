@@ -21,6 +21,9 @@
   @for(VistaCampo c : f.campos())
     @template.tag.campo.campo(c = c)
   @endfor
+  @if(f.modelo().pide())
+    @template.fragmentos.ficha.pedir-modelo(f = f, ocupado = false)
+  @endif
   <div class="acciones">
     <button type="submit" class="boton" hx-disabled-elt="this" data-accion="evaluar">Evaluar</button>
     <button type="button" class="boton boton-secundario" hx-post="/tecnicas/${f.tecnica()}/ejecuciones" hx-target="#${f.idResultado()}"

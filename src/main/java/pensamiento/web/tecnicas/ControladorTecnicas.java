@@ -201,7 +201,7 @@ public class ControladorTecnicas {
             return renderizadores.render(t, Optional.empty(), "ejemplo-" + e.orden(), ev.resultado().orElseThrow().valor(), Modo.LECTURA);
         });
         VistaFormulario formulario = VistaFormulario.de(t, motor.camposConfig(t), motor.camposEntrada(t), config, valores, Map.of(),
-                nuevaClave(), origen);
+                nuevaClave(), origen).conModelo(modeloEn(t, config));
         return new VistaUsar(t, ejemplos, elegido, resultadoEjemplo, configuracion(yo, t, configUsuario, Map.of(), ""), formulario);
     }
 
@@ -232,16 +232,41 @@ public class ControladorTecnicas {
     // Formulario: acciones de filas, evaluar y guardar
     // ---------------------------------------------------------------------------------------------
 
-    /** Añadir, quitar, subir o bajar: devuelve el mismo formulario con los valores que traía. */
+    /**
+     * Añadir, quitar, subir o bajar: devuelve el mismo formulario con los valores que traía. "adoptar:IA1" adopta una
+     * propuesta del modelo (una acción explícita por propuesta) y además vuelve a evaluar, para que se vea contar.
+     */
     @PostMapping("/tecnicas/{id}/formulario")
     public String formulario(@PathVariable String id, @RequestParam MultiValueMap<String, String> parametros, Model modelo) {
         Tecnica t = tecnicaActiva(id);
+        UsuarioSesion yo = paginas.usuarioActual();
         Map<String, Object> config = configDelFormulario(t, parametros);
         Map<String, Object> valores = LectorFormulario.leer(motor.camposEntrada(t), parametros, "");
-        LectorFormulario.aplicar(parametros.getFirst("_accion"), motor.camposEntrada(t), valores, config);
-        modelo.addAttribute("f", VistaFormulario.de(t, motor.camposConfig(t), motor.camposEntrada(t), config, valores, Map.of(),
-                clave(parametros), origen(parametros)));
-        return "fragmentos/ficha/formulario";
+        String accion = parametros.getFirst("_accion");
+        Content resultado = null;
+        if (accion != null && accion.startsWith("adoptar:")) {
+            Optional<Map<String, Object>> adoptados = motor.adoptar(t, config, valores, accion.substring("adoptar:".length()));
+            if (adoptados.isPresent()) {
+                valores = adoptados.get();
+                MotorTecnicas.Evaluacion ev = motor.evaluar(t, config, valores, motor.contexto(yo.id(), yo.institucionId()));
+                if (ev.valida()) {
+                    resultado = renderizadores.render(t, Optional.empty(), "borrador", ev.resultado().orElseThrow().valor(), Modo.COMPLETO);
+                }
+            }
+        } else {
+            LectorFormulario.aplicar(accion, motor.camposEntrada(t), valores, config);
+        }
+        VistaFormulario f = VistaFormulario.de(t, motor.camposConfig(t), motor.camposEntrada(t), config, valores, Map.of(),
+                clave(parametros), origen(parametros)).conModelo(modeloEn(t, config));
+        modelo.addAttribute("f", f);
+        modelo.addAttribute("resultadoOob", resultado);
+        return "fragmentos/ficha/formulario-con-resultado";
+    }
+
+    /** Lo que el formulario dice del modelo local: si la configuración lo pide, si responde y si es experimental. */
+    private VistaFormulario.Modelo modeloEn(Tecnica t, Map<String, Object> config) {
+        return motor.pideModelo(t, config) ? new VistaFormulario.Modelo(true, motor.modeloDisponible(), t.iaExperimental())
+                : VistaFormulario.Modelo.NINGUNO;
     }
 
     /** Evaluar sin guardar: endpoint sin transacción. 422 con el mismo formulario si algo falta. */
@@ -279,8 +304,11 @@ public class ControladorTecnicas {
             return conErrores(t, config, valores, ev.errores(), parametros, respuesta, modelo);
         }
         Resultado<?> r = ev.resultado().orElseThrow();
+        if (r.bloqueoGuardado().isPresent()) {
+            return conErrores(t, config, valores, Map.of("_guardado", r.bloqueoGuardado().get()), parametros, respuesta, modelo);
+        }
         Ejecucion nueva = new Ejecucion(Uuid7.en(reloj.ahora()), yo.id(), yo.institucionId(), t.id(), r.versionEsquema(), Optional.empty(),
-                ev.config(), ev.entrada(), pensamiento.catalogo.MapeadorJson.escribir(r.valor()), r.resumen(), Optional.empty(),
+                ev.config(), ev.entrada(), pensamiento.catalogo.MapeadorJson.escribir(r.valor()), r.resumen(), r.modelo(),
                 clave(parametros), reloj.ahora());
         Ejecucion guardada = guardado.guardar(nueva, r);
         respuesta.setHeader("HX-Trigger", "ejecucion-guardada");
@@ -298,7 +326,7 @@ public class ControladorTecnicas {
         respuesta.setHeader("HX-Retarget", "#form-" + t.id());
         respuesta.setHeader("HX-Reswap", "outerHTML");
         modelo.addAttribute("f", VistaFormulario.de(t, motor.camposConfig(t), motor.camposEntrada(t), config, valores, errores,
-                clave(parametros), origen(parametros)));
+                clave(parametros), origen(parametros)).conModelo(modeloEn(t, config)));
         return "fragmentos/ficha/formulario";
     }
 
@@ -340,7 +368,7 @@ public class ControladorTecnicas {
         Map<String, Object> valores = LectorFormulario.leer(motor.camposEntrada(t), parametros, "");
         LectorFormulario.igualarCeldas(motor.camposEntrada(t), valores);
         modelo.addAttribute("f", VistaFormulario.de(t, motor.camposConfig(t), motor.camposEntrada(t), config, valores, Map.of(),
-                clave(parametros), "tu configuración"));
+                clave(parametros), "tu configuración").conModelo(modeloEn(t, config)));
         return "fragmentos/ficha/configuracion-guardada";
     }
 
@@ -385,19 +413,23 @@ public class ControladorTecnicas {
 
     /** La configuración viaja oculta en el formulario ("config.escala"); si falta, la del usuario. */
     private Map<String, Object> configDelFormulario(Tecnica t, MultiValueMap<String, String> parametros) {
+        return configDelFormulario(motor, t, paginas.usuarioActual(), parametros);
+    }
+
+    static Map<String, Object> configDelFormulario(MotorTecnicas motor, Tecnica t, UsuarioSesion yo, MultiValueMap<String, String> parametros) {
         boolean trae = parametros.keySet().stream().anyMatch(k -> k.startsWith("config."));
         if (!trae) {
-            return motor.configDeUsuario(paginas.usuarioActual().id(), t);
+            return motor.configDeUsuario(yo.id(), t);
         }
         return LectorFormulario.leer(motor.camposConfig(t), parametros, "config.");
     }
 
-    private static String clave(MultiValueMap<String, String> parametros) {
+    static String clave(MultiValueMap<String, String> parametros) {
         String clave = parametros.getFirst("_clave");
         return clave == null || clave.isBlank() || clave.length() > 64 ? nuevaClave() : clave;
     }
 
-    private static String origen(MultiValueMap<String, String> parametros) {
+    static String origen(MultiValueMap<String, String> parametros) {
         String origen = parametros.getFirst("_origen");
         return origen == null || origen.isBlank() || origen.length() > 200 ? "tu configuración" : origen;
     }

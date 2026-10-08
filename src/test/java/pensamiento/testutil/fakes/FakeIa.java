@@ -100,7 +100,7 @@ public final class FakeIa implements Ia {
         if (!peticion.etiquetas().contains(etiqueta)) {
             throw new IaRespuestaInvalida("Etiqueta fuera del enum: " + etiqueta);
         }
-        return new Clasificacion(etiqueta, porQue == null ? "" : porQue);
+        return new Clasificacion(etiqueta, porQue == null ? "" : porQue, "qwen3:4b", "sha256:fake");
     }
 
     @Override

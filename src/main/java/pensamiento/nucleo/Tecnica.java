@@ -1,6 +1,11 @@
 package pensamiento.nucleo;
 
-/** Entrada del catálogo canónico: identificador estable, facetas, tipo, origen y estado. */
+/**
+ * Entrada del catálogo canónico: identificador estable, facetas, tipo, origen y estado.
+ *
+ * @param iaExperimental las propuestas del modelo no cumplieron los umbrales del informe de evaluación (hito 3): la
+ *                       técnica funciona igual, pero la pantalla dice que esa parte es experimental
+ */
 public record Tecnica(
         IdTecnica id,
         String familia,
@@ -19,7 +24,8 @@ public record Tecnica(
         Json esquemaConfig,
         Json esquemaEntrada,
         Json configDefault,
-        Estado estado) {
+        Estado estado,
+        boolean iaExperimental) {
 
     public enum Tipo { MARCO, REPRESENTACION, CRITERIO, PROCEDIMIENTO, PRACTICA, METODO_DE_APRENDIZAJE }
 

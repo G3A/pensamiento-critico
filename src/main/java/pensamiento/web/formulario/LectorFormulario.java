@@ -14,6 +14,9 @@ import java.util.regex.Pattern;
  */
 public final class LectorFormulario {
 
+    /** Los campos de texto de cada propuesta del modelo; "adoptada" es booleano. */
+    public static final List<String> CAMPOS_PROPUESTA = List.of("codigo", "destino", "rotulo", "valor", "porque", "modelo", "digest", "prompt");
+
     private LectorFormulario() {
     }
 
@@ -55,7 +58,7 @@ public final class LectorFormulario {
         for (Campo c : campos) {
             String nombre = prefijo + c.nombre();
             switch (c.tipo()) {
-                case TEXTO, FECHA -> primero(p, nombre).filter(v -> !v.isBlank()).ifPresent(v -> destino.put(c.nombre(), v));
+                case TEXTO, FECHA, OCULTO -> primero(p, nombre).filter(v -> !v.isBlank()).ifPresent(v -> destino.put(c.nombre(), v));
                 case ENUMERACION -> {
                     if (c.porCadaFilaDe() != null) {
                         destino.put(c.nombre(), listaIndexada(p, nombre));
@@ -75,6 +78,19 @@ public final class LectorFormulario {
                         filas.add(fila);
                     }
                     destino.put(c.nombre(), filas);
+                }
+                case PROPUESTAS -> {
+                    List<Object> propuestas = new ArrayList<>();
+                    for (int i : indices(p, nombre)) {
+                        String base = nombre + "[" + i + "].";
+                        Map<String, Object> propuesta = new LinkedHashMap<>();
+                        for (String sub : CAMPOS_PROPUESTA) {
+                            propuesta.put(sub, primero(p, base + sub).orElse(""));
+                        }
+                        propuesta.put("adoptada", p.getOrDefault(base + "adoptada", List.of()).contains("true"));
+                        propuestas.add(propuesta);
+                    }
+                    destino.put(c.nombre(), propuestas);
                 }
             }
         }

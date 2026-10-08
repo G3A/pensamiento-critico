@@ -24,7 +24,7 @@ public final class Tecnicas {
         return new Tecnica(idTecnica, "F" + familia, "Técnica " + id, "Nombre llano de " + id,
                 "Úsala cuando necesites probar " + id, "Definición canónica de " + id,
                 Tecnica.Tipo.PROCEDIMIENTO, Tecnica.Operacion.EVALUAR, Tecnica.Objeto.AFIRMACION, Tecnica.Modalidad.FORMULARIO,
-                "V03a", "Origen de prueba", Tecnica.RequiereIa.NO, 1, Json.VACIO, Json.VACIO, Json.VACIO, estado);
+                "V03a", "Origen de prueba", Tecnica.RequiereIa.NO, 1, Json.VACIO, Json.VACIO, Json.VACIO, estado, false);
     }
 
     /** T28 · Análisis de hipótesis en competencia (ACH), con tildes y ñ para probar la ida y vuelta. */
@@ -33,6 +33,6 @@ public final class Tecnicas {
                 "Descartar explicaciones con la evidencia", "Hay varias explicaciones y quieres cruzarlas con la evidencia; añade ñandú y niño.",
                 "Matriz hipótesis × evidencia; gana la menos refutada.", Tecnica.Tipo.PROCEDIMIENTO, Tecnica.Operacion.EVALUAR,
                 Tecnica.Objeto.AFIRMACION, Tecnica.Modalidad.FORMULARIO, "V03a", "Heuer 1999", Tecnica.RequiereIa.NO, 1,
-                new Json("{\"escala\":\"CIN\"}"), new Json("{\"hipotesis\":\"filas\"}"), new Json("{\"maxHipotesis\":4}"), Tecnica.Estado.PENDIENTE);
+                new Json("{\"escala\":\"CIN\"}"), new Json("{\"hipotesis\":\"filas\"}"), new Json("{\"maxHipotesis\":4}"), Tecnica.Estado.PENDIENTE, false);
     }
 }

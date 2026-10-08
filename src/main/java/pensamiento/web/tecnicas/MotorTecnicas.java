@@ -10,15 +10,18 @@ import org.springframework.stereotype.Component;
 
 import pensamiento.catalogo.MapeadorJson;
 import pensamiento.catalogo.RegistroEjecutores;
+import pensamiento.nucleo.ConModelo;
 import pensamiento.nucleo.Contexto;
 import pensamiento.nucleo.Ejecucion;
 import pensamiento.nucleo.Ejecutor;
 import pensamiento.nucleo.IdTecnica;
 import pensamiento.nucleo.Json;
+import pensamiento.nucleo.Propuesta;
 import pensamiento.nucleo.Resultado;
 import pensamiento.nucleo.Tecnica;
 import pensamiento.nucleo.Uuid7;
 import pensamiento.nucleo.Validacion;
+import pensamiento.nucleo.puertos.Ia;
 import pensamiento.nucleo.puertos.Reloj;
 import pensamiento.nucleo.puertos.RepositorioConfiguracion;
 import pensamiento.web.formulario.Campo;
@@ -43,11 +46,13 @@ public class MotorTecnicas {
     private final RegistroEjecutores ejecutores;
     private final RepositorioConfiguracion configuraciones;
     private final Reloj reloj;
+    private final Ia ia;
 
-    public MotorTecnicas(RegistroEjecutores ejecutores, RepositorioConfiguracion configuraciones, Reloj reloj) {
+    public MotorTecnicas(RegistroEjecutores ejecutores, RepositorioConfiguracion configuraciones, Reloj reloj, Ia ia) {
         this.ejecutores = ejecutores;
         this.configuraciones = configuraciones;
         this.reloj = reloj;
+        this.ia = ia;
     }
 
     public Optional<Ejecutor<?, ?, ?>> ejecutor(IdTecnica id) {
@@ -116,6 +121,94 @@ public class MotorTecnicas {
         }
         Resultado<R> resultado = ejecutor.ejecutar(c, e, ctx);
         return new Evaluacion(Map.of(), Optional.of(resultado), MapeadorJson.escribir(c), MapeadorJson.escribir(e));
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // El modelo propone (RF-14)
+    // ---------------------------------------------------------------------------------------------
+
+    /** El ejecutor como técnica con Ollama opcional, si lo es. */
+    public Optional<ConModelo<?, ?>> conModelo(IdTecnica id) {
+        return ejecutores.porId(id).filter(e -> e instanceof ConModelo<?, ?>).map(e -> (ConModelo<?, ?>) e);
+    }
+
+    /** Si la técnica tiene modelo y la configuración vigente lo pide. */
+    public boolean pideModelo(Tecnica t, Map<String, Object> config) {
+        return conModelo(t.id()).map(m -> usa(m, t, config)).orElse(false);
+    }
+
+    /** Si el modelo local responde ahora mismo (el cortacircuitos decide; no consulta la red). */
+    public boolean modeloDisponible() {
+        return ia.estado().disponible();
+    }
+
+    /** Contexto con la IA solo si el cortacircuitos dice que está: así cada llamada decide por sí misma. */
+    public Contexto contextoConIa(UUID usuarioId, UUID institucionId) {
+        return new Contexto(usuarioId, institucionId, Optional.empty(), reloj, modeloDisponible() ? Optional.of(ia) : Optional.empty(),
+                () -> Uuid7.en(reloj.ahora()));
+    }
+
+    /** Lo que vuelve de pedir propuestas: los valores del formulario con las propuestas nuevas, o la caída. */
+    public record ConPropuestas(Map<String, Object> valores, int nuevas, Optional<String> caida) {
+    }
+
+    /**
+     * Pide propuestas al modelo y las agrega a los valores: las adoptadas se quedan, las que no se habían adoptado se
+     * reemplazan por las nuevas, y los códigos siguen la numeración (nunca se reusa un IA).
+     */
+    public ConPropuestas proponer(Tecnica t, Map<String, Object> config, Map<String, Object> valores, Contexto ctx,
+                                  java.util.function.Consumer<String> provisional) {
+        Ejecutor<?, ?, ?> ejecutor = ejecutores.porId(t.id()).orElseThrow(() -> new IllegalStateException(t.cita() + " no tiene ejecutor"));
+        if (!(ejecutor instanceof ConModelo<?, ?>)) {
+            return new ConPropuestas(valores, 0, Optional.of("Esta técnica no usa el modelo local."));
+        }
+        return proponerCon(ejecutor, config, valores, ctx, provisional);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <C, E, R> ConPropuestas proponerCon(Ejecutor<C, E, R> ejecutor, Map<String, Object> config, Map<String, Object> valores, Contexto ctx,
+                                                java.util.function.Consumer<String> provisional) {
+        ConModelo<C, E> modelo = (ConModelo<C, E>) ejecutor;
+        C c = MapeadorJson.mapper().convertValue(config, ejecutor.tipos().config());
+        E e = MapeadorJson.mapper().convertValue(valores, ejecutor.tipos().entrada());
+        List<Propuesta> existentes = modelo.propuestas(e);
+        ConModelo.Propuestas propuestas = modelo.proponer(c, e, ctx, provisional, Propuesta.siguiente(existentes));
+        if (propuestas.caida().isPresent()) {
+            return new ConPropuestas(valores, 0, propuestas.caida());
+        }
+        List<Object> todas = new java.util.ArrayList<>();
+        existentes.stream().filter(Propuesta::adoptada).forEach(p -> todas.add(MapeadorJson.mapper().convertValue(p, Map.class)));
+        propuestas.nuevas().forEach(p -> todas.add(MapeadorJson.mapper().convertValue(p, Map.class)));
+        Map<String, Object> nuevos = new LinkedHashMap<>(valores);
+        nuevos.put("propuestas", todas);
+        return new ConPropuestas(nuevos, propuestas.nuevas().size(), Optional.empty());
+    }
+
+    /** Adopta una propuesta: la técnica la lleva a su lugar en la entrada con origen modelo. Vacío si el código no sirve. */
+    public Optional<Map<String, Object>> adoptar(Tecnica t, Map<String, Object> config, Map<String, Object> valores, String codigo) {
+        return ejecutores.porId(t.id()).filter(e -> e instanceof ConModelo<?, ?>).flatMap(e -> adoptarCon(e, valores, codigo));
+    }
+
+    @SuppressWarnings("unchecked")
+    private <C, E, R> Optional<Map<String, Object>> adoptarCon(Ejecutor<C, E, R> ejecutor, Map<String, Object> valores, String codigo) {
+        ConModelo<C, E> modelo = (ConModelo<C, E>) ejecutor;
+        E e = MapeadorJson.mapper().convertValue(valores, ejecutor.tipos().entrada());
+        try {
+            E adoptada = modelo.adoptar(e, codigo);
+            return Optional.of(MapeadorJson.mapper().convertValue(adoptada, LinkedHashMap.class));
+        } catch (IllegalArgumentException ex) {
+            return Optional.empty();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <C, E> boolean usa(ConModelo<C, E> modelo, Tecnica t, Map<String, Object> config) {
+        Ejecutor<C, E, ?> ejecutor = (Ejecutor<C, E, ?>) modelo;
+        try {
+            return modelo.usaModelo(MapeadorJson.mapper().convertValue(config, ejecutor.tipos().config()));
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     /** El valor guardado de una ejecución, leído con la versión vigente o migrado de forma perezosa. */

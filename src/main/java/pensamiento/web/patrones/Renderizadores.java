@@ -11,25 +11,36 @@ import org.springframework.stereotype.Component;
 
 import pensamiento.nucleo.Tecnica;
 
-/** Renderizadores indexados por patrón. Spring inyecta la lista; sin reflexión ni descubrimiento por nombre. */
+/**
+ * Renderizadores indexados por el tipo de resultado que pintan. Varias técnicas comparten un patrón (V02, V04, V05,
+ * V10), cada una con su renderizador que traduce su resultado al record del patrón. Spring inyecta la lista; sin
+ * reflexión ni descubrimiento por nombre. El patrón del renderizador debe ser el que la técnica declara en el catálogo.
+ */
 @Component
 public class Renderizadores {
 
-    private final Map<String, RenderizadorResultado<?>> porPatron = new HashMap<>();
+    private final Map<Class<?>, RenderizadorResultado<?>> porTipo = new HashMap<>();
 
     public Renderizadores(List<RenderizadorResultado<?>> renderizadores) {
-        renderizadores.forEach(r -> porPatron.put(r.patron(), r));
+        for (RenderizadorResultado<?> r : renderizadores) {
+            if (porTipo.put(r.tipo(), r) != null) {
+                throw new IllegalStateException("Dos renderizadores para " + r.tipo().getSimpleName());
+            }
+        }
     }
 
     public boolean tiene(String patron) {
-        return porPatron.containsKey(patron);
+        return porTipo.values().stream().anyMatch(r -> r.patron().equals(patron));
     }
 
-    /** Pinta el valor de una técnica con el patrón que declara en el catálogo. */
+    /** Pinta el valor de una técnica con su renderizador, que debe ser del patrón que la técnica declara. */
     public Content render(Tecnica tecnica, Optional<UUID> idEjecucion, String sufijo, Object valor, Modo modo) {
-        RenderizadorResultado<?> r = porPatron.get(tecnica.patron());
+        RenderizadorResultado<?> r = porTipo.get(valor.getClass());
         if (r == null) {
-            throw new IllegalStateException("No hay renderizador para el patrón " + tecnica.patron() + " de " + tecnica.cita());
+            throw new IllegalStateException("No hay renderizador para " + valor.getClass().getSimpleName() + " de " + tecnica.cita());
+        }
+        if (!r.patron().equals(tecnica.patron())) {
+            throw new IllegalStateException(tecnica.cita() + " declara el patrón " + tecnica.patron() + " pero su resultado se pinta con " + r.patron());
         }
         return pintar(r, idEjecucion, sufijo, valor, modo);
     }

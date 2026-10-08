@@ -8,7 +8,7 @@ export LC_ALL=C.UTF-8
 LISTA="sensores/voseo-prohibido.txt"
 RUTAS=("$@")
 if [ ${#RUTAS[@]} -eq 0 ]; then
-  RUTAS=(src/main/jte src/main/resources/catalogo src/main/resources/static/app.js src/main/resources/static/app.css src/main/java src/test/java README.md docs/ejemplos .github)
+  RUTAS=(src/main/jte src/main/resources/catalogo src/main/resources/prompts src/main/resources/static/app.js src/main/resources/static/app.css src/main/java src/test/java README.md docs/ejemplos .github)
 fi
 PATRON="$(grep -v '^#' "$LISTA" | sed '/^$/d' | paste -sd '|' -)"
 # Palabra completa: sin letra, dígito, guion ni guion bajo pegados antes o después. Solo -P (con -E grep aborta).

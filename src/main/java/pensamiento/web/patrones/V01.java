@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import pensamiento.tecnicas.f1.ResultadoMapa;
-import pensamiento.tecnicas.f1.Textos;
+import pensamiento.tecnicas.comun.Textos;
 
 /**
  * Patrón V01, grafo de nodos (T01 · Mapeo de argumentos y T06 · Reconstrucción de premisas ocultas). Record

@@ -2,6 +2,8 @@ package pensamiento.arquitectura;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noConstructors;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noFields;
 
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
@@ -51,6 +53,26 @@ class ArquitecturaTest {
     static final ArchRule solo_el_adaptador_ia_habla_con_spring_ai =
             noClasses().that().resideOutsideOfPackage("pensamiento.ia..")
                     .should().dependOnClassesThat().resideInAPackage("org.springframework.ai..");
+
+    @ArchTest
+    static final ArchRule las_tecnicas_reciben_la_ia_solo_por_el_contexto =
+            noFields().that().areDeclaredInClassesThat().resideInAPackage("pensamiento.tecnicas..")
+                    .should().haveRawType(pensamiento.nucleo.puertos.Ia.class)
+                    .because("el ejecutor recibe la IA solo por Contexto.ia() (sección 4), para que cada llamada decida si hay modelo");
+
+    @ArchTest
+    static final ArchRule ningun_constructor_de_tecnicas_recibe_la_ia =
+            noConstructors().that().areDeclaredInClassesThat().resideInAPackage("pensamiento.tecnicas..")
+                    .should().haveRawParameterTypes(com.tngtech.archunit.base.DescribedPredicate.describe("incluye Ia",
+                            (java.util.List<com.tngtech.archunit.core.domain.JavaClass> tipos) -> tipos.stream()
+                                    .anyMatch(t -> t.isEquivalentTo(pensamiento.nucleo.puertos.Ia.class))))
+                    .because("el ejecutor recibe la IA solo por Contexto.ia() (sección 4)");
+
+    @ArchTest
+    static final ArchRule la_web_no_conoce_el_adaptador_de_ia =
+            noClasses().that().resideInAPackage("pensamiento.web..")
+                    .should().dependOnClassesThat().resideInAPackage("pensamiento.ia..")
+                    .because("la web ve el puerto Ia (con el cortacircuitos detrás), nunca el adaptador de Ollama");
 
     @ArchTest
     static final ArchRule nadie_fuera_de_graficos_lanza_procesos_hijo_directamente =

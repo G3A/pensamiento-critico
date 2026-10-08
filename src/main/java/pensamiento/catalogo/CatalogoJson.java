@@ -45,7 +45,7 @@ public final class CatalogoJson {
             String id, String familia, String nombre, String nombreLlano, String usalaCuando, String definicion,
             String tipo, String operacion, String objeto, String modalidad, String patron, String origen,
             String requiereIa, Integer versionEsquema, Map<String, Object> esquemaConfig,
-            Map<String, Object> esquemaEntrada, Map<String, Object> configDefault, String estado) {
+            Map<String, Object> esquemaEntrada, Map<String, Object> configDefault, String estado, Boolean iaExperimental) {
     }
 
     private final JsonMapper mapper = JsonMapper.builder().build();
@@ -181,6 +181,7 @@ public final class CatalogoJson {
                 new Json(aJson(t.esquemaConfig())),
                 new Json(aJson(t.esquemaEntrada())),
                 new Json(aJson(t.configDefault())),
-                Tecnica.Estado.valueOf(t.estado().toUpperCase()));
+                Tecnica.Estado.valueOf(t.estado().toUpperCase()),
+                Boolean.TRUE.equals(t.iaExperimental()));
     }
 }

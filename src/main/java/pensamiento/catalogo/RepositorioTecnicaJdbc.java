@@ -26,7 +26,7 @@ public class RepositorioTecnicaJdbc implements RepositorioTecnica {
     private static final String COLUMNAS = """
             id, familia_codigo, nombre, nombre_llano, usala_cuando, definicion, tipo, operacion, objeto, modalidad,
             patron, origen, requiere_ia, version_esquema, esquema_config::text AS esquema_config,
-            esquema_entrada::text AS esquema_entrada, config_default::text AS config_default, estado
+            esquema_entrada::text AS esquema_entrada, config_default::text AS config_default, estado, ia_experimental
             """;
 
     private final JdbcClient jdbc;
@@ -119,6 +119,7 @@ public class RepositorioTecnicaJdbc implements RepositorioTecnica {
                 new Json(rs.getString("esquema_config")),
                 new Json(rs.getString("esquema_entrada")),
                 new Json(rs.getString("config_default")),
-                Tecnica.Estado.valueOf(rs.getString("estado").toUpperCase()));
+                Tecnica.Estado.valueOf(rs.getString("estado").toUpperCase()),
+                rs.getBoolean("ia_experimental"));
     }
 }

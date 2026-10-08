@@ -6,8 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Component;
 
-import pensamiento.ia.MonitorIa;
 import pensamiento.nucleo.puertos.EstadoIa;
+import pensamiento.nucleo.puertos.Ia;
 import pensamiento.web.seguridad.ContextoRls;
 import pensamiento.web.seguridad.UsuarioSesion;
 
@@ -18,6 +18,11 @@ public record Pagina(String titulo, Optional<UsuarioSesion> usuario, EstadoIa ia
         return !ia.disponible();
     }
 
+    /** Los modelos listos, para la cabecera: "qwen3:4b · bge-m3". */
+    public String modelos() {
+        return String.join(" · ", ia.modelos().stream().map(m -> m.replace(":latest", "")).toList());
+    }
+
     public boolean esAdministrador() {
         return usuario.map(UsuarioSesion::esAdministrador).orElse(false);
     }
@@ -25,15 +30,15 @@ public record Pagina(String titulo, Optional<UsuarioSesion> usuario, EstadoIa ia
     @Component
     public static class Fabrica {
 
-        private final MonitorIa monitorIa;
+        private final Ia ia;
 
-        public Fabrica(MonitorIa monitorIa) {
-            this.monitorIa = monitorIa;
+        public Fabrica(Ia ia) {
+            this.ia = ia;
         }
 
         public Pagina crear(String titulo, HttpServletRequest request) {
             CsrfToken token = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-            return new Pagina(titulo, ContextoRls.usuarioDeSesion(), monitorIa.estado(), token == null ? "" : token.getToken());
+            return new Pagina(titulo, ContextoRls.usuarioDeSesion(), ia.estado(), token == null ? "" : token.getToken());
         }
 
         public UsuarioSesion usuarioActual() {

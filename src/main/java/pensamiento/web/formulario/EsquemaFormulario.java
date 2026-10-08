@@ -22,6 +22,9 @@ import pensamiento.catalogo.MapeadorJson;
  */
 public final class EsquemaFormulario {
 
+    /** Tope de propuestas del modelo en una entrada: una por oración del texto más largo que se clasifica. */
+    public static final int MAXIMO_PROPUESTAS = 40;
+
     private static final SchemaRegistry REGISTRO = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_2020_12);
 
     private EsquemaFormulario() {
@@ -79,6 +82,21 @@ public final class EsquemaFormulario {
                 }
             }
             case FECHA -> p.put("type", "string").put("pattern", "^\\d{4}-\\d{2}-\\d{2}$");
+            case OCULTO -> p.put("type", "string").put("maxLength", 200);
+            case PROPUESTAS -> {
+                p.put("type", "array").put("maxItems", MAXIMO_PROPUESTAS);
+                ObjectNode item = p.putObject("items");
+                item.put("type", "object");
+                ObjectNode props = item.putObject("properties");
+                props.putObject("codigo").put("type", "string").put("pattern", "^IA\\d{1,2}$");
+                for (String sub : LectorFormulario.CAMPOS_PROPUESTA) {
+                    if (!sub.equals("codigo")) {
+                        props.putObject(sub).put("type", "string").put("maxLength", 1200);
+                    }
+                }
+                props.putObject("adoptada").put("type", "boolean");
+                item.putArray("required").add("codigo");
+            }
             case ENTERO -> {
                 p.put("type", "integer");
                 if (c.minimo() != null) {

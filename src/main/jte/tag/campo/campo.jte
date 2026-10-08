@@ -17,4 +17,8 @@
   @template.tag.campo.fecha(c = c)
 @elseif(c.tipo() == Campo.Tipo.FILAS)
   @template.tag.campo.filas(c = c)
+@elseif(c.tipo() == Campo.Tipo.OCULTO)
+  <input type="hidden" name="${c.nombre()}" value="${c.valor()}" data-campo="oculto">
+@elseif(c.tipo() == Campo.Tipo.PROPUESTAS)
+  @template.tag.campo.propuestas(c = c)
 @endif

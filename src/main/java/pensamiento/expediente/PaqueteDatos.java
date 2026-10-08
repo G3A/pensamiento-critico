@@ -26,7 +26,12 @@ public record PaqueteDatos(String formato, int version, Instant exportadoEn, Str
     public record ExpedienteDatos(UUID id, String nombre, String estado, Instant creadoEn) {
     }
 
-    public record AfirmacionDatos(UUID id, String texto, String tipo, String rol, String sentido, String origen) {
+    /** adoptada puede faltar en archivos anteriores al hito 3: entonces se deduce del origen. */
+    public record AfirmacionDatos(UUID id, String texto, String tipo, String rol, String sentido, String origen, Boolean adoptada) {
+    }
+
+    /** Modelo, digest, prompt, temperatura y semilla de una ejecución con IA (RNF-07); falta en las demás. */
+    public record RegistroModeloDatos(String modelo, String digest, String promptVersion, double temperatura, long semilla) {
     }
 
     public record PendienteDatos(String tipo, UUID objetoId, LocalDate vence, String descripcion) {
@@ -44,7 +49,7 @@ public record PaqueteDatos(String formato, int version, Instant exportadoEn, Str
     }
 
     public record EjecucionDatos(UUID id, String tecnica, int versionEsquema, UUID expedienteId, JsonNode config, JsonNode datos,
-                                 JsonNode resultado, String resumen, String claveIdempotencia, Instant creadaEn,
+                                 JsonNode resultado, String resumen, String claveIdempotencia, Instant creadaEn, RegistroModeloDatos modelo,
                                  List<AfirmacionDatos> afirmaciones, List<PendienteDatos> pendientes, List<ArgumentoDatos> argumentos) {
         public EjecucionDatos {
             afirmaciones = afirmaciones == null ? List.of() : List.copyOf(afirmaciones);

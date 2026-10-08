@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 import pensamiento.nucleo.Contexto;
+import pensamiento.nucleo.puertos.Ia;
 import pensamiento.testutil.fakes.FakeReloj;
 
 /** Contextos de ejecución para pruebas: reloj fijo, sin IA e identificadores en secuencia legible. */
@@ -18,6 +19,13 @@ public final class Contextos {
 
     public static Contexto sinIa() {
         return sinIa(DUENA_DE_LA_PANADERIA);
+    }
+
+    /** El mismo contexto, con la IA dada (el Fake certificado de Ia en las pruebas). */
+    public static Contexto conIa(Ia ia) {
+        AtomicLong siguiente = new AtomicLong(1);
+        return new Contexto(DUENA_DE_LA_PANADERIA, INSTITUCION, Optional.empty(), new FakeReloj(), Optional.of(ia),
+                () -> new UUID(0x0000000000007000L, 0x8000000000000000L | siguiente.getAndIncrement()));
     }
 
     public static Contexto sinIa(UUID usuario) {

@@ -22,10 +22,10 @@
   <div class="estado-ia" role="status">
     @if(pagina.modoPlantillas())
       <span class="chip chip-aviso">sin IA local</span>
-      <span class="detalle">Ollama no está disponible: todas las técnicas funcionan en modo plantillas.</span>
+      <span class="detalle">Ollama no está disponible: todas las técnicas funcionan en modo plantillas. Lo que cambia: no aparece "Pedir propuestas al modelo"; todo lo demás funciona igual.</span>
     @else
       <span class="chip chip-ok">ollama</span>
-      <span class="detalle">qwen3:4b · bge-m3</span>
+      <span class="detalle">${pagina.modelos()}</span>
     @endif
   </div>
   @if(pagina.usuario().isPresent())

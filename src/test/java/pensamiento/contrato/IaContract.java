@@ -67,6 +67,7 @@ public abstract class IaContract {
         assertThat(tokens).isNotEmpty();
         assertThat(String.join("", tokens).trim()).isEqualTo(respuesta.texto());
         assertThat(respuesta.modelo()).isNotBlank();
+        assertThat(respuesta.digest()).as("registro de reproducibilidad: digest (RNF-07)").isNotBlank();
         assertThat(respuesta.intentos()).isEqualTo(1);
     }
 
@@ -99,6 +100,8 @@ public abstract class IaContract {
                 ETIQUETAS, TIEMPO_NORMAL));
         assertThat(ETIQUETAS).contains(c.etiqueta());
         assertThat(c.porQue()).isNotNull();
+        assertThat(c.modelo()).as("registro de reproducibilidad: modelo (RNF-07)").isNotBlank();
+        assertThat(c.digest()).as("registro de reproducibilidad: digest (RNF-07)").isNotBlank();
     }
 
     @Test

@@ -33,6 +33,8 @@ public final class ConstructorVista {
             Object valor = valores.get(c.nombre());
             if (c.tipo() == Campo.Tipo.FILAS) {
                 vistas.add(filas(c, ruta, valor, valores, prefijoParametro));
+            } else if (c.tipo() == Campo.Tipo.PROPUESTAS) {
+                vistas.add(propuestas(c, ruta, valor, prefijoParametro));
             } else if (c.porCadaFilaDe() != null) {
                 vistas.addAll(celdas(c, ruta, valor, prefijoParametro));
             } else {
@@ -53,7 +55,7 @@ public final class ConstructorVista {
         String texto = valor == null || valor instanceof List<?> ? "" : valor.toString();
         return new VistaCampo(c.tipo(), prefijoParametro + ruta, id(ruta), etiqueta, c.ayuda(), c.obligatorio(), texto, valores,
                 c.minimo(), c.maximoCon(config), c.largoMaximo(), c.opcionesCon(config), errores.get(ruta), c.nombre(), c.prefijo(), c.elemento(),
-                List.of(), false, accionUrl, "#form-" + idFormulario);
+                List.of(), false, accionUrl, "#form-" + idFormulario, List.of());
     }
 
     /** Una enumeración que se repite por cada fila de otro campo: "Frente a H1", "Frente a H2"... */
@@ -82,7 +84,27 @@ public final class ConstructorVista {
         }
         return new VistaCampo(c.tipo(), prefijoParametro + ruta, id(ruta), c.etiqueta(), c.ayuda(), c.obligatorio(), "", List.of(),
                 c.minimo(), maximo, null, List.of(), errores.get(ruta), c.nombre(), c.prefijo(), c.elemento(), filas,
-                maximo == null || lista.size() < maximo, accionUrl, "#form-" + idFormulario);
+                maximo == null || lista.size() < maximo, accionUrl, "#form-" + idFormulario, List.of());
+    }
+
+    /** Las propuestas del modelo que trae la entrada, en orden; cada una viaja en campos ocultos. */
+    private VistaCampo propuestas(Campo c, String ruta, Object valor, String prefijoParametro) {
+        List<?> lista = valor instanceof List<?> l ? l : List.of();
+        List<VistaCampo.VistaPropuesta> vistas = new ArrayList<>();
+        for (int i = 0; i < lista.size(); i++) {
+            Map<?, ?> m = lista.get(i) instanceof Map<?, ?> mapa ? mapa : Map.of();
+            vistas.add(new VistaCampo.VistaPropuesta(i, texto(m, "codigo"), texto(m, "destino"), texto(m, "rotulo"), texto(m, "valor"),
+                    texto(m, "porque"), Boolean.TRUE.equals(m.get("adoptada")) || "true".equals(String.valueOf(m.get("adoptada"))),
+                    texto(m, "modelo"), texto(m, "digest"), texto(m, "prompt")));
+        }
+        return new VistaCampo(c.tipo(), prefijoParametro + ruta, id(ruta), c.etiqueta(), c.ayuda(), false, "", List.of(),
+                null, null, null, List.of(), errores.get(ruta), c.nombre(), c.prefijo(), c.elemento(), List.of(), false, accionUrl,
+                "#form-" + idFormulario, vistas);
+    }
+
+    private static String texto(Map<?, ?> m, String clave) {
+        Object v = m.get(clave);
+        return v == null ? "" : v.toString();
     }
 
     private final java.util.Map<String, Integer> cantidades = new java.util.HashMap<>();

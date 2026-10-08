@@ -32,7 +32,35 @@ public record VistaCampo(
         List<Fila> filas,
         boolean puedeAnadir,
         String accionUrl,
-        String destino) {
+        String destino,
+        List<VistaPropuesta> propuestas) {
+
+    /**
+     * Una propuesta del modelo en el formulario: viaja en campos ocultos y se pinta con su rótulo, su por qué y si
+     * está adoptada. Adoptar es un botón por propuesta (una acción explícita, nunca una casilla que se marca sola).
+     */
+    public record VistaPropuesta(int indice, String codigo, String destino, String rotulo, String valor, String porque, boolean adoptada,
+                                 String modelo, String digest, String prompt) {
+        /** El valor de un campo por su nombre, para escribirlo oculto en el formulario. */
+        public String campo(String nombre) {
+            return switch (nombre) {
+                case "codigo" -> codigo;
+                case "destino" -> destino;
+                case "rotulo" -> rotulo;
+                case "valor" -> valor;
+                case "porque" -> porque;
+                case "modelo" -> modelo;
+                case "digest" -> digest;
+                case "prompt" -> prompt;
+                default -> throw new IllegalArgumentException("Campo de propuesta desconocido: " + nombre);
+            };
+        }
+    }
+
+    /** hx-vals de Adoptar: {"_accion":"adoptar:IA1"}. */
+    public String accionAdoptar(String codigo) {
+        return "{\"_accion\":\"adoptar:" + codigo + "\"}";
+    }
 
     /** Una fila de una tabla de filas repetibles, con su código ("H1", "E2") y sus campos. */
     public record Fila(int indice, String codigo, List<VistaCampo> campos, boolean puedeQuitar) {

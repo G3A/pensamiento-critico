@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 class VoseoTest {
 
     private static final List<Path> RAICES = List.of(
-            Path.of("src/main/jte"), Path.of("src/main/resources/catalogo"), Path.of("src/main/resources/static/app.js"),
+            Path.of("src/main/jte"), Path.of("src/main/resources/catalogo"), Path.of("src/main/resources/prompts"), Path.of("src/main/resources/static/app.js"),
             Path.of("src/main/resources/static/app.css"), Path.of("src/main/java"), Path.of("README.md"));
 
     @Test

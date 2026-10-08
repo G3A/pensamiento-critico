@@ -117,8 +117,8 @@ public class R__Semilla_catalogo extends BaseJavaMigration {
         String sql = """
                 INSERT INTO tecnica (id, familia_codigo, nombre, nombre_llano, usala_cuando, definicion, tipo, operacion,
                                      objeto, modalidad, patron, origen, requiere_ia, version_esquema, esquema_config,
-                                     esquema_entrada, config_default, estado)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?::jsonb, ?::jsonb, ?::jsonb, ?)
+                                     esquema_entrada, config_default, estado, ia_experimental)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?::jsonb, ?::jsonb, ?::jsonb, ?, ?)
                 ON CONFLICT (id) DO UPDATE SET
                   familia_codigo = EXCLUDED.familia_codigo, nombre = EXCLUDED.nombre, nombre_llano = EXCLUDED.nombre_llano,
                   usala_cuando = EXCLUDED.usala_cuando, definicion = EXCLUDED.definicion, tipo = EXCLUDED.tipo,
@@ -126,7 +126,7 @@ public class R__Semilla_catalogo extends BaseJavaMigration {
                   patron = EXCLUDED.patron, origen = EXCLUDED.origen, requiere_ia = EXCLUDED.requiere_ia,
                   version_esquema = EXCLUDED.version_esquema, esquema_config = EXCLUDED.esquema_config,
                   esquema_entrada = EXCLUDED.esquema_entrada, config_default = EXCLUDED.config_default,
-                  estado = EXCLUDED.estado
+                  estado = EXCLUDED.estado, ia_experimental = EXCLUDED.ia_experimental
                 """;
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             for (Tecnica t : tecnicas) {
@@ -148,6 +148,7 @@ public class R__Semilla_catalogo extends BaseJavaMigration {
                 ps.setString(16, t.esquemaEntrada().texto());
                 ps.setString(17, t.configDefault().texto());
                 ps.setString(18, t.estado().name().toLowerCase());
+                ps.setBoolean(19, t.iaExperimental());
                 ps.addBatch();
             }
             ps.executeBatch();
