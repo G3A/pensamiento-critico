@@ -2,17 +2,40 @@
 
 Catálogo completo de 49 técnicas de pensamiento crítico en 8 familias, cada una configurable y con ejemplos,
 más flujos guiados que las encadenan. Todo funciona offline, sin ninguna API externa, y se levanta con
-docker-compose. La única IA es Ollama local con modelos de 4 GB o menos (qwen3:4b y bge-m3), y la
+docker-compose. La única IA es Ollama local con modelos de 4 GB o menos (qwen3:4b-instruct-2507 y bge-m3), y la
 aplicación funciona igual sin ella ("modo plantillas").
 
-Estado: **hito 2, "El mapa". Fin de la versión 1** (hitos 0 a 2): T28 · Análisis de hipótesis en competencia
+Estado: **hito 3, "Ollama en técnicas, opcional"**, sobre la versión 1 (hitos 0 a 2). Doce técnicas más, siete de ellas con
+el modelo local como ayuda opcional y marcada "experimental"; ver [Qué se puede hacer en el hito 3](#qué-se-puede-hacer-en-el-hito-3).
+La versión 1 trajo T28 · Análisis de hipótesis en competencia
 (ACH), T01 · Mapeo de argumentos, T02 · Modelo de Toulmin, T06 · Reconstrucción de premisas ocultas y T13 · Falacias
 como esquemas fallidos (solo con reglas), más el Taller de argumentos y las 49 fichas "Qué es". La especificación
 completa está en [`docs/investigacion-y-propuestas.html`](docs/investigacion-y-propuestas.html); los prompts con que
-se construyó cada hito, en [`docs/prompt-hito-0.md`](docs/prompt-hito-0.md), [`docs/prompt-hito-1.md`](docs/prompt-hito-1.md)
-y [`docs/prompt-hito-2.md`](docs/prompt-hito-2.md); el del siguiente, en [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md). Pendiente para cerrar RF-08: las sesiones moderadas de primer
-uso, con el guion en [`docs/sesiones-primer-uso.md`](docs/sesiones-primer-uso.md); al cerrar este hito todavía no
-se habían hecho, así que no hay hallazgos que aplicar a las fichas.
+se construyó cada hito, en [`docs/prompt-hito-0.md`](docs/prompt-hito-0.md), [`docs/prompt-hito-1.md`](docs/prompt-hito-1.md),
+[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md) y [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md). Pendiente para cerrar
+RF-08: las sesiones moderadas de primer uso, con el guion en [`docs/sesiones-primer-uso.md`](docs/sesiones-primer-uso.md);
+al cerrar este hito todavía no se habían hecho, así que no hay hallazgos que aplicar a las fichas.
+
+## Qué se puede hacer en el hito 3
+
+- **Doce técnicas nuevas en el catálogo, con sus tres ejemplos, configuración, historial y Expediente**:
+  - sin IA: T03 · Claim-Evidence-Reasoning (CER), T05 · Validez y solidez, T14 · Chequeo de sesgos cognitivos,
+    T16 · Lista de verificación de decisión y T18 · Tasas base;
+  - con el modelo opcional: T04 · Elementos y estándares de Paul-Elder, T07 · Razonamiento por analogía,
+    T15 · Considera lo opuesto, T17 · Hecho, inferencia, juicio, T22 · Triangulación y T34 · Steelmanning;
+  - T13 · Falacias como esquemas fallidos suma al modelo: clasifica las oraciones que las reglas no marcaron.
+- **El modelo propone, nunca califica.** Pedir una propuesta abre una espera con su tiempo, Cancelar y el botón
+  deshabilitado; la respuesta llega por SSE. Cada propuesta dice "propuesta del modelo · sin adoptar · no cuenta" y no
+  entra en R02 a R04 hasta que la adoptas. Se guarda con el modelo, su digest y la versión del prompt.
+- **Sin Ollama, todo funciona igual** en modo plantillas: el botón de pedir queda deshabilitado con su motivo y un
+  cortacircuitos deja de llamar al modelo 30 s tras una caída. Las siete técnicas con modelo dicen "experimental" en el
+  catálogo y en la ficha, porque el modelo no cumplió todos los umbrales del [informe de
+  evaluación](docs/evaluacion-modelo.md).
+- **Patrones nuevos**: V04 (dos columnas comparativas), V08 (gráfico de probabilidad o frecuencias, en SVG del
+  servidor), V10 (tarjeta de veredicto con barras de puntaje) y V13a (lista priorizada); V02 y V05 se
+  generalizan a cualquier técnica.
+
+Los ejemplos están en prosa, con el cálculo a mano, en [`docs/ejemplos/`](docs/ejemplos/).
 
 ## Fin de la versión 1
 
@@ -177,7 +200,7 @@ Dos velocidades, al estilo Rainsberger (Fakes, sin `verify`), bajo `src/test/jav
 | `integracion/`, `aceptacion/` | RLS por SQL; proyección de pendientes en la misma transacción (RF-07); oráculos de T28, T01, T02, T06 y T13 sobre la tabla `ejemplo`; RF-01, RF-02, RF-03, RF-11, el flujo completo de T28 y el del Taller por HTTP contra `app:8080`; dos pruebas de humo en Chromium con Playwright (RNF-09): primer uso y Taller a 360 px | perfil test del compose |
 | `arquitectura/`, `sensores/` | ArchUnit; Fakes sin contrato; voseo sobre plantillas, catálogo y código; configuración segura | cada PR |
 
-Última corrida local del perfil completo (2026-10-07, hito 2), con `CONTRACT_REAL=true`: 340 pruebas rápidas y 101 de integración y aceptación en verde, 0 omitidas; 70 de ellas son contratos reales en 12 `Real*ContractIT` (10 contra Ollama). Gates `-Pgates` (SpotBugs con FindSecBugs y Dependency-Check) en verde el mismo día. La carga con k6 se corre aparte (`docker compose --profile test run --rm k6`).
+Última corrida local del perfil completo (2026-10-08, hito 3), con `CONTRACT_REAL=true` y `-Pgates`: 471 pruebas rápidas y 111 de integración y aceptación en verde; 70 de ellas son contratos reales en 12 `Real*ContractIT` (10 contra Ollama 0.40.1). Dos omitidas a propósito: la aceptación con el servicio de Ollama detenido (pasó en una corrida aparte, con Ollama apagado) y el arnés de evaluación del modelo, que se corre a mano. SpotBugs con FindSecBugs y Dependency-Check en verde. La carga con k6 se corre aparte (`docker compose --profile test run --rm k6`).
 
 Sensores de línea de comandos: `sensores/voseo.sh` (mismo listado que `VoseoTest`, en `sensores/voseo-prohibido.txt`).
 
@@ -256,6 +279,28 @@ dibuja el mapa en cada iteración).
 Advertencia: las reglas se escribieron con el banco a la vista, así que el 100 % mide el piso, no la generalización.
 Un texto nuevo con otras palabras puede no marcarse. El hito 3 debe sumar fragmentos que nadie haya visto al escribir
 las reglas antes de comparar las reglas con el modelo.
+
+## Mediciones del hito 3
+
+Misma máquina que en los hitos anteriores, el 8 de octubre de 2026, con Ollama 0.40.1 en CPU.
+
+**Modelo local (RF-14, RNF-02, RNF-04)**: los números, los umbrales escritos antes de medir y las decisiones están en
+[`docs/evaluacion-modelo.md`](docs/evaluacion-modelo.md). Queda por defecto `qwen3:4b-instruct-2507-q4_K_M`. **RNF-02
+no se cumple en esta máquina**: el turno completo sí (7,3 s en p95), el primer token no (3,7 s en p95, umbral 3 s).
+RNF-04 se cumple (30 de 30 preguntas, 0 veredictos). Se midieron seis modelos en CPU y tres con una GPU de 4 GB; la GPU
+no mejora en esa placa.
+
+**Carga básica con k6 (RNF-03)**: diez personas navegan como en el hito 2 y una undécima pide steelmans a T34 ·
+Steelmanning y lee cada turno por SSE hasta el evento final.
+
+| Métrica | Medido | Umbral que falla el build |
+|---|---|---|
+| p95 de las pantallas sin IA | 144 ms (media 37 ms, máximo 232 ms) | menos de 500 ms (RNF-03) |
+| Peticiones fallidas | 0 de 686 | 0 % |
+| Chequeos de contenido | todos | 100 % |
+
+Si Ollama se reinicia justo antes, la app lo sigue viendo caído hasta la siguiente revisión del monitor (cada 30 s): en
+ese rato pedir una propuesta no abre turno, que es lo esperado. La primera corrida de k6 cayó en esa ventana.
 
 ## Licencia
 
@@ -350,6 +395,18 @@ reglas. Las mediciones que sostienen las decisiones del modelo están en [`docs/
 
 | Fecha | Decisión | Por qué |
 |---|---|---|
+| 2026-10-07 | El lenguaje de campos suma dos tipos: `oculto` (viaja en el formulario sin mostrarse) y `propuestas` (la lista de propuestas del modelo con su botón Adoptar). `visibleSi` acepta además `campo=valor`. | Las técnicas con modelo necesitan llevar las propuestas de ida y vuelta en el formulario sin estado en el servidor. |
+| 2026-10-07 | Las propuestas viven en la entrada de cada técnica (`Propuesta`: código IA1…, destino, valor, por qué, adoptada, modelo, digest y versión del prompt). Adoptar es una acción explícita (`adoptar:IA1`) que no llama al modelo; el ejecutor es determinista sobre su entrada. | "El modelo propone, nunca califica": el resultado sin adoptar es el de modo plantillas, que es su oráculo. |
+| 2026-10-07 | Un turno SSE por pedido (`/ia/turnos/{turno}/flujo`) con eventos `tiempo`, `token` y `fin`; el evento final reemplaza la burbuja y cambia el formulario fuera de banda. Cancelar corta el turno. | Una conexión por turno es lo más simple con htmx y la extensión SSE, sin JavaScript propio. |
+| 2026-10-07 | Cortacircuitos alrededor del puerto `Ia`: se abre 30 s ante "no disponible" o "tiempo agotado", no ante una respuesta inválida. El monitor revisa Ollama cada 30 s. | Si Ollama cae, no se espera el tiempo máximo en cada pedido; una respuesta mala no es una caída. |
+| 2026-10-07 | Tiempos máximos: 60 s para el chat, 20 s por clasificación y 120 s para la primera clasificación de cada pedido; hasta dos reintentos si la respuesta no es válida. Temperatura 0, semilla 42, sin razonamiento, 512 tokens y contexto de 8192. | En CPU, la primera llamada carga el mensaje de sistema; las siguientes lo reutilizan. |
+| 2026-10-07 | Los prompts viven en `src/main/resources/prompts/*.vN.txt`, partidos por `=== pedido ===` en un mensaje de sistema constante y un pedido variable. | Ollama reutiliza el prefijo constante; la versión queda en cada propuesta. |
+| 2026-10-07 | T13 · Falacias como esquemas fallidos y T04 · Elementos y estándares de Paul-Elder mandan como máximo 12 oraciones al modelo por pedido. | Acota la espera en CPU. |
+| 2026-10-07 | T22 · Triangulación guarda sus fuentes en el JSONB de la entrada hasta el hito 6. | La tabla de evidencias llega con la verificación. |
+| 2026-10-07 | Los sesgos de T14 · Chequeo de sesgos cognitivos son contenido versionado en `catalogo/sesgos.json`. | Igual que los esquemas de Walton: contenido aparte del código. |
+| 2026-10-08 | Marca "experimental" por técnica (`tecnica.ia_experimental`, migración V5) en T04, T07, T13, T15, T17, T22 y T34, según el informe de evaluación. | Lo que no cumple sus umbrales se ofrece marcado, no se esconde. |
+| 2026-10-08 | Modelo por defecto `qwen3:4b-instruct-2507-q4_K_M` (digest `0edcdef34593`), fijado en el compose, en `application.yml` y en la caché del workflow. | Es el único que cumple a la vez el acierto de T13, el turno completo, la calidad del diálogo y los aciertos en adversarios ([informe](docs/evaluacion-modelo.md)). |
+| 2026-10-08 | Ninguna dependencia nueva de Maven en el hito 3. | SSE, cortacircuitos y patrones se escribieron con lo que ya estaba. |
 | 2026-10-08 | Ollama sube de 0.12.3 a 0.40.1 (última versión estable en sus notas de versión de GitHub, consultadas el 2026-10-08; la 0.40.2 es todavía pre-release), fijado por digest. Los 10 contratos reales de Ia pasan con ella. | La 0.12.3 no carga la arquitectura `mistral3` de Ministral 3B ni la familia qwen3.5, dos de los candidatos medidos. |
 | 2026-10-08 | `docker-compose.gpu.yml`, opcional: le da a Ollama la GPU NVIDIA y guarda el contexto con flash attention y caché KV en 8 bits. Sin ese archivo todo corre en CPU, como antes. | En una T600 de 4 GB no mejora (el modelo no cabe entero y partirlo entre GPU y CPU es más lento que la CPU sola), pero con 6 GB o más de VRAM el modelo cabe entero; queda versionado para esas máquinas. |
 | 2026-10-08 | Prompts `t13-esquema.v2` (dos ejemplos más de "ninguna" y la regla "conclusión sacada de una razón") y `t22-postura.v2` (el pasaje va entre `<<<PASAJE` y `PASAJE>>>`; el ejecutor quita esas marcas del texto del pasaje). Las propuestas guardadas con v1 conservan su versión. | En T22 · Triangulación bajaron las instrucciones obedecidas en CPU de 2 a 0 (con 2 sin respuesta). En T13 · Falacias como esquemas fallidos no cambiaron las marcas sobre "ninguna", pero tampoco empeoró el acierto. |
