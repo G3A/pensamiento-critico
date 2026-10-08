@@ -39,6 +39,28 @@ public final class Textos {
         return n + " " + (n == 1 ? singular : plural);
     }
 
+    private static final String[] MESES = {"enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre",
+        "noviembre", "diciembre"};
+
+    /** "15 de diciembre de 2026". */
+    public static String fecha(java.time.LocalDate fecha) {
+        return fecha.getDayOfMonth() + " de " + MESES[fecha.getMonthValue() - 1] + " de " + fecha.getYear();
+    }
+
+    /** 7.2 → "7,2"; con signo: "+7,2", "−0,5" y "0,0" para el cero. */
+    public static String decimal(java.math.BigDecimal valor, boolean conSigno) {
+        String texto = valor.abs().toPlainString().replace('.', ',');
+        if (valor.signum() < 0) {
+            return "−" + texto;
+        }
+        return conSigno && valor.signum() > 0 ? "+" + texto : texto;
+    }
+
+    /** "Máquina, Método,  Material" pasa a [Máquina, Método, Material]: sin vacíos ni repetidos, en su orden. */
+    public static List<String> partesPorComa(String texto) {
+        return java.util.Arrays.stream(texto.split(",")).map(String::strip).filter(s -> !s.isEmpty()).distinct().toList();
+    }
+
     /** Vacío o solo espacios. */
     public static boolean vacio(String texto) {
         return texto == null || texto.isBlank();

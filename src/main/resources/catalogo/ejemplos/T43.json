@@ -1,0 +1,69 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "El pan quemado",
+    "versionEsquema": 1,
+    "config": { "categorias": "Máquina, Método, Material, Personas, Medición, Entorno", "causasMinimas": 1 },
+    "datos": {
+      "efecto": "Pan quemado en la sucursal original.",
+      "causas": [
+        { "texto": "El termostato marca de más", "categoria": "Máquina" },
+        { "texto": "No hay tiempos de horneado escritos", "categoria": "Método" },
+        { "texto": "Turno nuevo sin entrenar", "categoria": "Personas" }
+      ]
+    },
+    "resultado": {
+      "porCategoria": [ { "nombre": "Máquina", "causas": 1, "faltan": 0 }, { "nombre": "Método", "causas": 1, "faltan": 0 },
+                        { "nombre": "Material", "causas": 0, "faltan": 0 }, { "nombre": "Personas", "causas": 1, "faltan": 0 },
+                        { "nombre": "Medición", "causas": 0, "faltan": 0 }, { "nombre": "Entorno", "causas": 0, "faltan": 0 } ],
+      "pendientes": [],
+      "resumen": "3 causas en 3 de 6 categorías · 3 categorías vacías."
+    },
+    "nota": "En la sucursal original el pan de las 6 sale quemado. Es la tarjeta de T43 de la sección 7b; las reglas y el DOT esperado están en docs/ejemplos/T43.md."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Los robos nocturnos",
+    "versionEsquema": 1,
+    "config": { "categorias": "Personas, Procesos, Herramientas, Conocimiento, Presupuesto, Tiempo", "causasMinimas": 1 },
+    "datos": {
+      "efecto": "Robos nocturnos en la cuadra.",
+      "causas": [
+        { "texto": "Nadie vigila", "categoria": "Personas" },
+        { "texto": "No hay ronda", "categoria": "Procesos" },
+        { "texto": "No se denuncia", "categoria": "Conocimiento" },
+        { "texto": "No hay fondo común", "categoria": "Presupuesto" }
+      ]
+    },
+    "resultado": {
+      "porCategoria": [ { "nombre": "Personas", "causas": 1, "faltan": 0 }, { "nombre": "Procesos", "causas": 1, "faltan": 0 },
+                        { "nombre": "Herramientas", "causas": 0, "faltan": 0 }, { "nombre": "Conocimiento", "causas": 1, "faltan": 0 },
+                        { "nombre": "Presupuesto", "causas": 1, "faltan": 0 }, { "nombre": "Tiempo", "causas": 0, "faltan": 0 } ],
+      "pendientes": [],
+      "resumen": "4 causas en 4 de 6 categorías · 2 categorías vacías."
+    },
+    "nota": "La junta dibuja las causas en el paso 0 del Diario, con categorías propias; es el mockup de la sección 7."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Tarde al colegio",
+    "versionEsquema": 1,
+    "config": { "categorias": "Mañana, Transporte, Personas", "causasMinimas": 2 },
+    "datos": {
+      "efecto": "Llegamos tarde al colegio casi todos los días.",
+      "causas": [
+        { "texto": "Nadie deja la ropa lista la noche anterior", "categoria": "Mañana" },
+        { "texto": "Desayunamos tarde", "categoria": "Mañana" },
+        { "texto": "El bus pasa lleno", "categoria": "Transporte" },
+        { "texto": "La hija no se quiere levantar", "categoria": "Personas" }
+      ]
+    },
+    "resultado": {
+      "porCategoria": [ { "nombre": "Mañana", "causas": 2, "faltan": 0 }, { "nombre": "Transporte", "causas": 1, "faltan": 1 },
+                        { "nombre": "Personas", "causas": 1, "faltan": 1 } ],
+      "pendientes": [],
+      "resumen": "4 causas en 3 de 3 categorías · 2 con menos de 2 causas."
+    },
+    "nota": "La familia llega tarde al colegio casi todos los días; con dos causas mínimas, dos categorías quedan cortas."
+  }
+]

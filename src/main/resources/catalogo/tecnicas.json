@@ -779,35 +779,162 @@
     "usalaCuando": "Estás a punto de resolver algo y sospechas que la pregunta está mal planteada; quieres escribir varias reformulaciones y elegir la que abre más opciones.",
     "definicion": "Procedimiento que genera reformulaciones de un problema con plantillas y elige un enunciado final, registrando los descartados.",
     "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "problema", "modalidad": "formulario", "patron": "V13a",
-    "origen": "Dewey 1910; Wedell-Wedellsborg 2017", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Dewey 1910; Wedell-Wedellsborg 2017", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "plantillas": ["como_podriamos", "sin", "para_quien", "causa", "meta"], "minimoReformulaciones": 2 },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "plantillas", "tipo": "conjunto", "etiqueta": "Plantillas de reformulación",
+          "opciones": [
+            { "valor": "como_podriamos", "etiqueta": "¿Cómo podríamos…?" }, { "valor": "sin", "etiqueta": "… sin …: lograrlo sin lo que no quieres" },
+            { "valor": "para_quien", "etiqueta": "¿Para quién es un problema?" }, { "valor": "causa", "etiqueta": "¿Qué lo causa?" },
+            { "valor": "meta", "etiqueta": "¿Qué queremos lograr en realidad?" }
+          ] },
+        { "nombre": "minimoReformulaciones", "tipo": "entero", "etiqueta": "Mínimo de reformulaciones", "obligatorio": true, "minimo": 1, "maximo": 6 }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "original", "tipo": "texto", "etiqueta": "El problema como llegó", "obligatorio": true, "largoMaximo": 300,
+          "ayuda": "Escríbelo tal cual: «¿Ponemos cámaras en la cuadra?»." },
+        { "nombre": "opcionesOriginal", "tipo": "entero", "etiqueta": "¿Cuántas opciones abre así planteado?", "minimo": 0, "maximo": 20 },
+        { "nombre": "reformulaciones", "tipo": "filas", "etiqueta": "Reformulaciones", "prefijo": "R", "elemento": "reformulación", "minimo": 1, "maximo": 8,
+          "ayuda": "Escribe el mismo problema de otras maneras y marca la que vas a resolver.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Reformulación", "obligatorio": true, "largoMaximo": 300 },
+            { "nombre": "plantilla", "tipo": "enumeracion", "etiqueta": "Plantilla", "opcionesDesde": "plantillas",
+              "opciones": [
+                { "valor": "como_podriamos", "etiqueta": "¿Cómo podríamos…?" }, { "valor": "sin", "etiqueta": "… sin …" },
+                { "valor": "para_quien", "etiqueta": "¿Para quién?" }, { "valor": "causa", "etiqueta": "¿Qué lo causa?" },
+                { "valor": "meta", "etiqueta": "¿Qué queremos lograr?" }
+              ] },
+            { "nombre": "opciones", "tipo": "entero", "etiqueta": "¿Cuántas opciones abre?", "minimo": 0, "maximo": 20 },
+            { "nombre": "elegida", "tipo": "booleano", "etiqueta": "Esta es la que voy a resolver" }
+          ] }
+      ]
+    }
   },
   {
     "id": "T41", "familia": "F7", "nombre": "Primeros principios", "nombreLlano": "Separar lo que sé de lo que asumo",
     "usalaCuando": "Quieres reconstruir un problema desde lo que sabes con certeza, sin arrastrar supuestos heredados, y marcar cada supuesto para verificarlo.",
     "definicion": "Procedimiento de dos columnas (sé con certeza, asumo) con mínimos configurables y enlace de cada supuesto a verificación.",
     "tipo": "procedimiento", "operacion": "analizar", "objeto": "problema", "modalidad": "formulario", "patron": "V04",
-    "origen": "Aristóteles; uso moderno", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Aristóteles; uso moderno", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "certezasMinimas": 1, "supuestosMinimos": 1, "exigirVerificable": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "certezasMinimas", "tipo": "entero", "etiqueta": "Certezas mínimas", "obligatorio": true, "minimo": 1, "maximo": 8 },
+        { "nombre": "supuestosMinimos", "tipo": "entero", "etiqueta": "Supuestos mínimos", "obligatorio": true, "minimo": 1, "maximo": 8 },
+        { "nombre": "exigirVerificable", "tipo": "booleano", "etiqueta": "Exigir cómo verificar cada supuesto" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "problema", "tipo": "texto", "etiqueta": "El problema", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "certezas", "tipo": "filas", "etiqueta": "Sé con certeza", "prefijo": "C", "elemento": "certeza", "minimo": 1, "maximo": 8,
+          "ayuda": "Lo que puedes mostrar: un registro, una cuenta, algo que viste.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Certeza", "obligatorio": true, "largoMaximo": 200 },
+            { "nombre": "como", "tipo": "texto", "etiqueta": "¿Cómo lo sé?", "largoMaximo": 200 }
+          ] },
+        { "nombre": "supuestos", "tipo": "filas", "etiqueta": "Asumo", "prefijo": "S", "elemento": "supuesto", "minimo": 1, "maximo": 8,
+          "ayuda": "Lo que das por sentado sin haberlo comprobado.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Supuesto", "obligatorio": true, "largoMaximo": 200 },
+            { "nombre": "como", "tipo": "texto", "etiqueta": "¿Cómo lo verificaría?", "largoMaximo": 200 }
+          ] }
+      ]
+    }
   },
   {
     "id": "T42", "familia": "F7", "nombre": "Árbol de hipótesis MECE", "nombreLlano": "Descomponer sin solapes ni huecos",
     "usalaCuando": "Un problema es grande y quieres partirlo en ramas que no se repitan y que entre todas lo cubran por completo.",
     "definicion": "Representación en árbol de causas o hipótesis con verificación automática de que las ramas son mutuamente excluyentes y colectivamente exhaustivas.",
     "tipo": "representacion", "operacion": "analizar", "objeto": "problema", "modalidad": "diagrama", "patron": "V06",
-    "origen": "Minto 1987", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Minto 1987", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "profundidadMaxima": 3, "hojasMinimas": 1, "verificacionMece": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "profundidadMaxima", "tipo": "entero", "etiqueta": "Profundidad máxima del árbol", "obligatorio": true, "minimo": 1, "maximo": 4 },
+        { "nombre": "hojasMinimas", "tipo": "entero", "etiqueta": "Hojas mínimas por rama", "obligatorio": true, "minimo": 0, "maximo": 5 },
+        { "nombre": "verificacionMece", "tipo": "booleano", "etiqueta": "Verificación MECE automática (solapes y huecos)" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "raiz", "tipo": "texto", "etiqueta": "La raíz: el problema o la pregunta", "obligatorio": true, "largoMaximo": 200 },
+        { "nombre": "nodos", "tipo": "filas", "etiqueta": "Nodos", "prefijo": "N", "elemento": "nodo", "minimo": 1, "maximo": 20,
+          "ayuda": "Cada nodo cuelga de la raíz (padre vacío) o de un nodo escrito antes (su código: N1, N2…).",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Nodo", "obligatorio": true, "largoMaximo": 120 },
+            { "nombre": "padre", "tipo": "texto", "etiqueta": "Padre (código, vacío si cuelga de la raíz)", "largoMaximo": 3 }
+          ] }
+      ]
+    }
   },
   {
     "id": "T43", "familia": "F7", "nombre": "Diagrama de Ishikawa", "nombreLlano": "Las causas por categoría, como espina de pescado",
     "usalaCuando": "Algo falla repetidamente (el pan se quema, los robos nocturnos) y quieres ordenar las causas posibles por categoría para no olvidar ninguna.",
     "definicion": "Representación de causas agrupadas en categorías (6M o propias) alrededor de un efecto, con categorías vacías señaladas.",
     "tipo": "representacion", "operacion": "analizar", "objeto": "problema", "modalidad": "diagrama", "patron": "V07",
-    "origen": "Ishikawa 1968", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Ishikawa 1968", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "categorias": "Máquina, Método, Material, Personas, Medición, Entorno", "causasMinimas": 1 },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "categorias", "tipo": "texto", "etiqueta": "Categorías, separadas por comas", "obligatorio": true, "largoMaximo": 200,
+          "ayuda": "Las 6M por defecto; escribe las tuyas para usar categorías propias (de 2 a 8)." },
+        { "nombre": "causasMinimas", "tipo": "entero", "etiqueta": "Causas mínimas por categoría", "obligatorio": true, "minimo": 0, "maximo": 5 }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "efecto", "tipo": "texto", "etiqueta": "El efecto: lo que falla", "obligatorio": true, "largoMaximo": 200 },
+        { "nombre": "causas", "tipo": "filas", "etiqueta": "Causas", "prefijo": "K", "elemento": "causa", "minimo": 1, "maximo": 24,
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Causa", "obligatorio": true, "largoMaximo": 120 },
+            { "nombre": "categoria", "tipo": "enumeracion", "etiqueta": "Categoría", "obligatorio": true, "opcionesDesde": "categorias" }
+          ] }
+      ]
+    }
   },
   {
     "id": "T44", "familia": "F7", "nombre": "SCAMPER y pensamiento lateral", "nombreLlano": "Generar opciones antes de elegir",
     "usalaCuando": "Solo se te ocurre una solución y quieres forzar más opciones con siete operadores: sustituir, combinar, adaptar, modificar, otros usos, eliminar, reordenar.",
     "definicion": "Procedimiento de generación divergente con siete operadores, ideas mínimas por operador y selección final.",
     "tipo": "procedimiento", "operacion": "generar", "objeto": "problema", "modalidad": "formulario", "patron": "V03c",
-    "origen": "de Bono 1967; Eberle 1971", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "de Bono 1967; Eberle 1971", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "operadores": ["sustituir", "combinar", "adaptar", "modificar", "otros_usos", "eliminar", "reordenar"], "ideasMinimas": 1,
+                       "minutosPorOperador": 2 },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "operadores", "tipo": "conjunto", "etiqueta": "Operadores activos",
+          "opciones": [
+            { "valor": "sustituir", "etiqueta": "Sustituir" }, { "valor": "combinar", "etiqueta": "Combinar" }, { "valor": "adaptar", "etiqueta": "Adaptar" },
+            { "valor": "modificar", "etiqueta": "Modificar" }, { "valor": "otros_usos", "etiqueta": "Poner en otros usos" },
+            { "valor": "eliminar", "etiqueta": "Eliminar" }, { "valor": "reordenar", "etiqueta": "Reordenar" }
+          ] },
+        { "nombre": "ideasMinimas", "tipo": "entero", "etiqueta": "Ideas mínimas por operador", "obligatorio": true, "minimo": 0, "maximo": 5 },
+        { "nombre": "minutosPorOperador", "tipo": "entero", "etiqueta": "Minutos sugeridos por operador (0 sin tiempo)", "obligatorio": true,
+          "minimo": 0, "maximo": 30 }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "problema", "tipo": "texto", "etiqueta": "El problema", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "ideas", "tipo": "filas", "etiqueta": "Ideas", "prefijo": "I", "elemento": "idea", "minimo": 1, "maximo": 30,
+          "ayuda": "Una idea por fila; no las juzgues todavía. Marca las que pasan a comparar.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Idea", "obligatorio": true, "largoMaximo": 160 },
+            { "nombre": "operador", "tipo": "enumeracion", "etiqueta": "Operador", "obligatorio": true, "opcionesDesde": "operadores",
+              "opciones": [
+                { "valor": "sustituir", "etiqueta": "S · Sustituir" }, { "valor": "combinar", "etiqueta": "C · Combinar" },
+                { "valor": "adaptar", "etiqueta": "A · Adaptar" }, { "valor": "modificar", "etiqueta": "M · Modificar" },
+                { "valor": "otros_usos", "etiqueta": "P · Poner en otros usos" }, { "valor": "eliminar", "etiqueta": "E · Eliminar" },
+                { "valor": "reordenar", "etiqueta": "R · Reordenar" }
+              ] },
+            { "nombre": "seleccionada", "tipo": "booleano", "etiqueta": "Pasa a comparar" }
+          ] }
+      ]
+    }
   },
   {
     "id": "T45", "familia": "F8", "nombre": "Diario de razonamiento", "nombreLlano": "El historial de cómo pensaste",

@@ -1,0 +1,70 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Los robos nocturnos",
+    "versionEsquema": 1,
+    "config": { "profundidadMaxima": 3, "hojasMinimas": 1, "verificacionMece": true },
+    "datos": {
+      "raiz": "¿Por qué hay robos nocturnos en la cuadra?",
+      "nodos": [
+        { "texto": "Oportunidad" }, { "texto": "Acceso" }, { "texto": "Respuesta" },
+        { "texto": "Postes apagados", "padre": "N1" }, { "texto": "Nadie camina de noche", "padre": "N1" }, { "texto": "Rejas bajas", "padre": "N2" }
+      ]
+    },
+    "resultado": {
+      "clases": ["rama", "rama", "rama_vacia", "hoja", "hoja", "hoja"],
+      "hojas": ["Postes apagados", "Nadie camina de noche", "Rejas bajas"],
+      "huecos": ["Respuesta: rama vacía."],
+      "solapes": [],
+      "pendientes": ["Completar la rama vacía: Respuesta"],
+      "resumen": "3 ramas, 3 hojas · sin solapes · 1 rama vacía."
+    },
+    "nota": "La junta descompone el problema antes de elegir qué hacer. Es la tarjeta de T42 de la sección 7b; las reglas y el DOT esperado están en docs/ejemplos/T42.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "Las ventas del sábado",
+    "versionEsquema": 1,
+    "config": { "profundidadMaxima": 3, "hojasMinimas": 2, "verificacionMece": true },
+    "datos": {
+      "raiz": "¿Por qué bajaron las ventas del sábado?",
+      "nodos": [
+        { "texto": "Vienen menos clientes" }, { "texto": "Cada cliente compra menos" },
+        { "texto": "Se fueron a la feria", "padre": "N1" }, { "texto": "Están de vacaciones", "padre": "N1" },
+        { "texto": "Compran menos pan por el precio", "padre": "N2" }, { "texto": "Compran menos pan dulce por el precio", "padre": "N2" }
+      ]
+    },
+    "resultado": {
+      "clases": ["rama", "rama", "hoja", "hoja", "hoja", "hoja"],
+      "hojas": ["Se fueron a la feria", "Están de vacaciones", "Compran menos pan por el precio", "Compran menos pan dulce por el precio"],
+      "huecos": [],
+      "solapes": [ { "a": "N5", "b": "N6", "textoA": "Compran menos pan por el precio", "textoB": "Compran menos pan dulce por el precio" } ],
+      "pendientes": ["Separar «Compran menos pan por el precio» y «Compran menos pan dulce por el precio»: se solapan"],
+      "resumen": "2 ramas, 4 hojas · 1 solape · sin huecos."
+    },
+    "nota": "La dueña descompone la baja de ventas; la verificación encuentra dos hojas hermanas que se solapan."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "La plata que no alcanza",
+    "versionEsquema": 1,
+    "config": { "profundidadMaxima": 3, "hojasMinimas": 2, "verificacionMece": true },
+    "datos": {
+      "raiz": "¿Por qué no nos alcanza la plata?",
+      "nodos": [
+        { "texto": "Entra menos" }, { "texto": "Sale más" },
+        { "texto": "Gastos fijos", "padre": "N2" }, { "texto": "Gastos variables", "padre": "N2" },
+        { "texto": "Subió el arriendo", "padre": "N3" }, { "texto": "Domicilios", "padre": "N4" }, { "texto": "Mercado", "padre": "N4" }
+      ]
+    },
+    "resultado": {
+      "clases": ["rama_vacia", "rama", "intermedio", "intermedio", "hoja", "hoja", "hoja"],
+      "hojas": ["Subió el arriendo", "Domicilios", "Mercado"],
+      "huecos": ["Entra menos: rama vacía."],
+      "solapes": [],
+      "pendientes": ["Completar la rama vacía: Entra menos"],
+      "resumen": "2 ramas, 3 hojas · sin solapes · 1 rama vacía."
+    },
+    "nota": "La familia busca por dónde se va la plata; «gastos fijos» y «gastos variables» comparten una palabra de dos y no se solapan."
+  }
+]

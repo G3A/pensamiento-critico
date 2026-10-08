@@ -99,6 +99,60 @@ public abstract class GraficoContract {
         assertThat(svg.select("script, foreignObject, a, iframe, style")).isEmpty();
     }
 
+    private static final String HOSTIL = "<script>alert(1)</script> \"comillas\" {llaves}; -> digraph x {";
+
+    private static void inerte(Document svg) {
+        assertThat(svg.select("script, foreignObject, a, iframe, style")).as("sin elementos ejecutables ni enlaces").isEmpty();
+        for (Element e : svg.getAllElements()) {
+            assertThat(e.attributes().asList()).extracting(Attribute::getKey).as("atributos de <" + e.tagName() + ">")
+                    .doesNotContain("fill", "stroke", "style", "href", "xlink:href");
+        }
+    }
+
+    @Test
+    void el_arbol_mece_con_una_etiqueta_hostil_conserva_id_y_clase_por_nodo_y_sale_inerte() {
+        java.util.UUID raiz = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000a1");
+        java.util.UUID rama = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000a2");
+        java.util.UUID hoja = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000a3");
+        var arbol = new pensamiento.tecnicas.f7.ResultadoArbolMece(raiz, "¿Por qué hay robos nocturnos?", java.util.List.of(
+                new pensamiento.tecnicas.f7.ResultadoArbolMece.NodoArbol(rama, "N1", "Oportunidad", null, 1,
+                        pensamiento.tecnicas.f7.ResultadoArbolMece.Clase.RAMA, false),
+                new pensamiento.tecnicas.f7.ResultadoArbolMece.NodoArbol(hoja, "N2", HOSTIL, "N1", 2,
+                        pensamiento.tecnicas.f7.ResultadoArbolMece.Clase.HOJA, true)),
+                java.util.List.of(HOSTIL), java.util.List.of(), java.util.List.of(), true, "1 rama, 1 hoja · sin solapes · sin huecos.");
+
+        Document svg = parsear(crearSut().svg(pensamiento.web.patrones.GeneradorDotDiagramas.arbol(arbol)));
+
+        assertThat(svg.getElementById(raiz.toString()).classNames()).contains("raiz");
+        assertThat(svg.getElementById(rama.toString()).classNames()).contains("rama");
+        Element nodoHostil = svg.getElementById(hoja.toString());
+        assertThat(nodoHostil.classNames()).contains("hoja", "solape");
+        assertThat(nodoHostil.text()).contains("<script>alert(1)</script>", "{llaves};");
+        inerte(svg);
+    }
+
+    @Test
+    void la_espina_de_ishikawa_con_una_etiqueta_hostil_conserva_id_y_clase_por_nodo_y_sale_inerte() {
+        java.util.UUID efecto = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000b1");
+        java.util.UUID causa = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000b2");
+        var ishikawa = new pensamiento.tecnicas.f7.ResultadoIshikawa(efecto, "Pan quemado", java.util.List.of(
+                new pensamiento.tecnicas.f7.ResultadoIshikawa.Categoria("Máquina",
+                        java.util.List.of(new pensamiento.tecnicas.f7.ResultadoIshikawa.CausaEn(causa, HOSTIL)), 0),
+                new pensamiento.tecnicas.f7.ResultadoIshikawa.Categoria("Método", java.util.List.of(), 0),
+                new pensamiento.tecnicas.f7.ResultadoIshikawa.Categoria(HOSTIL, java.util.List.of(), 0)), 1,
+                "1 causa en 1 de 3 categorías · 2 categorías vacías.");
+
+        Document svg = parsear(crearSut().svg(pensamiento.web.patrones.GeneradorDotDiagramas.espina(ishikawa, "res-prueba")));
+
+        assertThat(svg.getElementById(efecto.toString()).classNames()).contains("efecto");
+        assertThat(svg.getElementById(causa.toString()).classNames()).contains("causa");
+        assertThat(svg.getElementById(causa.toString()).text()).contains("<script>alert(1)</script>");
+        assertThat(svg.getElementById("res-prueba-categoria-2").classNames()).contains("categoria", "vacia");
+        assertThat(svg.getElementById("res-prueba-categoria-3").text()).contains("{llaves};");
+        assertThat(svg.getElementById("res-prueba-espina-1").classNames()).contains("espina");
+        inerte(svg);
+    }
+
     @Test
     void el_svg_no_trae_colores_ni_estilos_porque_salen_de_clases_css() {
         Document svg = parsear(crearSut().svg(DOT_SIMPLE));

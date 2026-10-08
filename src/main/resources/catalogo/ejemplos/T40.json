@@ -1,0 +1,82 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras de la cuadra",
+    "versionEsquema": 1,
+    "config": { "plantillas": ["como_podriamos", "sin", "para_quien", "causa", "meta"], "minimoReformulaciones": 2 },
+    "datos": {
+      "original": "¿Ponemos cámaras en la cuadra?", "opcionesOriginal": 1,
+      "reformulaciones": [
+        { "texto": "¿Cómo reducimos los robos nocturnos sin vigilar a los vecinos?", "plantilla": "sin", "opciones": 4, "elegida": true },
+        { "texto": "¿Cómo hacemos que la gente se sienta segura en la cuadra?", "plantilla": "meta", "opciones": 3, "elegida": false }
+      ]
+    },
+    "resultado": {
+      "items": [
+        { "estado": "elegida", "texto": "¿Cómo reducimos los robos nocturnos sin vigilar a los vecinos?", "plantilla": "… sin …", "opciones": 4 },
+        { "estado": "original", "texto": "¿Ponemos cámaras en la cuadra?", "plantilla": null, "opciones": 1 },
+        { "estado": "descartada", "texto": "¿Cómo hacemos que la gente se sienta segura en la cuadra?", "plantilla": "¿Qué queremos lograr en realidad?", "opciones": 3 }
+      ],
+      "comparacion": "La reformulación elegida abre 4 opciones; la original, 1.",
+      "plantillas": "Probaste 2 de 5 plantillas.",
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "Elegida: «¿Cómo reducimos los robos nocturnos sin vigilar a los vecinos?» · 1 descartada."
+    },
+    "nota": "En la junta de vecinos alguien propone comprar cámaras. Es la tarjeta de T40 de la sección 7b y el mockup del paso 0 del Diario; las reglas están en docs/ejemplos/T40.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El precio del pan",
+    "versionEsquema": 1,
+    "config": { "plantillas": ["como_podriamos", "sin", "para_quien", "causa", "meta"], "minimoReformulaciones": 2 },
+    "datos": {
+      "original": "¿Bajamos el precio del pan?", "opcionesOriginal": 2,
+      "reformulaciones": [
+        { "texto": "¿Qué hizo bajar las ventas de los sábados?", "plantilla": "causa", "opciones": 3, "elegida": false },
+        { "texto": "¿Cómo podríamos recuperar a los clientes del sábado?", "plantilla": "como_podriamos", "opciones": 5, "elegida": true },
+        { "texto": "¿Para quién es caro el pan?", "plantilla": "para_quien", "elegida": false }
+      ]
+    },
+    "resultado": {
+      "items": [
+        { "estado": "elegida", "texto": "¿Cómo podríamos recuperar a los clientes del sábado?", "plantilla": "¿Cómo podríamos…?", "opciones": 5 },
+        { "estado": "original", "texto": "¿Bajamos el precio del pan?", "plantilla": null, "opciones": 2 },
+        { "estado": "descartada", "texto": "¿Qué hizo bajar las ventas de los sábados?", "plantilla": "¿Qué lo causa?", "opciones": 3 },
+        { "estado": "descartada", "texto": "¿Para quién es caro el pan?", "plantilla": "¿Para quién es un problema?", "opciones": null }
+      ],
+      "comparacion": "La reformulación elegida abre 5 opciones; la original, 2.",
+      "plantillas": "Probaste 3 de 5 plantillas.",
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "Elegida: «¿Cómo podríamos recuperar a los clientes del sábado?» · 2 descartadas."
+    },
+    "nota": "Las ventas del sábado bajaron y el encargado propone bajar el precio; tres reformulaciones con plantilla."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El auto de la familia",
+    "versionEsquema": 1,
+    "config": { "plantillas": ["como_podriamos", "meta"], "minimoReformulaciones": 2 },
+    "datos": {
+      "original": "¿Compramos un auto?", "opcionesOriginal": 3,
+      "reformulaciones": [
+        { "texto": "¿Cómo llevamos a la hija al colegio todos los días?", "plantilla": "meta", "opciones": 4, "elegida": false },
+        { "texto": "¿Cómo podríamos comprar un auto usado barato?", "plantilla": "como_podriamos", "opciones": 2, "elegida": true }
+      ]
+    },
+    "resultado": {
+      "items": [
+        { "estado": "elegida", "texto": "¿Cómo podríamos comprar un auto usado barato?", "plantilla": "¿Cómo podríamos…?", "opciones": 2 },
+        { "estado": "original", "texto": "¿Compramos un auto?", "plantilla": null, "opciones": 3 },
+        { "estado": "descartada", "texto": "¿Cómo llevamos a la hija al colegio todos los días?", "plantilla": "¿Qué queremos lograr en realidad?", "opciones": 4 }
+      ],
+      "comparacion": "La reformulación elegida abre menos opciones que la original (2 contra 3): ¿no estará estrechando el problema?",
+      "plantillas": "Probaste 2 de 2 plantillas.",
+      "avisos": [ "La reformulación elegida abre menos opciones que la original (2 contra 3): ¿no estará estrechando el problema?" ],
+      "pendientes": [],
+      "resumen": "Elegida: «¿Cómo podríamos comprar un auto usado barato?» · 1 descartada."
+    },
+    "nota": "La familia discute si compra un auto; la reformulación elegida estrecha el problema y la tarjeta lo dice."
+  }
+]

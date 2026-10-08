@@ -8,11 +8,14 @@ import java.util.Map;
  * esquema de configuración y de entrada de cada técnica se escribe con estos campos, la plantilla sabe pintar
  * cada tipo y el JSON Schema de validación se deriva de ellos.
  *
- * @param visibleSi        nombre de un booleano de la configuración (el campo solo existe si es verdadero) o
- *                         "campo=valor" para una enumeración (solo existe con ese valor)
+ * @param visibleSi        nombre de un booleano de la configuración (el campo solo existe si es verdadero),
+ *                         "campo=valor" para una enumeración (solo existe con ese valor) o "campo~valor" para un conjunto
+ *                         (solo existe si el conjunto lo contiene)
  * @param maximoDesdeConfig nombre de un entero de la configuración que fija el máximo de filas
  * @param porCadaFilaDe    para una enumeración dentro de filas: se repite una vez por cada fila de ese otro campo
  * @param opcionesSegun    nombre de una enumeración de la configuración que elige las opciones en opcionesPor
+ * @param opcionesDesde    nombre de un campo de la configuración que fija las opciones: si es una lista (un conjunto), solo
+ *                         quedan esas opciones; si es un texto, cada parte separada por comas es una opción
  */
 public record Campo(
         String nombre,
@@ -31,6 +34,7 @@ public record Campo(
         String porCadaFilaDe,
         String opcionesSegun,
         Map<String, List<Opcion>> opcionesPor,
+        String opcionesDesde,
         List<Campo> campos) {
 
     /**
@@ -78,8 +82,19 @@ public record Campo(
         etiqueta = etiqueta == null ? nombre : etiqueta;
     }
 
-    /** Las opciones vigentes: las propias o, si dependen de la configuración, las del valor elegido. */
+    /**
+     * Las opciones vigentes: las propias o, si dependen de la configuración, las del valor elegido; con opcionesDesde, las
+     * que la configuración deja (un conjunto) o las que escribe (un texto separado por comas).
+     */
     public List<Opcion> opcionesCon(Map<String, Object> config) {
+        if (opcionesDesde != null) {
+            Object desde = config.get(opcionesDesde);
+            if (desde instanceof List<?> lista) {
+                List<String> elegidos = lista.stream().map(String::valueOf).toList();
+                return opciones.stream().filter(o -> elegidos.contains(o.valor())).toList();
+            }
+            return desde == null ? List.of() : partes(desde.toString()).stream().map(t -> new Opcion(t, t)).toList();
+        }
         if (opcionesSegun == null) {
             return opciones;
         }
@@ -92,12 +107,22 @@ public record Campo(
         if (visibleSi == null) {
             return true;
         }
+        int contiene = visibleSi.indexOf('~');
+        if (contiene > 0) {
+            return config.get(visibleSi.substring(0, contiene)) instanceof List<?> lista
+                    && lista.stream().map(String::valueOf).anyMatch(v -> v.equals(visibleSi.substring(contiene + 1)));
+        }
         int igual = visibleSi.indexOf('=');
         if (igual > 0) {
             Object valor = config.get(visibleSi.substring(0, igual));
             return valor != null && valor.toString().equals(visibleSi.substring(igual + 1));
         }
         return Boolean.TRUE.equals(config.get(visibleSi));
+    }
+
+    /** "Máquina, Método,  Material" pasa a [Máquina, Método, Material]: sin vacíos ni repetidos, en su orden. */
+    public static List<String> partes(String texto) {
+        return java.util.Arrays.stream(texto.split(",")).map(String::strip).filter(s -> !s.isEmpty()).distinct().toList();
     }
 
     /** Máximo de filas o de valor: el propio o el que fija la configuración. */

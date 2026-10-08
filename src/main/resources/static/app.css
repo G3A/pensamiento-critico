@@ -379,3 +379,63 @@ pre.argdown { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--
 .tabla-frecuencias { border-collapse: collapse; margin: .5rem 0; }
 .tabla-frecuencias th, .tabla-frecuencias td { border: 1px solid var(--borde); padding: .25rem .5rem; text-align: left; }
 .tabla-frecuencias td { text-align: right; }
+
+/* Hito 4 · V06 árbol o cadena y V07 espina de pescado: el SVG llega sin colores, como el mapa. */
+.diagrama-svg { margin: 0 0 .5rem; overflow-x: auto; max-width: 100%; }
+.diagrama-svg svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+.diagrama-svg svg g.graph > polygon { fill: none; stroke: none; }
+.diagrama-svg svg text { fill: var(--texto); }
+.diagrama-svg svg .node path, .diagrama-svg svg .node polygon, .diagrama-svg svg .node ellipse { fill: var(--superficie); stroke: var(--borde); stroke-width: 1.5; }
+.diagrama-svg svg .node.raiz polygon, .diagrama-svg svg .node.raiz path, .diagrama-svg svg .node.efecto polygon, .diagrama-svg svg .node.efecto path,
+.diagrama-svg svg .node.resultado polygon, .diagrama-svg svg .node.resultado path { fill: var(--acento-fondo); stroke: var(--acento); stroke-width: 2.5; }
+.diagrama-svg svg .node.rama polygon, .diagrama-svg svg .node.rama path, .diagrama-svg svg .node.categoria polygon,
+.diagrama-svg svg .node.categoria path { fill: var(--ok-fondo); stroke: var(--ok); }
+.diagrama-svg svg .node.vacia polygon, .diagrama-svg svg .node.vacia path { fill: var(--aviso-fondo); stroke: var(--aviso); stroke-dasharray: 5 3; }
+.diagrama-svg svg .node.solape polygon, .diagrama-svg svg .node.solape path, .diagrama-svg svg .node.ancho polygon,
+.diagrama-svg svg .node.ancho path { stroke: var(--aviso); stroke-width: 3; }
+.diagrama-svg svg .node.espina ellipse { fill: var(--texto-suave); stroke: var(--texto-suave); }
+.diagrama-svg svg .edge path { fill: none; stroke: var(--texto-suave); stroke-width: 1.4; }
+.diagrama-svg svg .edge polygon { fill: var(--texto-suave); stroke: var(--texto-suave); }
+.diagrama-svg svg .edge.espina path { stroke: var(--texto); stroke-width: 3; }
+.diagrama-svg svg .edge text { fill: var(--texto-suave); }
+.lista-arbol { list-style: none; padding-left: 0; }
+.lista-arbol li { margin: .2rem 0; }
+.lista-arbol .nivel-1 { padding-left: 1rem; } .lista-arbol .nivel-2 { padding-left: 2rem; }
+.lista-arbol .nivel-3 { padding-left: 3rem; } .lista-arbol .nivel-4 { padding-left: 4rem; }
+.categorias-ishikawa, .lineas-seccion { padding-left: 1.2rem; }
+.categorias-ishikawa > li { margin: .35rem 0; }
+
+/* V03c rejilla y V03b matriz ponderada: se apilan o se desplazan a 360 px. */
+.rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: .75rem; }
+.rejilla .celda { border: 1px solid var(--borde); border-radius: var(--radio); padding: .5rem .75rem; background: var(--superficie); }
+.rejilla .celda h4 { margin: 0 0 .25rem; font-size: 1rem; }
+.rejilla .celda ul { padding-left: 1.1rem; margin: .25rem 0; }
+.rejilla .letra { font-weight: 700; color: var(--acento); }
+.tabla-desplazable { overflow-x: auto; max-width: 100%; }
+.matriz-ponderada { border-collapse: collapse; min-width: 100%; }
+.matriz-ponderada th, .matriz-ponderada td { border: 1px solid var(--borde); padding: .35rem .5rem; text-align: center; }
+.matriz-ponderada th[scope="row"] { text-align: left; }
+.matriz-ponderada .total { font-weight: 700; }
+.sensibilidad { padding-left: 1.2rem; }
+
+/* V08 curva de calibración y V12 ranking con barras: SVG del servidor, colores por clase. */
+.grafico-curva svg { display: block; width: 100%; max-width: 22rem; height: auto; }
+.grafico-curva .marco { fill: none; stroke: var(--borde); }
+.grafico-curva .diagonal { stroke: var(--texto-suave); stroke-dasharray: 4 3; }
+.grafico-curva .linea-curva { fill: none; stroke: var(--acento); stroke-width: 2; }
+.grafico-curva .punto { fill: var(--acento); }
+.grafico-curva .punto.provisional { fill: var(--superficie); stroke: var(--aviso); stroke-width: 2; }
+.grafico-curva .texto-eje { fill: var(--texto-suave); font-size: 9px; }
+.grafico-frecuencias .barra-prior { fill: var(--pendiente); }
+.grafico-frecuencias .barra-posterior { fill: var(--acento); }
+.grafico-ranking .barra-positiva { fill: var(--ok); }
+.grafico-ranking .barra-negativa { fill: var(--error); }
+.grafico-ranking .etiqueta-barra, .grafico-ranking .valor-barra { fill: var(--texto); font-size: 12px; }
+
+/* V11 registro y línea de tiempo. */
+.registro dl { display: grid; grid-template-columns: minmax(8rem, max-content) 1fr; gap: .25rem .75rem; margin: .5rem 0; }
+.registro dt { color: var(--texto-suave); }
+.registro dd { margin: 0; }
+@media (max-width: 480px) { .registro dl { grid-template-columns: minmax(0, 1fr); } }
+.linea-tiempo { list-style: none; padding-left: 0; border-left: 3px solid var(--borde); margin-left: .5rem; }
+.linea-tiempo li { padding: .25rem 0 .25rem 1rem; }

@@ -1,0 +1,81 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Robos sin vigilar",
+    "versionEsquema": 1,
+    "config": { "operadores": ["sustituir", "combinar", "adaptar", "modificar", "otros_usos", "eliminar", "reordenar"], "ideasMinimas": 1,
+                "minutosPorOperador": 2 },
+    "datos": {
+      "problema": "¿Cómo reducimos los robos nocturnos sin vigilar a los vecinos?",
+      "ideas": [
+        { "texto": "Cambiar las cámaras por luces en las entradas", "operador": "sustituir", "seleccionada": false },
+        { "texto": "Cambiar la reja del parque por una baja con vista", "operador": "sustituir", "seleccionada": false },
+        { "texto": "Ronda vecinal rotativa con los que pasean perros", "operador": "combinar", "seleccionada": true },
+        { "texto": "Luces con sensor como las de las bodegas", "operador": "adaptar", "seleccionada": true },
+        { "texto": "El grupo de mensajes de la iglesia para avisos", "operador": "adaptar", "seleccionada": false },
+        { "texto": "El silbato de la junta de otro barrio", "operador": "adaptar", "seleccionada": false },
+        { "texto": "La cancha como punto de encuentro de noche", "operador": "otros_usos", "seleccionada": false },
+        { "texto": "Quitar el seto que tapa la vista", "operador": "eliminar", "seleccionada": true },
+        { "texto": "Cerrar el paso por el lote vacío", "operador": "eliminar", "seleccionada": false },
+        { "texto": "Recoger la basura en la mañana y no de noche", "operador": "reordenar", "seleccionada": false }
+      ]
+    },
+    "resultado": {
+      "cuentas": { "sustituir": 2, "combinar": 1, "adaptar": 3, "modificar": 0, "otros_usos": 1, "eliminar": 2, "reordenar": 1 },
+      "seleccionadas": [ "Ronda vecinal rotativa con los que pasean perros (C)", "Luces con sensor como las de las bodegas (A)",
+                         "Quitar el seto que tapa la vista (E)" ],
+      "avisos": [ "Sin ideas en: Modificar." ],
+      "pendientes": [],
+      "resumen": "10 ideas en 6 de 7 operadores · 3 seleccionadas."
+    },
+    "nota": "Con la reformulación elegida en T40, la junta genera opciones. Es la tarjeta de T44 de la sección 7b; las reglas están en docs/ejemplos/T44.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "Los clientes del sábado",
+    "versionEsquema": 1,
+    "config": { "operadores": ["sustituir", "combinar", "eliminar", "reordenar"], "ideasMinimas": 2, "minutosPorOperador": 0 },
+    "datos": {
+      "problema": "¿Cómo podríamos recuperar a los clientes del sábado?",
+      "ideas": [
+        { "texto": "Pan de masa madre los sábados", "operador": "sustituir", "seleccionada": true },
+        { "texto": "Galletas en vez de pan dulce", "operador": "sustituir", "seleccionada": false },
+        { "texto": "Café y pan en combo", "operador": "combinar", "seleccionada": true },
+        { "texto": "Pagar al pedir, sin fila en la caja", "operador": "eliminar", "seleccionada": false },
+        { "texto": "Abrir a las 6 y no a las 7 los sábados", "operador": "reordenar", "seleccionada": true },
+        { "texto": "Hornear el pan del sábado el viernes en la tarde", "operador": "reordenar", "seleccionada": false }
+      ]
+    },
+    "resultado": {
+      "cuentas": { "sustituir": 2, "combinar": 1, "eliminar": 1, "reordenar": 2 },
+      "seleccionadas": [ "Pan de masa madre los sábados (S)", "Café y pan en combo (C)", "Abrir a las 6 y no a las 7 los sábados (R)" ],
+      "avisos": [ "Menos de 2 ideas en: Combinar, Eliminar." ],
+      "pendientes": [],
+      "resumen": "6 ideas en 4 de 4 operadores · 3 seleccionadas."
+    },
+    "nota": "La dueña busca cómo recuperar a los clientes del sábado con cuatro operadores y dos ideas mínimas por operador."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El camino al colegio",
+    "versionEsquema": 1,
+    "config": { "operadores": ["sustituir", "combinar", "adaptar", "modificar", "otros_usos", "eliminar", "reordenar"], "ideasMinimas": 0,
+                "minutosPorOperador": 3 },
+    "datos": {
+      "problema": "¿Cómo llevamos a la hija al colegio todos los días?",
+      "ideas": [
+        { "texto": "Bicicleta en vez de bus", "operador": "sustituir", "seleccionada": false },
+        { "texto": "El carro del abuelo en las mañanas", "operador": "otros_usos", "seleccionada": false },
+        { "texto": "Desayunar en el colegio y no en la casa", "operador": "eliminar", "seleccionada": false }
+      ]
+    },
+    "resultado": {
+      "cuentas": { "sustituir": 1, "combinar": 0, "adaptar": 0, "modificar": 0, "otros_usos": 1, "eliminar": 1, "reordenar": 0 },
+      "seleccionadas": [],
+      "avisos": [ "No elegiste ninguna idea: marca las que pasan a comparar." ],
+      "pendientes": [],
+      "resumen": "3 ideas en 3 de 7 operadores · ninguna seleccionada."
+    },
+    "nota": "La familia busca cómo llevar a la hija al colegio; sin mínimo por operador y sin ninguna idea elegida todavía."
+  }
+]

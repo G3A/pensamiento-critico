@@ -1,0 +1,74 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Los robos nocturnos",
+    "versionEsquema": 1,
+    "config": { "certezasMinimas": 1, "supuestosMinimos": 1, "exigirVerificable": true },
+    "datos": {
+      "problema": "Robos nocturnos en la cuadra.",
+      "certezas": [
+        { "texto": "12 robos, todos entre la 1 y las 4 de la mañana.", "como": "el registro de la junta" },
+        { "texto": "Dos postes de la cuadra no tienen luz.", "como": "lo vimos el martes" }
+      ],
+      "supuestos": [
+        { "texto": "Son personas de afuera del barrio.", "como": "preguntar a la policía por los detenidos de la zona" },
+        { "texto": "Las cámaras disuaden." }
+      ]
+    },
+    "resultado": {
+      "certezas": 2,
+      "supuestosSinComo": 1,
+      "avisos": [ "Falta cómo verificar 1 supuesto." ],
+      "pendientes": [ "Verificar el supuesto: Son personas de afuera del barrio.", "Verificar el supuesto: Las cámaras disuaden." ],
+      "resumen": "2 certezas · 2 supuestos por verificar."
+    },
+    "nota": "La junta separa lo que sabe de lo que cree. Es la tarjeta de T41 de la sección 7b; las reglas están en docs/ejemplos/T41.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "Las ventas del sábado",
+    "versionEsquema": 1,
+    "config": { "certezasMinimas": 2, "supuestosMinimos": 2, "exigirVerificable": true },
+    "datos": {
+      "problema": "Las ventas del sábado bajaron.",
+      "certezas": [
+        { "texto": "Las ventas del sábado bajaron 18% en el último mes." },
+        { "texto": "El precio no cambia desde marzo." },
+        { "texto": "La feria abrió hace cinco semanas." }
+      ],
+      "supuestos": [
+        { "texto": "Los clientes del sábado se fueron a la feria.", "como": "preguntar a diez clientes del sábado dónde compran ahora" }
+      ]
+    },
+    "resultado": {
+      "certezas": 3,
+      "supuestosSinComo": 0,
+      "avisos": [ "Falta 1 supuesto: la configuración pide al menos 2. ¿Qué das por sentado?" ],
+      "pendientes": [ "Verificar el supuesto: Los clientes del sábado se fueron a la feria." ],
+      "resumen": "3 certezas · 1 supuesto por verificar."
+    },
+    "nota": "La dueña separa lo que sabe de lo que supone antes de decidir qué hacer con los sábados."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "La plata del mes",
+    "versionEsquema": 1,
+    "config": { "certezasMinimas": 1, "supuestosMinimos": 1, "exigirVerificable": false },
+    "datos": {
+      "problema": "No nos alcanza la plata a fin de mes.",
+      "certezas": [ { "texto": "Los gastos fijos son el 70% del ingreso." } ],
+      "supuestos": [
+        { "texto": "El mercado subió mucho este año." },
+        { "texto": "Gastamos más en domicilios que antes.", "como": "sumar los domicilios de los tres últimos meses" }
+      ]
+    },
+    "resultado": {
+      "certezas": 1,
+      "supuestosSinComo": 0,
+      "avisos": [],
+      "pendientes": [ "Verificar el supuesto: El mercado subió mucho este año.", "Verificar el supuesto: Gastamos más en domicilios que antes." ],
+      "resumen": "1 certeza · 2 supuestos por verificar."
+    },
+    "nota": "La familia no llega a fin de mes y separa lo que sabe de lo que cree; no exige cómo verificar."
+  }
+]

@@ -118,7 +118,7 @@ class PlantillasTest {
 
     private static Campo campo(String nombre, Campo.Tipo tipo, List<Campo.Opcion> opciones, List<Campo> sub) {
         return new Campo(nombre, tipo, "Etiqueta de " + nombre, "Ayuda de " + nombre, true, 1, 7, 300, opciones, "F", "fila",
-                null, null, null, null, null, sub);
+                null, null, null, null, null, null, sub);
     }
 
     private static final List<Campo.Opcion> CUATRO = List.of(new Campo.Opcion("a", "A"), new Campo.Opcion("b", "B"),
