@@ -71,7 +71,7 @@ calculado a mano que sirve de oráculo para la aceptación por HTTP del hito 6. 
    Compartirlo con la institución es un acto explícito que queda en la auditoría ("compartir"), igual que importarlo y
    borrarlo.
 3. **Indexar es un trabajo largo** (tabla `trabajo`): extraer el texto (PDF con `pdftotext` como proceso hijo, tiempo
-   máximo de 60 s y hasta 500 páginas), trocear y guardar los fragmentos; el documento pasa a "indexado" y ya se
+   máximo de 60 s y hasta 300 páginas, el límite que ya fijaba el hito 0), trocear y guardar los fragmentos; el documento pasa a "indexado" y ya se
    encuentra por texto completo. Después, otro trabajo **vectoriza** los fragmentos con bge-m3 de a poco (Ollama atiende
    una petición a la vez); mientras tanto la lista dice "vectorizando N%". Sin Ollama, el trabajo espera y se reintenta;
    el documento sigue encontrándose por texto. Los trabajos en proceso al apagar la app vuelven a la cola al arrancar.

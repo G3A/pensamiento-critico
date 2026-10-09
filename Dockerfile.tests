@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1.7
 # Imagen del servicio "tests": Maven con Java 25 más el cliente de PostgreSQL 18 (pg_dump y pg_restore
-# para la IT de restauración), Graphviz (para el contrato real del puerto Grafico) y las librerías del sistema
-# que necesita Chromium para la prueba de humo con Playwright (RNF-09). El navegador lo descarga Playwright en la
-# primera corrida a /root/.m2/ms-playwright, dentro del volumen de caché de Maven.
+# para la IT de restauración), Graphviz y poppler (para los contratos reales de Grafico y ExtractorPdf) y las librerías
+# del sistema que necesita Chromium para la prueba de humo con Playwright (RNF-09). El navegador lo descarga Playwright en
+# la primera corrida a /root/.m2/ms-playwright, dentro del volumen de caché de Maven.
 FROM maven:3-eclipse-temurin-25@sha256:dd1ad2333ee5b795f43610f18044f5fc5144fd472295c6f12ee4cf06241f1838
 RUN apt-get update \
- && apt-get install -y --no-install-recommends curl ca-certificates gnupg lsb-release graphviz \
+ && apt-get install -y --no-install-recommends curl ca-certificates gnupg lsb-release graphviz poppler-utils \
  && install -d /usr/share/postgresql-common/pgdg \
  && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
  && echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \

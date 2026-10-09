@@ -80,6 +80,10 @@ public final class BaseDatosDePrueba {
         jdbc.sql("DELETE FROM argumento WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM ejecucion WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM expediente WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM verificacion WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM evidencia WHERE afirmacion_id IN (SELECT id FROM afirmacion WHERE institucion_id = :i)").param("i", institucion).update();
+        jdbc.sql("DELETE FROM fuente WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM documento WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM afirmacion WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM configuracion_usuario WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM usuario WHERE institucion_id = :i").param("i", institucion).update();
