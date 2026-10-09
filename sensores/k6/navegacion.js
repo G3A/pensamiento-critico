@@ -7,6 +7,9 @@
 // Hito 4: cada persona abre además el tablero del Diario y evalúa T43 · Diagrama de Ishikawa (Graphviz dibuja la espina).
 // Hito 5: cada persona abre el Consejero y evalúa T09 · 5 porqués (Graphviz dibuja la cadena); la sesión con Ollama activa
 // pasa a ser una sesión del Consejero socrático: cada turno del Consejero llega por SSE hasta el evento final.
+// Hito 6: cada persona abre la biblioteca y busca por palabras; una persona más importa documentos sin parar (trabajo
+// largo: troceado e incrustaciones con bge-m3 en segundo plano) y espera a verlos indexados. El p95 exigido sigue siendo el
+// de las pantallas sin IA: la importación no debe empujarlo.
 // Se corre con: docker compose --profile test run --rm k6
 import http from 'k6/http';
 import { check, sleep, fail } from 'k6';
@@ -29,6 +32,7 @@ export const options = {
   noCookiesReset: true,
   scenarios: {
     navegacion: { executor: 'constant-vus', vus: PERSONAS, duration: __ENV.DURACION || '60s' },
+    importacion: { executor: 'constant-vus', vus: 1, duration: __ENV.DURACION || '60s', gracefulStop: '180s', exec: 'importacion' },
     sesion_con_ollama: { executor: 'constant-vus', vus: 1, duration: __ENV.DURACION || '60s', gracefulStop: '300s', exec: 'sesionConOllama' },
   },
   thresholds: {
@@ -59,7 +63,7 @@ export function setup() {
   const csrf = entrar('administrador', PIN_ADMIN);
   const sufijo = Date.now().toString(36);
   const nombres = [];
-  for (let i = 1; i <= PERSONAS + 1; i++) {
+  for (let i = 1; i <= PERSONAS + 2; i++) {
     const nombre = `vecino k6 ${sufijo} ${i}`;
     const r = http.post(`${BASE}/usuarios`, { nombre: nombre, pin: '4826' }, { headers: { 'X-CSRF-TOKEN': csrf } });
     if (r.status !== 200) {
@@ -112,7 +116,46 @@ export default function (datos) {
   const porques = http.post(`${BASE}/tecnicas/T09/evaluar`, PORQUES,
     Object.assign({ headers: { 'X-CSRF-TOKEN': csrf, 'HX-Request': 'true' } }, pantalla));
   check(porques, { 'T09 evaluada con la cadena dibujada': (r) => r.status === 200 && r.body.includes('data-patron="V06"') && r.body.includes('<svg') });
+  sleep(1);
+
+  // Hito 6: la biblioteca (P13) y una búsqueda por palabras.
+  const biblioteca = http.get(`${BASE}/biblioteca`, pantalla);
+  check(biblioteca, { 'Biblioteca con su formulario de subida': (r) => r.status === 200 && r.body.includes('id="form-subida"') });
+  const busqueda = http.get(`${BASE}/biblioteca/buscar?q=personas+por+hora&palabras=true`, Object.assign({ headers: { 'HX-Request': 'true' } }, pantalla));
+  check(busqueda, { 'Biblioteca: búsqueda por palabras': (r) => r.status === 200 && r.body.includes('id="resultados-busqueda"') });
   sleep(2);
+}
+
+/** Un conteo ficticio de unos 25 KB (unos 30 fragmentos para bge-m3): único por iteración para que el hash no lo dé por repetido. */
+function documento(n) {
+  const parrafos = [];
+  for (let i = 1; i <= 120; i++) {
+    parrafos.push(`Conteo ${i} del barrio ${n}: entre las ${6 + (i % 12)} y las ${7 + (i % 12)} pasaron ${200 + i * 7} personas frente a la panadería; `
+      + `el día estuvo ${i % 3 === 0 ? 'lluvioso' : 'despejado'} y la junta de vecinos anotó ${i % 5} eventos en la cuadra.`);
+  }
+  return `# Conteo peatonal ${n}\n\n${parrafos.join('\n\n')}\n`;
+}
+
+/** La importación como trabajo largo: subir un Markdown y esperar, como la lista que se refresca sola, a verlo indexado. */
+export function importacion(datos) {
+  if (csrf === null) {
+    csrf = entrar(datos.nombres[PERSONAS + 1], '4826');
+  }
+  const largo = { tags: { pantalla: 'trabajo_largo' } };
+  const nombre = `conteo-${__VU}-${__ITER}-${Date.now().toString(36)}.md`;
+  const subida = http.post(`${BASE}/biblioteca`, { archivo: http.file(documento(nombre), nombre, 'text/markdown') },
+    Object.assign({ headers: { 'X-CSRF-TOKEN': csrf, 'HX-Request': 'true' } }, largo));
+  check(subida, { 'Biblioteca: el documento se importa': (r) => r.status === 200 && r.body.includes(`Importado: ${nombre}`) });
+  const estado = new RegExp(`data-estado="([a-z_]+)">\\s*<span[^>]*>[^<]*</span>\\s*<strong class="nombre-documento">${nombre.replace(/[.]/g, '\\.')}<`);
+  for (let i = 0; i < 120; i++) {
+    const m = estado.exec(http.get(`${BASE}/biblioteca/lista`, Object.assign({ headers: { 'HX-Request': 'true' } }, largo)).body || '');
+    if (m !== null && (m[1] === 'indexado' || m[1] === 'error')) {
+      check(m[1], { 'Biblioteca: el documento queda indexado': (e) => e === 'indexado' });
+      return;
+    }
+    sleep(1);
+  }
+  check(null, { 'Biblioteca: el documento queda indexado': () => false });
 }
 
 /** El pan quemado de T09 (docs/ejemplos/T09.md, ejemplo 1). */
