@@ -644,21 +644,107 @@
     "usalaCuando": "Te llegó un titular o una cadena por el grupo del barrio y quieres revisarla en minutos antes de reenviarla.",
     "definicion": "Procedimiento de cuatro pasos: detente, investiga la fuente, encuentra mejor cobertura y rastrea el contexto original.",
     "tipo": "procedimiento", "operacion": "evaluar", "objeto": "fuente", "modalidad": "lista", "patron": "V02",
-    "origen": "Caulfield 2019", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Caulfield 2019", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "pasos": ["detente", "investiga", "cobertura", "origen"], "minutosPorPaso": 5, "exigirNotas": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "pasos", "tipo": "conjunto", "etiqueta": "Pasos activos",
+          "opciones": [
+            { "valor": "detente", "etiqueta": "Detente" }, { "valor": "investiga", "etiqueta": "Investiga la fuente" },
+            { "valor": "cobertura", "etiqueta": "Encuentra mejor cobertura" }, { "valor": "origen", "etiqueta": "Rastrea el origen" }
+          ] },
+        { "nombre": "minutosPorPaso", "tipo": "entero", "etiqueta": "Minutos por paso (recordatorio)", "obligatorio": true, "minimo": 1, "maximo": 15 },
+        { "nombre": "exigirNotas", "tipo": "booleano", "etiqueta": "Cada paso hecho exige escribir lo que encontraste" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "afirmacion", "tipo": "texto", "etiqueta": "El titular o el mensaje", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "fuente", "tipo": "texto", "etiqueta": "Quién lo publica o de dónde te llegó", "obligatorio": true, "largoMaximo": 160 },
+        { "nombre": "detente", "tipo": "booleano", "etiqueta": "Detente: me detuve y todavía no lo comparto", "visibleSi": "pasos~detente" },
+        { "nombre": "interes", "tipo": "enumeracion", "etiqueta": "Investiga la fuente: ¿quién es y qué gana?", "obligatorio": true, "visibleSi": "pasos~investiga",
+          "opciones": [
+            { "valor": "sin_revisar", "etiqueta": "Sin revisar" }, { "valor": "independiente", "etiqueta": "Independiente de lo que afirma" },
+            { "valor": "interesada", "etiqueta": "Interesada: gana algo si le crees" }, { "valor": "desconocida", "etiqueta": "No se sabe quién es" }
+          ] },
+        { "nombre": "notaFuente", "tipo": "texto", "etiqueta": "Lo que encontraste sobre la fuente", "largoMaximo": 300, "visibleSi": "pasos~investiga" },
+        { "nombre": "cobertura", "tipo": "enumeracion", "etiqueta": "Encuentra mejor cobertura: ¿qué dicen otros?", "obligatorio": true, "visibleSi": "pasos~cobertura",
+          "opciones": [
+            { "valor": "sin_buscar", "etiqueta": "Sin buscar" }, { "valor": "confirma", "etiqueta": "Otras fuentes lo confirman" },
+            { "valor": "contradice", "etiqueta": "Otras fuentes lo contradicen" }, { "valor": "ninguna", "etiqueta": "Nadie más lo reporta" }
+          ] },
+        { "nombre": "notaCobertura", "tipo": "texto", "etiqueta": "Lo que encontraste en otras fuentes", "largoMaximo": 300, "visibleSi": "pasos~cobertura" },
+        { "nombre": "origen", "tipo": "enumeracion", "etiqueta": "Rastrea el origen: ¿qué dice el original?", "obligatorio": true, "visibleSi": "pasos~origen",
+          "opciones": [
+            { "valor": "sin_rastrear", "etiqueta": "Sin rastrear" }, { "valor": "coincide", "etiqueta": "El original dice lo mismo" },
+            { "valor": "distinto", "etiqueta": "El original dice otra cosa" }, { "valor": "no_encontrado", "etiqueta": "No encontré el original" }
+          ] },
+        { "nombre": "notaOrigen", "tipo": "texto", "etiqueta": "Lo que encontraste en el original", "largoMaximo": 300, "visibleSi": "pasos~origen" }
+      ]
+    }
   },
   {
     "id": "T20", "familia": "F4", "nombre": "Lectura lateral", "nombreLlano": "Salir de la página para juzgarla",
     "usalaCuando": "Quieres saber si una fuente es confiable y en vez de leerla a fondo prefieres ver qué dicen de ella otras fuentes independientes.",
     "definicion": "Procedimiento que registra qué dicen fuentes externas e independientes sobre la fuente original y produce un veredicto sobre su credibilidad.",
     "tipo": "procedimiento", "operacion": "evaluar", "objeto": "fuente", "modalidad": "formulario", "patron": "V10",
-    "origen": "Wineburg y McGrew 2017", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Wineburg y McGrew 2017", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "minimo": 2, "exigirIndependencia": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "minimo", "tipo": "entero", "etiqueta": "Mínimo de fuentes externas", "obligatorio": true, "minimo": 1, "maximo": 6 },
+        { "nombre": "exigirIndependencia", "tipo": "booleano", "etiqueta": "Solo cuentan las fuentes independientes de la original" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "original", "tipo": "texto", "etiqueta": "La fuente que juzgas", "obligatorio": true, "largoMaximo": 160 },
+        { "nombre": "afirmacion", "tipo": "texto", "etiqueta": "Lo que afirma", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "externas", "tipo": "filas", "etiqueta": "Fuentes externas", "prefijo": "E", "elemento": "fuente externa", "minimo": 1, "maximo": 6,
+          "campos": [
+            { "nombre": "nombre", "tipo": "texto", "etiqueta": "Fuente externa", "obligatorio": true, "largoMaximo": 160 },
+            { "nombre": "dice", "tipo": "texto", "etiqueta": "Qué dice de la original o del dato", "obligatorio": true, "largoMaximo": 300 },
+            { "nombre": "postura", "tipo": "enumeracion", "etiqueta": "Postura", "obligatorio": true,
+              "opciones": [ { "valor": "confirma", "etiqueta": "La confirma" }, { "valor": "contradice", "etiqueta": "La contradice" }, { "valor": "no_menciona", "etiqueta": "No la menciona" } ] },
+            { "nombre": "independiente", "tipo": "booleano", "etiqueta": "Independiente de la original" }
+          ] }
+      ]
+    }
   },
   {
     "id": "T21", "familia": "F4", "nombre": "CRAAP", "nombreLlano": "Calificar una fuente de 0 a 25",
     "usalaCuando": "Necesitas un puntaje comparable para varias fuentes: actualidad, relevancia, autoridad, exactitud y propósito.",
     "definicion": "Criterio que puntúa cinco dimensiones de una fuente (0 a 5 cada una) con pesos configurables y un umbral de aprobación.",
     "tipo": "criterio", "operacion": "evaluar", "objeto": "fuente", "modalidad": "calculo", "patron": "V10",
-    "origen": "Blakeslee 2004", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Blakeslee 2004", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "pesoActualidad": 1, "pesoRelevancia": 1, "pesoAutoridad": 1, "pesoExactitud": 1, "pesoProposito": 1, "umbral": 18 },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "pesoActualidad", "tipo": "entero", "etiqueta": "Peso de la actualidad", "obligatorio": true, "minimo": 0, "maximo": 5 },
+        { "nombre": "pesoRelevancia", "tipo": "entero", "etiqueta": "Peso de la relevancia", "obligatorio": true, "minimo": 0, "maximo": 5 },
+        { "nombre": "pesoAutoridad", "tipo": "entero", "etiqueta": "Peso de la autoridad", "obligatorio": true, "minimo": 0, "maximo": 5 },
+        { "nombre": "pesoExactitud", "tipo": "entero", "etiqueta": "Peso de la exactitud", "obligatorio": true, "minimo": 0, "maximo": 5 },
+        { "nombre": "pesoProposito", "tipo": "entero", "etiqueta": "Peso del propósito", "obligatorio": true, "minimo": 0, "maximo": 5,
+          "ayuda": "Con peso 0 el criterio no cuenta. El puntaje sigue siendo de 0 a 25 con cualquier peso." },
+        { "nombre": "umbral", "tipo": "entero", "etiqueta": "Umbral de aprobación (0 a 25)", "obligatorio": true, "minimo": 0, "maximo": 25 }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "uso", "tipo": "texto", "etiqueta": "Para qué usas la fuente", "largoMaximo": 300,
+          "ayuda": "La relevancia depende de esto: una fuente buena para otra pregunta puede no servirte." },
+        { "nombre": "fuentes", "tipo": "filas", "etiqueta": "Fuentes", "prefijo": "F", "elemento": "fuente", "minimo": 1, "maximo": 6,
+          "campos": [
+            { "nombre": "titulo", "tipo": "texto", "etiqueta": "Fuente", "obligatorio": true, "largoMaximo": 160 },
+            { "nombre": "actualidad", "tipo": "entero", "etiqueta": "Actualidad (0 a 5): ¿es reciente para el tema?", "obligatorio": true, "minimo": 0, "maximo": 5 },
+            { "nombre": "relevancia", "tipo": "entero", "etiqueta": "Relevancia (0 a 5): ¿responde a tu pregunta?", "obligatorio": true, "minimo": 0, "maximo": 5 },
+            { "nombre": "autoridad", "tipo": "entero", "etiqueta": "Autoridad (0 a 5): ¿quién la firma y qué sabe del tema?", "obligatorio": true, "minimo": 0, "maximo": 5 },
+            { "nombre": "exactitud", "tipo": "entero", "etiqueta": "Exactitud (0 a 5): ¿cita datos que se pueden revisar?", "obligatorio": true, "minimo": 0, "maximo": 5 },
+            { "nombre": "proposito", "tipo": "entero", "etiqueta": "Propósito (0 a 5): ¿informa, o vende y convence?", "obligatorio": true, "minimo": 0, "maximo": 5 },
+            { "nombre": "nota", "tipo": "texto", "etiqueta": "Nota", "largoMaximo": 300 }
+          ] }
+      ]
+    }
   },
   {
     "id": "T22", "familia": "F4", "nombre": "Triangulación", "nombreLlano": "Dos fuentes independientes antes de decir \"verificado\"",
@@ -719,7 +805,51 @@
     "usalaCuando": "Tienes testimonios, estudios y revisiones mezclados y quieres saber cuánto pesa cada uno y cuánto suman a favor o en contra.",
     "definicion": "Criterio que asigna fuerza a cada evidencia por tipo de afirmación y diseño del estudio (regla R01) y calcula la fuerza neta de la afirmación (regla R02).",
     "tipo": "criterio", "operacion": "evaluar", "objeto": "fuente", "modalidad": "lista", "patron": "V10",
-    "origen": "Sackett 1996; GRADE 2004", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Sackett 1996; GRADE 2004", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "revisionSistematica": 4, "ensayoControlado": 3, "observacional": 2, "opinionExperto": 1, "testimonio": 0, "primaria": 2, "secundaria": 1, "terciaria": 0 },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "revisionSistematica", "tipo": "entero", "etiqueta": "Peso base: revisión sistemática", "obligatorio": true, "minimo": 0, "maximo": 4,
+          "ayuda": "Pesos base de R01 para datos estadísticos y relaciones causales. Los bonos (reciente, independiente, original, CRAAP) no cambian." },
+        { "nombre": "ensayoControlado", "tipo": "entero", "etiqueta": "Peso base: ensayo controlado", "obligatorio": true, "minimo": 0, "maximo": 4 },
+        { "nombre": "observacional", "tipo": "entero", "etiqueta": "Peso base: estudio observacional", "obligatorio": true, "minimo": 0, "maximo": 4 },
+        { "nombre": "opinionExperto", "tipo": "entero", "etiqueta": "Peso base: opinión de experto", "obligatorio": true, "minimo": 0, "maximo": 4 },
+        { "nombre": "testimonio", "tipo": "entero", "etiqueta": "Peso base: testimonio", "obligatorio": true, "minimo": 0, "maximo": 4 },
+        { "nombre": "primaria", "tipo": "entero", "etiqueta": "Peso base: fuente primaria", "obligatorio": true, "minimo": 0, "maximo": 4,
+          "ayuda": "Pesos base de R01 para los demás tipos de afirmación." },
+        { "nombre": "secundaria", "tipo": "entero", "etiqueta": "Peso base: fuente secundaria", "obligatorio": true, "minimo": 0, "maximo": 4 },
+        { "nombre": "terciaria", "tipo": "entero", "etiqueta": "Peso base: fuente terciaria", "obligatorio": true, "minimo": 0, "maximo": 4 }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "afirmacion", "tipo": "texto", "etiqueta": "La afirmación", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "tipo", "tipo": "enumeracion", "etiqueta": "Tipo de afirmación", "obligatorio": true,
+          "ayuda": "Un dato estadístico o una relación causal se pesan por el diseño del estudio; lo demás, por el tipo de fuente (R01).",
+          "opciones": [
+            { "valor": "hecho", "etiqueta": "Hecho" }, { "valor": "dato_estadistico", "etiqueta": "Dato estadístico" }, { "valor": "causal", "etiqueta": "Relación causal" },
+            { "valor": "generalizacion", "etiqueta": "Generalización" }, { "valor": "testimonio", "etiqueta": "Testimonio" }, { "valor": "prediccion", "etiqueta": "Predicción" }
+          ] },
+        { "nombre": "evidencias", "tipo": "filas", "etiqueta": "Evidencias", "prefijo": "E", "elemento": "evidencia", "minimo": 1, "maximo": 8,
+          "campos": [
+            { "nombre": "descripcion", "tipo": "texto", "etiqueta": "Evidencia", "obligatorio": true, "largoMaximo": 200 },
+            { "nombre": "tipoFuente", "tipo": "enumeracion", "etiqueta": "Tipo de fuente", "obligatorio": true,
+              "opciones": [ { "valor": "primaria", "etiqueta": "Primaria" }, { "valor": "secundaria", "etiqueta": "Secundaria" }, { "valor": "terciaria", "etiqueta": "Terciaria" } ] },
+            { "nombre": "diseno", "tipo": "enumeracion", "etiqueta": "Diseño del estudio", "obligatorio": true,
+              "opciones": [
+                { "valor": "no_aplica", "etiqueta": "No aplica" }, { "valor": "revision_sistematica", "etiqueta": "Revisión sistemática" },
+                { "valor": "ensayo_controlado", "etiqueta": "Ensayo controlado" }, { "valor": "observacional", "etiqueta": "Observacional" },
+                { "valor": "opinion_experto", "etiqueta": "Opinión de experto" }, { "valor": "testimonio", "etiqueta": "Testimonio" }
+              ] },
+            { "nombre": "fecha", "tipo": "fecha", "etiqueta": "Fecha" },
+            { "nombre": "independiente", "tipo": "booleano", "etiqueta": "Independiente de quien afirma" },
+            { "nombre": "original", "tipo": "booleano", "etiqueta": "Tuve acceso al original" },
+            { "nombre": "craap", "tipo": "entero", "etiqueta": "Puntaje CRAAP (0 a 25)", "minimo": 0, "maximo": 25 },
+            { "nombre": "postura", "tipo": "enumeracion", "etiqueta": "Qué hace con la afirmación", "obligatorio": true,
+              "opciones": [ { "valor": "apoya", "etiqueta": "Apoya" }, { "valor": "contradice", "etiqueta": "Contradice" }, { "valor": "matiza", "etiqueta": "Matiza" } ] }
+          ] }
+      ]
+    }
   },
   {
     "id": "T24", "familia": "F5", "nombre": "Razonamiento bayesiano", "nombreLlano": "Actualizar lo que creo con cada dato nuevo",

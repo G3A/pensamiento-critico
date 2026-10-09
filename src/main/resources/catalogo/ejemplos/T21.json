@@ -1,0 +1,64 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "La página de las cámaras",
+    "versionEsquema": 1,
+    "config": { "pesoActualidad": 1, "pesoRelevancia": 1, "pesoAutoridad": 1, "pesoExactitud": 1, "pesoProposito": 1, "umbral": 18 },
+    "datos": {
+      "uso": "Saber si las cámaras bajan los robos en el barrio.",
+      "fuentes": [
+        { "titulo": "Página de la empresa de cámaras", "actualidad": 3, "relevancia": 4, "autoridad": 1, "exactitud": 2, "proposito": 1, "nota": "" }
+      ]
+    },
+    "resultado": {
+      "puntajes": [11],
+      "lineas": ["11 de 25 · no aprobada"],
+      "debiles": ["Lo más débil: autoridad (1 de 5)."],
+      "pendientes": [],
+      "resumen": "Página de la empresa de cámaras: 11 de 25 · no aprobada (umbral 18)."
+    },
+    "nota": "La secretaria de la junta califica la página que publicó el 70%. Es la tarjeta de T21 de la sección 7b."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "Las fuentes del arriendo",
+    "versionEsquema": 1,
+    "config": { "pesoActualidad": 1, "pesoRelevancia": 1, "pesoAutoridad": 2, "pesoExactitud": 1, "pesoProposito": 1, "umbral": 18 },
+    "datos": {
+      "uso": "Decidir si el centro tiene más tráfico que el barrio.",
+      "fuentes": [
+        { "titulo": "Conteo peatonal del municipio", "actualidad": 5, "relevancia": 5, "autoridad": 5, "exactitud": 4, "proposito": 4, "nota": "" },
+        { "titulo": "Informe de la cámara de comercio", "actualidad": 4, "relevancia": 4, "autoridad": 3, "exactitud": 3, "proposito": 4, "nota": "" }
+      ]
+    },
+    "resultado": {
+      "puntajes": [23, 18],
+      "lineas": ["23 de 25 · aprobada", "18 de 25 · aprobada"],
+      "debiles": ["Lo más débil: exactitud (4 de 5).", "Lo más débil: autoridad (3 de 5)."],
+      "pendientes": [],
+      "resumen": "2 fuentes · 2 aprobadas con umbral 18 · la mejor: Conteo peatonal del municipio (23 de 25)."
+    },
+    "nota": "La dueña de la panadería califica las dos fuentes sobre el tráfico del centro, con la autoridad al doble. La cámara de comercio da 17,5 y redondea a 18."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Las fuentes del colegio",
+    "versionEsquema": 1,
+    "config": { "pesoActualidad": 1, "pesoRelevancia": 1, "pesoAutoridad": 1, "pesoExactitud": 1, "pesoProposito": 1, "umbral": 17 },
+    "datos": {
+      "uso": "Elegir colegio para el hijo mayor.",
+      "fuentes": [
+        { "titulo": "Ranking de colegios de una revista", "actualidad": 4, "relevancia": 4, "autoridad": 3, "exactitud": 3, "proposito": 2, "nota": "" },
+        { "titulo": "Página oficial del colegio nuevo", "actualidad": 5, "relevancia": 4, "autoridad": 4, "exactitud": 3, "proposito": 1, "nota": "La página vende el colegio." }
+      ]
+    },
+    "resultado": {
+      "puntajes": [16, 17],
+      "lineas": ["16 de 25 · no aprobada", "17 de 25 · aprobada"],
+      "debiles": ["Lo más débil: propósito (2 de 5).", "Lo más débil: propósito (1 de 5)."],
+      "pendientes": [],
+      "resumen": "2 fuentes · 1 aprobada con umbral 17 · la mejor: Página oficial del colegio nuevo (17 de 25)."
+    },
+    "nota": "Una familia compara dos fuentes sobre el colegio nuevo con umbral 17."
+  }
+]

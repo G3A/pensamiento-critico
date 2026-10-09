@@ -1,0 +1,70 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "El 70% de las cámaras",
+    "versionEsquema": 1,
+    "config": { "minimo": 2, "exigirIndependencia": true },
+    "datos": {
+      "original": "Página de la empresa que vende cámaras",
+      "afirmacion": "Las cámaras redujeron 70% los robos en Villa Norte.",
+      "externas": [
+        { "nombre": "Diario regional", "dice": "No menciona el estudio.", "postura": "no_menciona", "independiente": true },
+        { "nombre": "Municipio", "dice": "Robos bajaron 12%, no 70%.", "postura": "contradice", "independiente": true },
+        { "nombre": "Blog del fabricante", "dice": "Repite el 70%.", "postura": "confirma", "independiente": false }
+      ]
+    },
+    "resultado": {
+      "veredicto": "en duda",
+      "motivo": "1 fuente independiente la contradice y 1 no la menciona.",
+      "nota": "No cuenta por no ser independiente: Blog del fabricante.",
+      "pendientes": ["Rastrear el origen de: Las cámaras redujeron 70% los robos en Villa Norte."],
+      "resumen": "En duda · 2 de 3 fuentes externas cuentan."
+    },
+    "nota": "La secretaria de la junta sigue con el titular que revisó con T19 · SIFT. Es la tarjeta de T20 de la sección 7b."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "La harina que rinde más",
+    "versionEsquema": 1,
+    "config": { "minimo": 2, "exigirIndependencia": true },
+    "datos": {
+      "original": "Catálogo del molino nuevo",
+      "afirmacion": "La harina del molino nuevo rinde 15% más pan por bulto.",
+      "externas": [
+        { "nombre": "Boletín del gremio de panaderos", "dice": "Dos panaderías socias reportan más rendimiento con esa harina.", "postura": "confirma", "independiente": true },
+        { "nombre": "Foro de panaderos", "dice": "Varios usuarios dicen que rinde más, sin cifras.", "postura": "confirma", "independiente": true },
+        { "nombre": "Vendedor del molino", "dice": "Asegura que rinde 15% más.", "postura": "confirma", "independiente": false }
+      ]
+    },
+    "resultado": {
+      "veredicto": "respaldada",
+      "motivo": "2 fuentes independientes la confirman y ninguna la contradice.",
+      "nota": "No cuenta por no ser independiente: Vendedor del molino.",
+      "pendientes": [],
+      "resumen": "Respaldada · 2 de 3 fuentes externas cuentan."
+    },
+    "nota": "La dueña de la panadería evalúa un molino nuevo antes de cambiar de proveedor."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El agua con limón",
+    "versionEsquema": 1,
+    "config": { "minimo": 3, "exigirIndependencia": false },
+    "datos": {
+      "original": "Video de un nutricionista en redes",
+      "afirmacion": "Tomar agua con limón en ayunas quema grasa.",
+      "externas": [
+        { "nombre": "Página de la asociación de nutricionistas", "dice": "No hay evidencia de que el limón queme grasa.", "postura": "contradice", "independiente": true },
+        { "nombre": "Blog de recetas", "dice": "Repite lo del video.", "postura": "confirma", "independiente": false }
+      ]
+    },
+    "resultado": {
+      "veredicto": "faltan fuentes",
+      "motivo": "Cuentan 2 fuentes externas; la configuración pide 3.",
+      "nota": null,
+      "pendientes": ["Buscar otra fuente externa sobre: Tomar agua con limón en ayunas quema grasa."],
+      "resumen": "Faltan fuentes · 2 de 2 fuentes externas cuentan."
+    },
+    "nota": "Un padre de familia revisa un video antes de cambiar el desayuno de la casa. Sin exigir independencia cuentan las dos, pero el mínimo es 3."
+  }
+]

@@ -39,7 +39,7 @@ public record V02(Optional<UUID> idEjecucion, String sufijo, Modo modo, String t
     public record Item(String clave, String nombre, String estado, String claseChip, String claseItem, String texto, String detalle, String falta) {
     }
 
-    /** @param clase "aviso" para lo que impide algo (guardado bloqueado) o "nota" para lo informativo */
+    /** @param clase "aviso" para lo que impide algo (guardado bloqueado), "alerta" para una señal (T19) o "nota" para lo informativo */
     public record Aviso(String texto, String clase) {
     }
 

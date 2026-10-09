@@ -34,7 +34,7 @@
     </ol>
   @endfor
   @for(V02.Aviso a : v.avisos())
-    <p class="aviso-lista aviso-${a.clase()}">@if(a.clase().equals("aviso"))<span class="chip chip-aviso">bloqueado</span> @endif${a.texto()}</p>
+    <p class="aviso-lista aviso-${a.clase()}">@if(a.clase().equals("aviso"))<span class="chip chip-aviso">bloqueado</span> @elseif(a.clase().equals("alerta"))<span class="chip chip-aviso">alerta</span> @endif${a.texto()}</p>
   @endfor
   @template.tag.v.propuestas(propuestas = v.propuestas(), idRaiz = v.idRaiz())
   <div class="tarjeta-resultado" role="status">

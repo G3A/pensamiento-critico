@@ -1,0 +1,80 @@
+[
+  {
+    "ambito": "personal",
+    "titulo": "La dieta sin gluten",
+    "versionEsquema": 1,
+    "config": { "revisionSistematica": 4, "ensayoControlado": 3, "observacional": 2, "opinionExperto": 1, "testimonio": 0, "primaria": 2, "secundaria": 1, "terciaria": 0 },
+    "datos": {
+      "afirmacion": "La dieta sin gluten mejora la energía.",
+      "tipo": "causal",
+      "evidencias": [
+        { "descripcion": "Ensayo de un hospital universitario, sin efecto en personas sin celiaquía", "tipoFuente": "primaria", "diseno": "ensayo_controlado",
+          "fecha": "2024-02-01", "independiente": true, "original": true, "postura": "contradice" },
+        { "descripcion": "Testimonio de una vecina", "tipoFuente": "primaria", "diseno": "testimonio", "fecha": "2026-08-01", "independiente": false, "original": false, "postura": "apoya" },
+        { "descripcion": "Testimonio de otra vecina", "tipoFuente": "primaria", "diseno": "testimonio", "fecha": "2026-08-15", "independiente": false, "original": false, "postura": "apoya" },
+        { "descripcion": "Testimonio de una tercera vecina", "tipoFuente": "primaria", "diseno": "testimonio", "fecha": "2026-09-01", "independiente": false, "original": false, "postura": "apoya" }
+      ]
+    },
+    "resultado": {
+      "fuerzas": [6, 1, 1, 1],
+      "neta": -3,
+      "magnitud": "media",
+      "sentido": "en contra",
+      "pendientes": ["Buscar una revisión sistemática sobre: La dieta sin gluten mejora la energía."],
+      "resumen": "Fuerza neta -3 · media en contra (R02) · 4 evidencias."
+    },
+    "nota": "Una familia discute si deja el gluten sin diagnóstico de celiaquía. Es la tarjeta de T23 de la sección 7b; fuerzas calculadas con R01 al 2026-10-07."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El pan integral",
+    "versionEsquema": 1,
+    "config": { "revisionSistematica": 4, "ensayoControlado": 3, "observacional": 2, "opinionExperto": 1, "testimonio": 0, "primaria": 2, "secundaria": 1, "terciaria": 0 },
+    "datos": {
+      "afirmacion": "Los clientes del barrio prefieren pan integral.",
+      "tipo": "generalizacion",
+      "evidencias": [
+        { "descripcion": "Encuesta propia a 60 clientes", "tipoFuente": "primaria", "diseno": "no_aplica", "fecha": "2026-07-01", "independiente": false, "original": true, "postura": "apoya" },
+        { "descripcion": "Informe del gremio de panaderos", "tipoFuente": "secundaria", "diseno": "no_aplica", "fecha": "2023-05-01", "independiente": true, "original": false,
+          "craap": 19, "postura": "apoya" },
+        { "descripcion": "Nota de una revista de cocina", "tipoFuente": "terciaria", "diseno": "no_aplica", "fecha": "2019-03-01", "independiente": true, "original": false, "postura": "matiza" }
+      ]
+    },
+    "resultado": {
+      "fuerzas": [4, 4, 1],
+      "neta": 8,
+      "magnitud": "fuerte",
+      "sentido": "a favor",
+      "pendientes": [],
+      "resumen": "Fuerza neta +8 · fuerte a favor (R02) · 3 evidencias."
+    },
+    "nota": "La dueña de la panadería decide si hornea más pan integral. Una generalización se pesa por tipo de fuente; matiza no suma."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "La iluminación del barrio",
+    "versionEsquema": 1,
+    "config": { "revisionSistematica": 4, "ensayoControlado": 3, "observacional": 3, "opinionExperto": 1, "testimonio": 0, "primaria": 2, "secundaria": 1, "terciaria": 0 },
+    "datos": {
+      "afirmacion": "La iluminación nueva redujo los robos en la cuadra.",
+      "tipo": "causal",
+      "evidencias": [
+        { "descripcion": "Revisión de la universidad sobre alumbrado y delito", "tipoFuente": "secundaria", "diseno": "revision_sistematica", "fecha": "2022-06-01",
+          "independiente": true, "original": true, "craap": 21, "postura": "apoya" },
+        { "descripcion": "Denuncias antes y después, de la estación de policía", "tipoFuente": "primaria", "diseno": "observacional", "fecha": "2026-09-15",
+          "independiente": true, "original": true, "postura": "apoya" },
+        { "descripcion": "Opinión del concejal del sector", "tipoFuente": "primaria", "diseno": "opinion_experto", "fecha": "2026-09-01", "independiente": false, "original": false,
+          "postura": "contradice" }
+      ]
+    },
+    "resultado": {
+      "fuerzas": [8, 6, 2],
+      "neta": 12,
+      "magnitud": "fuerte",
+      "sentido": "a favor",
+      "pendientes": [],
+      "resumen": "Fuerza neta +12 · fuerte a favor (R02) · 3 evidencias."
+    },
+    "nota": "La junta de vecinos evalúa si pide más postes de luz, con el observacional en 3 en la configuración."
+  }
+]

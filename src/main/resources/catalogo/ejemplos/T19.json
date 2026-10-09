@@ -1,0 +1,72 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras de Villa Norte",
+    "versionEsquema": 1,
+    "config": { "pasos": ["detente", "investiga", "cobertura", "origen"], "minutosPorPaso": 5, "exigirNotas": true },
+    "datos": {
+      "afirmacion": "Las cámaras redujeron 70% los robos en Villa Norte.",
+      "fuente": "Titular compartido en el grupo del barrio",
+      "detente": true,
+      "interes": "interesada", "notaFuente": "Página de una empresa que vende cámaras.",
+      "cobertura": "ninguna", "notaCobertura": "Ningún medio independiente lo reporta.",
+      "origen": "sin_rastrear", "notaOrigen": ""
+    },
+    "resultado": {
+      "pasos": ["Detente · no reenviar aún", "Investiga la fuente · Página de una empresa que vende cámaras.",
+                "Encuentra mejor cobertura · Ningún medio independiente lo reporta.", "Rastrea el origen · pendiente"],
+      "senal": "fuente interesada",
+      "motivo": "Quien lo publica gana algo si le crees: busca quién más lo dice.",
+      "pendientes": ["Rastrear el origen de: Las cámaras redujeron 70% los robos en Villa Norte."],
+      "resumen": "Fuente interesada · 3 de 4 pasos hechos."
+    },
+    "nota": "La secretaria de la junta de vecinos recibe un titular en el grupo del barrio. Es la tarjeta de T19 de la sección 7b."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El precio de la harina",
+    "versionEsquema": 1,
+    "config": { "pasos": ["detente", "investiga", "cobertura", "origen"], "minutosPorPaso": 10, "exigirNotas": true },
+    "datos": {
+      "afirmacion": "El precio de la harina va a subir 40% en noviembre.",
+      "fuente": "Audio reenviado en el grupo de proveedores",
+      "detente": true,
+      "interes": "desconocida", "notaFuente": "El audio no dice quién habla.",
+      "cobertura": "contradice", "notaCobertura": "El gremio de molineros anunció una subida de 8%, no de 40%.",
+      "origen": "no_encontrado", "notaOrigen": "No encontré el audio original ni quién lo grabó."
+    },
+    "resultado": {
+      "pasos": ["Detente · no reenviar aún", "Investiga la fuente · El audio no dice quién habla.",
+                "Encuentra mejor cobertura · El gremio de molineros anunció una subida de 8%, no de 40%.",
+                "Rastrea el origen · No encontré el audio original ni quién lo grabó."],
+      "senal": "cobertura en contra",
+      "motivo": "Otras fuentes lo contradicen: no lo compartas sin aclararlo.",
+      "pendientes": [],
+      "resumen": "Cobertura en contra · 4 de 4 pasos hechos."
+    },
+    "nota": "La dueña de la panadería escucha un audio en el grupo de proveedores antes de subir sus precios. La cobertura en contra manda sobre el origen desconocido."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El plazo de matrícula",
+    "versionEsquema": 1,
+    "config": { "pasos": ["investiga", "cobertura", "origen"], "minutosPorPaso": 3, "exigirNotas": false },
+    "datos": {
+      "afirmacion": "La secretaría de educación amplió el plazo de matrícula hasta el 30 de octubre.",
+      "fuente": "Mensaje en el grupo de padres del curso",
+      "detente": false,
+      "interes": "independiente", "notaFuente": "",
+      "cobertura": "confirma", "notaCobertura": "",
+      "origen": "coincide", "notaOrigen": ""
+    },
+    "resultado": {
+      "pasos": ["Investiga la fuente · independiente de lo que afirma", "Encuentra mejor cobertura · otras fuentes lo confirman",
+                "Rastrea el origen · el original dice lo mismo"],
+      "senal": "sin alertas",
+      "motivo": "Los 3 pasos activos no encontraron alertas: si lo compartes, enlaza el original.",
+      "pendientes": [],
+      "resumen": "Sin alertas · 3 de 3 pasos hechos."
+    },
+    "nota": "Una madre lee un mensaje en el grupo de padres del curso antes de reenviarlo a la familia. Detente está apagado en la configuración y las notas no son obligatorias."
+  }
+]
