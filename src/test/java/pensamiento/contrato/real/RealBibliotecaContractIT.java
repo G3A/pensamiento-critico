@@ -54,6 +54,11 @@ class RealBibliotecaContractIT extends BibliotecaContract {
             }
 
             @Override
+            public Optional<Documento> propioPorHash(UUID u, String hash) {
+                return bd.comoUsuario(usuarioId, inst, () -> real.propioPorHash(u, hash));
+            }
+
+            @Override
             public Optional<Documento> porId(UUID u, UUID id) {
                 return bd.comoUsuario(usuarioId, inst, () -> real.porId(u, id));
             }

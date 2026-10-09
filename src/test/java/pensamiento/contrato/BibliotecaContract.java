@@ -93,6 +93,9 @@ public abstract class BibliotecaContract {
         assertThatThrownBy(() -> repo.crear(p.usuarioA(), p.institucion(),
                 new Biblioteca.NuevoDocumento(UUID.randomUUID(), "copia.txt", Documento.Tipo.TEXTO, n.hash(), n.contenido())))
                 .isInstanceOf(Biblioteca.DocumentoRepetido.class).hasMessage("Ya importaste este documento: acta-marzo.txt");
+        assertThat(repo.propioPorHash(p.usuarioA(), n.hash())).map(Documento::nombre).contains("acta-marzo.txt");
+        assertThat(comoUsuario(p.usuarioB()).propioPorHash(p.usuarioB(), n.hash())).isEmpty();
+        assertThat(repo.propioPorHash(p.usuarioA(), "hash-que-no-existe")).isEmpty();
     }
 
     @Test

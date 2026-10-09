@@ -61,6 +61,12 @@ public final class FakeBiblioteca implements Biblioteca {
         return porId(usuarioId, nuevo.id()).orElseThrow();
     }
 
+    @Override
+    public Optional<Documento> propioPorHash(UUID usuarioId, String hash) {
+        return documentos.values().stream().filter(d -> d.usuario.equals(usuarioId) && d.nuevo.hash().equals(hash)).findFirst()
+                .map(FakeBiblioteca::documento);
+    }
+
     private Optional<Doc> visible(UUID usuarioId, UUID id) {
         return Optional.ofNullable(documentos.get(id)).filter(d -> d.usuario.equals(usuarioId) || d.compartido);
     }

@@ -38,6 +38,9 @@ public interface Biblioteca {
     /** Crea el documento en proceso, privado. Lanza DocumentoRepetido si la persona ya tiene uno con el mismo hash. */
     Documento crear(UUID usuarioId, UUID institucionId, NuevoDocumento nuevo);
 
+    /** El documento propio con ese hash, si la persona ya importó ese contenido. */
+    Optional<Documento> propioPorHash(UUID usuarioId, String hash);
+
     /** Propio o compartido por alguien de la institución; vacío si no existe o si es privado de otra persona. */
     Optional<Documento> porId(UUID usuarioId, UUID id);
 

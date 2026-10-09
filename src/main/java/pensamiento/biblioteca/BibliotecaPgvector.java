@@ -60,6 +60,13 @@ public class BibliotecaPgvector implements Biblioteca {
 
     @Override
     @Transactional(readOnly = true)
+    public Optional<Documento> propioPorHash(UUID usuarioId, String hash) {
+        return jdbc.sql("SELECT " + DOCUMENTO + " WHERE d.usuario_id = :usuario AND d.hash = :hash")
+                .param("usuario", usuarioId).param("hash", hash).query(BibliotecaPgvector::documento).optional();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Optional<Documento> porId(UUID usuarioId, UUID id) {
         return jdbc.sql("SELECT " + DOCUMENTO + " WHERE d.id = :id AND " + VISIBLE)
                 .param("id", id).param("usuario", usuarioId).query(BibliotecaPgvector::documento).optional();
