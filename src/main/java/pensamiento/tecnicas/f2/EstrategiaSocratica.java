@@ -188,6 +188,12 @@ public final class EstrategiaSocratica {
         return Optional.of(new Movimiento(numero, tipoDe(candidato), candidato, rama.rama(), rama.marca(), rama.pregunta(), porque));
     }
 
+    /** El turno para un elemento dado, con la rama que dan las marcas del texto de referencia (el arnés de evaluación lo usa). */
+    public Movimiento movimiento(Elemento e, int numero, String referencia, String porque) {
+        Rama r = rama(e, referencia);
+        return new Movimiento(numero, tipoDe(e), e, r.rama(), r.marca(), r.pregunta(), porque);
+    }
+
     private record Rama(String rama, String marca, String pregunta) {
     }
 

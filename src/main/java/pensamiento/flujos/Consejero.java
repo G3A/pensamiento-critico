@@ -272,12 +272,8 @@ public class Consejero {
                 EjecutorEscalera.Config c = MapeadorJson.leer(s.config(), EjecutorEscalera.Config.class);
                 yield Optional.of(EjecutorEscalera.siguiente(c, respuestas.size()).map(p -> {
                     BancoSocratico.Peldano b = banco.peldano(p.toString());
-                    Map<String, String> datos = Map.of("turno", referencia, "tipo", "escalera de inferencia",
-                            "descripcion", "una pregunta sobre el peldaño de " + b.nombre().toLowerCase() + " de la escalera de inferencia",
-                            "elemento", b.nombre().toLowerCase(), "banco", b.pregunta());
                     return new Paso(p.toString(), b.pregunta(), "consejero · peldaño " + (p.ordinal() + 1) + " · " + b.nombre().toLowerCase(),
-                            "Un peldaño por turno, en el sentido de la configuración.", Optional.of(new Pedido(EjecutorPreguntasSocraticas.PROMPT,
-                            EjecutorPreguntasSocraticas.VERSION_PROMPT, datos, EjecutorPreguntasSocraticas.PALABRAS_MAXIMAS)));
+                            "Un peldaño por turno, en el sentido de la configuración.", Optional.of(pedidoPeldano(banco, p.toString(), referencia)));
                 }).orElseGet(() -> pasoCierre(s)));
             }
             case SOMBREROS -> {
@@ -286,12 +282,8 @@ public class Consejero {
                 yield Optional.of(switch (ronda) {
                     case EjecutorSeisSombreros.RondaSombrero rs -> {
                         BancoSocratico.Sombrero b = banco.sombrero(rs.sombrero().toString());
-                        Map<String, String> datos = Map.of("turno", referencia, "tipo", "sombrero " + b.nombre().toLowerCase(),
-                                "descripcion", "una pregunta para mirar el tema desde el sombrero " + b.nombre().toLowerCase() + " (" + b.mira() + ")",
-                                "elemento", "notas del sombrero " + b.nombre().toLowerCase(), "banco", b.pregunta());
                         yield new Paso(rs.sombrero().toString(), b.pregunta(), "consejero · sombrero " + b.nombre().toLowerCase(),
-                                "Una ronda por sombrero, en el orden de la configuración.", Optional.of(new Pedido(EjecutorPreguntasSocraticas.PROMPT,
-                                EjecutorPreguntasSocraticas.VERSION_PROMPT, datos, EjecutorPreguntasSocraticas.PALABRAS_MAXIMAS)));
+                                "Una ronda por sombrero, en el orden de la configuración.", Optional.of(pedidoSombrero(banco, rs.sombrero().toString(), referencia)));
                     }
                     case EjecutorSeisSombreros.RondaSintesis rs -> new Paso(TurnoConsejero.SINTESIS, banco.sintesis(), "consejero · síntesis",
                             "Después de los sombreros, la síntesis.", Optional.empty());
@@ -312,6 +304,24 @@ public class Consejero {
                                 EjecutorEquipoRojo.PALABRAS_MAXIMAS))));
             }
         };
+    }
+
+    /** El pedido al modelo para un peldaño de la escalera: el prompt de T08 con el peldaño como tipo y su pregunta del banco. */
+    public static Pedido pedidoPeldano(BancoSocratico banco, String peldano, String referencia) {
+        BancoSocratico.Peldano b = banco.peldano(peldano);
+        Map<String, String> datos = Map.of("turno", referencia, "tipo", "escalera de inferencia",
+                "descripcion", "una pregunta sobre el peldaño de " + b.nombre().toLowerCase() + " de la escalera de inferencia",
+                "elemento", b.nombre().toLowerCase(), "banco", b.pregunta());
+        return new Pedido(EjecutorPreguntasSocraticas.PROMPT, EjecutorPreguntasSocraticas.VERSION_PROMPT, datos, EjecutorPreguntasSocraticas.PALABRAS_MAXIMAS);
+    }
+
+    /** El pedido al modelo para una ronda de sombreros: el prompt de T08 con el sombrero como tipo y su pregunta del banco. */
+    public static Pedido pedidoSombrero(BancoSocratico banco, String sombrero, String referencia) {
+        BancoSocratico.Sombrero b = banco.sombrero(sombrero);
+        Map<String, String> datos = Map.of("turno", referencia, "tipo", "sombrero " + b.nombre().toLowerCase(),
+                "descripcion", "una pregunta para mirar el tema desde el sombrero " + b.nombre().toLowerCase() + " (" + b.mira() + ")",
+                "elemento", "notas del sombrero " + b.nombre().toLowerCase(), "banco", b.pregunta());
+        return new Pedido(EjecutorPreguntasSocraticas.PROMPT, EjecutorPreguntasSocraticas.VERSION_PROMPT, datos, EjecutorPreguntasSocraticas.PALABRAS_MAXIMAS);
     }
 
     /** En el Consejero los ataques salen del banco; si la persona tiene configurado el modo a mano, igual se usa el banco. */

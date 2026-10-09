@@ -5,6 +5,8 @@
 // Hito 3: una persona más tiene una sesión con Ollama activa (RNF-03): pide al modelo un steelman en T34 y espera el
 // evento final por SSE, mientras las otras diez navegan. El p95 que se exige sigue siendo el de las pantallas sin IA.
 // Hito 4: cada persona abre además el tablero del Diario y evalúa T43 · Diagrama de Ishikawa (Graphviz dibuja la espina).
+// Hito 5: cada persona abre el Consejero y evalúa T09 · 5 porqués (Graphviz dibuja la cadena); la sesión con Ollama activa
+// pasa a ser una sesión del Consejero socrático: cada turno del Consejero llega por SSE hasta el evento final.
 // Se corre con: docker compose --profile test run --rm k6
 import http from 'k6/http';
 import { check, sleep, fail } from 'k6';
@@ -102,8 +104,26 @@ export default function (datos) {
   const ishikawa = http.post(`${BASE}/tecnicas/T43/evaluar`, ISHIKAWA,
     Object.assign({ headers: { 'X-CSRF-TOKEN': csrf, 'HX-Request': 'true' } }, pantalla));
   check(ishikawa, { 'T43 evaluada con la espina dibujada': (r) => r.status === 200 && r.body.includes('data-patron="V07"') && r.body.includes('<svg') });
+  sleep(1);
+
+  // Hito 5: el Consejero (historial y sesión nueva) y T09 · 5 porqués con la cadena dibujada.
+  const consejero = http.get(`${BASE}/consejero`, pantalla);
+  check(consejero, { 'Consejero: historial y sesión nueva': (r) => r.status === 200 && r.body.includes('id="form-nueva-sesion"') });
+  const porques = http.post(`${BASE}/tecnicas/T09/evaluar`, PORQUES,
+    Object.assign({ headers: { 'X-CSRF-TOKEN': csrf, 'HX-Request': 'true' } }, pantalla));
+  check(porques, { 'T09 evaluada con la cadena dibujada': (r) => r.status === 200 && r.body.includes('data-patron="V06"') && r.body.includes('<svg') });
   sleep(2);
 }
+
+/** El pan quemado de T09 (docs/ejemplos/T09.md, ejemplo 1). */
+const PORQUES = {
+  'config.niveles': '5', 'config.exigirEvidencia': 'true', 'config.permitirRamas': 'false',
+  problema: 'Se quemó la tanda de pan de las 6.',
+  'porques[0].texto': 'El horno marcó 30 grados de más.', 'porques[0].evidencia': 'La pantalla del horno a las 6:10.',
+  'porques[1].texto': 'El termostato está descalibrado.', 'porques[1].evidencia': 'El técnico lo midió con otro termómetro.',
+  'porques[2].texto': 'Nadie lo revisa desde hace un año.',
+  'porques[3].texto': 'No existe un calendario de mantenimiento.', 'porques[3].raiz': 'true',
+};
 
 /** El pan quemado de la sucursal original (docs/ejemplos/T43.md, ejemplo 1). */
 const ISHIKAWA = {
@@ -114,27 +134,46 @@ const ISHIKAWA = {
   'causas[2].texto': 'Turno nuevo sin entrenar', 'causas[2].categoria': 'Personas',
 };
 
-const TURNO = /sse-connect="\/ia\/turnos\/([0-9a-f-]{36})\/flujo"/;
+const TURNO = /sse-connect="\/consejero\/turnos\/([0-9a-f-]{36})\/flujo"/;
+const RESPUESTAS = [
+  'Quiero vender más los fines de semana sin cansar al equipo.',
+  'Doy por hecho que los domingos pasa gente por la panadería.',
+  'Lo vi tres domingos seguidos desde la ventana de la casa.',
+];
 
-/** La sesión con Ollama activa: pedir un steelman a T34 y leer el turno por SSE hasta el evento final. */
+/** Lee por SSE el turno del Consejero que redacta el modelo, si la respuesta trae uno, hasta el evento final. */
+function esperarTurno(cuerpo, conIa) {
+  const m = TURNO.exec(cuerpo || '');
+  if (m === null) {
+    return false;
+  }
+  const flujo = http.get(`${BASE}/consejero/turnos/${m[1]}/flujo`, Object.assign({ timeout: '300s', headers: { Accept: 'text/event-stream' } }, conIa));
+  check(flujo, { 'Consejero: el turno termina con el evento final': (r) => r.status === 200 && r.body.includes('event:fin') });
+  return true;
+}
+
+/** La sesión con Ollama activa: una sesión del Consejero que pide el modelo; cada turno se lee por SSE hasta el final. */
 export function sesionConOllama(datos) {
   if (csrf === null) {
     csrf = entrar(datos.nombres[PERSONAS], '4826');
   }
   const conIa = { tags: { pantalla: 'con_ia' } };
-  const pedido = http.post(`${BASE}/tecnicas/T34/propuestas`, {
-    'config.longitudMaxima': '120', 'config.modo': 'manual_y_modelo', 'config.exigirCita': 'true',
-    posturaOriginal: 'Los que no quieren camaras no les importa el barrio.',
-    cita: 'Prefiero que no me graben cada vez que salgo de mi casa.',
-    _clave: `k6-${__VU}-${__ITER}`, _origen: 'tu configuracion',
-  }, Object.assign({ headers: { 'X-CSRF-TOKEN': csrf, 'HX-Request': 'true' } }, conIa));
-  const m = TURNO.exec(pedido.body || '');
-  check(pedido, { 'T34: pedir abre un turno con el modelo': (r) => r.status === 200 && m !== null });
-  if (m === null) {
+  const nueva = http.post(`${BASE}/consejero/sesiones`, { modo: 'decision', postura: 'Conviene abrir los domingos.', confianza: '70', usaModelo: 'on' },
+    Object.assign({ headers: { 'X-CSRF-TOKEN': csrf }, redirects: 0 }, conIa));
+  const destino = (nueva.headers.Location || '').replace(/^https?:\/\/[^/]+/, '');
+  check(nueva, { 'Consejero: la sesión empieza': (r) => r.status === 303 && destino.startsWith('/consejero/sesiones/') });
+  if (!destino.startsWith('/consejero/sesiones/')) {
     sleep(5);
     return;
   }
-  const flujo = http.get(`${BASE}/ia/turnos/${m[1]}/flujo`, Object.assign({ timeout: '300s', headers: { Accept: 'text/event-stream' } }, conIa));
-  check(flujo, { 'T34: el turno termina con el evento final': (r) => r.status === 200 && r.body.includes('event:fin') });
-  sleep(2);
+  const sesion = http.get(`${BASE}${destino}`, conIa);
+  check(sesion, { 'Consejero: la sesión muestra el diálogo': (r) => r.status === 200 && r.body.includes('id="dialogo"') });
+  esperarTurno(sesion.body, conIa);
+  for (const texto of RESPUESTAS) {
+    const turno = http.post(`${BASE}${destino}/turnos`, { texto: texto },
+      Object.assign({ headers: { 'X-CSRF-TOKEN': csrf, 'HX-Request': 'true' } }, conIa));
+    check(turno, { 'Consejero: la respuesta trae el turno siguiente': (r) => r.status === 200 && r.body.includes('burbuja-consejero') });
+    esperarTurno(turno.body, conIa);
+    sleep(1);
+  }
 }
