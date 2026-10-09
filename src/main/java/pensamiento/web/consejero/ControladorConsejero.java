@@ -449,7 +449,11 @@ public class ControladorConsejero {
         Map<String, Object> config = motor.configDeUsuario(yo.id(), t);
         Map<String, Object> valores = new LinkedHashMap<>(ControladorTecnicas.vacio(motor.camposEntrada(t)));
         Optional<ResultadoSteelman> steelman = s.expedienteId().stream().flatMap(x -> ejecuciones.porExpediente(yo.id(), x).stream())
-                .filter(e -> e.tecnica().valor().equals("T34")).reduce((a, b) -> b).map(e -> (ResultadoSteelman) motor.valorDe(e));
+                .filter(e -> e.tecnica().valor().equals("T34")).findFirst().map(e -> (ResultadoSteelman) motor.valorDe(e));
+        // Las filas opcionales (mínimo 0) empiezan vacías: una fila en blanco no debe bloquear el guardado.
+        for (String opcional : List.of("razones", "argumentos", "cruxes")) {
+            valores.computeIfPresent(opcional, (k, x) -> List.of());
+        }
         switch (elegida.valor()) {
             case "T37" -> {
                 valores.put("postura", "Quien no está de acuerdo con: " + s.postura());

@@ -132,12 +132,8 @@ public class EjecutorEquipoRojo implements Ejecutor<EjecutorEquipoRojo.Config, E
     private final BancoAtaques banco;
 
     public EjecutorEquipoRojo(RepositorioEsquemas esquemas) {
-        this(esquemas, BancoAtaques.delCatalogo());
-    }
-
-    public EjecutorEquipoRojo(RepositorioEsquemas esquemas, BancoAtaques banco) {
         this.esquemas = esquemas;
-        this.banco = banco;
+        this.banco = BancoAtaques.delCatalogo();
     }
 
     @Override

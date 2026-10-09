@@ -87,7 +87,7 @@ public final class Diario {
         return persona.postPares("/tecnicas/" + f.tecnica() + "/ejecuciones", con(f, campos), true);
     }
 
-    private static List<Map.Entry<String, String>> con(Taller.Formulario f, Map<String, String> campos) {
+    static List<Map.Entry<String, String>> con(Taller.Formulario f, Map<String, String> campos) {
         List<Map.Entry<String, String>> pares = new ArrayList<>(f.pares().stream().filter(p -> !campos.containsKey(p.getKey())).toList());
         campos.forEach((k, v) -> pares.add(new AbstractMap.SimpleEntry<>(k, v)));
         return pares;
