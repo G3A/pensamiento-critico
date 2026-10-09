@@ -18,7 +18,8 @@ import pensamiento.nucleo.Documento;
  */
 public final class DetectorTipo {
 
-    private static final Pattern MARKDOWN = Pattern.compile("(?m)^(#{1,6}\\s|[-*]\\s|\\d+\\.\\s|```)|\\[[^\\]\\n]+\\]\\([^)\\n]+\\)");
+    /** Sin cuantificadores encadenados (ReDoS): un enlace se reconoce por el «](» entre su texto y su destino. */
+    private static final Pattern MARKDOWN = Pattern.compile("(?m)^(?:#{1,6}[ \\t]|[-*][ \\t]|\\d{1,9}\\.[ \\t]|```)|\\]\\(");
     private static final int LINEAS_PARA_CSV = 6;
 
     private DetectorTipo() {

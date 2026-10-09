@@ -91,12 +91,18 @@ public class RespaldoDeLaBiblioteca {
     public Set<UUID> identificadores(PaqueteDatos p) {
         Set<UUID> ids = new LinkedHashSet<>();
         for (PaqueteDatos.DocumentoDatos d : p.documentos()) {
-            ids.add(exigir(d == null ? null : d.id()));
+            if (d == null) {
+                throw sinIdentificador();
+            }
+            ids.add(exigir(d.id()));
             d.fragmentos().forEach(f -> ids.add(exigir(f == null ? null : f.id())));
         }
         for (PaqueteDatos.EvidenciaDatos e : p.evidencias()) {
-            ids.add(exigir(e == null ? null : e.id()));
-            ids.add(exigir(e.fuente() == null ? null : e.fuente().id()));
+            if (e == null || e.fuente() == null) {
+                throw sinIdentificador();
+            }
+            ids.add(exigir(e.id()));
+            ids.add(exigir(e.fuente().id()));
         }
         return ids;
     }
@@ -191,9 +197,13 @@ public class RespaldoDeLaBiblioteca {
 
     private static UUID exigir(UUID id) {
         if (id == null) {
-            throw new ServicioRespaldo.ArchivoInvalido("El archivo trae un elemento sin identificador.");
+            throw sinIdentificador();
         }
         return id;
+    }
+
+    private static ServicioRespaldo.ArchivoInvalido sinIdentificador() {
+        return new ServicioRespaldo.ArchivoInvalido("El archivo trae un elemento sin identificador.");
     }
 
     private static <T> T obligatorio(T valor) {
