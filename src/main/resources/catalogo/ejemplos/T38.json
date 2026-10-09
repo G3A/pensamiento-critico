@@ -1,0 +1,64 @@
+[
+  {
+    "ambito": "personal",
+    "titulo": "La maestría afuera",
+    "versionEsquema": 1,
+    "config": { "maximoCruxes": 1, "exigirVerificables": true },
+    "datos": {
+      "quienA": "Madre", "posturaA": "La maestría afuera conviene.", "dependeA": [ { "texto": "Hay trabajo al volver." } ],
+      "quienB": "Hija", "posturaB": "Mejor trabajar primero.", "dependeB": [ { "texto": "La beca se puede diferir." } ],
+      "cruxes": [ { "hecho": "La beca se puede diferir un año.", "cambiaA": true, "cambiaB": true, "verificable": true, "como": "Preguntar a la oficina de becas por escrito." } ]
+    },
+    "resultado": {
+      "estado": "1 crux común",
+      "sugerencias": [],
+      "avisos": [],
+      "pendientes": [ "Verificar el crux: La beca se puede diferir un año." ],
+      "resumen": "1 crux común · 1 a verificación."
+    },
+    "nota": "Es la tarjeta de T38 de la sección 7b; las reglas están en docs/ejemplos/T38.md."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Cámaras o postes",
+    "versionEsquema": 1,
+    "config": { "maximoCruxes": 2, "exigirVerificables": true },
+    "datos": {
+      "quienA": "La presidenta de la junta", "posturaA": "Hay que poner cámaras.",
+      "dependeA": [ { "texto": "Las cámaras bajan los robos." }, { "texto": "El fondo alcanza para cuatro cámaras." } ],
+      "quienB": "El vecino de la esquina", "posturaB": "Mejor arreglar los postes.",
+      "dependeB": [ { "texto": "La oscuridad facilita los robos." }, { "texto": "Las cámaras no bajan los robos, los mueven." } ],
+      "cruxes": [ { "hecho": "En barrios parecidos, las cámaras bajaron los robos sin moverlos a otras cuadras.", "cambiaA": true, "cambiaB": true, "verificable": true, "como": "Comparar las denuncias de las cuadras vecinas antes y después en el barrio de al lado." } ]
+    },
+    "resultado": {
+      "estado": "1 crux común",
+      "sugerencias": [ "Posible crux: «Las cámaras bajan los robos.» y «Las cámaras no bajan los robos, los mueven.» hablan de lo mismo." ],
+      "avisos": [],
+      "pendientes": [ "Verificar el crux: En barrios parecidos, las cámaras bajaron los robos sin moverlos a otras cuadras." ],
+      "resumen": "1 crux común · 1 a verificación."
+    },
+    "nota": "La regla de solapes de T42 sugiere un posible crux."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El domingo",
+    "versionEsquema": 1,
+    "config": { "maximoCruxes": 1, "exigirVerificables": true },
+    "datos": {
+      "quienA": "La dueña", "posturaA": "Abrir los domingos.", "dependeA": [ { "texto": "Los domingos hay clientes." } ],
+      "quienB": "La socia", "posturaB": "No abrir los domingos.", "dependeB": [ { "texto": "Nadie quiere trabajar el domingo." } ],
+      "cruxes": [ { "hecho": "El domingo es día de descanso.", "cambiaA": false, "cambiaB": true, "verificable": false } ]
+    },
+    "resultado": {
+      "estado": "sin crux común todavía",
+      "sugerencias": [],
+      "avisos": [
+        "«El domingo es día de descanso.» haría cambiar solo a un lado: no es un double crux.",
+        "La configuración exige cruxes verificables: reescribe «El domingo es día de descanso.» como algo que se pueda comprobar."
+      ],
+      "pendientes": [],
+      "resumen": "Sin crux común todavía."
+    },
+    "nota": "Un crux que cambiaría a un solo lado y que no se puede comprobar."
+  }
+]

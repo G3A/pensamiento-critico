@@ -95,8 +95,8 @@ Sin Ollama. La configuración de T08 es la de fábrica: los seis tipos, orden ad
    Respuesta: "Quiero vender más, unos 200 panes más por día, sin descuidar el local que ya tenemos."
 3. **Turno 2** (banco): "¿Qué estás dando por sentado para que eso sea cierto?" (supuestos). Respuesta: "Que en el centro
    pasa mucha gente y que la gente que pasa compra pan."
-4. **Turno 3** (banco, salto adaptativo por «mucha»): "¿Qué quieres decir exactamente con «mucha»? Dame un ejemplo
-   concreto y uno que no cuente." La persona pide **Ir al cierre**.
+4. **Turno 3** (banco, salto adaptativo por «mucha»): "¿Qué quieres decir exactamente con «mucha»? ¿Qué ejemplo
+   concreto cuenta y cuál no?" La persona pide **Ir al cierre**.
 5. **Cierre**: "¿Qué te haría cambiar de opinión sobre «conviene abrir la segunda sucursal en el centro este año»?"
    Respuesta: "Que el conteo de una semana completa dé menos de 600 personas por mañana."
 6. **Cerrar**: reflexión "Necesito contar una semana entera antes de firmar.", confianza al terminar 60, causa evidencia.

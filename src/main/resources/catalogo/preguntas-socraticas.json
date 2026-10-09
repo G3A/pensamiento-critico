@@ -39,7 +39,7 @@
       { "rama": "general", "texto": "¿Qué datos o hechos tienes para creerlo? ¿Dónde los podría ver otra persona?" }
     ],
     "conceptos": [
-      { "rama": "difuso", "texto": "¿Qué quieres decir exactamente con «{{marca}}»? Dame un ejemplo concreto y uno que no cuente." },
+      { "rama": "difuso", "texto": "¿Qué quieres decir exactamente con «{{marca}}»? ¿Qué ejemplo concreto cuenta y cuál no?" },
       { "rama": "general", "texto": "¿Qué palabra de lo que dijiste necesita una definición más precisa para que todos entiendan lo mismo?" }
     ],
     "supuestos": [
@@ -57,7 +57,7 @@
       { "rama": "general", "texto": "¿Cómo lo vería alguien a quien esto afecta y que no piensa como tú?" }
     ],
     "implicaciones": [
-      { "rama": "general", "texto": "Si actúas según lo que piensas y resulta que tenías razón, ¿qué pasa? ¿Y si no la tenías? Nombra una consecuencia de cada lado." }
+      { "rama": "general", "texto": "Si actúas según lo que piensas y tenías razón, ¿qué pasa? ¿Y qué pasa si no la tenías?" }
     ],
     "proposito": [
       { "rama": "general", "texto": "¿Qué quieres lograr con esta decisión? ¿Cómo sabrías que lo lograste?" }
@@ -75,8 +75,8 @@
   "sombreros": [
     { "id": "blanco", "nombre": "Blanco", "mira": "hechos", "pregunta": "Sombrero blanco: ¿qué hechos y datos tienes sobre esto, sin opinar?" },
     { "id": "rojo", "nombre": "Rojo", "mira": "emociones", "pregunta": "Sombrero rojo: ¿qué sientes con esto, sin tener que justificarlo?" },
-    { "id": "negro", "nombre": "Negro", "mira": "riesgos", "pregunta": "Sombrero negro: ¿qué podría salir mal? Nombra los riesgos." },
-    { "id": "amarillo", "nombre": "Amarillo", "mira": "beneficios", "pregunta": "Sombrero amarillo: ¿qué podría salir bien? Nombra los beneficios." },
+    { "id": "negro", "nombre": "Negro", "mira": "riesgos", "pregunta": "Sombrero negro: ¿qué podría salir mal y qué riesgos ves?" },
+    { "id": "amarillo", "nombre": "Amarillo", "mira": "beneficios", "pregunta": "Sombrero amarillo: ¿qué podría salir bien y qué beneficios ves?" },
     { "id": "verde", "nombre": "Verde", "mira": "ideas", "pregunta": "Sombrero verde: ¿qué otras ideas u opciones se te ocurren, aunque parezcan raras?" },
     { "id": "azul", "nombre": "Azul", "mira": "proceso", "pregunta": "Sombrero azul: mirando todo lo anterior, ¿cuál es el siguiente paso y cómo van a decidir?" }
   ],

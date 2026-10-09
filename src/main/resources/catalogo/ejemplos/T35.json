@@ -1,0 +1,70 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "¿Ponemos cámaras?",
+    "versionEsquema": 1,
+    "config": { "activos": ["blanco", "rojo", "negro", "amarillo", "verde", "azul"], "orden": ["blanco", "rojo", "negro", "amarillo", "verde", "azul"], "minutosPorSombrero": 3, "modalidad": "equipo" },
+    "datos": {
+      "tema": "¿Ponemos cámaras en la cuadra?",
+      "blanco": "12 robos este año.\n40 vecinos en la cuadra.",
+      "rojo": "Miedo.\nDesconfianza.",
+      "negro": "Costo.\nPrivacidad.",
+      "amarillo": "Disuasión.\nPruebas para la policía.",
+      "verde": "Ronda vecinal.\nLuces con sensor.",
+      "azul": "Votar en dos semanas.",
+      "sintesis": "Probar luces y ronda tres meses antes de comprar cámaras."
+    },
+    "resultado": {
+      "celdas": [ { "id": "blanco", "estado": null }, { "id": "rojo", "estado": null }, { "id": "negro", "estado": null }, { "id": "amarillo", "estado": null }, { "id": "verde", "estado": null }, { "id": "azul", "estado": null } ],
+      "notas": [ "Tiempo sugerido: 3 min por sombrero.", "En equipo: todos usan el mismo sombrero a la vez; una línea por aporte." ],
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "6 de 6 sombreros con notas · con síntesis."
+    },
+    "nota": "Es la tarjeta de T35 de la sección 7b; las reglas están en docs/ejemplos/T35.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "¿Abrimos los domingos?",
+    "versionEsquema": 1,
+    "config": { "activos": ["blanco", "negro", "amarillo", "verde"], "orden": ["blanco", "rojo", "negro", "amarillo", "verde", "azul"], "minutosPorSombrero": 5, "modalidad": "individual" },
+    "datos": {
+      "tema": "¿Abrimos los domingos?",
+      "blanco": "Creo que los domingos viene poca gente.\nLa panadería de la esquina abre los domingos.",
+      "negro": "Pagar recargo dominical.",
+      "verde": "Abrir solo de 7 a 11."
+    },
+    "resultado": {
+      "celdas": [ { "id": "blanco", "estado": "¿hecho u opinión?" }, { "id": "negro", "estado": null }, { "id": "amarillo", "estado": "sin notas" }, { "id": "verde", "estado": null } ],
+      "notas": [ "Tiempo sugerido: 5 min por sombrero.", "Individual." ],
+      "avisos": [ "En el sombrero blanco van hechos: «Creo» suena a opinión.", "Falta la síntesis: ¿qué decides o qué sigue después de mirar los sombreros?" ],
+      "pendientes": [ "Escribir la síntesis de: ¿Abrimos los domingos?" ],
+      "resumen": "3 de 4 sombreros con notas · sin síntesis."
+    },
+    "nota": "Cuatro sombreros activos, una opinión en el blanco, uno vacío y sin síntesis."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Navidad con los abuelos",
+    "versionEsquema": 1,
+    "config": { "activos": ["blanco", "rojo", "negro", "amarillo", "verde", "azul"], "orden": ["azul", "rojo", "blanco", "amarillo", "negro", "verde"], "minutosPorSombrero": 2, "modalidad": "individual" },
+    "datos": {
+      "tema": "¿Pasamos la Navidad en casa de los abuelos?",
+      "azul": "Decidir hoy en la cena.",
+      "rojo": "Ganas de verlos.\nPereza del viaje.",
+      "blanco": "Son 4 horas de carretera.\nLos abuelos tienen 80 años.",
+      "amarillo": "Los niños ven a los primos.",
+      "negro": "Volver cansados el 26.",
+      "verde": "Ir el 24 y volver el 25.",
+      "sintesis": "Ir el 24 y volver el 25 temprano."
+    },
+    "resultado": {
+      "celdas": [ { "id": "azul", "estado": null }, { "id": "rojo", "estado": null }, { "id": "blanco", "estado": null }, { "id": "amarillo", "estado": null }, { "id": "negro", "estado": null }, { "id": "verde", "estado": null } ],
+      "notas": [ "Tiempo sugerido: 2 min por sombrero.", "Individual." ],
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "6 de 6 sombreros con notas · con síntesis."
+    },
+    "nota": "Un orden propio de los sombreros: el azul primero."
+  }
+]

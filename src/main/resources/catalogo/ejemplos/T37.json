@@ -1,0 +1,63 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Quienes no quieren cámaras",
+    "versionEsquema": 1,
+    "config": { "pesoCaricatura": 30, "pesoOmision": 40, "pesoTono": 30, "umbral": 70 },
+    "datos": {
+      "postura": "Quienes se oponen a las cámaras.",
+      "texto": "A nadie le gusta que lo graben cada vez que sale de su casa, y no hay pruebas de que aquí bajen los robos en vez de moverse de cuadra.",
+      "steelman": "Las cámaras cuestan, vigilan a los vecinos honestos todo el día, y no hay evidencia local de que bajen los robos en vez de moverlos.",
+      "argumentos": [
+        { "texto": "El costo mensual de mantenerlas.", "clave": "costo, cuota, mensual" },
+        { "texto": "La privacidad de los vecinos.", "clave": "grab, privacidad" },
+        { "texto": "Los robos se mueven de cuadra.", "clave": "mover, muev" }
+      ]
+    },
+    "resultado": {
+      "caricatura": 30, "omision": 27, "tono": 30, "puntaje": 87, "aprueba": true,
+      "argumentos": [ { "cubierto": false, "clave": null }, { "cubierto": true, "clave": "grab" }, { "cubierto": true, "clave": "mover" } ],
+      "pendientes": [ "Incluir el argumento: El costo mensual de mantenerlas." ],
+      "resumen": "87 de 100 · aprueba el umbral de 70 · 1 omisión."
+    },
+    "nota": "Es la tarjeta de T37 de la sección 7b; las reglas de la rúbrica están en docs/ejemplos/T37.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "La socia que no quiere crecer",
+    "versionEsquema": 1,
+    "config": { "pesoCaricatura": 30, "pesoOmision": 40, "pesoTono": 30, "umbral": 70 },
+    "datos": {
+      "postura": "Mi socia, que no quiere abrir otra sucursal.",
+      "texto": "Mi socia solo quiere quedarse cómoda; es absurdo, porque nunca quiere crecer.",
+      "argumentos": [
+        { "texto": "No hay personal para dos locales.", "clave": "personal, gente" },
+        { "texto": "El local actual podría descuidarse.", "clave": "descuid, local" }
+      ]
+    },
+    "resultado": {
+      "caricatura": 15, "omision": 0, "tono": 15, "puntaje": 30, "aprueba": false,
+      "argumentos": [ { "cubierto": false, "clave": null }, { "cubierto": false, "clave": null } ],
+      "pendientes": [ "Incluir el argumento: No hay personal para dos locales.", "Incluir el argumento: El local actual podría descuidarse." ],
+      "resumen": "30 de 100 · no aprueba el umbral de 70 · 2 omisiones."
+    },
+    "nota": "Una caricatura, un tono burlón y dos omisiones."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "El hermano que dice que no",
+    "versionEsquema": 1,
+    "config": { "pesoCaricatura": 30, "pesoOmision": 40, "pesoTono": 30, "umbral": 70 },
+    "datos": {
+      "postura": "Mi hermano, que no quiere que mamá se mude con nosotros.",
+      "texto": "Mamá tiene su casa, sus vecinas y sus rutinas; mudarla a los 78 años le quitaría todo eso de golpe, y obviamente ella no lo quiere."
+    },
+    "resultado": {
+      "caricatura": 30, "omision": null, "tono": 15, "puntaje": 75, "aprueba": true,
+      "argumentos": [],
+      "pendientes": [],
+      "resumen": "75 de 100 · aprueba el umbral de 70 · omisión sin medir."
+    },
+    "nota": "Sin argumentos de referencia la omisión no se mide y el puntaje sale de caricatura y tono."
+  }
+]

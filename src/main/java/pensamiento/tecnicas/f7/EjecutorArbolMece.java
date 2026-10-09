@@ -251,8 +251,8 @@ public class EjecutorArbolMece implements Ejecutor<EjecutorArbolMece.Config, Eje
         return cuenta;
     }
 
-    /** Comparten más de la mitad de las palabras del más corto, sin tildes, sin mayúsculas y sin palabras vacías. */
-    static boolean seSolapan(String a, String b) {
+    /** Comparten más de la mitad de las palabras del más corto, sin tildes, sin mayúsculas y sin palabras vacías (también la usa T38). */
+    public static boolean seSolapan(String a, String b) {
         Set<String> pa = palabras(a);
         Set<String> pb = palabras(b);
         int menor = Math.min(pa.size(), pb.size());

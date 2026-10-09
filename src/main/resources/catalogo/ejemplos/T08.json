@@ -1,0 +1,103 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras van a bajar los robos",
+    "versionEsquema": 1,
+    "config": { "tipos": ["clarificacion", "supuestos", "evidencia", "puntos_de_vista", "implicaciones", "pregunta_sobre_la_pregunta"], "orden": "adaptativo", "turnosMaximos": 8, "modo": "plantillas" },
+    "datos": {
+      "postura": "Las cámaras van a bajar los robos en el barrio.",
+      "modoSesion": "ensayo",
+      "turnos": [
+        { "respuesta": "En el barrio de mi prima pusieron cámaras y me dijo que nunca más volvieron a robar." },
+        { "respuesta": "No sé si en todos los casos. Doy por hecho que los ladrones ven las cámaras y se van a robar a otro lado, y que la gente va a vivir con más seguridad." },
+        { "respuesta": "Seguridad es que haya menos robos denunciados en la junta; no cuenta que la gente solo se sienta tranquila." },
+        { "respuesta": "De que en un barrio funcionó paso a que aquí va a funcionar; ese es el paso más débil." }
+      ]
+    },
+    "resultado": {
+      "turnos": [
+        { "numero": 1, "tipo": "evidencia", "elemento": "informacion", "rama": "general", "porque": "Siguiente elemento pendiente en el orden del modo ensayo.", "pregunta": "¿Qué datos o hechos tienes para creerlo? ¿Dónde los podría ver otra persona?" },
+        { "numero": 2, "tipo": "supuestos", "elemento": "supuestos", "rama": "absoluta", "porque": "Adaptativo: «nunca» es una afirmación absoluta y los supuestos están pendientes.", "pregunta": "Dijiste «nunca»: ¿es así en todos los casos, o recuerdas uno en que no?" },
+        { "numero": 3, "tipo": "clarificacion", "elemento": "conceptos", "rama": "difuso", "porque": "Adaptativo: «seguridad» es un término difuso y los conceptos están pendientes.", "pregunta": "¿Qué quieres decir exactamente con «seguridad»? ¿Qué ejemplo concreto cuenta y cuál no?" },
+        { "numero": 4, "tipo": "evidencia", "elemento": "inferencias", "rama": "general", "porque": "Siguiente elemento pendiente en el orden del modo ensayo.", "pregunta": "¿Cómo pasas de lo que sabes a la conclusión? ¿Qué paso del razonamiento es el más débil?" }
+      ],
+      "siguiente": { "numero": 5, "tipo": "pregunta_sobre_la_pregunta", "elemento": "pregunta", "rama": "general", "porque": "Siguiente elemento pendiente en el orden del modo ensayo.", "pregunta": "¿Cuál es la pregunta que de verdad quieres responder con esto? ¿Es la misma que te hiciste al principio?" },
+      "llenos": 4,
+      "estandares": { "claridad": 10, "exactitud": 5, "profundidad": 5, "amplitud": 0, "logica": 10 },
+      "cambio": null,
+      "pendientes": [],
+      "resumen": "4 turnos · 4 de 8 elementos · sigue: pregunta sobre la pregunta."
+    },
+    "nota": "Modo ensayo con dos saltos adaptativos. Es la tarjeta de T08 de la sección 7b; las reglas están en docs/ejemplos/T08.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "La segunda sucursal",
+    "versionEsquema": 1,
+    "config": { "tipos": ["clarificacion", "supuestos", "evidencia", "puntos_de_vista", "implicaciones", "pregunta_sobre_la_pregunta"], "orden": "adaptativo", "turnosMaximos": 4, "modo": "plantillas" },
+    "datos": {
+      "postura": "Conviene abrir la segunda sucursal en el centro este año.",
+      "modoSesion": "decision",
+      "turnos": [
+        { "respuesta": "Quiero vender más, unos 200 panes más por día, sin descuidar el local que ya tenemos." },
+        { "respuesta": "Que en el centro pasa mucha gente y que la gente que pasa compra pan." },
+        { "respuesta": "Que por la esquina pasan más de 1.000 personas entre 6 y 9 de la mañana." },
+        { "respuesta": "Lo contamos mi socia y yo tres mañanas de agosto, con una hoja y un lápiz." }
+      ],
+      "cierre": "Que el conteo de una semana completa dé menos de 600 personas por mañana.",
+      "confianzaAntes": 80,
+      "confianzaDespues": 65,
+      "causaCambio": "evidencia"
+    },
+    "resultado": {
+      "turnos": [
+        { "numero": 1, "tipo": "pregunta_sobre_la_pregunta", "elemento": "proposito", "rama": "general", "porque": "Siguiente elemento pendiente en el orden del modo decisión.", "pregunta": "¿Qué quieres lograr con esta decisión? ¿Cómo sabrías que lo lograste?" },
+        { "numero": 2, "tipo": "supuestos", "elemento": "supuestos", "rama": "general", "porque": "Siguiente elemento pendiente en el orden del modo decisión.", "pregunta": "¿Qué estás dando por sentado para que eso sea cierto?" },
+        { "numero": 3, "tipo": "clarificacion", "elemento": "conceptos", "rama": "difuso", "porque": "Adaptativo: «mucha» es un término difuso y los conceptos están pendientes.", "pregunta": "¿Qué quieres decir exactamente con «mucha»? ¿Qué ejemplo concreto cuenta y cuál no?" },
+        { "numero": 4, "tipo": "evidencia", "elemento": "informacion", "rama": "cifra", "porque": "Siguiente elemento pendiente en el orden del modo decisión.", "pregunta": "¿De dónde sale «1.000», quién lo midió y cuándo?" }
+      ],
+      "siguiente": null,
+      "cierre": "¿Qué te haría cambiar de opinión sobre «conviene abrir la segunda sucursal en el centro este año»?",
+      "llenos": 4,
+      "estandares": { "claridad": 10, "exactitud": 10, "profundidad": 5, "amplitud": 0, "logica": 0 },
+      "cambio": "Confianza: 80% → 65% (causa: evidencia).",
+      "pendientes": [],
+      "resumen": "4 turnos · 4 de 8 elementos · cierre respondido."
+    },
+    "nota": "Modo decisión: la rama «cifra», el cierre respondido y un cambio de confianza que queda en el registro de cambios de opinión."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Renunciar al trabajo",
+    "versionEsquema": 1,
+    "config": { "tipos": ["supuestos", "evidencia", "pregunta_sobre_la_pregunta"], "orden": "fijo", "turnosMaximos": 6, "modo": "plantillas" },
+    "datos": {
+      "postura": "Debo renunciar porque mi jefe nunca reconoce mi trabajo.",
+      "modoSesion": "decision",
+      "turnos": [
+        { "respuesta": "Quiero sentir que mi trabajo cuenta, porque aquí nunca me tienen en cuenta para los proyectos nuevos." },
+        { "respuesta": "En julio sí me nombró en la reunión. Doy por hecho que en otra empresa sería distinto." },
+        { "respuesta": "Anoté las últimas 3 reuniones: no nombró mi trabajo en ninguna." },
+        { "respuesta": "Más que renunciar, quiero saber si aquí puedo crecer." },
+        { "respuesta": "De tres reuniones saqué que no me valora. Es poco para una conclusión así." }
+      ]
+    },
+    "resultado": {
+      "turnos": [
+        { "numero": 1, "tipo": "pregunta_sobre_la_pregunta", "elemento": "proposito", "rama": "general", "porque": "Siguiente elemento pendiente en el orden del modo decisión.", "pregunta": "¿Qué quieres lograr con esta decisión? ¿Cómo sabrías que lo lograste?" },
+        { "numero": 2, "tipo": "supuestos", "elemento": "supuestos", "rama": "absoluta", "porque": "Siguiente elemento pendiente en el orden del modo decisión.", "pregunta": "Dijiste «nunca»: ¿es así en todos los casos, o recuerdas uno en que no?" },
+        { "numero": 3, "tipo": "evidencia", "elemento": "informacion", "rama": "general", "porque": "Siguiente elemento pendiente en el orden del modo decisión.", "pregunta": "¿Qué datos o hechos tienes para creerlo? ¿Dónde los podría ver otra persona?" },
+        { "numero": 4, "tipo": "pregunta_sobre_la_pregunta", "elemento": "pregunta", "rama": "general", "porque": "El siguiente pendiente era inferencias (evidencia), el mismo tipo del turno anterior: pasa a pregunta.", "pregunta": "¿Cuál es la pregunta que de verdad quieres responder con esto? ¿Es la misma que te hiciste al principio?" },
+        { "numero": 5, "tipo": "evidencia", "elemento": "inferencias", "rama": "general", "porque": "Siguiente elemento pendiente en el orden del modo decisión.", "pregunta": "¿Cómo pasas de lo que sabes a la conclusión? ¿Qué paso del razonamiento es el más débil?" }
+      ],
+      "siguiente": null,
+      "cierre": "¿Qué te haría cambiar de opinión sobre «debo renunciar porque mi jefe nunca reconoce mi trabajo»?",
+      "llenos": 5,
+      "estandares": { "claridad": 0, "exactitud": 10, "profundidad": 5, "amplitud": 0, "logica": 10 },
+      "cambio": null,
+      "pendientes": [ "Responder la pregunta de cierre: ¿Qué te haría cambiar de opinión sobre «debo renunciar porque mi jefe nunca reconoce mi trabajo»?" ],
+      "resumen": "5 turnos · 5 de 8 elementos · falta la pregunta de cierre."
+    },
+    "nota": "Es la sesión del mockup P15 con orden fijo y tres tipos: el motor salta un elemento para no repetir el tipo."
+  }
+]

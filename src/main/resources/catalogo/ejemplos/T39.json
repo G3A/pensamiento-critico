@@ -1,0 +1,74 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Cámaras en la entrada",
+    "versionEsquema": 1,
+    "config": { "marcos": ["consecuencias", "deberes", "virtudes"], "partesMinimas": 2, "exigirObjecion": true },
+    "datos": {
+      "decision": "Poner cámaras en la entrada de la cuadra.",
+      "partes": [
+        { "parte": "Vecinos", "consecuencias": "mas", "deberes": "mas", "virtudes": "cero" },
+        { "parte": "Visitantes", "consecuencias": "cero", "deberes": "menos", "virtudes": "cero" },
+        { "parte": "Empleadas domésticas", "consecuencias": "menos", "deberes": "menos", "virtudes": "menos" }
+      ],
+      "objecionConsecuencias": "Los robos pueden moverse a la cuadra de al lado.",
+      "objecionDeberes": "Graban a quien no votó la decisión.",
+      "objecionVirtudes": "Nos acostumbra a desconfiar de todo el que entra."
+    },
+    "resultado": {
+      "balances": { "consecuencias": 0, "deberes": -1, "virtudes": -1 },
+      "conflictos": [ "Reparto desigual: beneficia a Vecinos y perjudica a Visitantes y Empleadas domésticas." ],
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "3 partes × 3 marcos · 1 conflicto."
+    },
+    "nota": "Es la tarjeta de T39 de la sección 7b; las reglas están en docs/ejemplos/T39.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El recargo del domingo",
+    "versionEsquema": 1,
+    "config": { "marcos": ["consecuencias", "deberes"], "partesMinimas": 2, "exigirObjecion": true },
+    "datos": {
+      "decision": "Pagar el recargo del domingo con la propina de los clientes.",
+      "partes": [
+        { "parte": "Panaderos", "consecuencias": "mas", "deberes": "menos" },
+        { "parte": "Clientes", "consecuencias": "cero", "deberes": "menos" },
+        { "parte": "Dueña", "consecuencias": "mas", "deberes": "cero" }
+      ],
+      "objecionConsecuencias": "Los panaderos pueden irse si sienten que pierden plata."
+    },
+    "resultado": {
+      "balances": { "consecuencias": 2, "deberes": -2 },
+      "conflictos": [ "Conflicto en «Panaderos»: consecuencias da +1 y deberes da −1.", "Reparto desigual: beneficia a Dueña y perjudica a Clientes." ],
+      "avisos": [ "Falta la objeción del marco deberes." ],
+      "pendientes": [ "Escribir la objeción del marco deberes" ],
+      "resumen": "3 partes × 2 marcos · 2 conflictos."
+    },
+    "nota": "Dos marcos que se contradicen sobre la misma parte y una objeción que falta."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Mamá en casa",
+    "versionEsquema": 1,
+    "config": { "marcos": ["consecuencias", "deberes", "virtudes"], "partesMinimas": 3, "exigirObjecion": true },
+    "datos": {
+      "decision": "Que mamá se venga a vivir con nosotros.",
+      "partes": [
+        { "parte": "Mamá", "consecuencias": "mas", "deberes": "mas", "virtudes": "mas" },
+        { "parte": "Los niños", "consecuencias": "mas", "deberes": "cero", "virtudes": "mas" }
+      ],
+      "objecionConsecuencias": "Mamá pierde a sus vecinas.",
+      "objecionDeberes": "Mi hermano no fue consultado.",
+      "objecionVirtudes": "Puede ser más por mi tranquilidad que por su bien."
+    },
+    "resultado": {
+      "balances": { "consecuencias": 2, "deberes": 1, "virtudes": 2 },
+      "conflictos": [ "Sin conflictos entre marcos por las reglas: revisa tú si alguno pesa más que los otros." ],
+      "avisos": [ "Hay 2 partes afectadas: la configuración pide al menos 3. ¿A quién más afecta?" ],
+      "pendientes": [ "Agregar partes afectadas a: Que mamá se venga a vivir con nosotros." ],
+      "resumen": "2 partes × 3 marcos · sin conflictos."
+    },
+    "nota": "Menos partes afectadas que el mínimo y ningún conflicto por las reglas."
+  }
+]

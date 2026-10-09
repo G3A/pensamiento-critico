@@ -1,11 +1,11 @@
 {
   "descripcion": "Banco de ataques de T36 · Equipo rojo / abogado del diablo, uno por pregunta crítica de cada esquema de Walton de catalogo/esquemas.json, más el genérico para una razón sin esquema. El código identifica la debilidad (esquema y pregunta) y saca de aquí el texto; el modelo, si está, solo redacta otro ataque sobre la misma debilidad. Reglas en docs/ejemplos/T36.md.",
   "version": 1,
-  "sinEsquema": "¿En qué se apoya esa razón? Sin un dato, un caso o una fuente, cualquiera puede negarla.",
+  "sinEsquema": "Sin un dato, un caso o una fuente, cualquiera puede negar esa razón. ¿En qué se apoya?",
   "ataques": [
     { "esquema": "ad_hominem", "pregunta": 1, "texto": "Esa razón habla de quien opina, no de lo que dice. ¿Qué responderías a sus razones si las dijera otra persona?" },
     { "esquema": "ad_hominem", "pregunta": 2, "texto": "¿Respondiste a lo que propone o solo a quién es? ¿Cuál es su mejor razón?" },
-    { "esquema": "alternativas", "pregunta": 1, "texto": "¿De verdad son las únicas opciones? Nombra una tercera, aunque parezca rara." },
+    { "esquema": "alternativas", "pregunta": 1, "texto": "¿De verdad son las únicas opciones? ¿Cuál sería una tercera, aunque parezca rara?" },
     { "esquema": "alternativas", "pregunta": 2, "texto": "¿Por qué descartas cada una de las otras opciones? ¿Con qué razón?" },
     { "esquema": "pendiente_resbaladiza", "pregunta": 1, "texto": "¿Qué tan probable es cada paso de esa cadena por separado?" },
     { "esquema": "pendiente_resbaladiza", "pregunta": 2, "texto": "¿En qué paso se podría detener la cadena antes de llegar al final malo?" },

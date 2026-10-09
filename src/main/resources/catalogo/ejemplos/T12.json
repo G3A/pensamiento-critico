@@ -1,0 +1,61 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Seguridad, pronto",
+    "versionEsquema": 1,
+    "config": { "terminosMinimos": 1, "exigirEjemplos": true },
+    "datos": {
+      "texto": "Las cámaras van a dar seguridad al barrio y van a hacer que la gente se sienta tranquila pronto.",
+      "terminos": [
+        { "termino": "seguridad", "definicion": "Menos robos denunciados en la junta.", "ejemplo": "Que las denuncias bajen de 12 a 6 en un año.", "contraejemplo": "Que la gente se sienta tranquila pero los robos sigan igual." },
+        { "termino": "pronto", "definicion": "En 6 meses." }
+      ]
+    },
+    "resultado": {
+      "terminos": [ { "codigo": "T1", "termino": "seguridad", "estado": "definido" }, { "codigo": "T2", "termino": "pronto", "estado": "falta ejemplo o contraejemplo" } ],
+      "avisos": [],
+      "pendientes": [ "Completar la definición de «pronto»" ],
+      "resumen": "2 ambiguos · 1 definido."
+    },
+    "nota": "Es la tarjeta de T12 de la sección 7b; las reglas están en docs/ejemplos/T12.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "Un horno mejor",
+    "versionEsquema": 1,
+    "config": { "terminosMinimos": 2, "exigirEjemplos": true },
+    "datos": {
+      "texto": "Necesitamos un horno de mejor calidad y más barato que el actual.",
+      "terminos": [
+        { "termino": "calidad", "definicion": "Que no se descalibre en un año de uso diario.", "ejemplo": "El horno nuevo de la vecina, un año sin ajustes.", "contraejemplo": "Un horno que hornea parejo pero hay que calibrar cada mes." }
+      ]
+    },
+    "resultado": {
+      "terminos": [ { "codigo": "T1", "termino": "mejor", "estado": "sin definir" }, { "codigo": "T2", "termino": "calidad", "estado": "definido" }, { "codigo": "T3", "termino": "barato", "estado": "sin definir" } ],
+      "avisos": [ "Define al menos 2 términos: llevas 1." ],
+      "pendientes": [ "Definir «mejor»", "Definir «barato»" ],
+      "resumen": "3 ambiguos · 1 definido."
+    },
+    "nota": "Tres términos detectados por la lista y menos definiciones que el mínimo."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Estudiar más",
+    "versionEsquema": 1,
+    "config": { "terminosMinimos": 1, "exigirEjemplos": false },
+    "datos": {
+      "texto": "Mi hijo tiene que estudiar más para que le vaya bien.",
+      "terminos": [
+        { "termino": "estudiar más", "definicion": "Dos horas diarias de tareas, de lunes a jueves." },
+        { "termino": "bien", "definicion": "Pasar matemáticas con 3,5 o más." }
+      ]
+    },
+    "resultado": {
+      "terminos": [ { "codigo": "T1", "termino": "estudiar más", "estado": "definido" }, { "codigo": "T2", "termino": "bien", "estado": "definido" } ],
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "2 ambiguos · 2 definidos."
+    },
+    "nota": "Un término que escribe la persona y no está en la lista."
+  }
+]

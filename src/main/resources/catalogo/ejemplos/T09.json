@@ -1,0 +1,81 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "El pan quemado",
+    "versionEsquema": 1,
+    "config": { "niveles": 5, "exigirEvidencia": true, "permitirRamas": false },
+    "datos": {
+      "problema": "Se quemó la tanda de pan de las 6.",
+      "porques": [
+        { "texto": "El horno marcó 30 grados de más.", "evidencia": "La pantalla del horno a las 6:10." },
+        { "texto": "El termostato está descalibrado.", "evidencia": "El técnico lo midió con otro termómetro." },
+        { "texto": "Nadie lo revisa desde hace un año." },
+        { "texto": "No existe un calendario de mantenimiento.", "evidencia": "El cuaderno de mantenimiento está vacío.", "raiz": true }
+      ]
+    },
+    "resultado": {
+      "porques": [
+        { "codigo": "P1", "nivel": 1, "estado": "intermedio" },
+        { "codigo": "P2", "nivel": 2, "estado": "intermedio" },
+        { "codigo": "P3", "nivel": 3, "estado": "intermedio" },
+        { "codigo": "P4", "nivel": 4, "estado": "causa_raiz" }
+      ],
+      "avisos": [ "Falta evidencia en P3: la configuración la exige." ],
+      "pendientes": [ "Verificar la causa raíz: No existe un calendario de mantenimiento." ],
+      "resumen": "4 porqués · 1 causa raíz · evidencia en 3 de 4."
+    },
+    "nota": "Es la tarjeta de T09 de la sección 7b; las reglas y el DOT esperado están en docs/ejemplos/T09.md."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Los robos de noche",
+    "versionEsquema": 1,
+    "config": { "niveles": 3, "exigirEvidencia": false, "permitirRamas": true },
+    "datos": {
+      "problema": "Hay robos de noche en la cuadra.",
+      "porques": [
+        { "texto": "La cuadra está oscura." },
+        { "texto": "Dos postes están apagados.", "evidencia": "Lo vimos el martes." },
+        { "texto": "Nadie avisó a la alcaldía." },
+        { "texto": "Nadie camina de noche.", "respondeA": "problema" },
+        { "texto": "Los negocios cierran a las 7." }
+      ]
+    },
+    "resultado": {
+      "porques": [
+        { "codigo": "P1", "nivel": 1, "estado": "intermedio" },
+        { "codigo": "P2", "nivel": 2, "estado": "intermedio" },
+        { "codigo": "P3", "nivel": 3, "estado": "causa_raiz" },
+        { "codigo": "P4", "nivel": 1, "estado": "intermedio" },
+        { "codigo": "P5", "nivel": 2, "estado": "sin_terminar" }
+      ],
+      "avisos": [],
+      "pendientes": [ "Verificar la causa raíz: Nadie avisó a la alcaldía.", "Seguir preguntando por qué: Los negocios cierran a las 7." ],
+      "resumen": "5 porqués · 1 causa raíz · 1 sin terminar · evidencia en 1 de 5."
+    },
+    "nota": "Con ramas: una cadena llega al último nivel y otra queda sin terminar."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Tarde al colegio",
+    "versionEsquema": 1,
+    "config": { "niveles": 3, "exigirEvidencia": true, "permitirRamas": false },
+    "datos": {
+      "problema": "Llegamos tarde al colegio tres veces esta semana.",
+      "porques": [
+        { "texto": "Salimos de la casa a las 7:20.", "evidencia": "El reloj de la cocina." },
+        { "texto": "El desayuno se demora." }
+      ]
+    },
+    "resultado": {
+      "porques": [
+        { "codigo": "P1", "nivel": 1, "estado": "intermedio" },
+        { "codigo": "P2", "nivel": 2, "estado": "sin_terminar" }
+      ],
+      "avisos": [ "Falta evidencia en P2: la configuración la exige." ],
+      "pendientes": [ "Seguir preguntando por qué: El desayuno se demora." ],
+      "resumen": "2 porqués · 0 causas raíz · 1 sin terminar · evidencia en 1 de 2."
+    },
+    "nota": "Una cadena corta que no llega a la causa raíz."
+  }
+]

@@ -235,35 +235,165 @@
     "usalaCuando": "Tienes una postura y quieres que alguien la apriete con preguntas: aclarar, sondear supuestos, pedir evidencia, otras perspectivas, implicaciones y cuestionar la pregunta misma.",
     "definicion": "Procedimiento de diálogo guiado con seis tipos de preguntas (clarificar, supuestos, evidencia, perspectivas, implicaciones, la pregunta misma), un tipo por turno.",
     "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "afirmacion", "modalidad": "dialogo", "patron": "V09",
-    "origen": "Paul 1993 (seis tipos)", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Paul 1993 (seis tipos)", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa", "iaExperimental": true,
+    "configDefault": { "tipos": ["clarificacion", "supuestos", "evidencia", "puntos_de_vista", "implicaciones", "pregunta_sobre_la_pregunta"], "orden": "adaptativo", "turnosMaximos": 8, "modo": "plantillas" },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "tipos", "tipo": "conjunto", "etiqueta": "Tipos de pregunta activos",
+          "ayuda": "Un tipo por turno. Los elementos cuyo tipo apagues no se preguntan.",
+          "opciones": [
+            { "valor": "clarificacion", "etiqueta": "Clarificar" }, { "valor": "supuestos", "etiqueta": "Supuestos" }, { "valor": "evidencia", "etiqueta": "Evidencia" },
+            { "valor": "puntos_de_vista", "etiqueta": "Puntos de vista" }, { "valor": "implicaciones", "etiqueta": "Implicaciones" },
+            { "valor": "pregunta_sobre_la_pregunta", "etiqueta": "Pregunta sobre la pregunta" }
+          ] },
+        { "nombre": "orden", "tipo": "enumeracion", "etiqueta": "Orden", "obligatorio": true,
+          "ayuda": "Adaptativo salta a clarificar si usas un término difuso y a supuestos si afirmas algo absoluto.",
+          "opciones": [ { "valor": "adaptativo", "etiqueta": "Adaptativo" }, { "valor": "fijo", "etiqueta": "Fijo" } ] },
+        { "nombre": "turnosMaximos", "tipo": "entero", "etiqueta": "Turnos máximos antes del cierre", "obligatorio": true, "minimo": 3, "maximo": 12 },
+        { "nombre": "modo", "tipo": "enumeracion", "etiqueta": "Modo", "obligatorio": true,
+          "ayuda": "Con el modelo, puedes pedir que redacte la pregunta que sigue con tus palabras; no cuenta hasta que la adoptes. La estrategia la lleva el código.",
+          "opciones": [ { "valor": "plantillas", "etiqueta": "Solo plantillas" }, { "valor": "plantillas_y_modelo", "etiqueta": "Plantillas y modelo local" } ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "postura", "tipo": "texto", "etiqueta": "Tu postura", "obligatorio": true, "largoMaximo": 300,
+          "ayuda": "Lo que crees o lo que estás por decidir, en una oración." },
+        { "nombre": "modoSesion", "tipo": "enumeracion", "etiqueta": "Modo de la sesión", "obligatorio": true,
+          "opciones": [ { "valor": "decision", "etiqueta": "Decisión: algo que vas a decidir" }, { "valor": "ensayo", "etiqueta": "Ensayo: algo que vas a escribir o defender" } ] },
+        { "nombre": "turnos", "tipo": "filas", "etiqueta": "Tus respuestas, una por turno", "prefijo": "R", "elemento": "respuesta", "minimo": 0, "maximo": 12,
+          "maximoDesdeConfig": "turnosMaximos",
+          "ayuda": "Evalúa para ver la pregunta que sigue; agrega una fila con tu respuesta y vuelve a evaluar.",
+          "campos": [ { "nombre": "respuesta", "tipo": "texto", "etiqueta": "Respuesta", "obligatorio": true, "largoMaximo": 600 } ] },
+        { "nombre": "cierre", "tipo": "texto", "etiqueta": "Tu respuesta a la pregunta de cierre", "largoMaximo": 300,
+          "ayuda": "¿Qué te haría cambiar de opinión? Con esta respuesta la sesión queda cerrada." },
+        { "nombre": "confianzaAntes", "tipo": "entero", "etiqueta": "Tu confianza en la postura al empezar (0 a 100)", "minimo": 0, "maximo": 100 },
+        { "nombre": "confianzaDespues", "tipo": "entero", "etiqueta": "Tu confianza al terminar (0 a 100)", "minimo": 0, "maximo": 100 },
+        { "nombre": "causaCambio", "tipo": "enumeracion", "etiqueta": "Si cambió, ¿qué la movió?",
+          "opciones": [ { "valor": "evidencia", "etiqueta": "Evidencia" }, { "valor": "steelman", "etiqueta": "El mejor argumento contrario" }, { "valor": "manual", "etiqueta": "Otra cosa" } ] },
+        { "nombre": "propuestas", "tipo": "propuestas", "etiqueta": "Propuestas del modelo", "visibleSi": "modo=plantillas_y_modelo" }
+      ]
+    }
   },
   {
     "id": "T09", "familia": "F2", "nombre": "5 porqués", "nombreLlano": "Preguntar por qué hasta llegar a la causa",
     "usalaCuando": "Algo salió mal y quieres llegar a la causa de fondo en vez de arreglar el síntoma.",
     "definicion": "Procedimiento que encadena de tres a siete preguntas \"¿por qué?\" sobre un problema hasta llegar a una causa raíz, con evidencia por nivel.",
     "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "problema", "modalidad": "formulario", "patron": "V06",
-    "origen": "Toyoda y Ohno, años 50", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Toyoda y Ohno, años 50", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "niveles": 5, "exigirEvidencia": true, "permitirRamas": false },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "niveles", "tipo": "entero", "etiqueta": "Número de niveles", "obligatorio": true, "minimo": 3, "maximo": 7,
+          "ayuda": "Un porqué en el último nivel cuenta como causa raíz." },
+        { "nombre": "exigirEvidencia", "tipo": "booleano", "etiqueta": "Exigir evidencia en cada nivel" },
+        { "nombre": "permitirRamas", "tipo": "booleano", "etiqueta": "Permitir ramas (un porqué que responde a otro que no es el anterior)" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "problema", "tipo": "texto", "etiqueta": "El problema", "obligatorio": true, "largoMaximo": 300,
+          "ayuda": "Lo que pasó, como hecho: «Se quemó la tanda de pan de las 6»." },
+        { "nombre": "porques", "tipo": "filas", "etiqueta": "¿Por qué?", "prefijo": "P", "elemento": "porqué", "minimo": 1, "maximo": 12,
+          "ayuda": "Cada fila responde a la anterior, salvo que digas otra cosa en «responde a».",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Porque…", "obligatorio": true, "largoMaximo": 300 },
+            { "nombre": "evidencia", "tipo": "texto", "etiqueta": "¿Qué dato lo respalda?", "largoMaximo": 300 },
+            { "nombre": "respondeA", "tipo": "texto", "etiqueta": "Responde a (P1, P2… o «problema»)", "largoMaximo": 10, "visibleSi": "permitirRamas" },
+            { "nombre": "raiz", "tipo": "booleano", "etiqueta": "Aquí paro: es la causa raíz" }
+          ] }
+      ]
+    }
   },
   {
     "id": "T10", "familia": "F2", "nombre": "Escalera de inferencia", "nombreLlano": "De los datos a la acción, peldaño por peldaño",
     "usalaCuando": "Llegaste rápido a una conclusión sobre alguien o algo y quieres revisar qué datos elegiste, cómo los interpretaste y qué asumiste en el camino.",
     "definicion": "Marco de seis peldaños (datos, selección, interpretación, supuestos, conclusión, acción) que muestra dónde se debilita un razonamiento.",
     "tipo": "marco", "operacion": "cuestionar", "objeto": "afirmacion", "modalidad": "lista", "patron": "V02",
-    "origen": "Argyris 1982; Senge 1990", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Argyris 1982; Senge 1990", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "peldanos": ["datos", "seleccion", "interpretacion", "supuestos", "conclusion", "accion"], "sentido": "subir" },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "peldanos", "tipo": "conjunto", "etiqueta": "Peldaños activos",
+          "opciones": [
+            { "valor": "datos", "etiqueta": "Datos" }, { "valor": "seleccion", "etiqueta": "Selección" }, { "valor": "interpretacion", "etiqueta": "Interpretación" },
+            { "valor": "supuestos", "etiqueta": "Supuestos" }, { "valor": "conclusion", "etiqueta": "Conclusión" }, { "valor": "accion", "etiqueta": "Acción" }
+          ] },
+        { "nombre": "sentido", "tipo": "enumeracion", "etiqueta": "Sentido", "obligatorio": true,
+          "opciones": [ { "valor": "subir", "etiqueta": "Subir desde los datos" }, { "valor": "bajar", "etiqueta": "Bajar desde la acción" } ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "revisa", "tipo": "texto", "etiqueta": "Lo que revisas", "obligatorio": true, "largoMaximo": 200,
+          "ayuda": "La conclusión a la que llegaste rápido: «mi jefe no me valora»." },
+        { "nombre": "datos", "tipo": "texto", "etiqueta": "1 · Datos: ¿qué pasó, como lo registraría una cámara?", "largoMaximo": 300, "visibleSi": "peldanos~datos" },
+        { "nombre": "seleccion", "tipo": "texto", "etiqueta": "2 · Selección: ¿en qué te fijaste y qué dejaste de lado?", "largoMaximo": 300, "visibleSi": "peldanos~seleccion" },
+        { "nombre": "interpretacion", "tipo": "texto", "etiqueta": "3 · Interpretación: ¿qué significado le diste?", "largoMaximo": 300, "visibleSi": "peldanos~interpretacion" },
+        { "nombre": "supuestos", "tipo": "texto", "etiqueta": "4 · Supuestos: ¿qué diste por sentado?", "largoMaximo": 300, "visibleSi": "peldanos~supuestos" },
+        { "nombre": "conclusion", "tipo": "texto", "etiqueta": "5 · Conclusión: ¿qué concluiste?", "largoMaximo": 300, "visibleSi": "peldanos~conclusion" },
+        { "nombre": "accion", "tipo": "texto", "etiqueta": "6 · Acción: ¿qué hiciste o vas a hacer?", "largoMaximo": 300, "visibleSi": "peldanos~accion" },
+        { "nombre": "comprobados", "tipo": "conjunto", "etiqueta": "Peldaños que comprobaste con otra persona o con un dato", "opcionesDesde": "peldanos",
+          "opciones": [
+            { "valor": "datos", "etiqueta": "Datos" }, { "valor": "seleccion", "etiqueta": "Selección" }, { "valor": "interpretacion", "etiqueta": "Interpretación" },
+            { "valor": "supuestos", "etiqueta": "Supuestos" }
+          ] }
+      ]
+    }
   },
   {
     "id": "T11", "familia": "F2", "nombre": "Falsación y \"qué tendría que ser cierto\"", "nombreLlano": "¿Qué me haría cambiar de opinión?",
     "usalaCuando": "Crees algo con fuerza y quieres escribir qué condiciones tendrían que cumplirse para que fuera cierto y qué evidencia te haría abandonarlo.",
     "definicion": "Procedimiento que lista las condiciones verificables de las que depende una postura y la evidencia que la refutaría; cada condición puede enviarse a verificación.",
     "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V13a",
-    "origen": "Popper 1934; Lafley y Martin 2013", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Popper 1934; Lafley y Martin 2013", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "condicionesMinimas": 2, "exigirVerificable": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "condicionesMinimas", "tipo": "entero", "etiqueta": "Condiciones mínimas", "obligatorio": true, "minimo": 1, "maximo": 5 },
+        { "nombre": "exigirVerificable", "tipo": "booleano", "etiqueta": "Exigir que cada condición sea verificable y diga cómo" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "postura", "tipo": "texto", "etiqueta": "Tu postura", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "condiciones", "tipo": "filas", "etiqueta": "¿Qué tendría que ser cierto?", "prefijo": "C", "elemento": "condición", "minimo": 1, "maximo": 8,
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Condición", "obligatorio": true, "largoMaximo": 300 },
+            { "nombre": "verificable", "tipo": "booleano", "etiqueta": "Se puede comprobar con un dato o una observación" },
+            { "nombre": "como", "tipo": "texto", "etiqueta": "¿Cómo la comprobarías?", "largoMaximo": 300 }
+          ] },
+        { "nombre": "cambiaria", "tipo": "texto", "etiqueta": "¿Qué te haría cambiar de opinión?", "obligatorio": true, "largoMaximo": 300 }
+      ]
+    }
   },
   {
     "id": "T12", "familia": "F2", "nombre": "Definición de términos y detección de ambigüedad", "nombreLlano": "¿De qué estamos hablando exactamente?",
     "usalaCuando": "Una discusión no avanza porque cada quien usa una palabra (seguridad, pronto, justo) con un sentido distinto.",
     "definicion": "Procedimiento que identifica los términos clave de una afirmación, pide definición, ejemplo y contraejemplo por término y marca los ambiguos en el texto.",
     "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V05",
-    "origen": "Ennis 1962; Halpern 1998", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Ennis 1962; Halpern 1998", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "terminosMinimos": 1, "exigirEjemplos": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "terminosMinimos", "tipo": "entero", "etiqueta": "Términos definidos como mínimo", "obligatorio": true, "minimo": 1, "maximo": 5 },
+        { "nombre": "exigirEjemplos", "tipo": "booleano", "etiqueta": "Exigir ejemplo y contraejemplo por término" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "texto", "tipo": "texto", "etiqueta": "Tu texto", "obligatorio": true, "largoMaximo": 600,
+          "ayuda": "La afirmación o el párrafo donde cada quien entiende una cosa distinta." },
+        { "nombre": "terminos", "tipo": "filas", "etiqueta": "Términos y su definición", "prefijo": "T", "elemento": "término", "minimo": 0, "maximo": 8,
+          "ayuda": "Evalúa primero: la lista marca los términos difusos. Después defínelos aquí, o agrega otros.",
+          "campos": [
+            { "nombre": "termino", "tipo": "texto", "etiqueta": "Término", "obligatorio": true, "largoMaximo": 60 },
+            { "nombre": "definicion", "tipo": "texto", "etiqueta": "Definición", "largoMaximo": 300 },
+            { "nombre": "ejemplo", "tipo": "texto", "etiqueta": "Un ejemplo que sí cuenta", "largoMaximo": 300 },
+            { "nombre": "contraejemplo", "tipo": "texto", "etiqueta": "Un ejemplo que no cuenta", "largoMaximo": 300 }
+          ] }
+      ]
+    }
   },
   {
     "id": "T13", "familia": "F3", "nombre": "Falacias como esquemas fallidos", "nombreLlano": "Detectar trampas en el razonamiento",
@@ -979,35 +1109,198 @@
     "usalaCuando": "Un grupo (la familia, el equipo, la junta) se traba discutiendo y quieres que todos miren el tema por turnos: hechos, emociones, riesgos, beneficios, ideas y proceso.",
     "definicion": "Marco de seis perspectivas por turnos (blanco, rojo, negro, amarillo, verde, azul) con notas por sombrero y una síntesis.",
     "tipo": "marco", "operacion": "generar", "objeto": "decision", "modalidad": "dialogo", "patron": "V03c",
-    "origen": "de Bono 1985", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "de Bono 1985", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "activos": ["blanco", "rojo", "negro", "amarillo", "verde", "azul"], "orden": ["blanco", "rojo", "negro", "amarillo", "verde", "azul"], "minutosPorSombrero": 3, "modalidad": "individual" },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "activos", "tipo": "conjunto", "etiqueta": "Sombreros activos",
+          "opciones": [
+            { "valor": "blanco", "etiqueta": "Blanco: hechos" }, { "valor": "rojo", "etiqueta": "Rojo: emociones" }, { "valor": "negro", "etiqueta": "Negro: riesgos" },
+            { "valor": "amarillo", "etiqueta": "Amarillo: beneficios" }, { "valor": "verde", "etiqueta": "Verde: ideas" }, { "valor": "azul", "etiqueta": "Azul: proceso" }
+          ] },
+        { "nombre": "orden", "tipo": "lista_ordenada", "etiqueta": "Orden de los sombreros",
+          "opciones": [
+            { "valor": "blanco", "etiqueta": "Blanco" }, { "valor": "rojo", "etiqueta": "Rojo" }, { "valor": "negro", "etiqueta": "Negro" },
+            { "valor": "amarillo", "etiqueta": "Amarillo" }, { "valor": "verde", "etiqueta": "Verde" }, { "valor": "azul", "etiqueta": "Azul" }
+          ] },
+        { "nombre": "minutosPorSombrero", "tipo": "entero", "etiqueta": "Minutos sugeridos por sombrero", "obligatorio": true, "minimo": 1, "maximo": 10,
+          "ayuda": "Es un recordatorio, sin cuenta regresiva." },
+        { "nombre": "modalidad", "tipo": "enumeracion", "etiqueta": "Modalidad", "obligatorio": true,
+          "opciones": [ { "valor": "individual", "etiqueta": "Individual" }, { "valor": "equipo", "etiqueta": "En equipo" } ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "tema", "tipo": "texto", "etiqueta": "El tema", "obligatorio": true, "largoMaximo": 200 },
+        { "nombre": "blanco", "tipo": "texto", "etiqueta": "Blanco: ¿qué hechos y datos hay?", "largoMaximo": 1000, "visibleSi": "activos~blanco", "ayuda": "Una idea por línea, sin opinar." },
+        { "nombre": "rojo", "tipo": "texto", "etiqueta": "Rojo: ¿qué sientes?", "largoMaximo": 1000, "visibleSi": "activos~rojo", "ayuda": "Una idea por línea, sin justificar." },
+        { "nombre": "negro", "tipo": "texto", "etiqueta": "Negro: ¿qué podría salir mal?", "largoMaximo": 1000, "visibleSi": "activos~negro", "ayuda": "Una idea por línea." },
+        { "nombre": "amarillo", "tipo": "texto", "etiqueta": "Amarillo: ¿qué podría salir bien?", "largoMaximo": 1000, "visibleSi": "activos~amarillo", "ayuda": "Una idea por línea." },
+        { "nombre": "verde", "tipo": "texto", "etiqueta": "Verde: ¿qué otras ideas hay?", "largoMaximo": 1000, "visibleSi": "activos~verde", "ayuda": "Una idea por línea." },
+        { "nombre": "azul", "tipo": "texto", "etiqueta": "Azul: ¿cómo van a decidir y qué sigue?", "largoMaximo": 1000, "visibleSi": "activos~azul", "ayuda": "Una idea por línea." },
+        { "nombre": "sintesis", "tipo": "texto", "etiqueta": "Síntesis", "largoMaximo": 300, "ayuda": "Lo que decides o lo que sigue después de mirar todos los sombreros." }
+      ]
+    }
   },
   {
     "id": "T36", "familia": "F6", "nombre": "Equipo rojo / abogado del diablo", "nombreLlano": "Que alguien ataque tu plan a propósito",
     "usalaCuando": "Tu postura ya está escrita y quieres que la ataquen con intensidad controlada para ver qué resiste.",
     "definicion": "Procedimiento de diálogo donde una parte ataca la postura con un número de ataques e intensidad configurables y la otra responde.",
     "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "argumento", "modalidad": "dialogo", "patron": "V09",
-    "origen": "Advocatus diaboli 1587; red teaming, siglo XX", "requiereIa": "si", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Advocatus diaboli 1587; red teaming, siglo XX", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa", "iaExperimental": true,
+    "configDefault": { "intensidad": 2, "numeroAtaques": 3, "esquemas": ["ad_hominem", "alternativas", "pendiente_resbaladiza", "autoridad", "analogia", "causa_efecto", "signo", "ejemplo", "opinion_popular", "clasificacion_verbal", "consecuencias"], "modo": "banco" },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "intensidad", "tipo": "entero", "etiqueta": "Intensidad", "obligatorio": true, "minimo": 1, "maximo": 3,
+          "ayuda": "1 usa la primera pregunta crítica de cada esquema; 2, las dos primeras; 3, todas." },
+        { "nombre": "numeroAtaques", "tipo": "entero", "etiqueta": "Número de ataques", "obligatorio": true, "minimo": 1, "maximo": 6 },
+        { "nombre": "esquemas", "tipo": "conjunto", "etiqueta": "Dominio: esquemas de Walton de los que salen las debilidades",
+          "opciones": [
+            { "valor": "ad_hominem", "etiqueta": "Ataque a la persona" },
+            { "valor": "alternativas", "etiqueta": "Argumento por alternativas" },
+            { "valor": "pendiente_resbaladiza", "etiqueta": "Argumento de pendiente resbaladiza" },
+            { "valor": "autoridad", "etiqueta": "Argumento por la opinión de un experto" },
+            { "valor": "analogia", "etiqueta": "Argumento por analogía" },
+            { "valor": "causa_efecto", "etiqueta": "Argumento de causa a efecto" },
+            { "valor": "signo", "etiqueta": "Argumento por signo" },
+            { "valor": "ejemplo", "etiqueta": "Argumento por ejemplo" },
+            { "valor": "opinion_popular", "etiqueta": "Argumento por opinión popular" },
+            { "valor": "clasificacion_verbal", "etiqueta": "Argumento por clasificación verbal" },
+            { "valor": "consecuencias", "etiqueta": "Argumento por las consecuencias" }
+          ] },
+        { "nombre": "modo", "tipo": "enumeracion", "etiqueta": "De dónde salen los ataques", "obligatorio": true,
+          "ayuda": "Con el modelo, puedes pedir que redacte cada ataque sobre la misma debilidad; no cuenta hasta que lo adoptes.",
+          "opciones": [ { "valor": "banco", "etiqueta": "Banco por esquema de Walton" }, { "valor": "banco_y_modelo", "etiqueta": "Banco y modelo local" },
+                        { "valor": "a_mano", "etiqueta": "Escritos a mano por otra persona" } ] }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "postura", "tipo": "texto", "etiqueta": "Tu postura", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "razones", "tipo": "filas", "etiqueta": "Tus razones", "prefijo": "R", "elemento": "razón", "minimo": 1, "maximo": 5,
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Razón", "obligatorio": true, "largoMaximo": 300 },
+            { "nombre": "apoyo", "tipo": "enumeracion", "etiqueta": "¿En qué se apoya?", "obligatorio": true,
+              "opciones": [
+                { "valor": "no_se", "etiqueta": "No sé" }, { "valor": "lo_dijo_alguien", "etiqueta": "Lo dijo alguien" }, { "valor": "un_caso", "etiqueta": "Un caso" },
+                { "valor": "comparacion", "etiqueta": "Una comparación" }, { "valor": "causa", "etiqueta": "Una causa" }, { "valor": "consecuencia", "etiqueta": "Una consecuencia" },
+                { "valor": "mayoria", "etiqueta": "Lo que hace la mayoría" }, { "valor": "senal", "etiqueta": "Una señal" }, { "valor": "definicion", "etiqueta": "Una definición" }
+              ] }
+          ] },
+        { "nombre": "ataquesEscritos", "tipo": "filas", "etiqueta": "Ataques escritos a mano", "prefijo": "A", "elemento": "ataque", "minimo": 0, "maximo": 6,
+          "visibleSi": "modo=a_mano",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Ataque", "obligatorio": true, "largoMaximo": 300 },
+            { "nombre": "razon", "tipo": "enumeracion", "etiqueta": "Ataca a", "obligatorio": true,
+              "opciones": [ { "valor": "R1", "etiqueta": "R1" }, { "valor": "R2", "etiqueta": "R2" }, { "valor": "R3", "etiqueta": "R3" }, { "valor": "R4", "etiqueta": "R4" }, { "valor": "R5", "etiqueta": "R5" } ] }
+          ] },
+        { "nombre": "respuestas", "tipo": "filas", "etiqueta": "Tus respuestas, una por ataque y en su orden", "prefijo": "A", "elemento": "respuesta", "minimo": 0, "maximo": 6,
+          "ayuda": "Evalúa para ver los ataques; la fila A1 responde al ataque A1. Deja vacía la que todavía no respondes.",
+          "campos": [ { "nombre": "texto", "tipo": "texto", "etiqueta": "Respuesta", "largoMaximo": 600 } ] },
+        { "nombre": "propuestas", "tipo": "propuestas", "etiqueta": "Propuestas del modelo", "visibleSi": "modo=banco_y_modelo" }
+      ]
+    }
   },
   {
     "id": "T37", "familia": "F6", "nombre": "Test de Turing ideológico", "nombreLlano": "¿Puedes explicar la postura contraria sin caricaturizarla?",
     "usalaCuando": "Quieres comprobar si entiendes de verdad a quien piensa distinto: escribes su postura como la defendería esa persona y se compara con el steelman.",
     "definicion": "Criterio que califica el texto del usuario sobre la postura contraria con una rúbrica (caricatura, omisión, tono) y un umbral de aprobación.",
     "tipo": "criterio", "operacion": "evaluar", "objeto": "uno_mismo", "modalidad": "formulario", "patron": "V10",
-    "origen": "Caplan 2011", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Caplan 2011", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "pesoCaricatura": 30, "pesoOmision": 40, "pesoTono": 30, "umbral": 70 },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "pesoCaricatura", "tipo": "entero", "etiqueta": "Peso de caricatura", "obligatorio": true, "minimo": 0, "maximo": 100,
+          "ayuda": "Los tres pesos suman 100." },
+        { "nombre": "pesoOmision", "tipo": "entero", "etiqueta": "Peso de omisión", "obligatorio": true, "minimo": 0, "maximo": 100 },
+        { "nombre": "pesoTono", "tipo": "entero", "etiqueta": "Peso de tono", "obligatorio": true, "minimo": 0, "maximo": 100 },
+        { "nombre": "umbral", "tipo": "entero", "etiqueta": "Umbral de aprobación", "obligatorio": true, "minimo": 0, "maximo": 100 }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "postura", "tipo": "texto", "etiqueta": "¿De quién es la postura que imitas?", "obligatorio": true, "largoMaximo": 200 },
+        { "nombre": "texto", "tipo": "texto", "etiqueta": "La postura, como la defendería quien la cree", "obligatorio": true, "largoMaximo": 1500 },
+        { "nombre": "steelman", "tipo": "texto", "etiqueta": "Steelman de referencia", "largoMaximo": 1500,
+          "ayuda": "El de T34 · Steelmanning o el que escribió alguien que la sostiene." },
+        { "nombre": "argumentos", "tipo": "filas", "etiqueta": "Argumentos de referencia", "prefijo": "A", "elemento": "argumento", "minimo": 0, "maximo": 6,
+          "ayuda": "Lo que diría quien la sostiene. La clave son una o más palabras, separadas por coma, que aparecerían si tu texto lo incluye.",
+          "campos": [
+            { "nombre": "texto", "tipo": "texto", "etiqueta": "Argumento", "obligatorio": true, "largoMaximo": 300 },
+            { "nombre": "clave", "tipo": "texto", "etiqueta": "Clave", "obligatorio": true, "largoMaximo": 100 }
+          ] }
+      ]
+    }
   },
   {
     "id": "T38", "familia": "F6", "nombre": "Double crux", "nombreLlano": "El hecho del que depende el desacuerdo",
     "usalaCuando": "Dos personas no se ponen de acuerdo y quieres encontrar el hecho concreto que, si se comprobara, haría cambiar de opinión a ambas.",
     "definicion": "Procedimiento que lista de qué depende cada postura y busca el punto de quiebre común, verificable, que puede enviarse a verificación.",
     "tipo": "procedimiento", "operacion": "cuestionar", "objeto": "afirmacion", "modalidad": "formulario", "patron": "V04",
-    "origen": "CFAR 2016", "requiereIa": "no", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "CFAR 2016", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "maximoCruxes": 1, "exigirVerificables": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "maximoCruxes", "tipo": "entero", "etiqueta": "Máximo de cruxes", "obligatorio": true, "minimo": 1, "maximo": 3 },
+        { "nombre": "exigirVerificables", "tipo": "booleano", "etiqueta": "Exigir que cada crux se pueda comprobar" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "quienA", "tipo": "texto", "etiqueta": "Lado A: ¿quién?", "obligatorio": true, "largoMaximo": 100 },
+        { "nombre": "posturaA", "tipo": "texto", "etiqueta": "Lado A: ¿qué sostiene?", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "dependeA", "tipo": "filas", "etiqueta": "Lado A depende de", "prefijo": "A", "elemento": "hecho", "minimo": 1, "maximo": 5,
+          "campos": [ { "nombre": "texto", "tipo": "texto", "etiqueta": "Hecho", "obligatorio": true, "largoMaximo": 300 } ] },
+        { "nombre": "quienB", "tipo": "texto", "etiqueta": "Lado B: ¿quién?", "obligatorio": true, "largoMaximo": 100 },
+        { "nombre": "posturaB", "tipo": "texto", "etiqueta": "Lado B: ¿qué sostiene?", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "dependeB", "tipo": "filas", "etiqueta": "Lado B depende de", "prefijo": "B", "elemento": "hecho", "minimo": 1, "maximo": 5,
+          "campos": [ { "nombre": "texto", "tipo": "texto", "etiqueta": "Hecho", "obligatorio": true, "largoMaximo": 300 } ] },
+        { "nombre": "cruxes", "tipo": "filas", "etiqueta": "Cruxes: el hecho que haría cambiar a los dos", "prefijo": "X", "elemento": "crux", "minimo": 0, "maximo": 3,
+          "maximoDesdeConfig": "maximoCruxes",
+          "campos": [
+            { "nombre": "hecho", "tipo": "texto", "etiqueta": "Hecho", "obligatorio": true, "largoMaximo": 300 },
+            { "nombre": "cambiaA", "tipo": "booleano", "etiqueta": "Si se comprobara, A cambiaría de opinión" },
+            { "nombre": "cambiaB", "tipo": "booleano", "etiqueta": "Si se comprobara, B cambiaría de opinión" },
+            { "nombre": "verificable", "tipo": "booleano", "etiqueta": "Se puede comprobar" },
+            { "nombre": "como", "tipo": "texto", "etiqueta": "¿Cómo se comprobaría?", "largoMaximo": 300 }
+          ] }
+      ]
+    }
   },
   {
     "id": "T39", "familia": "F6", "nombre": "Razonamiento ético (consecuencias, deberes, virtudes)", "nombreLlano": "¿A quién afecta y bajo qué marco?",
     "usalaCuando": "Una decisión afecta a otras personas y quieres mirarla por sus consecuencias, por los deberes que implica y por el tipo de persona o comunidad que quieres ser.",
     "definicion": "Marco que cruza tres marcos éticos con las partes afectadas, exige una objeción por marco y señala los conflictos entre marcos.",
     "tipo": "marco", "operacion": "evaluar", "objeto": "decision", "modalidad": "formulario", "patron": "V03b",
-    "origen": "Rest 1986; marcos clásicos", "requiereIa": "opcional", "versionEsquema": 1, "estado": "pendiente"
+    "origen": "Rest 1986; marcos clásicos", "requiereIa": "no", "versionEsquema": 1, "estado": "activa",
+    "configDefault": { "marcos": ["consecuencias", "deberes", "virtudes"], "partesMinimas": 2, "exigirObjecion": true },
+    "esquemaConfig": {
+      "campos": [
+        { "nombre": "marcos", "tipo": "conjunto", "etiqueta": "Marcos activos",
+          "opciones": [ { "valor": "consecuencias", "etiqueta": "Consecuencias" }, { "valor": "deberes", "etiqueta": "Deberes" }, { "valor": "virtudes", "etiqueta": "Virtudes" } ] },
+        { "nombre": "partesMinimas", "tipo": "entero", "etiqueta": "Partes afectadas mínimas", "obligatorio": true, "minimo": 1, "maximo": 6 },
+        { "nombre": "exigirObjecion", "tipo": "booleano", "etiqueta": "Exigir una objeción por marco" }
+      ]
+    },
+    "esquemaEntrada": {
+      "campos": [
+        { "nombre": "decision", "tipo": "texto", "etiqueta": "La decisión", "obligatorio": true, "largoMaximo": 300 },
+        { "nombre": "partes", "tipo": "filas", "etiqueta": "Partes afectadas", "prefijo": "P", "elemento": "parte", "minimo": 1, "maximo": 6,
+          "ayuda": "+1 beneficia, cumple o nos hace mejores; 0 neutral; −1 perjudica, incumple o nos hace peores.",
+          "campos": [
+            { "nombre": "parte", "tipo": "texto", "etiqueta": "Parte", "obligatorio": true, "largoMaximo": 100 },
+            { "nombre": "consecuencias", "tipo": "enumeracion", "etiqueta": "Consecuencias", "visibleSi": "marcos~consecuencias",
+              "opciones": [ { "valor": "mas", "etiqueta": "+1" }, { "valor": "cero", "etiqueta": "0" }, { "valor": "menos", "etiqueta": "−1" } ] },
+            { "nombre": "deberes", "tipo": "enumeracion", "etiqueta": "Deberes", "visibleSi": "marcos~deberes",
+              "opciones": [ { "valor": "mas", "etiqueta": "+1" }, { "valor": "cero", "etiqueta": "0" }, { "valor": "menos", "etiqueta": "−1" } ] },
+            { "nombre": "virtudes", "tipo": "enumeracion", "etiqueta": "Virtudes", "visibleSi": "marcos~virtudes",
+              "opciones": [ { "valor": "mas", "etiqueta": "+1" }, { "valor": "cero", "etiqueta": "0" }, { "valor": "menos", "etiqueta": "−1" } ] }
+          ] },
+        { "nombre": "objecionConsecuencias", "tipo": "texto", "etiqueta": "Objeción desde las consecuencias", "largoMaximo": 300, "visibleSi": "marcos~consecuencias" },
+        { "nombre": "objecionDeberes", "tipo": "texto", "etiqueta": "Objeción desde los deberes", "largoMaximo": 300, "visibleSi": "marcos~deberes" },
+        { "nombre": "objecionVirtudes", "tipo": "texto", "etiqueta": "Objeción desde las virtudes", "largoMaximo": 300, "visibleSi": "marcos~virtudes" }
+      ]
+    }
   },
   {
     "id": "T40", "familia": "F7", "nombre": "Definición del problema", "nombreLlano": "Reformular antes de resolver",

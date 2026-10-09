@@ -1,0 +1,69 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras reducen los robos",
+    "versionEsquema": 1,
+    "config": { "condicionesMinimas": 2, "exigirVerificable": true },
+    "datos": {
+      "postura": "Las cámaras reducen los robos.",
+      "condiciones": [
+        { "texto": "Los robos del barrio se denuncian y se cuentan.", "verificable": true, "como": "Pedir a la junta el registro de denuncias de los últimos dos años." },
+        { "texto": "En barrios con cámaras bajaron, no se desplazaron.", "verificable": true, "como": "Comparar las denuncias de las cuadras vecinas antes y después." },
+        { "texto": "Los ladrones le temen a las cámaras.", "verificable": false }
+      ],
+      "cambiaria": "Un año de datos sin baja en denuncias."
+    },
+    "resultado": {
+      "estados": [ "verificable", "verificable", "no verificable" ],
+      "avisos": [ "«Los ladrones le temen a las cámaras.» no es verificable: reescríbela como algo que se pueda observar." ],
+      "acciones": [ "Me haría cambiar de opinión: Un año de datos sin baja en denuncias.", "2 condiciones quedan como pendientes de verificación (la ficha llega en el hito 6)." ],
+      "pendientes": [ "Verificar la condición: Los robos del barrio se denuncian y se cuentan.", "Verificar la condición: En barrios con cámaras bajaron, no se desplazaron." ],
+      "resumen": "3 condiciones · 2 verificables · 2 a verificación."
+    },
+    "nota": "Es la tarjeta de T11 de la sección 7b; las reglas están en docs/ejemplos/T11.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "La sucursal que se paga sola",
+    "versionEsquema": 1,
+    "config": { "condicionesMinimas": 3, "exigirVerificable": true },
+    "datos": {
+      "postura": "La segunda sucursal se paga sola en un año.",
+      "condiciones": [
+        { "texto": "Pasan al menos 1.000 personas por la esquina cada mañana.", "verificable": true, "como": "Contar una semana completa." },
+        { "texto": "Uno de cada diez compra pan.", "verificable": true }
+      ],
+      "cambiaria": "Que en tres meses las ventas no cubran el arriendo."
+    },
+    "resultado": {
+      "estados": [ "verificable", "verificable · falta cómo" ],
+      "avisos": [ "Falta 1 condición: la configuración pide 3.", "Falta cómo verificar: «Uno de cada diez compra pan.»." ],
+      "acciones": [ "Me haría cambiar de opinión: Que en tres meses las ventas no cubran el arriendo.", "2 condiciones quedan como pendientes de verificación (la ficha llega en el hito 6)." ],
+      "pendientes": [ "Verificar la condición: Pasan al menos 1.000 personas por la esquina cada mañana.", "Verificar la condición: Uno de cada diez compra pan." ],
+      "resumen": "2 condiciones · 2 verificables · 2 a verificación."
+    },
+    "nota": "Menos condiciones que el mínimo y una sin cómo verificarla."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Mamá estaría mejor con nosotros",
+    "versionEsquema": 1,
+    "config": { "condicionesMinimas": 1, "exigirVerificable": false },
+    "datos": {
+      "postura": "Mi mamá estaría mejor viviendo con nosotros.",
+      "condiciones": [
+        { "texto": "Mamá se siente sola en su casa.", "verificable": true, "como": "Preguntarle a ella, sin mi hermano presente." },
+        { "texto": "Ella prefiere vivir acompañada aunque deje su barrio.", "verificable": false }
+      ],
+      "cambiaria": "Que ella diga que prefiere quedarse en su casa."
+    },
+    "resultado": {
+      "estados": [ "verificable", "no verificable" ],
+      "avisos": [],
+      "acciones": [ "Me haría cambiar de opinión: Que ella diga que prefiere quedarse en su casa.", "1 condición queda como pendiente de verificación (la ficha llega en el hito 6)." ],
+      "pendientes": [ "Verificar la condición: Mamá se siente sola en su casa." ],
+      "resumen": "2 condiciones · 1 verificable · 1 a verificación."
+    },
+    "nota": "Sin exigir condiciones verificables, no hay avisos."
+  }
+]

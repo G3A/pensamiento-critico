@@ -1,0 +1,90 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras del vendedor",
+    "versionEsquema": 1,
+    "config": { "intensidad": 2, "numeroAtaques": 3, "esquemas": ["ad_hominem", "alternativas", "pendiente_resbaladiza", "autoridad", "analogia", "causa_efecto", "signo", "ejemplo", "opinion_popular", "clasificacion_verbal", "consecuencias"], "modo": "banco" },
+    "datos": {
+      "postura": "Hay que comprar las cámaras que ofrece el vendedor.",
+      "razones": [
+        { "texto": "El vendedor dice que bajan los robos un 70%.", "apoyo": "no_se" },
+        { "texto": "En el barrio vecino bajaron los robos después de ponerlas.", "apoyo": "causa" }
+      ],
+      "respuestas": [ { "texto": "El municipio reporta 12% de baja en el barrio vecino. Es menos, pero es independiente." } ]
+    },
+    "resultado": {
+      "ataques": [
+        { "codigo": "A1", "razon": "R1", "esquema": "autoridad", "pregunta": 2, "texto": "Eso lo dice alguien que gana si le crees. ¿Tienes un solo dato que no venga de esa persona?", "estado": "respondido" },
+        { "codigo": "A2", "razon": "R2", "esquema": "causa_efecto", "pregunta": 1, "texto": "Que una cosa viniera después de la otra no muestra que la causara. ¿Qué más cambió en ese tiempo?", "estado": "sin responder" },
+        { "codigo": "A3", "razon": "R1", "esquema": "autoridad", "pregunta": 1, "texto": "¿Quien lo afirma sabe de este tema en particular? ¿Por qué creerle en esto?", "estado": "sin responder" }
+      ],
+      "debilidades": [
+        { "razon": "R1", "esquema": "autoridad", "deDonde": "detectado por las reglas: «El vendedor dice»", "preguntas": [2, 1] },
+        { "razon": "R2", "esquema": "causa_efecto", "deDonde": "apoyo: una causa", "preguntas": [1] }
+      ],
+      "pendientes": [
+        "Responder al ataque A2: Que una cosa viniera después de la otra no muestra que la causara. ¿Qué más cambió en ese tiempo?",
+        "Responder al ataque A3: ¿Quien lo afirma sabe de este tema en particular? ¿Por qué creerle en esto?"
+      ],
+      "resumen": "3 ataques · 1 respondido · 2 sin responder."
+    },
+    "nota": "Es la tarjeta de T36 de la sección 7b; las reglas y el banco de ataques están en docs/ejemplos/T36.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "Abrir los domingos",
+    "versionEsquema": 1,
+    "config": { "intensidad": 1, "numeroAtaques": 3, "esquemas": ["ad_hominem", "alternativas", "pendiente_resbaladiza", "autoridad", "analogia", "causa_efecto", "signo", "ejemplo", "opinion_popular", "clasificacion_verbal", "consecuencias"], "modo": "a_mano" },
+    "datos": {
+      "postura": "La panadería debe abrir los domingos.",
+      "razones": [ { "texto": "Todos los negocios del barrio abren los domingos.", "apoyo": "mayoria" } ],
+      "ataquesEscritos": [
+        { "texto": "¿Quién va a trabajar el domingo si ya hacemos doce horas?", "razon": "R1" },
+        { "texto": "Si todos abren, ¿no nos repartimos los mismos clientes?", "razon": "R1" }
+      ],
+      "respuestas": [
+        { "texto": "Dos personas más, contratadas solo para el domingo." },
+        { "texto": "Puede ser; por eso abriría solo de 7 a 11, cuando la competencia todavía no abre." }
+      ]
+    },
+    "resultado": {
+      "ataques": [
+        { "codigo": "A1", "razon": "R1", "esquema": "opinion_popular", "pregunta": 0, "texto": "¿Quién va a trabajar el domingo si ya hacemos doce horas?", "estado": "respondido" },
+        { "codigo": "A2", "razon": "R1", "esquema": "opinion_popular", "pregunta": 0, "texto": "Si todos abren, ¿no nos repartimos los mismos clientes?", "estado": "respondido" }
+      ],
+      "debilidades": [ { "razon": "R1", "esquema": "opinion_popular", "deDonde": "apoyo: lo que hace la mayoría", "preguntas": [1] } ],
+      "pendientes": [],
+      "resumen": "2 ataques · 2 respondidos · 0 sin responder."
+    },
+    "nota": "Ataques escritos a mano por la socia; el panel igual muestra la debilidad que identificó el código."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "La mudanza de mamá",
+    "versionEsquema": 1,
+    "config": { "intensidad": 3, "numeroAtaques": 4, "esquemas": ["ad_hominem", "alternativas", "pendiente_resbaladiza", "autoridad", "analogia", "causa_efecto", "signo", "ejemplo", "opinion_popular", "clasificacion_verbal", "consecuencias"], "modo": "banco" },
+    "datos": {
+      "postura": "Mi mamá debe venirse a vivir con nosotros.",
+      "razones": [
+        { "texto": "Mi tía se vino a vivir con mi prima y le fue muy bien.", "apoyo": "no_se" },
+        { "texto": "Ella está sola desde que murió mi papá, así que se va a deprimir.", "apoyo": "no_se" }
+      ],
+      "respuestas": [ { "texto": "Es un solo caso, lo reconozco." }, { "texto": "También dejó de ir a sus clases de baile." } ]
+    },
+    "resultado": {
+      "ataques": [
+        { "codigo": "A1", "razon": "R1", "esquema": null, "pregunta": 0, "texto": "Sin un dato, un caso o una fuente, cualquiera puede negar esa razón. ¿En qué se apoya?", "estado": "respondido" },
+        { "codigo": "A2", "razon": "R2", "esquema": "causa_efecto", "pregunta": 1, "texto": "Que una cosa viniera después de la otra no muestra que la causara. ¿Qué más cambió en ese tiempo?", "estado": "respondido" },
+        { "codigo": "A3", "razon": "R2", "esquema": "causa_efecto", "pregunta": 2, "texto": "¿Qué otra causa podría explicar el mismo efecto?", "estado": "sin responder" },
+        { "codigo": "A4", "razon": "R2", "esquema": "causa_efecto", "pregunta": 3, "texto": "¿Podría ser al revés: que el efecto haya producido la causa?", "estado": "sin responder" }
+      ],
+      "debilidades": [
+        { "razon": "R1", "esquema": null, "deDonde": "ninguna regla coincide", "preguntas": [] },
+        { "razon": "R2", "esquema": "causa_efecto", "deDonde": "detectado por las reglas: «desde que»", "preguntas": [1, 2, 3] }
+      ],
+      "pendientes": [ "Responder al ataque A3: ¿Qué otra causa podría explicar el mismo efecto?", "Responder al ataque A4: ¿Podría ser al revés: que el efecto haya producido la causa?" ],
+      "resumen": "4 ataques · 2 respondidos · 2 sin responder."
+    },
+    "nota": "Una razón sin esquema reconocible tiene un solo ataque, el genérico; intensidad 3 usa las tres preguntas de causa a efecto."
+  }
+]

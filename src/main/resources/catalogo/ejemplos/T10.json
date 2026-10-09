@@ -1,0 +1,75 @@
+[
+  {
+    "ambito": "personal",
+    "titulo": "La hija que no llama",
+    "versionEsquema": 1,
+    "config": { "peldanos": ["datos", "seleccion", "interpretacion", "supuestos", "conclusion", "accion"], "sentido": "subir" },
+    "datos": {
+      "revisa": "Mi hija no me quiere llamar.",
+      "datos": "Mi hija no llamó en dos semanas.",
+      "seleccion": "Ignoré que escribió tres mensajes.",
+      "interpretacion": "No llamar = no le importa.",
+      "comprobados": []
+    },
+    "resultado": {
+      "peldanos": [
+        { "id": "datos", "estado": "lleno" }, { "id": "seleccion", "estado": "lleno" },
+        { "id": "interpretacion", "estado": "peldaño débil", "motivo": "Tiene una marca de salto: «=»." },
+        { "id": "supuestos", "estado": "pendiente" }, { "id": "conclusion", "estado": "pendiente" }, { "id": "accion", "estado": "pendiente" }
+      ],
+      "pendientes": [ "Comprobar el peldaño interpretación: No llamar = no le importa." ],
+      "resumen": "3 de 6 peldaños · débil: interpretación."
+    },
+    "nota": "Es la tarjeta de T10 de la sección 7b; las reglas están en docs/ejemplos/T10.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El panadero de la mañana",
+    "versionEsquema": 1,
+    "config": { "peldanos": ["datos", "interpretacion", "conclusion", "accion"], "sentido": "bajar" },
+    "datos": {
+      "revisa": "El panadero de la mañana es descuidado.",
+      "datos": "Tres tandas quemadas en octubre, las tres en su turno.",
+      "interpretacion": "No vigila el horno.",
+      "conclusion": "El panadero de la mañana es descuidado.",
+      "accion": "Despedir al panadero del turno de la mañana.",
+      "comprobados": ["datos"]
+    },
+    "resultado": {
+      "peldanos": [
+        { "id": "accion", "estado": "lleno" }, { "id": "conclusion", "estado": "lleno" },
+        { "id": "interpretacion", "estado": "peldaño débil", "motivo": "Nadie lo comprobó con otra persona ni con un dato." },
+        { "id": "datos", "estado": "lleno" }
+      ],
+      "pendientes": [ "Comprobar el peldaño interpretación: No vigila el horno." ],
+      "resumen": "4 de 4 peldaños · débil: interpretación."
+    },
+    "nota": "Bajando desde la acción, con cuatro peldaños activos."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Los postes apagados",
+    "versionEsquema": 1,
+    "config": { "peldanos": ["datos", "seleccion", "interpretacion", "supuestos", "conclusion", "accion"], "sentido": "subir" },
+    "datos": {
+      "revisa": "Hay que arreglar los postes antes que comprar cámaras.",
+      "datos": "Doce robos este año, según el registro de la junta.",
+      "seleccion": "Me fijé en los nueve que fueron de noche.",
+      "interpretacion": "Los robos de noche tienen que ver con la oscuridad de la cuadra.",
+      "supuestos": "Con más luz habría menos robos.",
+      "conclusion": "Hay que arreglar los postes antes que comprar cámaras.",
+      "accion": "Pedir a la alcaldía que arregle los dos postes.",
+      "comprobados": ["datos", "seleccion", "interpretacion", "supuestos"]
+    },
+    "resultado": {
+      "peldanos": [
+        { "id": "datos", "estado": "lleno" }, { "id": "seleccion", "estado": "lleno" }, { "id": "interpretacion", "estado": "lleno" },
+        { "id": "supuestos", "estado": "lleno" }, { "id": "conclusion", "estado": "lleno" }, { "id": "accion", "estado": "lleno" }
+      ],
+      "nota": "Sin peldaño débil por las reglas: revisa tú si cada paso se sigue del anterior.",
+      "pendientes": [],
+      "resumen": "6 de 6 peldaños · sin peldaño débil por las reglas."
+    },
+    "nota": "Seis peldaños llenos y comprobados: la regla no marca ninguno."
+  }
+]
