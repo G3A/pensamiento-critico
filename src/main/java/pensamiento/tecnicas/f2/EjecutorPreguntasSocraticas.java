@@ -158,7 +158,7 @@ public class EjecutorPreguntasSocraticas implements Ejecutor<EjecutorPreguntasSo
             errores.add(new Validacion.Error("causaCambio", "La causa es evidencia, steelman o manual."));
         }
         for (Propuesta p : entrada.propuestas()) {
-            if (!Propuesta.codigoValido(p.codigo()) || !p.destino().matches("\\d{1,2}")) {
+            if (!Propuesta.codigoValido(p.codigo()) || !(p.destino().matches("\\d{1,2}") || elementoDe(p).isPresent())) {
                 errores.add(new Validacion.Error("propuestas", "Hay una propuesta del modelo que no corresponde a esta técnica."));
                 break;
             }
@@ -198,11 +198,22 @@ public class EjecutorPreguntasSocraticas implements Ejecutor<EjecutorPreguntasSo
         }
         ResultadoPreguntasSocraticas.Turno siguiente = r.siguiente().map(m -> turno(m, entrada.propuestas(), null)).orElse(null);
 
+        // El segundo paso del Consejero: un elemento que el modelo extrajo de una respuesta y la persona adoptó llena ese
+        // elemento si sigue vacío, con origen modelo.
+        Set<Elemento> delModelo = new HashSet<>();
+        for (Propuesta p : entrada.propuestas()) {
+            Optional<Elemento> e = elementoDe(p);
+            if (p.adoptada() && e.isPresent() && !llenos.containsKey(e.get())) {
+                llenos.put(e.get(), p.valor());
+                delModelo.add(e.get());
+            }
+        }
         Set<TipoSocratico> activos = Set.copyOf(config.tipos());
         List<ResultadoPreguntasSocraticas.ElementoPanel> elementos = new ArrayList<>();
         for (Elemento e : Elemento.values()) {
             String estado = llenos.containsKey(e) ? "lleno" : activos.contains(estrategia.tipoDe(e)) ? "pendiente" : "sin preguntar";
-            elementos.add(new ResultadoPreguntasSocraticas.ElementoPanel(e.toString(), e.nombre(), estado, llenos.get(e), llenos.containsKey(e) ? "usuario" : null));
+            elementos.add(new ResultadoPreguntasSocraticas.ElementoPanel(e.toString(), e.nombre(), estado, llenos.get(e),
+                    !llenos.containsKey(e) ? null : delModelo.contains(e) ? "modelo" : "usuario"));
         }
         List<ResultadoPreguntasSocraticas.EstandarPanel> estandares = EstandaresPorReglas.puntuar(estrategia.banco(), postura, llenos);
 
@@ -212,11 +223,12 @@ public class EjecutorPreguntasSocraticas implements Ejecutor<EjecutorPreguntasSo
                 : TipoAfirmacion.JUICIO_DE_VALOR, RolAfirmacion.POSTURA, SentidoAfirmacion.PRODUCIDA, OrigenAfirmacion.USUARIO));
         if (llenos.containsKey(Elemento.SUPUESTOS)) {
             afirmaciones.add(new AfirmacionConRol(ctx.nuevoId().get(), llenos.get(Elemento.SUPUESTOS), TipoAfirmacion.HECHO, RolAfirmacion.SUPUESTO,
-                    SentidoAfirmacion.PRODUCIDA, OrigenAfirmacion.USUARIO));
+                    SentidoAfirmacion.PRODUCIDA, delModelo.contains(Elemento.SUPUESTOS) ? OrigenAfirmacion.MODELO : OrigenAfirmacion.USUARIO, true));
         }
         if (llenos.containsKey(Elemento.INFERENCIAS)) {
             afirmaciones.add(new AfirmacionConRol(ctx.nuevoId().get(), llenos.get(Elemento.INFERENCIAS), TipoAfirmacion.HECHO,
-                    RolAfirmacion.CONCLUSION, SentidoAfirmacion.PRODUCIDA, OrigenAfirmacion.USUARIO));
+                    RolAfirmacion.CONCLUSION, SentidoAfirmacion.PRODUCIDA, delModelo.contains(Elemento.INFERENCIAS) ? OrigenAfirmacion.MODELO
+                    : OrigenAfirmacion.USUARIO, true));
         }
         String respuestaCierre = entrada.cerrada() ? entrada.cierre().strip() : null;
         if (respuestaCierre != null) {
@@ -241,6 +253,23 @@ public class EjecutorPreguntasSocraticas implements Ejecutor<EjecutorPreguntasSo
                 r.tocaCierre(), respuestaCierre, elementos, nLlenos, estandares, cambio, entrada.propuestas(), resumen, posturaId);
         return new Resultado<>(VERSION_ESQUEMA, valor, afirmaciones, pendientes, resumen, List.of(), Resultado.registroDe(entrada.propuestas()),
                 Optional.empty(), List.of(), cambios);
+    }
+
+    /** El prefijo del destino de un elemento extraído por el segundo paso del Consejero ("elemento:supuestos"). */
+    public static final String ELEMENTO = "elemento:";
+
+    /** El elemento de una propuesta de elemento extraído; vacío si la propuesta es una pregunta. */
+    public static Optional<Elemento> elementoDe(Propuesta p) {
+        if (!p.destino().startsWith(ELEMENTO)) {
+            return Optional.empty();
+        }
+        String id = p.destino().substring(ELEMENTO.length());
+        for (Elemento e : Elemento.values()) {
+            if (e.toString().equals(id)) {
+                return Optional.of(e);
+            }
+        }
+        return Optional.empty();
     }
 
     /** El turno con su pregunta: la de una propuesta adoptada para ese número, o la del banco. */
