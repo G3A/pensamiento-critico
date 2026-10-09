@@ -12,6 +12,8 @@ import java.util.UUID;
  * @param paso                qué toca en ese turno: "evidencia/informacion", "datos", "blanco", "A1", "sintesis" o "cierre"
  * @param elementoPropuesto   en un turno de la persona con el modelo: el elemento de Paul-Elder que propuso el segundo paso;
  *                            vacío si no propuso otro
+ * @param porquePropuesto     en un turno del Consejero, por qué el motor eligió ese paso; en uno de la persona, el porqué del
+ *                            elemento que propuso el modelo
  * @param propuestaAdoptada   si la persona adoptó esa propuesta
  */
 public record TurnoConsejero(UUID id, UUID sesionId, int numero, Rol rol, String paso, String texto, Origen origen, Estado estado, int intentos,

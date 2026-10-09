@@ -122,7 +122,15 @@ public class Consejero {
      * @param config     la configuración de la técnica del modo que la persona tiene guardada (o la de fábrica)
      * @param redactara  si el primer turno lo va a redactar el modelo (queda "redactando" con la pregunta del banco)
      */
-    public SesionConsejero iniciar(UUID usuarioId, UUID institucionId, SesionConsejero.Modo modo, String postura, List<SesionConsejero.Razon> razones,
+    /** Un turno del Consejero recién agregado y el paso que eligió el motor (con el pedido al modelo, si se puede redactar). */
+    public record Nuevo(TurnoConsejero turno, Paso paso) {
+    }
+
+    /** La sesión abierta y su primer turno. */
+    public record Iniciada(SesionConsejero sesion, Nuevo primero) {
+    }
+
+    public Iniciada iniciar(UUID usuarioId, UUID institucionId, SesionConsejero.Modo modo, String postura, List<SesionConsejero.Razon> razones,
                                    Json config, boolean usaModelo, Optional<Integer> confianzaAntes, Optional<UUID> expedienteId, boolean redactara) {
         if (Textos.vacio(postura)) {
             throw new NoPermitido("Escribe tu postura para empezar.");
@@ -143,8 +151,9 @@ public class Consejero {
                 usaModelo, confianzaAntes, false, SesionConsejero.Estado.ABIERTA, Optional.empty(), Optional.empty(), Optional.empty(), ahora, Optional.empty());
         sesiones.crear(s);
         Paso p = siguiente(s, List.of()).orElseThrow();
-        sesiones.agregarTurno(usuarioId, institucionId, turnoDelConsejero(s, 1, p, redactara && p.pedido().isPresent(), ahora));
-        return s;
+        TurnoConsejero primero = turnoDelConsejero(s, 1, p, redactara && p.pedido().isPresent(), ahora);
+        sesiones.agregarTurno(usuarioId, institucionId, primero);
+        return new Iniciada(s, new Nuevo(primero, p));
     }
 
     public SesionConsejero sesion(UUID usuarioId, UUID sesionId) {
@@ -163,7 +172,7 @@ public class Consejero {
      * La respuesta de la persona al último turno del Consejero y, si no era el cierre, el turno siguiente del Consejero.
      * Devuelve ese turno siguiente, o vacío si la persona respondió el cierre y la sesión queda lista para cerrarse.
      */
-    public Optional<TurnoConsejero> responder(UUID usuarioId, UUID sesionId, String texto, boolean redactara) {
+    public Optional<Nuevo> responder(UUID usuarioId, UUID sesionId, String texto, boolean redactara) {
         SesionConsejero s = sesion(usuarioId, sesionId);
         if (s.cerrada()) {
             throw new NoPermitido("Esta sesión ya está cerrada.");
@@ -194,11 +203,11 @@ public class Consejero {
         }
         TurnoConsejero nuevo = turnoDelConsejero(s, conRespuesta.size() + 1, p.get(), redactara && p.get().pedido().isPresent(), ahora);
         sesiones.agregarTurno(usuarioId, s.institucionId(), nuevo);
-        return Optional.of(nuevo);
+        return Optional.of(new Nuevo(nuevo, p.get()));
     }
 
     /** "Ir al cierre": la próxima pregunta es la de falsación. Si la última pregunta no se respondió, la reemplaza el cierre. */
-    public Optional<TurnoConsejero> irAlCierre(UUID usuarioId, UUID sesionId) {
+    public Optional<Nuevo> irAlCierre(UUID usuarioId, UUID sesionId) {
         SesionConsejero s = sesion(usuarioId, sesionId);
         if (s.cerrada()) {
             throw new NoPermitido("Esta sesión ya está cerrada.");
@@ -209,9 +218,10 @@ public class Consejero {
             return Optional.empty();
         }
         Instant ahora = reloj.ahora();
-        TurnoConsejero cierre = turnoDelConsejero(s, turnos.size() + 1, pasoCierre(s), false, ahora);
+        Paso paso = pasoCierre(s);
+        TurnoConsejero cierre = turnoDelConsejero(s, turnos.size() + 1, paso, false, ahora);
         sesiones.agregarTurno(usuarioId, s.institucionId(), cierre);
-        return Optional.of(cierre);
+        return Optional.of(new Nuevo(cierre, paso));
     }
 
     /** Lista para cerrar: la persona ya respondió la pregunta de falsación. */
@@ -320,7 +330,8 @@ public class Consejero {
 
     private static TurnoConsejero turnoDelConsejero(SesionConsejero s, int numero, Paso p, boolean redactara, Instant ahora) {
         return new TurnoConsejero(Uuid7.en(ahora), s.id(), numero, TurnoConsejero.Rol.CONSEJERO, p.paso(), p.pregunta(), TurnoConsejero.Origen.BANCO,
-                redactara ? TurnoConsejero.Estado.REDACTANDO : TurnoConsejero.Estado.LISTO, 0, Optional.empty(), Optional.empty(), Optional.empty(), false, ahora);
+                redactara ? TurnoConsejero.Estado.REDACTANDO : TurnoConsejero.Estado.LISTO, 0, Optional.empty(), Optional.empty(), Optional.of(p.porque()), false,
+                ahora);
     }
 
     // ---------------------------------------------------------------------------------------------

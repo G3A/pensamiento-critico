@@ -173,6 +173,7 @@ public class DiarioDeDecisiones {
      */
     public static final class Asistente {
 
+        public static final IdTecnica T09 = IdTecnica.de("T09");
         public static final IdTecnica T16 = IdTecnica.de("T16");
         public static final IdTecnica T24 = IdTecnica.de("T24");
         public static final IdTecnica T26 = IdTecnica.de("T26");
@@ -183,6 +184,8 @@ public class DiarioDeDecisiones {
         public static final IdTecnica T31 = IdTecnica.de("T31");
         public static final IdTecnica T32 = IdTecnica.de("T32");
         public static final IdTecnica T33 = IdTecnica.de("T33");
+        public static final IdTecnica T35 = IdTecnica.de("T35");
+        public static final IdTecnica T39 = IdTecnica.de("T39");
         public static final IdTecnica T40 = IdTecnica.de("T40");
         public static final IdTecnica T41 = IdTecnica.de("T41");
         public static final IdTecnica T42 = IdTecnica.de("T42");
@@ -193,10 +196,14 @@ public class DiarioDeDecisiones {
         public record Paso(int numero, String nombre, List<IdTecnica> tecnicas, List<IdTecnica> obligatorias) {
         }
 
-        /** Los cinco pasos, con las técnicas que la tabla de la sección 6 asigna a cada uno. */
+        /**
+         * Los cinco pasos, con las técnicas que la tabla de la sección 6 asigna a cada uno. Desde el hito 5, T09 · 5 porqués va en
+         * el paso 0, T39 · Razonamiento ético también (cuando la decisión afecta a terceros) y T35 · Seis Sombreros, la plantilla
+         * para decidir en equipo, en el paso 1; ninguna es obligatoria.
+         */
         public static final List<Paso> PASOS = List.of(
-                new Paso(0, "Problema", List.of(T40, T41, T43, T42, T44), List.of(T40, T41)),
-                new Paso(1, "Contexto", List.of(T27, T26, T24), List.of()),
+                new Paso(0, "Problema", List.of(T40, T41, T09, T43, T42, T44, T39), List.of(T40, T41)),
+                new Paso(1, "Contexto", List.of(T27, T26, T24, T35), List.of()),
                 new Paso(2, "Pre-mortem", List.of(T29, T30), List.of()),
                 new Paso(3, "ACH", List.of(T28, T33), List.of()),
                 new Paso(4, "Predicción", List.of(T31, T16, T32), List.of(T32)));
@@ -272,6 +279,12 @@ public class DiarioDeDecisiones {
                         () -> v.put("raiz", problema.orElse(decision)));
             } else if (t.equals(T44)) {
                 v.put("problema", problema.orElse(decision));
+            } else if (t.equals(T09)) {
+                v.put("problema", problema.orElse(decision));
+            } else if (t.equals(T39)) {
+                v.put("decision", decision);
+            } else if (t.equals(T35)) {
+                v.put("tema", decision);
             } else if (t.equals(T27) || t.equals(T31)) {
                 v.put("pregunta", decision);
                 if (!opciones.isEmpty()) {

@@ -111,6 +111,21 @@ public class TurnosIa {
         return Optional.ofNullable(turnos.get(id)).filter(t -> t.usuarioId.equals(usuarioId));
     }
 
+    /** El turno más reciente de esta persona abierto con esa clave (el Consejero usa "consejero:{turno}"). */
+    public Optional<Turno> porClave(UUID usuarioId, String clave) {
+        return turnos.values().stream().filter(t -> t.usuarioId.equals(usuarioId) && t.tecnica.equals(clave))
+                .max(java.util.Comparator.comparing(t -> t.inicio));
+    }
+
+    /**
+     * La cola visible (sección 4, hardware por concurrencia): cuántos turnos de otras personas siguen esperando al modelo.
+     * Ollama atiende una petición a la vez, así que el turno de esta persona espera detrás de ellos.
+     */
+    public int enCursoDeOtros(UUID usuarioId) {
+        limpiar();
+        return (int) turnos.values().stream().filter(t -> !t.usuarioId.equals(usuarioId) && !t.terminado() && !t.cancelado).count();
+    }
+
     /** Cancelar: se descarta lo que llegue y las conexiones se cierran. El modelo puede seguir hasta su tiempo máximo. */
     public boolean cancelar(UUID usuarioId, UUID id) {
         Optional<Turno> turno = de(usuarioId, id);

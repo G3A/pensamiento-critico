@@ -44,7 +44,7 @@
         <li><a href="/catalogo" class="${pagina.titulo().equals("Catálogo") ? "activo" : ""}">Catálogo</a></li>
         <li><a href="/expedientes" class="${pagina.titulo().equals("Expedientes") ? "activo" : ""}">Expedientes</a></li>
         <li><a href="/mis-datos" class="${pagina.titulo().equals("Mis datos") ? "activo" : ""}">Mis datos</a></li>
-        <li><span class="pendiente-menu">Consejero <small>hito 5</small></span></li>
+        <li><a href="/consejero" class="${pagina.titulo().equals("Consejero") ? "activo" : ""}">Consejero</a></li>
         <li><a href="/taller" class="${pagina.titulo().equals("Taller") ? "activo" : ""}">Taller</a></li>
         <li><span class="pendiente-menu">Verificación <small>hito 6</small></span></li>
         <li><a href="/diario" class="${pagina.titulo().equals("Diario") ? "activo" : ""}">Diario</a></li>

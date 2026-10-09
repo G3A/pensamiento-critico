@@ -77,10 +77,15 @@ public class ServicioRespaldo {
     private final RegistroAuditoria auditoria;
     private final Reloj reloj;
     private final RepositorioPredicciones predicciones;
+    private final pensamiento.nucleo.puertos.RepositorioCambiosOpinion cambios;
+    private final pensamiento.nucleo.puertos.RepositorioSesiones sesiones;
 
     public ServicioRespaldo(RepositorioExpediente expedientes, RepositorioEjecucion ejecuciones, RepositorioArgumentos argumentos,
                             RepositorioConfiguracion configuraciones, RegistroIdentificadores identificadores, RegistroAuditoria auditoria,
-                            Reloj reloj, RepositorioPredicciones predicciones) {
+                            Reloj reloj, RepositorioPredicciones predicciones, pensamiento.nucleo.puertos.RepositorioCambiosOpinion cambios,
+                            pensamiento.nucleo.puertos.RepositorioSesiones sesiones) {
+        this.cambios = cambios;
+        this.sesiones = sesiones;
         this.expedientes = expedientes;
         this.ejecuciones = ejecuciones;
         this.argumentos = argumentos;
@@ -114,14 +119,19 @@ public class ServicioRespaldo {
             List<PaqueteDatos.PrediccionDatos> preds = predicciones.deEjecucion(usuarioId, e.id()).stream()
                     .map(p -> new PaqueteDatos.PrediccionDatos(p.id(), p.afirmacionId(), p.confianza(), p.fechaRevision(), p.estado().toString(),
                             p.resueltaEn().orElse(null))).toList();
+            List<PaqueteDatos.CambioDatos> cams = cambios.deEjecucion(usuarioId, e.id()).stream()
+                    .map(c -> new PaqueteDatos.CambioDatos(c.id(), c.afirmacionId(), c.confianzaAntes(), c.confianzaDespues(), c.causa().toString(),
+                            c.creadoEn())).toList();
             ejs.add(new PaqueteDatos.EjecucionDatos(e.id(), e.tecnica().valor(), e.versionEsquema(), e.expedienteId().orElse(null),
                     nodo(e.config()), nodo(e.datos()), nodo(e.resultado()), e.resumen(), e.claveIdempotencia(), e.creadaEn(),
                     e.modelo().map(m -> new PaqueteDatos.RegistroModeloDatos(m.modelo(), m.digest(), m.promptVersion(), m.temperatura(), m.semilla())).orElse(null),
-                    afirmaciones, suyos, args, preds));
+                    afirmaciones, suyos, args, preds, cams));
         }
+        List<PaqueteDatos.SesionDatos> ses = sesiones.deUsuario(usuarioId).reversed().stream().map(s -> sesionDatos(s, sesiones.turnos(usuarioId, s.id())))
+                .toList();
         auditoria.registrar(new RegistroAuditoria.Evento(Optional.of(usuarioId), institucionId, RegistroAuditoria.Accion.EXPORTAR,
                 "datos-de-una-persona", Optional.of(usuarioId), reloj.ahora()));
-        return new PaqueteDatos(PaqueteDatos.FORMATO, PaqueteDatos.VERSION, reloj.ahora(), persona, configs, exps, ejs);
+        return new PaqueteDatos(PaqueteDatos.FORMATO, PaqueteDatos.VERSION, reloj.ahora(), persona, configs, exps, ejs, ses);
     }
 
     public String exportarComoTexto(UUID usuarioId, UUID institucionId, String persona) {
@@ -151,6 +161,11 @@ public class ServicioRespaldo {
             listaSegura(e.afirmaciones()).forEach(a -> ids.add(exigir(a.id())));
             listaSegura(e.argumentos()).forEach(a -> ids.add(exigir(a.id())));
             listaSegura(e.predicciones()).forEach(p -> ids.add(exigir(p == null ? null : p.id())));
+            listaSegura(e.cambios()).forEach(c -> ids.add(exigir(c == null ? null : c.id())));
+        }
+        for (PaqueteDatos.SesionDatos s : paquete.sesiones()) {
+            ids.add(exigir(s == null ? null : s.id()));
+            listaSegura(s.turnos()).forEach(t -> ids.add(exigir(t == null ? null : t.id())));
         }
         long ajenos = ids.stream().filter(id -> identificadores.deOtroUsuario(usuarioId, id)).count();
         if (ajenos > 0) {
@@ -202,7 +217,13 @@ public class ServicioRespaldo {
             for (PaqueteDatos.PrediccionDatos p : listaSegura(d.predicciones())) {
                 predicciones.restaurar(usuarioId, institucionId, prediccion(p, e.id(), deLaEjecucion));
             }
+            for (PaqueteDatos.CambioDatos c : listaSegura(d.cambios())) {
+                cambios.restaurar(usuarioId, institucionId, cambio(c, e.id(), deLaEjecucion));
+            }
             ejNuevas++;
+        }
+        for (PaqueteDatos.SesionDatos s : paquete.sesiones()) {
+            restaurarSesion(usuarioId, institucionId, s);
         }
         for (PaqueteDatos.Configuracion c : paquete.configuraciones()) {
             configuraciones.guardar(usuarioId, institucionId, IdTecnica.de(c.tecnica()), c.versionEsquema(), json(c.valores()));
@@ -210,6 +231,62 @@ public class ServicioRespaldo {
         auditoria.registrar(new RegistroAuditoria.Evento(Optional.of(usuarioId), institucionId, RegistroAuditoria.Accion.IMPORTAR,
                 "datos-de-una-persona", Optional.of(usuarioId), reloj.ahora()));
         return new Importacion(expNuevos, expActualizados, ejNuevas, ejYaEstaban, paquete.configuraciones().size());
+    }
+
+    /** Un cambio de opinión del archivo, validado: su afirmación es de la ejecución y la causa es una de las de la tabla. */
+    private static pensamiento.nucleo.CambioOpinion cambio(PaqueteDatos.CambioDatos d, UUID ejecucionId, Set<UUID> deLaEjecucion) {
+        if (d.afirmacionId() == null || !deLaEjecucion.contains(d.afirmacionId()) || d.causa() == null || d.creadoEn() == null) {
+            throw new ArchivoInvalido("Un cambio de opinión del archivo apunta a una afirmación que no es de su ejecución.");
+        }
+        try {
+            return new pensamiento.nucleo.CambioOpinion(d.id(), d.afirmacionId(), "", d.confianzaAntes(), d.confianzaDespues(),
+                    pensamiento.nucleo.CambioOpinion.Causa.de(d.causa()), Optional.of(ejecucionId), d.creadoEn());
+        } catch (IllegalArgumentException e) {
+            throw new ArchivoInvalido("Un cambio de opinión del archivo no es válido.");
+        }
+    }
+
+    private static PaqueteDatos.SesionDatos sesionDatos(pensamiento.nucleo.SesionConsejero s, List<pensamiento.nucleo.TurnoConsejero> turnos) {
+        return new PaqueteDatos.SesionDatos(s.id(), s.expedienteId().orElse(null), s.modo().toString(), s.postura(),
+                s.razones().stream().map(r -> new PaqueteDatos.RazonDatos(r.texto(), r.apoyo())).toList(), nodo(s.config()), s.usaModelo(),
+                s.confianzaAntes().orElse(null), s.cierrePedido(), s.estado().toString(), s.reflexion().orElse(null), s.confianzaDespues().orElse(null),
+                s.ejecucionId().orElse(null), s.creadaEn(), s.cerradaEn().orElse(null),
+                turnos.stream().map(t -> new PaqueteDatos.TurnoDatos(t.id(), t.numero(), t.rol().toString(), t.paso(), t.texto(), t.origen().toString(),
+                        t.estado().toString(), t.intentos(), t.modelo().map(m -> new PaqueteDatos.RegistroModeloDatos(m.modelo(), m.digest(), m.promptVersion(),
+                        m.temperatura(), m.semilla())).orElse(null), t.elementoPropuesto().orElse(null), t.porquePropuesto().orElse(null),
+                        t.propuestaAdoptada(), t.creadoEn())).toList());
+    }
+
+    /**
+     * Restaura una sesión del Consejero tal como estaba. El expediente y la ejecución quedan solo si ya son de la persona; un
+     * turno que estaba redactando entra como listo, con el texto que tenía.
+     */
+    private void restaurarSesion(UUID usuarioId, UUID institucionId, PaqueteDatos.SesionDatos d) {
+        try {
+            pensamiento.nucleo.SesionConsejero.Estado estado = pensamiento.nucleo.SesionConsejero.Estado.valueOf(d.estado().toUpperCase());
+            if (estado == pensamiento.nucleo.SesionConsejero.Estado.CERRADA && d.cerradaEn() == null || d.postura() == null || d.postura().isBlank() || d.config() == null) {
+                throw new ArchivoInvalido("Una sesión del Consejero del archivo no es válida.");
+            }
+            pensamiento.nucleo.SesionConsejero s = new pensamiento.nucleo.SesionConsejero(d.id(), usuarioId, institucionId,
+                    Optional.ofNullable(d.expedienteId()).filter(x -> expedientes.porId(usuarioId, x).isPresent()),
+                    pensamiento.nucleo.SesionConsejero.Modo.de(d.modo()), d.postura(),
+                    listaSegura(d.razones()).stream().map(r -> new pensamiento.nucleo.SesionConsejero.Razon(r.texto(), r.apoyo())).toList(), json(d.config()),
+                    d.usaModelo(), Optional.ofNullable(d.confianzaAntes()), d.cierrePedido(), estado, Optional.ofNullable(d.reflexion()),
+                    Optional.ofNullable(d.confianzaDespues()), Optional.ofNullable(d.ejecucionId()).filter(x -> ejecuciones.porId(usuarioId, x).isPresent()),
+                    d.creadaEn() == null ? reloj.ahora() : d.creadaEn(), Optional.ofNullable(d.cerradaEn()));
+            List<pensamiento.nucleo.TurnoConsejero> turnos = listaSegura(d.turnos()).stream().map(t -> new pensamiento.nucleo.TurnoConsejero(t.id(), d.id(),
+                    t.numero(), pensamiento.nucleo.TurnoConsejero.Rol.valueOf(t.rol().toUpperCase()), t.paso(), t.texto(),
+                    pensamiento.nucleo.TurnoConsejero.Origen.valueOf(t.origen().toUpperCase()), pensamiento.nucleo.TurnoConsejero.Estado.LISTO, t.intentos(),
+                    Optional.ofNullable(t.modelo()).map(m -> new Ejecucion.RegistroModelo(m.modelo(), m.digest(), m.promptVersion(), m.temperatura(), m.semilla())),
+                    Optional.ofNullable(t.elementoPropuesto()), Optional.ofNullable(t.porquePropuesto()), t.propuestaAdoptada(),
+                    t.creadoEn() == null ? reloj.ahora() : t.creadoEn())).toList();
+            sesiones.restaurar(usuarioId, institucionId, s, turnos);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            if (e instanceof ArchivoInvalido a) {
+                throw a;
+            }
+            throw new ArchivoInvalido("Una sesión del Consejero del archivo no es válida.");
+        }
     }
 
     /** Una predicción del archivo, validada: su afirmación es de la ejecución y una resuelta trae su fecha de resolución. */

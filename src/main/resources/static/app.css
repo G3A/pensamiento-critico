@@ -476,3 +476,4 @@ pre.argdown { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--
 .consejero-entrada textarea { flex: 1 1 16rem; min-height: 4rem; }
 .consejero-modos { display: flex; gap: .35rem; flex-wrap: wrap; margin: .5rem 0; }
 .cola-ia { color: var(--aviso); }
+.solo-lector { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

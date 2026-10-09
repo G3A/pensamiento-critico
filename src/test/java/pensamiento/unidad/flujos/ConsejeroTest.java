@@ -63,7 +63,7 @@ class ConsejeroTest {
 
     private SesionConsejero iniciarDecision() {
         return consejero.iniciar(YO, INST, SesionConsejero.Modo.DECISION, "Conviene abrir la segunda sucursal en el centro este año.", List.of(),
-                configT08(), false, Optional.of(80), Optional.empty(), false);
+                configT08(), false, Optional.of(80), Optional.empty(), false).sesion();
     }
 
     private List<TurnoConsejero> turnos(SesionConsejero s) {
@@ -129,7 +129,7 @@ class ConsejeroTest {
     void el_modo_escalera_pregunta_un_peldano_por_turno_y_al_cerrar_guarda_t10_con_los_comprobados() {
         Json config = new Json("{\"peldanos\":[\"datos\",\"seleccion\",\"interpretacion\",\"supuestos\",\"conclusion\",\"accion\"],\"sentido\":\"subir\"}");
         SesionConsejero s = consejero.iniciar(YO, INST, SesionConsejero.Modo.ESCALERA, "Mi hija no me quiere llamar.", List.of(), config, false,
-                Optional.empty(), Optional.empty(), false);
+                Optional.empty(), Optional.empty(), false).sesion();
         consejero.responder(YO, s.id(), "Mi hija no llamó en dos semanas.", false);
         consejero.responder(YO, s.id(), "Ignoré que escribió tres mensajes.", false);
         consejero.responder(YO, s.id(), "No llamar = no le importa.", false);
@@ -149,7 +149,7 @@ class ConsejeroTest {
         Json config = new Json("{\"activos\":[\"blanco\",\"negro\",\"amarillo\"],\"orden\":[\"blanco\",\"rojo\",\"negro\",\"amarillo\",\"verde\",\"azul\"],"
                 + "\"minutosPorSombrero\":3,\"modalidad\":\"individual\"}");
         SesionConsejero s = consejero.iniciar(YO, INST, SesionConsejero.Modo.SOMBREROS, "¿Abrimos los domingos?", List.of(), config, false,
-                Optional.empty(), Optional.empty(), false);
+                Optional.empty(), Optional.empty(), false).sesion();
         consejero.responder(YO, s.id(), "La panadería de la esquina abre los domingos.", false);
         consejero.responder(YO, s.id(), "Pagar recargo dominical.", false);
         consejero.responder(YO, s.id(), "Vender más el fin de semana.", false);
@@ -171,7 +171,7 @@ class ConsejeroTest {
         SesionConsejero s = consejero.iniciar(YO, INST, SesionConsejero.Modo.DEBATE, "Hay que comprar las cámaras que ofrece el vendedor.",
                 List.of(new SesionConsejero.Razon("El vendedor dice que bajan los robos un 70%.", "no_se"),
                         new SesionConsejero.Razon("En el barrio vecino bajaron los robos después de ponerlas.", "causa")),
-                config, false, Optional.of(90), Optional.empty(), false);
+                config, false, Optional.of(90), Optional.empty(), false).sesion();
         assertThat(turnos(s).getFirst().texto()).isEqualTo("Eso lo dice alguien que gana si le crees. ¿Tienes un solo dato que no venga de esa persona?");
         consejero.responder(YO, s.id(), "El municipio reporta 12% de baja en el barrio vecino. Es menos, pero es independiente.", false);
         assertThat(turnos(s).getLast().paso()).isEqualTo("A2");
