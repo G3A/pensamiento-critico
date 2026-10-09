@@ -186,6 +186,7 @@ class PlantillasDeLaVerificacionTest {
         todoCampoConEtiqueta(d);
         assertThat(d.select("#f-pasaje").text()).isEqualTo("En el centro pasan 1.200 personas por hora; en el barrio, 300.");
         assertThat(d.select(".propuesta .chip").text()).isEqualTo("propuesta del modelo");
+        assertThat(d.select(".aviso-experimental .chip").text()).as("el etiquetado de pasajes no cumplió el umbral de adversarios").isEqualTo("experimental");
         assertThat(d.select("input[name=postura][value=apoya]").hasAttr("checked")).isTrue();
         assertThat(d.select("#previa").attr("aria-live")).isEqualTo("polite");
         assertThat(d.select("fieldset legend").eachText()).contains("Datos de la fuente", "SIFT", "Independencia y acceso (lectura lateral)",

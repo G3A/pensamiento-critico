@@ -58,6 +58,7 @@
           @if(v.propuestaDelModelo())
             <p class="propuesta"><span class="chip chip-pendiente">propuesta del modelo</span> ${v.valor("propuesta")}@if(!v.valor("porque").isEmpty()): ${v.valor("porque")}@endif.
               Si la dejas elegida, la evidencia queda «etiquetada por el modelo, adoptada por ti»; si eliges otra, es tuya.</p>
+            <p class="aviso-experimental"><span class="chip chip-aviso">experimental</span> <span class="detalle">En la evaluación del hito 6 el modelo obedeció una instrucción escondida en un documento: lee el pasaje antes de adoptar.</span></p>
           @endif
           <div class="radios">
             <label class="radio"><input type="radio" name="postura" value="apoya" checked="${v.valor("postura").equals("apoya")}"> Apoya</label>
