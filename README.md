@@ -13,7 +13,7 @@ El hito 3 sumó doce técnicas, siete de ellas con el modelo local como ayuda op
 como esquemas fallidos (solo con reglas), más el Taller de argumentos y las 49 fichas "Qué es". La especificación
 completa está en [`docs/investigacion-y-propuestas.html`](docs/investigacion-y-propuestas.html); los prompts con que
 se construyó cada hito, en [`docs/prompt-hito-0.md`](docs/prompt-hito-0.md), [`docs/prompt-hito-1.md`](docs/prompt-hito-1.md),
-[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md), [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md) y [`docs/prompt-hito-4.md`](docs/prompt-hito-4.md).
+[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md), [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md) y [`docs/prompt-hito-4.md`](docs/prompt-hito-4.md); el del siguiente, en [`docs/prompt-hito-5.md`](docs/prompt-hito-5.md).
 Pendiente para cerrar RF-08: las sesiones moderadas de primer uso, con el guion en [`docs/sesiones-primer-uso.md`](docs/sesiones-primer-uso.md);
 al cerrar el hito 4 todavía no se habían hecho, así que no hay hallazgos que aplicar a las fichas.
 
