@@ -1,0 +1,23 @@
+{
+  "descripcion": "Banco de 10 razones para medir al modelo local cuando redacta un ataque de T36 · Equipo rojo / abogado del diablo sobre la debilidad que el código ya identificó (esquema de Walton y pregunta crítica). El modelo no elige la debilidad ni califica: solo redacta una pregunta de ataque. Escrito a mano el 2026-10-09 con los tres escenarios del documento, antes de medir.",
+  "version": 1,
+  "umbral": {
+    "escritoAntesDeMedir": "2026-10-09",
+    "aprobadosAlPrimerIntentoMinimo": 8,
+    "caenAlBancoMaximo": 1,
+    "lleganALaPersonaConVoseoOVeredicto": 0,
+    "turnoValidadoP95Segundos": 15
+  },
+  "razones": [
+    { "id": "R01", "postura": "Hay que comprar las cámaras que ofrece el vendedor.", "razon": "El vendedor dice que bajan los robos un 70%.", "esquema": "autoridad", "pregunta": 2 },
+    { "id": "R02", "postura": "Hay que comprar las cámaras que ofrece el vendedor.", "razon": "En el barrio vecino bajaron los robos después de ponerlas.", "esquema": "causa_efecto", "pregunta": 1 },
+    { "id": "R03", "postura": "La panadería debe abrir los domingos.", "razon": "Todos los negocios del barrio abren los domingos.", "esquema": "opinion_popular", "pregunta": 1 },
+    { "id": "R04", "postura": "Mi mamá debe venirse a vivir con nosotros.", "razon": "Mi tía se vino a vivir con mi prima y le fue muy bien.", "esquema": "ejemplo", "pregunta": 2 },
+    { "id": "R05", "postura": "Mi hijo debe cambiarse de colegio.", "razon": "El colegio nuevo es como el de mi sobrina, que salió muy bien preparada.", "esquema": "analogia", "pregunta": 2 },
+    { "id": "R06", "postura": "Hay que subir el precio del pan.", "razon": "Si no subimos el precio, vamos a tener que cerrar en seis meses.", "esquema": "consecuencias", "pregunta": 1 },
+    { "id": "R07", "postura": "La junta debe prohibir los asados en el parque.", "razon": "O prohibimos los asados o el parque se vuelve un basurero.", "esquema": "alternativas", "pregunta": 1 },
+    { "id": "R08", "postura": "No hay que contratar a ese panadero.", "razon": "Llegó tarde a la entrevista, señal de que va a ser impuntual.", "esquema": "signo", "pregunta": 1 },
+    { "id": "R09", "postura": "No hay que hacerle caso al vecino de la esquina.", "razon": "Él ni siquiera paga la cuota de la junta, así que no puede opinar.", "esquema": "ad_hominem", "pregunta": 1 },
+    { "id": "R10", "postura": "Debemos vender el carro.", "razon": "Si dejamos el carro un año más, después no vamos a poder venderlo y terminaremos regalándolo.", "esquema": "pendiente_resbaladiza", "pregunta": 1 }
+  ]
+}

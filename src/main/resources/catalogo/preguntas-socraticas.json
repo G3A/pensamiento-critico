@@ -1,0 +1,84 @@
+{
+  "descripcion": "Banco de preguntas ramificado del Consejero socrático y de T08 · Preguntas socráticas, más las preguntas de los modos escalera (T10 · Escalera de inferencia) y sombreros (T35 · Seis Sombreros) y las listas de marcas que usan T08, T10, T12 y T35. Es contenido versionado: el código elige el tipo, el elemento y la rama; el modelo, si está, solo redacta la pregunta elegida. Reglas en docs/ejemplos/T08.md, T10.md, T12.md, T35.md y docs/consejero.md.",
+  "version": 1,
+  "tipos": [
+    { "id": "clarificacion", "nombre": "clarificar", "descripcion": "una pregunta que pide aclarar qué quiere decir la persona con una palabra o una idea" },
+    { "id": "supuestos", "nombre": "supuestos", "descripcion": "una pregunta sobre lo que la persona da por sentado" },
+    { "id": "evidencia", "nombre": "evidencia", "descripcion": "una pregunta sobre qué datos o razones tiene para creerlo" },
+    { "id": "puntos_de_vista", "nombre": "puntos de vista", "descripcion": "una pregunta sobre cómo lo vería otra persona o desde otro lugar" },
+    { "id": "implicaciones", "nombre": "implicaciones", "descripcion": "una pregunta sobre qué pasaría si fuera cierto o si lo hiciera" },
+    { "id": "pregunta_sobre_la_pregunta", "nombre": "pregunta sobre la pregunta", "descripcion": "una pregunta sobre si la pregunta que se hace es la que importa" }
+  ],
+  "elementos": [
+    { "id": "proposito", "nombre": "Propósito", "tipo": "pregunta_sobre_la_pregunta" },
+    { "id": "pregunta", "nombre": "Pregunta", "tipo": "pregunta_sobre_la_pregunta" },
+    { "id": "informacion", "nombre": "Información", "tipo": "evidencia" },
+    { "id": "supuestos", "nombre": "Supuestos", "tipo": "supuestos" },
+    { "id": "conceptos", "nombre": "Conceptos", "tipo": "clarificacion" },
+    { "id": "inferencias", "nombre": "Inferencias", "tipo": "evidencia" },
+    { "id": "implicaciones", "nombre": "Implicaciones", "tipo": "implicaciones" },
+    { "id": "puntos_de_vista", "nombre": "Puntos de vista", "tipo": "puntos_de_vista" }
+  ],
+  "ordenes": {
+    "ensayo": ["informacion", "conceptos", "supuestos", "inferencias", "pregunta", "puntos_de_vista", "implicaciones", "proposito"],
+    "decision": ["proposito", "supuestos", "informacion", "implicaciones", "puntos_de_vista", "conceptos", "inferencias", "pregunta"]
+  },
+  "marcas": {
+    "difuso": ["seguridad", "pronto", "mejor", "peor", "mucho", "mucha", "muchos", "muchas", "poco", "poca", "pocos", "pocas", "justo", "justa", "normal", "barato", "barata", "rapido", "rapida", "importante", "suficiente", "bastante", "bien", "mal", "reconoce", "reconocer", "reconocimiento", "valora", "valorar", "respeto", "calidad"],
+    "absoluta": ["siempre", "nunca", "jamas", "todos", "todas", "todo el mundo", "nadie", "ninguno", "ninguna", "seguro que", "obvio", "obviamente"],
+    "testimonio": ["me dijo", "me dijeron", "me conto", "me contaron", "dicen que", "escuche que"],
+    "causa": ["porque", "por eso", "asi que", "entonces", "por lo tanto"],
+    "fuente": ["segun", "registro", "registros", "dato", "datos", "cifra", "cifras", "informe", "encuesta", "conteo", "contamos", "medimos", "medicion"],
+    "salto": ["=", "siempre", "nunca", "todos", "todas", "nadie", "seguro que", "obvio", "obviamente", "no le importa", "no les importa", "no me valora", "no me quiere", "a proposito", "lo hace para"],
+    "opinion": ["creo", "me parece", "siento", "pienso", "seguro que", "ojala"]
+  },
+  "preguntas": {
+    "informacion": [
+      { "rama": "cifra", "texto": "¿De dónde sale «{{marca}}», quién lo midió y cuándo?" },
+      { "rama": "testimonio", "texto": "Dijiste «{{marca}}»: ¿cómo lo supo esa persona y lo comprobaste por otro lado?" },
+      { "rama": "general", "texto": "¿Qué datos o hechos tienes para creerlo? ¿Dónde los podría ver otra persona?" }
+    ],
+    "conceptos": [
+      { "rama": "difuso", "texto": "¿Qué quieres decir exactamente con «{{marca}}»? Dame un ejemplo concreto y uno que no cuente." },
+      { "rama": "general", "texto": "¿Qué palabra de lo que dijiste necesita una definición más precisa para que todos entiendan lo mismo?" }
+    ],
+    "supuestos": [
+      { "rama": "absoluta", "texto": "Dijiste «{{marca}}»: ¿es así en todos los casos, o recuerdas uno en que no?" },
+      { "rama": "general", "texto": "¿Qué estás dando por sentado para que eso sea cierto?" }
+    ],
+    "inferencias": [
+      { "rama": "causa", "texto": "Dijiste «{{marca}}»: ¿qué otra explicación llevaría a lo mismo?" },
+      { "rama": "general", "texto": "¿Cómo pasas de lo que sabes a la conclusión? ¿Qué paso del razonamiento es el más débil?" }
+    ],
+    "pregunta": [
+      { "rama": "general", "texto": "¿Cuál es la pregunta que de verdad quieres responder con esto? ¿Es la misma que te hiciste al principio?" }
+    ],
+    "puntos_de_vista": [
+      { "rama": "general", "texto": "¿Cómo lo vería alguien a quien esto afecta y que no piensa como tú?" }
+    ],
+    "implicaciones": [
+      { "rama": "general", "texto": "Si actúas según lo que piensas y resulta que tenías razón, ¿qué pasa? ¿Y si no la tenías? Nombra una consecuencia de cada lado." }
+    ],
+    "proposito": [
+      { "rama": "general", "texto": "¿Qué quieres lograr con esta decisión? ¿Cómo sabrías que lo lograste?" }
+    ]
+  },
+  "cierre": "¿Qué te haría cambiar de opinión sobre «{{postura}}»?",
+  "escalera": [
+    { "id": "datos", "nombre": "Datos", "pregunta": "¿Qué pasó exactamente, como lo registraría una cámara, sin interpretarlo?" },
+    { "id": "seleccion", "nombre": "Selección", "pregunta": "De todo lo que pasó, ¿en qué te fijaste y qué dejaste de lado?" },
+    { "id": "interpretacion", "nombre": "Interpretación", "pregunta": "¿Qué significado le diste a eso? ¿Qué otra cosa podría significar?" },
+    { "id": "supuestos", "nombre": "Supuestos", "pregunta": "¿Qué tuviste que dar por sentado para llegar ahí?" },
+    { "id": "conclusion", "nombre": "Conclusión", "pregunta": "¿Qué concluiste a partir de eso?" },
+    { "id": "accion", "nombre": "Acción", "pregunta": "¿Qué hiciste o piensas hacer por esa conclusión?" }
+  ],
+  "sombreros": [
+    { "id": "blanco", "nombre": "Blanco", "mira": "hechos", "pregunta": "Sombrero blanco: ¿qué hechos y datos tienes sobre esto, sin opinar?" },
+    { "id": "rojo", "nombre": "Rojo", "mira": "emociones", "pregunta": "Sombrero rojo: ¿qué sientes con esto, sin tener que justificarlo?" },
+    { "id": "negro", "nombre": "Negro", "mira": "riesgos", "pregunta": "Sombrero negro: ¿qué podría salir mal? Nombra los riesgos." },
+    { "id": "amarillo", "nombre": "Amarillo", "mira": "beneficios", "pregunta": "Sombrero amarillo: ¿qué podría salir bien? Nombra los beneficios." },
+    { "id": "verde", "nombre": "Verde", "mira": "ideas", "pregunta": "Sombrero verde: ¿qué otras ideas u opciones se te ocurren, aunque parezcan raras?" },
+    { "id": "azul", "nombre": "Azul", "mira": "proceso", "pregunta": "Sombrero azul: mirando todo lo anterior, ¿cuál es el siguiente paso y cómo van a decidir?" }
+  ],
+  "sintesis": "Para cerrar las rondas: ¿qué síntesis sacas de todas las miradas?"
+}

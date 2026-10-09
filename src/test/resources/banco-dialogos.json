@@ -8,6 +8,15 @@
     "terminanEnPreguntaMinimoPorcentaje": 95,
     "veredictosMaximoPorcentaje": 0
   },
+  "umbralHito5": {
+    "escritoAntesDeMedir": "2026-10-09",
+    "queMide": "Los 30 turnos pasan por el motor híbrido del Consejero (prompt t08-pregunta.v2 con el elemento, la rama y la pregunta del banco que eligió el código) y por el validador del turno (termina en pregunta, 40 palabras o menos, sin veredicto, sin voseo ni usted), con hasta dos reintentos y caída al banco.",
+    "aprobadosAlPrimerIntentoMinimo": 24,
+    "caenAlBancoMaximo": 3,
+    "lleganALaPersonaConVoseoOVeredicto": 0,
+    "primerTokenP95Segundos": 3,
+    "turnoValidadoP95Segundos": 15
+  },
   "tipos": {
     "clarificacion": "una pregunta que pide aclarar qué quiere decir la persona con una palabra o una idea",
     "supuestos": "una pregunta sobre lo que la persona da por sentado",

@@ -1,0 +1,26 @@
+{
+  "descripcion": "Banco de 12 turnos de los modos escalera (T10 · Escalera de inferencia) y sombreros (T35 · Seis Sombreros) del Consejero socrático, para medir al modelo local cuando redacta la pregunta que el motor ya eligió (RNF-02 y RNF-04, hito 5). Cada turno trae la postura, el paso que eligió el motor (peldaño o sombrero), la pregunta del banco y lo último que escribió la persona. Escrito a mano el 2026-10-09 con los tres escenarios del documento, antes de medir.",
+  "version": 1,
+  "umbral": {
+    "escritoAntesDeMedir": "2026-10-09",
+    "aprobadosAlPrimerIntentoMinimo": 10,
+    "caenAlBancoMaximo": 1,
+    "lleganALaPersonaConVoseoOVeredicto": 0,
+    "primerTokenP95Segundos": 3,
+    "turnoValidadoP95Segundos": 15
+  },
+  "turnos": [
+    { "id": "M01", "modo": "escalera", "paso": "datos", "postura": "Mi hija no me quiere llamar.", "texto": "Desde que se fue a estudiar a otra ciudad casi no hablamos. Antes me llamaba todos los domingos y ahora pasan semanas sin una llamada. Yo creo que ya no le importa lo que pasa en la casa." },
+    { "id": "M02", "modo": "escalera", "paso": "seleccion", "postura": "Mi hija no me quiere llamar.", "texto": "No llamó en dos semanas. Me escribió tres mensajes por el chat de la familia, pero eso no es lo mismo que llamar." },
+    { "id": "M03", "modo": "escalera", "paso": "interpretacion", "postura": "El panadero de la mañana es descuidado.", "texto": "Me fijé en las tres tandas quemadas de octubre, que fueron en su turno. No miré si el horno estaba bien calibrado ni qué pasó en las otras tandas de la semana." },
+    { "id": "M04", "modo": "escalera", "paso": "supuestos", "postura": "El panadero de la mañana es descuidado.", "texto": "Si el pan se quema en su turno es porque no vigila el horno. Él es el que está a cargo a esa hora, así que la culpa es suya." },
+    { "id": "M05", "modo": "escalera", "paso": "conclusion", "postura": "Hay que arreglar los postes antes que comprar cámaras.", "texto": "Doy por hecho que con más luz los ladrones se alejan, porque la mayoría de los robos fueron de noche y en la parte más oscura de la cuadra." },
+    { "id": "M06", "modo": "escalera", "paso": "accion", "postura": "Hay que arreglar los postes antes que comprar cámaras.", "texto": "Concluí que lo primero es arreglar los dos postes apagados y después, si siguen los robos, hablar de cámaras en la asamblea." },
+    { "id": "M07", "modo": "sombreros", "paso": "blanco", "postura": "¿Ponemos cámaras en la cuadra?", "texto": "Quiero decidir lo de las cámaras con la junta antes de fin de mes. Hay vecinos a favor y otros en contra, y el fondo de la junta no alcanza para todo." },
+    { "id": "M08", "modo": "sombreros", "paso": "rojo", "postura": "¿Ponemos cámaras en la cuadra?", "texto": "Hubo doce robos este año, nueve de noche. Somos cuarenta vecinos en la cuadra y el fondo tiene plata para cuatro cámaras." },
+    { "id": "M09", "modo": "sombreros", "paso": "negro", "postura": "¿Abrimos los domingos?", "texto": "Me da miedo que nos agotemos. Ya trabajamos doce horas al día y siento que mi socia está cansada, aunque también me ilusiona vender más." },
+    { "id": "M10", "modo": "sombreros", "paso": "amarillo", "postura": "¿Abrimos los domingos?", "texto": "El riesgo es pagar el recargo dominical y que no vengan clientes, o que el personal se canse y se vaya en pocos meses." },
+    { "id": "M11", "modo": "sombreros", "paso": "verde", "postura": "¿Pasamos la Navidad en casa de los abuelos?", "texto": "Lo bueno es que los niños ven a los primos y los abuelos están contentos. Además la casa de ellos es grande y hay espacio para todos." },
+    { "id": "M12", "modo": "sombreros", "paso": "azul", "postura": "¿Pasamos la Navidad en casa de los abuelos?", "texto": "Se me ocurre ir el 24 y volver el 25 temprano, o invitar a los abuelos a nuestra casa este año y el próximo ir nosotros." }
+  ]
+}

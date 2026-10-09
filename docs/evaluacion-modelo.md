@@ -186,3 +186,45 @@ con usted ("¿Cómo sabe…?", "para usted"), aunque el prompt pide tuteo. Con 0
 proyecto. No afecta a las técnicas de este hito (ninguna pregunta al usuario con el modelo), pero sí al Consejero del
 hito 5: allí el validador del chat debe rechazar las formas del sensor de voseo y reintentar, y el prompt debe traer un
 ejemplo de tipo "supuestos" con "¿Qué das por sentado…?".
+
+# Hito 5: el Consejero socrático
+
+## Umbrales del hito 5, escritos antes de medir (2026-10-09)
+
+El Consejero es la primera pantalla donde el texto del modelo llega directo a la persona. Ya no se mide solo si la
+pregunta termina en "?": se mide el turno tal como llega, después del **validador del turno** (termina en pregunta, no
+pasa del largo, sin frases de veredicto, sin las formas de `sensores/voseo-prohibido.txt` y sin "usted"), con hasta dos
+reintentos y caída al banco de plantillas. Se escribieron y guardaron antes de la primera medición, en este archivo y en
+el bloque de umbral de cada banco.
+
+### Bancos
+
+| Banco | Archivo | Qué mide |
+|---|---|---|
+| Diálogos (el del hito 3) | `src/test/resources/banco-dialogos.json`, bloque `umbralHito5` | los 30 turnos a través del motor híbrido: el tipo del banco elige el elemento (el primero de ese tipo en el orden del modo decisión) y la rama sale de las marcas del texto; el modelo redacta con `t08-pregunta.v2` |
+| Modos | `src/test/resources/banco-modos.json` | 12 turnos de los modos escalera (6 peldaños) y sombreros (6 sombreros); el modelo redacta la pregunta del paso que eligió el motor |
+| Ataques | `src/test/resources/banco-ataques.json` | 10 razones con la debilidad que identificó el código (esquema de Walton y pregunta crítica); el modelo redacta un ataque con `t36-ataque.v1` |
+
+### Umbrales
+
+| Qué | Diálogos | Modos | Ataques | Si no se cumple |
+|---|---|---|---|---|
+| Aprueban el validador al primer intento | al menos 24 de 30 | al menos 10 de 12 | al menos 8 de 10 | el Consejero con modelo (o T36 con modelo) queda experimental |
+| Caen al banco tras dos reintentos | como máximo 3 | como máximo 1 | como máximo 1 | ídem |
+| Llegan a la persona con voseo o veredicto | 0 | 0 | 0 | es un error del validador: se corrige antes de cerrar el hito |
+| Primer token, p95 (RNF-02) | menos de 3 s | menos de 3 s | — | RNF-02 sigue sin cumplirse en esta máquina |
+| Turno validado completo, p95, con reintentos (RNF-02) | menos de 15 s | menos de 15 s | menos de 15 s | el modo con modelo queda experimental |
+
+Además se cuentan, sin umbral, cuántos turnos necesitaron reintento y por qué motivo (sin pregunta, largo, veredicto,
+voseo, usted), para ver si el validador del voseo ataca el hallazgo del hito 3 (6 de 30 preguntas con voseo).
+
+### Cómo se mide
+
+```sh
+docker compose --profile test run --rm -e EVALUACION_MODELO=true tests \
+  mvn -B verify -Dtest=NadaRapido -Dsurefire.failIfNoSpecifiedTests=false \
+  -Dit.test=EvaluacionConsejeroIT -Dfailsafe.failIfNoSpecifiedTests=false
+```
+
+Las mismas condiciones del hito 3: temperatura 0, semilla 42, sin razonamiento, `num_predict=512`, `num_ctx=8192`, una
+petición a la vez y un turno de calentamiento que no cuenta.
