@@ -225,8 +225,13 @@ public class ControladorVerificacion {
             return "fuente";
         }
         String destino = "otra".equals(parametros.getFirst("despues")) ? "/verificar/" + id + "/fuentes/nueva" : "/verificar/" + id;
+        if (request.getHeader("HX-Request") == null) {
+            return "redirect:" + destino;
+        }
+        // Con htmx, un 302 se seguiría solo y se perdería la cabecera: 200 con HX-Redirect.
         respuesta.setHeader("HX-Redirect", destino);
-        return "redirect:" + destino;
+        modelo.addAttribute("mensaje", "Fuente guardada.");
+        return "fragmentos/verificacion/guardada";
     }
 
     // ---------------------------------------------------------------------------------------------

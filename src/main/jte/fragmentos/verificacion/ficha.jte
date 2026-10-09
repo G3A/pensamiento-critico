@@ -28,7 +28,7 @@
       </fieldset>
       <button type="submit" class="boton boton-secundario boton-chico">Guardar el tipo</button>
     </form>
-    <p class="${f.f().tipo().verificable() ? "detalle" : "aviso-ia"}" data-verificable="${f.f().tipo().verificable()}">
+    <p class="${f.f().tipo().verificable() ? "detalle" : "aviso-ia"}" data-verificable="${String.valueOf(f.f().tipo().verificable())}">
       @if(f.f().tipo().verificable())<span class="chip chip-ok">verificable</span>@else<span class="chip chip-aviso">no verificable</span>@endif
       ${f.f().tipo().nombre()}. Lo probaría: ${f.f().tipo().probaria()}.</p>
     <h3 class="subtitulo">Chequeos automáticos (por reglas)</h3>
@@ -107,7 +107,7 @@
       @for(FichaDeVerificacion.R04Recalculado r : f.f().argumentos())
         <div class="r04" data-argumento="${r.argumentoId().toString()}">
           <p><strong>«${r.conclusion()}»</strong> · estándar del argumento: ${r.estandar().nombre()} ·
-            <span class="${r.aceptable().get(r.estandar()) ? "chip chip-ok" : "chip chip-aviso"}" data-aceptable="${r.aceptable().get(r.estandar())}">${r.aceptable().get(r.estandar()) ? "se cumple" : "no se cumple"}</span></p>
+            <span class="${r.aceptable().get(r.estandar()) ? "chip chip-ok" : "chip chip-aviso"}" data-aceptable="${String.valueOf(r.aceptable().get(r.estandar()))}">${r.aceptable().get(r.estandar()) ? "se cumple" : "no se cumple"}</span></p>
           <p class="detalle">${r.frase()} El argumento ${r.aplicable() ? "es aplicable" : "no es aplicable todavía"} con lo que verificaste.</p>
           <div class="tabla-desplazable">
             <table class="tabla tabla-estandares">

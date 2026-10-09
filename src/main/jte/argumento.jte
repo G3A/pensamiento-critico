@@ -20,7 +20,7 @@
     @if(a.r04().isPresent())
       <section class="r04 tarjeta" aria-labelledby="r04-argumento-titulo">
         <h2 id="r04-argumento-titulo">Con lo que verificaste (R04)</h2>
-        <p><span class="${a.r04().get().aceptable().get(a.r04().get().estandar()) ? "chip chip-ok" : "chip chip-aviso"}" data-aceptable="${a.r04().get().aceptable().get(a.r04().get().estandar())}">${a.r04().get().aceptable().get(a.r04().get().estandar()) ? "se cumple" : "no se cumple"}</span>
+        <p><span class="${a.r04().get().aceptable().get(a.r04().get().estandar()) ? "chip chip-ok" : "chip chip-aviso"}" data-aceptable="${String.valueOf(a.r04().get().aceptable().get(a.r04().get().estandar()))}">${a.r04().get().aceptable().get(a.r04().get().estandar()) ? "se cumple" : "no se cumple"}</span>
           ${a.r04().get().frase()}</p>
         <ul class="estandares-argumento">
           @for(EstandarPrueba e : EstandarPrueba.values())
