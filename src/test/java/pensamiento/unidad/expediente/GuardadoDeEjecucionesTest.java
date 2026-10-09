@@ -28,7 +28,7 @@ class GuardadoDeEjecucionesTest {
     private final FakeRepositorioArgumentos argumentos = new FakeRepositorioArgumentos();
     private final FakeReloj reloj = new FakeReloj();
     private final pensamiento.testutil.fakes.FakeRepositorioPredicciones predicciones = new pensamiento.testutil.fakes.FakeRepositorioPredicciones(ejecuciones);
-    private final GuardadoDeEjecuciones guardado = new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones);
+    private final GuardadoDeEjecuciones guardado = new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones, new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones));
 
     /** T01, ejemplo 3 de docs/ejemplos/T01.md: cuatro afirmaciones, tres argumentos y una objeción sin responder. */
     private Resultado<ResultadoMapa> camarasDelBarrio() {

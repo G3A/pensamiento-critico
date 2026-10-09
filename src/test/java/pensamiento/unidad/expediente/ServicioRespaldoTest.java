@@ -175,7 +175,7 @@ class ServicioRespaldoTest {
                 MapeadorJson.leer(sucursal.datos(), EjecutorMapa.Entrada.class), Contextos.sinIa());
         Ejecucion e = new Ejecucion(Uuid7.en(reloj.ahora()), DUENA, INSTITUCION, EjecutorMapa.ID, 1, Optional.empty(), sucursal.config(),
                 sucursal.datos(), MapeadorJson.escribir(r.valor()), r.resumen(), Optional.empty(), "clave-mapa", reloj.ahora());
-        return new GuardadoDeEjecuciones(ejecuciones, argumentos, new pensamiento.testutil.fakes.FakeRepositorioPredicciones(ejecuciones)).guardar(e, r);
+        return new GuardadoDeEjecuciones(ejecuciones, argumentos, new pensamiento.testutil.fakes.FakeRepositorioPredicciones(ejecuciones), new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones)).guardar(e, r);
     }
 
     @Test
@@ -240,7 +240,7 @@ class ServicioRespaldoTest {
         Ejecucion e = new Ejecucion(Uuid7.en(reloj.ahora()), DUENA, INSTITUCION, pensamiento.tecnicas.f5.EjecutorDiarioDecisiones.ID, 1, Optional.empty(),
                 pensamiento.nucleo.Json.VACIO, pensamiento.nucleo.Json.VACIO, MapeadorJson.escribir(r.valor()), r.resumen(), Optional.empty(), "diario",
                 reloj.ahora());
-        new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones).guardar(e, r);
+        new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones, new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones)).guardar(e, r);
         java.util.UUID id = predicciones.deEjecucion(DUENA, e.id()).getFirst().id();
         predicciones.resolver(DUENA, id, true, java.time.Instant.parse("2027-04-15T15:00:00Z"));
         String archivo = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
