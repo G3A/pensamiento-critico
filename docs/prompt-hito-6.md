@@ -99,6 +99,23 @@ verificación para este hito.
   haga de verdad en este hito.
 - **Dos constructores en un `@Component` de `tecnicas` impiden que la app arranque** (Spring no elige y ArchUnit prohíbe
   `@Autowired` ahí): un solo constructor público, o uno sin argumentos más otro para las pruebas.
+- **El reintento del turno ya corrige**: `Redaccion` sigue la conversación con la pregunta rechazada y una corrección que
+  dice qué falló (voseo: la forma encontrada). Con eso, ninguna de las 52 preguntas de los bancos cayó al banco; si el
+  modelo redacta algo nuevo en este hito, reúsalo en vez de repetir el mismo pedido.
+- **Al subir el paquete de datos a la versión 5**, actualiza también las pruebas que fijan la versión: `ServicioRespaldoTest`,
+  `FlujoCConsejeroSocraticoIT`, `FlujoDDiarioDeDecisionesIT` y `RF09TallerDeArgumentosIT` (en el hito 5 dos de ellas se
+  quedaron en la 3 y solo las vio el perfil completo).
+- **SpotBugs falla el perfil con `-Pgates`** si se atrapa `NullPointerException` o hay variables muertas o un posible nulo:
+  valida los campos obligatorios del archivo importado de forma explícita y corre `-Pgates` antes de dar algo por cerrado.
+- **La pasada con Ollama detenido** se corre con `docker compose stop ollama` y las pruebas con `--no-deps`; sin esa opción
+  `docker compose run tests` vuelve a levantar Ollama como dependencia. En esa pasada, la prueba de salud de RF-01 falla por
+  diseño (exige a Ollama listo).
+- **Memoria**: el perfil completo (Maven, Chromium y Ollama con el modelo cargado) se cortó una vez por falta de RAM. WSL
+  quedó con `memory=16GB` y `autoMemoryReclaim=gradual` en `.wslconfig`; si vuelve a pasar, detén Ollama mientras corren
+  las pruebas que no lo necesitan.
+- **Quedaron fuera del hito 5**: que el modelo proponga términos ambiguos en T12, partes afectadas en T39 y marcas de la
+  rúbrica en T37 (necesitan banco y umbrales propios), y el prompt del Consejero no bajó el primer token: T08 y T36 con el
+  modelo siguen "experimental".
 - **Los heredocs largos por Bash se rompen** con comillas o acentos: escribe archivos con las herramientas de escritura.
 
 ## Lo que el hito 4 y el 3 dejaron dicho y sigue vigente
