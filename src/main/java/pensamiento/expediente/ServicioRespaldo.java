@@ -164,7 +164,10 @@ public class ServicioRespaldo {
             listaSegura(e.cambios()).forEach(c -> ids.add(exigir(c == null ? null : c.id())));
         }
         for (PaqueteDatos.SesionDatos s : paquete.sesiones()) {
-            ids.add(exigir(s == null ? null : s.id()));
+            if (s == null) {
+                throw new ArchivoInvalido("El archivo trae un elemento sin identificador.");
+            }
+            ids.add(exigir(s.id()));
             listaSegura(s.turnos()).forEach(t -> ids.add(exigir(t == null ? null : t.id())));
         }
         long ajenos = ids.stream().filter(id -> identificadores.deOtroUsuario(usuarioId, id)).count();
@@ -263,28 +266,27 @@ public class ServicioRespaldo {
      */
     private void restaurarSesion(UUID usuarioId, UUID institucionId, PaqueteDatos.SesionDatos d) {
         try {
-            pensamiento.nucleo.SesionConsejero.Estado estado = pensamiento.nucleo.SesionConsejero.Estado.valueOf(d.estado().toUpperCase());
+            pensamiento.nucleo.SesionConsejero.Estado estado = pensamiento.nucleo.SesionConsejero.Estado.valueOf(obligatorio(d.estado()).toUpperCase());
             if (estado == pensamiento.nucleo.SesionConsejero.Estado.CERRADA && d.cerradaEn() == null || d.postura() == null || d.postura().isBlank() || d.config() == null) {
                 throw new ArchivoInvalido("Una sesión del Consejero del archivo no es válida.");
             }
             pensamiento.nucleo.SesionConsejero s = new pensamiento.nucleo.SesionConsejero(d.id(), usuarioId, institucionId,
                     Optional.ofNullable(d.expedienteId()).filter(x -> expedientes.porId(usuarioId, x).isPresent()),
-                    pensamiento.nucleo.SesionConsejero.Modo.de(d.modo()), d.postura(),
+                    pensamiento.nucleo.SesionConsejero.Modo.de(obligatorio(d.modo())), d.postura(),
                     listaSegura(d.razones()).stream().map(r -> new pensamiento.nucleo.SesionConsejero.Razon(r.texto(), r.apoyo())).toList(), json(d.config()),
                     d.usaModelo(), Optional.ofNullable(d.confianzaAntes()), d.cierrePedido(), estado, Optional.ofNullable(d.reflexion()),
                     Optional.ofNullable(d.confianzaDespues()), Optional.ofNullable(d.ejecucionId()).filter(x -> ejecuciones.porId(usuarioId, x).isPresent()),
                     d.creadaEn() == null ? reloj.ahora() : d.creadaEn(), Optional.ofNullable(d.cerradaEn()));
-            List<pensamiento.nucleo.TurnoConsejero> turnos = listaSegura(d.turnos()).stream().map(t -> new pensamiento.nucleo.TurnoConsejero(t.id(), d.id(),
-                    t.numero(), pensamiento.nucleo.TurnoConsejero.Rol.valueOf(t.rol().toUpperCase()), t.paso(), t.texto(),
-                    pensamiento.nucleo.TurnoConsejero.Origen.valueOf(t.origen().toUpperCase()), pensamiento.nucleo.TurnoConsejero.Estado.LISTO, t.intentos(),
+            List<pensamiento.nucleo.TurnoConsejero> turnos = listaSegura(d.turnos()).stream().map(ServicioRespaldo::obligatorio).map(t -> new pensamiento.nucleo.TurnoConsejero(t.id(), d.id(),
+                    t.numero(), pensamiento.nucleo.TurnoConsejero.Rol.valueOf(obligatorio(t.rol()).toUpperCase()), t.paso(), t.texto(),
+                    pensamiento.nucleo.TurnoConsejero.Origen.valueOf(obligatorio(t.origen()).toUpperCase()), pensamiento.nucleo.TurnoConsejero.Estado.LISTO, t.intentos(),
                     Optional.ofNullable(t.modelo()).map(m -> new Ejecucion.RegistroModelo(m.modelo(), m.digest(), m.promptVersion(), m.temperatura(), m.semilla())),
                     Optional.ofNullable(t.elementoPropuesto()), Optional.ofNullable(t.porquePropuesto()), t.propuestaAdoptada(),
                     t.creadoEn() == null ? reloj.ahora() : t.creadoEn())).toList();
             sesiones.restaurar(usuarioId, institucionId, s, turnos);
-        } catch (IllegalArgumentException | NullPointerException e) {
-            if (e instanceof ArchivoInvalido a) {
-                throw a;
-            }
+        } catch (ArchivoInvalido e) {
+            throw e;
+        } catch (IllegalArgumentException e) {
             throw new ArchivoInvalido("Una sesión del Consejero del archivo no es válida.");
         }
     }
@@ -322,6 +324,14 @@ public class ServicioRespaldo {
         } catch (IllegalArgumentException e) {
             throw new ArchivoInvalido("Un argumento del archivo no es válido.");
         }
+    }
+
+    /** Un valor que el archivo tiene que traer en una sesión del Consejero. */
+    private static <T> T obligatorio(T valor) {
+        if (valor == null) {
+            throw new ArchivoInvalido("Una sesión del Consejero del archivo no es válida.");
+        }
+        return valor;
     }
 
     private static UUID exigir(UUID id) {

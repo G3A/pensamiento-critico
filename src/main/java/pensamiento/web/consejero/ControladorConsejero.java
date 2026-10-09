@@ -262,7 +262,7 @@ public class ControladorConsejero {
     @Transactional
     public String irAlCierre(@PathVariable UUID id, HttpServletResponse respuesta, Model modelo) {
         UsuarioSesion yo = paginas.usuarioActual();
-        SesionConsejero s = sesionDe(yo, id);
+        sesionDe(yo, id);
         try {
             int antes = sesiones.turnos(yo.id(), id).size();
             consejero.irAlCierre(yo.id(), id);
@@ -287,8 +287,9 @@ public class ControladorConsejero {
         UsuarioSesion yo = paginas.usuarioActual();
         sesionDe(yo, id);
         Optional<Integer> despues;
+        String confianza = p.getFirst("confianzaDespues");
         try {
-            despues = Textos.vacio(p.getFirst("confianzaDespues")) ? Optional.empty() : Optional.of(Integer.parseInt(p.getFirst("confianzaDespues").strip()));
+            despues = confianza == null || Textos.vacio(confianza) ? Optional.empty() : Optional.of(Integer.parseInt(confianza.strip()));
         } catch (NumberFormatException e) {
             return mensaje("La confianza es un número de 0 a 100.", respuesta, modelo);
         }

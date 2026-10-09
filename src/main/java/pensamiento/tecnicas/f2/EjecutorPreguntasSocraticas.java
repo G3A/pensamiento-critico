@@ -190,11 +190,9 @@ public class EjecutorPreguntasSocraticas implements Ejecutor<EjecutorPreguntasSo
         EstrategiaSocratica.Recorrido r = estrategia.recorrer(config.parametros(entrada.modoSesion()), postura, entrada.respuestas(), entrada.cerrada());
         List<ResultadoPreguntasSocraticas.Turno> turnos = new ArrayList<>();
         Map<Elemento, String> llenos = new EnumMap<>(Elemento.class);
-        Set<Elemento> preguntados = new HashSet<>();
         for (EstrategiaSocratica.Paso paso : r.pasos()) {
             turnos.add(turno(paso.movimiento(), entrada.propuestas(), paso.respuesta()));
             llenos.put(paso.movimiento().elemento(), paso.respuesta());
-            preguntados.add(paso.movimiento().elemento());
         }
         ResultadoPreguntasSocraticas.Turno siguiente = r.siguiente().map(m -> turno(m, entrada.propuestas(), null)).orElse(null);
 
