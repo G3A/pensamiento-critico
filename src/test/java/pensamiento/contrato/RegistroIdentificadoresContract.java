@@ -2,6 +2,7 @@ package pensamiento.contrato;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,18 @@ public abstract class RegistroIdentificadoresContract {
 
     /** Deja una predicción del Diario del usuario (con su ejecución y su afirmación) y devuelve su identificador. */
     protected abstract UUID prediccionDe(UUID usuarioId);
+
+    /** Deja una sesión del Consejero del usuario con un turno y un cambio de opinión; devuelve los tres identificadores. */
+    protected abstract List<UUID> sesionTurnoYCambioDe(UUID usuarioId);
+
+    @Test
+    void la_sesion_su_turno_y_el_cambio_de_opinion_del_usuario_a_son_de_otro_para_b_y_propios_para_a() {
+        Personas p = personas();
+        for (UUID id : sesionTurnoYCambioDe(p.usuarioA())) {
+            assertThat(comoUsuario(p.usuarioB()).deOtroUsuario(p.usuarioB(), id)).as(id.toString()).isTrue();
+            assertThat(comoUsuario(p.usuarioA()).deOtroUsuario(p.usuarioA(), id)).as(id.toString()).isFalse();
+        }
+    }
 
     @Test
     void la_prediccion_del_usuario_a_es_de_otro_para_el_usuario_b_y_propia_para_a() {

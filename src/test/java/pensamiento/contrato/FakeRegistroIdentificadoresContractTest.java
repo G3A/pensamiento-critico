@@ -40,4 +40,11 @@ class FakeRegistroIdentificadoresContractTest extends RegistroIdentificadoresCon
         fake.existe(id, usuarioId);
         return id;
     }
+
+    @Override
+    protected java.util.List<UUID> sesionTurnoYCambioDe(UUID usuarioId) {
+        java.util.List<UUID> ids = java.util.List.of(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
+        ids.forEach(id -> fake.existe(id, usuarioId));
+        return ids;
+    }
 }
