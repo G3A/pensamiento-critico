@@ -239,10 +239,7 @@ Sensores de línea de comandos: `sensores/voseo.sh` (mismo listado que `VoseoTes
   (Dependency-Check con `NVD_API_KEY` opcional como secreto del repo; SpotBugs con FindSecBugs).
 - **Nocturno** (`.github/workflows/nocturno.yml`, cron `0 7 * * *` UTC): `CONTRACT_REAL=true` contra el
   Ollama y el PostgreSQL del compose, con caché de los modelos.
-- **Hito 4 todavía sin nocturno**: los commits del hito 4 están en `main` local y no se subieron; el nocturno de GitHub corre
-  lo que está en `main` remoto, así que `RealRepositorioPrediccionesContractIT` (ya en la lista del sensor) y las dimensiones
-  nuevas de `Grafico` y del registro de identificadores solo corrieron en local. Tras subir, lanzar el workflow a mano.
-- **Última corrida nocturna en verde**: 2026-10-08 21:15 UTC en GitHub Actions, run [37844617747](https://github.com/G3A/pensamiento-critico/actions/runs/37844617747), lanzado a mano tras subir el hito 3. Los 12 `Real*ContractIT` corrieron completos: 70 pruebas, 0 omitidas, 10 de ellas contra Ollama 0.40.1 real con `qwen3:4b-instruct-2507-q4_K_M`. El paso "Sensor contra el falso verde" falla el workflow si algún contrato real queda omitido.
+- **Última corrida nocturna en verde**: 2026-10-09 00:48 UTC en GitHub Actions, run [37866127513](https://github.com/G3A/pensamiento-critico/actions/runs/37866127513), lanzado a mano tras subir el hito 4. Los 13 `Real*ContractIT` corrieron completos: 82 pruebas, 0 omitidas, 10 de ellas contra Ollama 0.40.1 real con `qwen3:4b-instruct-2507-q4_K_M`; incluye `RealRepositorioPrediccionesContractIT` y las dimensiones nuevas de `Grafico` y del registro de identificadores. El paso "Sensor contra el falso verde" falla el workflow si algún contrato real queda omitido.
 
 ## Mediciones del hito 0
 

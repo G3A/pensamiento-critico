@@ -91,10 +91,9 @@ flujo de punta a punta.
 
 ## Lo que el hito 4 dejó dicho y hay que atender
 
-- **El nocturno de GitHub no corrió con el hito 4.** El hito 4 se subió a `main` (commit `1794433`) pero el workflow
-  nocturno no se lanzó después: `RealRepositorioPrediccionesContractIT` y las dimensiones nuevas de los contratos de
-  `Grafico` y del registro de identificadores solo pasaron en local. Lánzalo (`gh workflow run nocturno.yml`) y revisa la
-  corrida **antes** de sumar contratos reales nuevos; si falla, arréglalo primero y anota la fecha en el README.
+- **El nocturno de GitHub está en verde con el hito 4** (run 37866127513, 2026-10-09): 13 `Real*ContractIT`, 82 pruebas,
+  0 omitidas. El nocturno corre lo que está en `main` remoto: revisa la última corrida antes de sumar contratos reales
+  nuevos y, si falla, arréglalo primero.
 - **La aceptación del flujo D adelanta el reloj por HTTP.** Necesita la app con `APP_RELOJ_AJUSTABLE=true` (está en el
   `.env` local y en `docker-compose.ci.yml`); sin eso falla con un mensaje claro. Si tus pruebas también mueven el reloj,
   devuélvelo a 0 al terminar, como hace `FlujoDDiarioDeDecisionesIT`.
@@ -259,14 +258,14 @@ turnos de la escalera) en `src/test/resources/` y en `docs/evaluacion-modelo.md`
 - El contrato del adaptador de Ollama cubre lo nuevo que el Consejero le pida.
 - k6 está en verde con la sesión del Consejero activa.
 - `docker compose --profile test run --rm tests` (también con `CONTRACT_REAL=true`) y los gates están en verde.
-- El workflow nocturno está en verde, incluida la corrida que le faltó al hito 4.
+- El workflow nocturno está en verde con los contratos reales nuevos.
 - ArchUnit, el sensor de Fakes sin contrato y el sensor de voseo pasan.
 - El README dice qué se puede hacer en el hito 5, con lo verificado y una tabla "Decisiones tomadas en el hito 5".
 
 ## Cómo trabajar
 
 1. Empieza por leer el HTML, este archivo, el README, `docs/evaluacion-modelo.md` y los ejemplos de T34, T28 y T32.
-2. Lanza el nocturno que le faltó al hito 4 y revisa su resultado; revisa también el estado de RF-08.
+2. Revisa la última corrida del nocturno y el estado de RF-08.
 3. Escribe primero los archivos de ejemplos y los bancos con sus umbrales, y haz commit.
 4. Haz un plan corto por entregable y ejecútalo en este orden:
    1. motor híbrido del Consejero y su banco de preguntas, puro, con sus pruebas;
