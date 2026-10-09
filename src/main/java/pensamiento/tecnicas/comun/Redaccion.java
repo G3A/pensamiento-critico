@@ -13,7 +13,8 @@ import pensamiento.nucleo.puertos.RespuestaChat;
 /**
  * Una pregunta que redacta el modelo y que tiene que pasar el validador del turno antes de llegar a la persona (sección
  * 4, streaming): hasta tres intentos (dos reintentos), cada uno con su motivo de rechazo. Si ninguno pasa, el texto queda
- * vacío y quien llama usa la pregunta del banco. Las fallas del modelo (no disponible, tiempo agotado) se propagan: el
+ * vacío y quien llama usa la pregunta del banco. Cada reintento sigue la conversación: lleva el texto rechazado y una
+ * corrección que dice qué falló (con temperatura 0, repetir el mismo pedido devuelve la misma pregunta). Las fallas del modelo (no disponible, tiempo agotado) se propagan: el
  * motivo de la caída lo decide quien llama.
  */
 public final class Redaccion {
@@ -42,8 +43,9 @@ public final class Redaccion {
         List<Intento> intentos = new ArrayList<>();
         String modelo = "";
         String digest = "";
+        List<Mensaje> mensajes = new ArrayList<>(List.of(Mensaje.sistema(sistema), Mensaje.usuario(pedido)));
         for (int i = 0; i <= ModeloLocal.REINTENTOS; i++) {
-            PeticionChat peticion = new PeticionChat(List.of(Mensaje.sistema(sistema), Mensaje.usuario(pedido)), ModeloLocal.TIEMPO_CHAT,
+            PeticionChat peticion = new PeticionChat(List.copyOf(mensajes), ModeloLocal.TIEMPO_CHAT,
                     Optional.empty(), 0);
             RespuestaChat r = ia.chat(peticion, provisional);
             modelo = r.modelo();
@@ -56,8 +58,25 @@ public final class Redaccion {
             }
             if (i < ModeloLocal.REINTENTOS) {
                 provisional.accept(String.format(AVISO_REINTENTO, rechazo.get().texto()));
+                mensajes.add(Mensaje.asistente(texto));
+                mensajes.add(Mensaje.usuario(correccion(rechazo.get(), texto, palabrasMaximas)));
             }
         }
         return new Redactado(Optional.empty(), intentos, modelo, digest);
+    }
+
+    /** Lo que se le dice al modelo en el reintento: qué falló y qué tiene que cambiar, sin otra instrucción nueva. */
+    public static String correccion(ValidadorTurno.Motivo motivo, String texto, int palabrasMaximas) {
+        String cambio = switch (motivo) {
+            case VACIO -> "No escribiste nada. Escribe la pregunta.";
+            case SIN_PREGUNTA -> "Tiene que ser una sola pregunta que termine con signo de pregunta.";
+            case LARGO -> "Es demasiado larga: usa " + palabrasMaximas + " palabras o menos.";
+            case VEREDICTO -> "Trae una opinión o un consejo. Pregunta sin decir quién tiene razón ni qué conviene.";
+            case VOSEO -> ValidadorTurno.formaProhibida(texto)
+                    .map(f -> "Usaste «" + f + "», que no es tuteo de Latinoamérica. Trata a la persona de tú, como en «quieres», «tienes» o «sabes».")
+                    .orElse("Trata a la persona de tú, en español latinoamericano neutro.");
+            case USTED -> "Usaste «usted». Trata a la persona de tú.";
+        };
+        return "Esa pregunta no sirve. " + cambio + " Escribe solo la pregunta corregida.";
     }
 }

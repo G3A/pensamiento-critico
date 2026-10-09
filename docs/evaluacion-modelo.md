@@ -265,3 +265,28 @@ Decisiones que salen de la medición:
   modelo, los ataques del banco no esperan nada.
 - Los modos escalera y sombreros cumplen todos sus umbrales en esta corrida, incluido el primer token; como usan el mismo
   prompt que los diálogos y la latencia de esta CPU varía cerca de un 30% entre corridas, no se declara RNF-02 cumplido.
+
+### Reintento con corrección (2026-10-09, misma tarde)
+
+Antes, cada reintento repetía el mismo pedido y, con temperatura 0, el modelo devolvía la misma pregunta: las dos caídas al
+banco de la corrida anterior eran la misma forma de voseo tres veces. Ahora `Redaccion` sigue la conversación: el reintento
+lleva la pregunta rechazada y una corrección que dice qué falló; si es voseo, nombra la forma encontrada y pide tuteo. Los
+prompts no cambian (siguen `t08-pregunta.v2` y `t36-ataque.v1`). Mismos bancos y umbrales:
+
+| Qué (umbral) | Diálogos (30) | Modos (12) | Ataques (10) |
+|---|---|---|---|
+| Aprueban al primer intento | 28 (al menos 24): **sí** | 12 (al menos 10): **sí** | 10 (al menos 8): **sí** |
+| Necesitan reintento y después pasan | 2 (D06 y D27, al tercer intento) | 0 | 0 |
+| Caen al banco tras dos reintentos | **0** (como máximo 3): **sí** | 0: **sí** | 0: **sí** |
+| Llegan a la persona con voseo o veredicto | 0: **sí** | 0: **sí** | 0: **sí** |
+| Primer token, p95 (menos de 3 s) | 6,2 s: **no** | 3,4 s: **no** | 17,1 s: **no** |
+| Turno validado completo, p95 (menos de 15 s) | 14,9 s (mediana 7,1 s): **sí** | 7,5 s (mediana 5,2 s): **sí** | 21,5 s (mediana 6,1 s): **no** |
+
+Lectura:
+
+- **La corrección funciona, pero no al primer reintento**: en D06 y D27 el segundo intento repite la forma y el tercero ya
+  tutea. El turno de esos dos casos dura unos 14 s en vez de caer a la pregunta del banco.
+- **Esta corrida fue más lenta en todo**, también en los 40 turnos que pasaron al primer intento y en los que la corrección no
+  cambia nada (la mediana de los diálogos pasó de 6,2 s a 7,1 s). Se corrió después de reiniciar WSL con un tope de 16 GB y
+  la latencia de esta CPU ya variaba cerca de un 30% entre corridas; no se atribuye a la corrección.
+- **RNF-02 sigue sin cumplirse** y T08 y T36 con el modelo siguen "experimental": nada de esta medición cambia esa decisión.

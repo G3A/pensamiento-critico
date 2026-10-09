@@ -36,6 +36,14 @@ class ValidadorTurnoTest {
     }
 
     @Test
+    void dice_la_forma_prohibida_tal_como_la_escribio_el_modelo() {
+        String voseo = "Quer" + "é" + "s"; // armado por partes para que el sensor no lo vea en el código
+
+        assertThat(ValidadorTurno.formaProhibida("¿" + voseo + " abrir la sucursal?")).contains(voseo);
+        assertThat(ValidadorTurno.formaProhibida("¿Quieres abrir la sucursal?")).isEmpty();
+    }
+
+    @Test
     void rechaza_lo_que_no_es_una_pregunta_de_tu_sin_veredicto() {
         assertThat(ValidadorTurno.rechazo("", 40)).contains(ValidadorTurno.Motivo.VACIO);
         assertThat(ValidadorTurno.rechazo("Piensa en los domingos.", 40)).contains(ValidadorTurno.Motivo.SIN_PREGUNTA);

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -68,6 +69,12 @@ public final class ValidadorTurno {
             return Optional.of(Motivo.USTED);
         }
         return Optional.empty();
+    }
+
+    /** La primera forma de voseo o de español peninsular que trae el texto, tal como está escrita, para decírsela al modelo en el reintento. */
+    public static Optional<String> formaProhibida(String texto) {
+        Matcher m = PROHIBIDAS.matcher(texto == null ? "" : texto);
+        return m.find() ? Optional.of(m.group(1)) : Optional.empty();
     }
 
     /** El validador como predicado, para la petición de chat del puerto Ia. */
