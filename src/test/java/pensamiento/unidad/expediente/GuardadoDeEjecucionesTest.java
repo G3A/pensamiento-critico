@@ -28,7 +28,29 @@ class GuardadoDeEjecucionesTest {
     private final FakeRepositorioArgumentos argumentos = new FakeRepositorioArgumentos();
     private final FakeReloj reloj = new FakeReloj();
     private final pensamiento.testutil.fakes.FakeRepositorioPredicciones predicciones = new pensamiento.testutil.fakes.FakeRepositorioPredicciones(ejecuciones);
-    private final GuardadoDeEjecuciones guardado = new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones, new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones));
+    private final pensamiento.testutil.fakes.FakeRepositorioEvidencias evidencias =
+            new pensamiento.testutil.fakes.FakeRepositorioEvidencias(ejecuciones, new pensamiento.testutil.fakes.FakeBiblioteca());
+    private final GuardadoDeEjecuciones guardado = new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones,
+            new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones), evidencias);
+
+    @Test
+    void guardar_t22_deja_sus_fuentes_y_evidencias_en_sus_tablas_y_el_doble_clic_no_las_repite() {
+        Ejemplo trafico = new CatalogoJson().ejemplosDe(pensamiento.tecnicas.f4.EjecutorTriangulacion.ID).getFirst();
+        pensamiento.tecnicas.f4.EjecutorTriangulacion t22 = new pensamiento.tecnicas.f4.EjecutorTriangulacion();
+        Resultado<pensamiento.tecnicas.f4.ResultadoTriangulacion> r = t22.ejecutar(
+                MapeadorJson.leer(trafico.config(), pensamiento.tecnicas.f4.EjecutorTriangulacion.Config.class),
+                MapeadorJson.leer(trafico.datos(), pensamiento.tecnicas.f4.EjecutorTriangulacion.Entrada.class), Contextos.sinIa());
+        Ejecucion nueva = new Ejecucion(Uuid7.en(reloj.ahora()), Contextos.DUENA_DE_LA_PANADERIA, Contextos.INSTITUCION, t22.id(), 2,
+                Optional.empty(), pensamiento.nucleo.Json.VACIO, pensamiento.nucleo.Json.VACIO, MapeadorJson.escribir(r.valor()), r.resumen(),
+                Optional.empty(), "clave-trafico", reloj.ahora());
+
+        guardado.guardar(nueva, r);
+        guardado.guardar(nueva, r);
+
+        java.util.UUID afirmacion = r.afirmaciones().getFirst().afirmacionId();
+        assertThat(evidencias.deAfirmacion(Contextos.DUENA_DE_LA_PANADERIA, afirmacion)).extracting(e -> e.fuente().titulo())
+                .containsExactly("Conteo peatonal del municipio", "Conteo propio de tres sábados", "Informe de la cámara de comercio");
+    }
 
     /** T01, ejemplo 3 de docs/ejemplos/T01.md: cuatro afirmaciones, tres argumentos y una objeción sin responder. */
     private Resultado<ResultadoMapa> camarasDelBarrio() {

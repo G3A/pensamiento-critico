@@ -44,7 +44,7 @@ public abstract class RepositorioEvidenciasContract {
 
     protected static FichaFuente fuente(String titulo, String grupo) {
         return new FichaFuente(UUID.randomUUID(), titulo, Optional.of("Oficina de movilidad"), Optional.of(LocalDate.of(2025, 3, 15)),
-                Fuente.TipoFuente.PRIMARIA, Optional.empty(), Optional.of(grupo), true, true, Optional.of(new FichaFuente.Craap(4, 5, 4, 4, 3, 20)),
+                Fuente.TipoFuente.PRIMARIA, Optional.empty(), Optional.of(grupo), true, true, Optional.of(20), Optional.of(new FichaFuente.Craap(4, 5, 4, 4, 3)),
                 new FichaFuente.Sift("La oficina de movilidad del municipio.", "La cámara de comercio cita el mismo conteo.", "Conteo de marzo, días hábiles."),
                 Optional.empty(), Optional.empty(), Optional.empty());
     }
@@ -68,11 +68,11 @@ public abstract class RepositorioEvidenciasContract {
     }
 
     @Test
-    void una_fuente_sin_craap_ni_fecha_ni_grupo_tambien_se_lee_igual() {
+    void una_fuente_con_solo_el_puntaje_craap_y_sin_fecha_ni_grupo_tambien_se_lee_igual() {
         Personas p = personas();
         UUID afirmacion = dadaUnaAfirmacion(p.usuarioA(), "Los robos en la cuadra subieron este año.");
         FichaFuente minima = new FichaFuente(UUID.randomUUID(), "Resumen del presidente de la junta", Optional.empty(), Optional.empty(),
-                Fuente.TipoFuente.SECUNDARIA, Optional.of(Fuente.DisenoEstudio.TESTIMONIO), Optional.empty(), false, false, Optional.empty(),
+                Fuente.TipoFuente.SECUNDARIA, Optional.of(Fuente.DisenoEstudio.TESTIMONIO), Optional.empty(), false, false, Optional.of(12), Optional.empty(),
                 FichaFuente.Sift.VACIA, Optional.empty(), Optional.empty(), Optional.empty());
         EvidenciaGuardada e = evidencia(afirmacion, minima, "Este año ya van el doble de robos que el anterior.", Evidencia.Postura.MATIZA, 0);
 
@@ -151,7 +151,7 @@ public abstract class RepositorioEvidenciasContract {
         FichaFuente f = fuente("Encuesta a clientes", "panadería");
         EvidenciaGuardada e1 = evidencia(afirmacion, f, "Se agota antes del mediodía.", Evidencia.Postura.APOYA, 4);
         FichaFuente corregida = new FichaFuente(f.id(), "Encuesta a 60 clientes, julio", f.autor(), f.fecha(), f.tipo(), f.disenoEstudio(),
-                f.grupoOrigen(), f.independiente(), f.accesoOriginal(), Optional.of(new FichaFuente.Craap(5, 5, 3, 3, 4, 20)), f.sift(),
+                f.grupoOrigen(), f.independiente(), f.accesoOriginal(), Optional.of(20), Optional.of(new FichaFuente.Craap(5, 5, 3, 3, 4)), f.sift(),
                 Optional.empty(), Optional.empty(), Optional.empty());
         EvidenciaGuardada e2 = evidencia(afirmacion, corregida, "Hoy solo se hornea los martes y los viernes.", Evidencia.Postura.MATIZA, 4);
         RepositorioEvidencias repo = comoUsuario(p.usuarioA());
@@ -195,7 +195,7 @@ public abstract class RepositorioEvidenciasContract {
         UUID documento = dadoUnDocumento(p.usuarioA(), "conteo-peatonal-municipio-2025.pdf");
         FichaFuente f = fuente("Conteo peatonal del municipio", "municipio");
         FichaFuente deLaBiblioteca = new FichaFuente(f.id(), f.titulo(), f.autor(), f.fecha(), f.tipo(), f.disenoEstudio(), f.grupoOrigen(),
-                f.independiente(), f.accesoOriginal(), f.craap(), f.sift(), Optional.of(documento), Optional.of("conteo-peatonal-municipio-2025.pdf"),
+                f.independiente(), f.accesoOriginal(), f.puntajeCraap(), f.craap(), f.sift(), Optional.of(documento), Optional.of("conteo-peatonal-municipio-2025.pdf"),
                 Optional.of(2));
         EvidenciaGuardada e = evidencia(afirmacion, deLaBiblioteca, "En el centro pasan 1.200 personas por hora.", Evidencia.Postura.APOYA, 6);
         RepositorioEvidencias repo = comoUsuario(p.usuarioA());

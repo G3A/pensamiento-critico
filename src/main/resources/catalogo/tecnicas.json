@@ -751,7 +751,7 @@
     "usalaCuando": "Tienes evidencia a favor y en contra de una afirmación y quieres saber en qué estado queda: verificada, refutada, disputada o en verificación.",
     "definicion": "Criterio que aplica la regla R03: una afirmación solo es verificada o refutada con al menos dos fuentes de grupos de origen distintos y fuerza neta fuerte.",
     "tipo": "criterio", "operacion": "evaluar", "objeto": "afirmacion", "modalidad": "calculo", "patron": "V10",
-    "origen": "Denzin 1978", "requiereIa": "opcional", "versionEsquema": 1, "estado": "activa", "iaExperimental": true,
+    "origen": "Denzin 1978", "requiereIa": "opcional", "versionEsquema": 2, "estado": "activa", "iaExperimental": true,
     "configDefault": { "fuentesMinimas": 2, "modo": "plantillas" },
     "esquemaConfig": {
       "campos": [
@@ -794,9 +794,11 @@
                 { "valor": "sin_etiquetar", "etiqueta": "Sin etiquetar" }, { "valor": "apoya", "etiqueta": "Apoya" }, { "valor": "contradice", "etiqueta": "Contradice" },
                 { "valor": "matiza", "etiqueta": "Matiza" }, { "valor": "irrelevante", "etiqueta": "Irrelevante" }
               ] },
-            { "nombre": "etiquetadaPor", "tipo": "oculto" }
+            { "nombre": "etiquetadaPor", "tipo": "oculto" },
+            { "nombre": "fuenteId", "tipo": "oculto" }
           ] },
-        { "nombre": "propuestas", "tipo": "propuestas", "etiqueta": "Propuestas del modelo", "visibleSi": "modo=plantillas_y_modelo" }
+        { "nombre": "propuestas", "tipo": "propuestas", "etiqueta": "Propuestas del modelo", "visibleSi": "modo=plantillas_y_modelo" },
+        { "nombre": "afirmacionId", "tipo": "oculto" }
       ]
     }
   },

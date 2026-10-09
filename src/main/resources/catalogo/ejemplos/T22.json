@@ -2,7 +2,7 @@
   {
     "ambito": "trabajo",
     "titulo": "El tráfico del centro",
-    "versionEsquema": 1,
+    "versionEsquema": 2,
     "config": { "fuentesMinimas": 2, "modo": "plantillas" },
     "datos": {
       "afirmacion": "El centro tiene más tráfico peatonal que el barrio.",
@@ -33,7 +33,7 @@
   {
     "ambito": "comunidad",
     "titulo": "Los robos de la cuadra",
-    "versionEsquema": 1,
+    "versionEsquema": 2,
     "config": { "fuentesMinimas": 2, "modo": "plantillas_y_modelo" },
     "datos": {
       "afirmacion": "Los robos en la cuadra subieron este año.",
@@ -64,7 +64,7 @@
   {
     "ambito": "personal",
     "titulo": "El nivel de matemáticas",
-    "versionEsquema": 1,
+    "versionEsquema": 2,
     "config": { "fuentesMinimas": 2, "modo": "plantillas" },
     "datos": {
       "afirmacion": "El colegio nuevo tiene mejor nivel en matemáticas que el actual.",

@@ -18,10 +18,11 @@ public record ResultadoTriangulacion(String afirmacion, String tipo, List<Eviden
     /**
      * @param postura apoya, contradice, matiza, irrelevante o sin_etiquetar
      * @param cuenta  si entra en R02 y R03: etiquetada por la persona o por una propuesta adoptada, y no irrelevante
-     * @param detalle por qué no cuenta, si no cuenta
+     * @param detalle  por qué no cuenta, si no cuenta
+     * @param fuenteId la fuente en la tabla fuente; vacío en las ejecuciones de la versión 1 o si la fila no va a la tabla
      */
     public record EvidenciaEvaluada(String codigo, String titulo, String grupo, String pasaje, String postura, int fuerza, boolean cuenta,
-                                    String etiquetadaPor, String detalle) {
+                                    String etiquetadaPor, String detalle, String fuenteId) {
     }
 
     public ResultadoTriangulacion {

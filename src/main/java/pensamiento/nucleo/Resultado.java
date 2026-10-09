@@ -16,7 +16,9 @@ import java.util.Optional;
  * @param bloqueoGuardado si está presente, guardar responde con este motivo y no guarda nada (T16, T32)
  * @param predicciones    predicciones con la confianza declarada (tabla prediccion, R05); vacía salvo en T32
  * @param cambios         cambios de opinión sobre afirmaciones de esta ejecución (tabla cambio_opinion, R05); vacía salvo
- *                        cuando la persona declara su confianza antes y después (T08 y el cierre del Consejero)
+ *                        cuando la persona declara su confianza antes y después (T08, el cierre del Consejero y la ficha de verificación)
+ * @param evidencias      evidencias con la ficha de su fuente sobre afirmaciones de esta ejecución (tablas evidencia y fuente);
+ *                        vacía salvo en T22 · Triangulación
  */
 public record Resultado<R>(
         int versionEsquema,
@@ -28,7 +30,8 @@ public record Resultado<R>(
         Optional<Ejecucion.RegistroModelo> modelo,
         Optional<String> bloqueoGuardado,
         List<PrediccionDeclarada> predicciones,
-        List<CambioOpinion.Declarado> cambios) {
+        List<CambioOpinion.Declarado> cambios,
+        List<EvidenciaGuardada> evidencias) {
 
     public Resultado {
         afirmaciones = List.copyOf(afirmaciones);
@@ -36,11 +39,23 @@ public record Resultado<R>(
         argumentos = List.copyOf(argumentos);
         predicciones = List.copyOf(predicciones);
         cambios = List.copyOf(cambios);
+        evidencias = List.copyOf(evidencias);
         for (CambioOpinion.Declarado c : cambios) {
             if (afirmaciones.stream().noneMatch(a -> a.afirmacionId().equals(c.afirmacionId()))) {
                 throw new IllegalArgumentException("Un cambio de opinión debe ser sobre una afirmación de la misma ejecución");
             }
         }
+        for (EvidenciaGuardada e : evidencias) {
+            if (afirmaciones.stream().noneMatch(a -> a.afirmacionId().equals(e.afirmacionId()))) {
+                throw new IllegalArgumentException("Una evidencia debe ser sobre una afirmación de la misma ejecución");
+            }
+        }
+    }
+
+    public Resultado(int versionEsquema, R valor, List<AfirmacionConRol> afirmaciones, List<Pendiente> pendientes, String resumen,
+                     List<ArgumentoProducido> argumentos, Optional<Ejecucion.RegistroModelo> modelo, Optional<String> bloqueoGuardado,
+                     List<PrediccionDeclarada> predicciones, List<CambioOpinion.Declarado> cambios) {
+        this(versionEsquema, valor, afirmaciones, pendientes, resumen, argumentos, modelo, bloqueoGuardado, predicciones, cambios, List.of());
     }
 
     public Resultado(int versionEsquema, R valor, List<AfirmacionConRol> afirmaciones, List<Pendiente> pendientes, String resumen,
@@ -51,7 +66,12 @@ public record Resultado<R>(
 
     /** El mismo resultado con estos cambios de opinión (el Consejero los agrega al cerrar). */
     public Resultado<R> conCambios(List<CambioOpinion.Declarado> nuevos) {
-        return new Resultado<>(versionEsquema, valor, afirmaciones, pendientes, resumen, argumentos, modelo, bloqueoGuardado, predicciones, nuevos);
+        return new Resultado<>(versionEsquema, valor, afirmaciones, pendientes, resumen, argumentos, modelo, bloqueoGuardado, predicciones, nuevos, evidencias);
+    }
+
+    /** El mismo resultado con estas evidencias para guardar en sus tablas (T22). */
+    public Resultado<R> conEvidencias(List<EvidenciaGuardada> nuevas) {
+        return new Resultado<>(versionEsquema, valor, afirmaciones, pendientes, resumen, argumentos, modelo, bloqueoGuardado, predicciones, cambios, nuevas);
     }
 
     public Resultado(int versionEsquema, R valor, List<AfirmacionConRol> afirmaciones, List<Pendiente> pendientes, String resumen,

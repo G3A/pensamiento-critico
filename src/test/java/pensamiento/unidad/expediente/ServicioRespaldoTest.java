@@ -178,7 +178,8 @@ class ServicioRespaldoTest {
                 MapeadorJson.leer(sucursal.datos(), EjecutorMapa.Entrada.class), Contextos.sinIa());
         Ejecucion e = new Ejecucion(Uuid7.en(reloj.ahora()), DUENA, INSTITUCION, EjecutorMapa.ID, 1, Optional.empty(), sucursal.config(),
                 sucursal.datos(), MapeadorJson.escribir(r.valor()), r.resumen(), Optional.empty(), "clave-mapa", reloj.ahora());
-        return new GuardadoDeEjecuciones(ejecuciones, argumentos, new pensamiento.testutil.fakes.FakeRepositorioPredicciones(ejecuciones), new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones)).guardar(e, r);
+        return new GuardadoDeEjecuciones(ejecuciones, argumentos, new pensamiento.testutil.fakes.FakeRepositorioPredicciones(ejecuciones), new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones),
+                new pensamiento.testutil.fakes.FakeRepositorioEvidencias(ejecuciones, new pensamiento.testutil.fakes.FakeBiblioteca())).guardar(e, r);
     }
 
     @Test
@@ -246,7 +247,8 @@ class ServicioRespaldoTest {
         Ejecucion e = new Ejecucion(Uuid7.en(reloj.ahora()), DUENA, INSTITUCION, pensamiento.tecnicas.f5.EjecutorDiarioDecisiones.ID, 1, Optional.empty(),
                 pensamiento.nucleo.Json.VACIO, pensamiento.nucleo.Json.VACIO, MapeadorJson.escribir(r.valor()), r.resumen(), Optional.empty(), "diario",
                 reloj.ahora());
-        new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones, new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones)).guardar(e, r);
+        new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones, new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones),
+                new pensamiento.testutil.fakes.FakeRepositorioEvidencias(ejecuciones, new pensamiento.testutil.fakes.FakeBiblioteca())).guardar(e, r);
         java.util.UUID id = predicciones.deEjecucion(DUENA, e.id()).getFirst().id();
         predicciones.resolver(DUENA, id, true, java.time.Instant.parse("2027-04-15T15:00:00Z"));
         String archivo = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
@@ -283,7 +285,8 @@ class ServicioRespaldoTest {
     @Test
     void la_version_4_lleva_las_sesiones_del_consejero_con_sus_turnos_y_los_cambios_de_opinion_de_ida_y_vuelta() {
         pensamiento.flujos.Consejero consejero = new pensamiento.flujos.Consejero(sesiones, expedientes,
-                new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones, cambios), reloj, new pensamiento.tecnicas.f2.EjecutorPreguntasSocraticas(),
+                new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones, cambios,
+                        new pensamiento.testutil.fakes.FakeRepositorioEvidencias(ejecuciones, new pensamiento.testutil.fakes.FakeBiblioteca())), reloj, new pensamiento.tecnicas.f2.EjecutorPreguntasSocraticas(),
                 new pensamiento.tecnicas.f2.EjecutorEscalera(), new pensamiento.tecnicas.f6.EjecutorSeisSombreros(),
                 new pensamiento.tecnicas.f6.EjecutorEquipoRojo(new pensamiento.testutil.fakes.FakeRepositorioEsquemas()));
         Json config = new Json("{\"tipos\":[\"supuestos\",\"evidencia\"],\"orden\":\"fijo\",\"turnosMaximos\":4,\"modo\":\"plantillas\"}");
@@ -321,7 +324,8 @@ class ServicioRespaldoTest {
     @Test
     void una_sesion_de_otra_persona_en_el_archivo_rechaza_todo_el_archivo() {
         pensamiento.flujos.Consejero consejero = new pensamiento.flujos.Consejero(sesiones, expedientes,
-                new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones, cambios), reloj, new pensamiento.tecnicas.f2.EjecutorPreguntasSocraticas(),
+                new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones, cambios,
+                        new pensamiento.testutil.fakes.FakeRepositorioEvidencias(ejecuciones, new pensamiento.testutil.fakes.FakeBiblioteca())), reloj, new pensamiento.tecnicas.f2.EjecutorPreguntasSocraticas(),
                 new pensamiento.tecnicas.f2.EjecutorEscalera(), new pensamiento.tecnicas.f6.EjecutorSeisSombreros(),
                 new pensamiento.tecnicas.f6.EjecutorEquipoRojo(new pensamiento.testutil.fakes.FakeRepositorioEsquemas()));
         Json config = new Json("{\"tipos\":[\"supuestos\",\"evidencia\"],\"orden\":\"fijo\",\"turnosMaximos\":4,\"modo\":\"plantillas\"}");

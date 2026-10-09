@@ -52,7 +52,7 @@ public final class FakeRepositorioEvidencias implements RepositorioEvidencias {
         FichaFuente f = fuentes.get(e.fuente().id());
         if (f.documentoId().isPresent() && !biblioteca.existe(f.documentoId().get())) {
             f = new FichaFuente(f.id(), f.titulo(), f.autor(), f.fecha(), f.tipo(), f.disenoEstudio(), f.grupoOrigen(), f.independiente(),
-                    f.accesoOriginal(), f.craap(), f.sift(), Optional.empty(), f.documentoNombre(), f.pagina());
+                    f.accesoOriginal(), f.puntajeCraap(), f.craap(), f.sift(), Optional.empty(), f.documentoNombre(), f.pagina());
         }
         return new EvidenciaGuardada(e.id(), e.afirmacionId(), f, e.fragmentoId(), e.pasaje(), e.postura(), e.fuerza(), e.etiquetadaPor(), e.adoptada());
     }

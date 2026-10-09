@@ -34,10 +34,6 @@ public class RepositorioEvidenciasJdbc implements RepositorioEvidencias {
             FROM evidencia e JOIN fuente f ON f.id = e.fuente_id JOIN afirmacion a ON a.id = e.afirmacion_id
             """;
 
-    /** Lo que guarda la columna craap: los cinco criterios; el puntaje va en puntaje_craap. */
-    record CriteriosCraap(int actualidad, int relevancia, int autoridad, int exactitud, int proposito) {
-    }
-
     private final JdbcClient jdbc;
 
     public RepositorioEvidenciasJdbc(JdbcClient jdbc) {
@@ -68,9 +64,8 @@ public class RepositorioEvidenciasJdbc implements RepositorioEvidencias {
                 .param("autor", f.autor().orElse(null)).param("fecha", f.fecha().map(Date::valueOf).orElse(null))
                 .param("tipo", f.tipo().name().toLowerCase()).param("diseno", f.disenoEstudio().map(d -> d.name().toLowerCase()).orElse(null))
                 .param("grupo", f.grupoOrigen().orElse(null)).param("independiente", f.independiente()).param("original", f.accesoOriginal())
-                .param("craap", f.craap().map(c -> MapeadorJson.escribir(new CriteriosCraap(c.actualidad(), c.relevancia(), c.autoridad(),
-                        c.exactitud(), c.proposito())).texto()).orElse(null))
-                .param("puntaje", f.craap().map(FichaFuente.Craap::puntaje).orElse(null))
+                .param("craap", f.craap().map(c -> MapeadorJson.escribir(c).texto()).orElse(null))
+                .param("puntaje", f.puntajeCraap().orElse(null))
                 .param("sift", MapeadorJson.escribir(f.sift()).texto())
                 .param("documento", f.documentoId().orElse(null)).param("documentoNombre", f.documentoNombre().orElse(null))
                 .param("pagina", f.pagina().orElse(null))
@@ -124,19 +119,15 @@ public class RepositorioEvidenciasJdbc implements RepositorioEvidencias {
 
     private static EvidenciaGuardada fila(ResultSet rs, int i) throws SQLException {
         String craap = rs.getString("craap");
-        Optional<FichaFuente.Craap> criterios = Optional.empty();
-        if (craap != null && rs.getObject("puntaje_craap") != null) {
-            CriteriosCraap c = MapeadorJson.leer(new Json(craap), CriteriosCraap.class);
-            criterios = Optional.of(new FichaFuente.Craap(c.actualidad(), c.relevancia(), c.autoridad(), c.exactitud(), c.proposito(),
-                    rs.getInt("puntaje_craap")));
-        }
+        Optional<FichaFuente.Craap> criterios = Optional.ofNullable(craap).map(c -> MapeadorJson.leer(new Json(c), FichaFuente.Craap.class));
+        Optional<Integer> puntaje = Optional.ofNullable((Integer) rs.getObject("puntaje_craap"));
         Date fecha = rs.getDate("fecha");
         String diseno = rs.getString("diseno_estudio");
         Integer pagina = (Integer) rs.getObject("pagina");
         FichaFuente fuente = new FichaFuente(rs.getObject("fuente_id", UUID.class), rs.getString("titulo"), Optional.ofNullable(rs.getString("autor")),
                 Optional.ofNullable(fecha).map(Date::toLocalDate), Fuente.TipoFuente.valueOf(rs.getString("tipo").toUpperCase()),
                 Optional.ofNullable(diseno).map(d -> Fuente.DisenoEstudio.valueOf(d.toUpperCase())), Optional.ofNullable(rs.getString("grupo_origen")),
-                rs.getBoolean("independiente_del_autor"), rs.getBoolean("acceso_original"), criterios,
+                rs.getBoolean("independiente_del_autor"), rs.getBoolean("acceso_original"), puntaje, criterios,
                 MapeadorJson.leer(new Json(rs.getString("sift")), FichaFuente.Sift.class), Optional.ofNullable(rs.getObject("documento_id", UUID.class)),
                 Optional.ofNullable(rs.getString("documento_nombre")), Optional.ofNullable(pagina));
         return new EvidenciaGuardada(rs.getObject("id", UUID.class), rs.getObject("afirmacion_id", UUID.class), fuente,

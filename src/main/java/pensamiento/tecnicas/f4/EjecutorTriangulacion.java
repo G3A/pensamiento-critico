@@ -3,6 +3,7 @@ package pensamiento.tecnicas.f4;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,8 @@ import pensamiento.nucleo.Contexto;
 import pensamiento.nucleo.Ejecutor;
 import pensamiento.nucleo.EstadoAfirmacion;
 import pensamiento.nucleo.Evidencia;
+import pensamiento.nucleo.EvidenciaGuardada;
+import pensamiento.nucleo.FichaFuente;
 import pensamiento.nucleo.Fuente;
 import pensamiento.nucleo.IdTecnica;
 import pensamiento.nucleo.Json;
@@ -35,6 +38,7 @@ import pensamiento.nucleo.puertos.Clasificacion;
 import pensamiento.nucleo.reglas.R01FuerzaEvidencia;
 import pensamiento.nucleo.reglas.R02FuerzaNeta;
 import pensamiento.nucleo.reglas.R03EstadoAfirmacion;
+import pensamiento.catalogo.MapeadorJson;
 import pensamiento.tecnicas.comun.ModeloLocal;
 import pensamiento.tecnicas.comun.Prompts;
 import pensamiento.tecnicas.comun.Textos;
@@ -43,13 +47,17 @@ import pensamiento.tecnicas.comun.Textos;
  * T22 · Triangulación (Denzin 1978). Aplica R01, R02 y R03 de la sección 5b, versión 1, sobre las fuentes que la persona
  * registra a mano: "verificada" o "refutada" exige al menos dos grupos de origen distintos. El modelo puede etiquetar
  * los pasajes sin etiquetar; esa etiqueta no cuenta hasta adoptarse. Reglas en docs/ejemplos/T22.md.
+ *
+ * <p>Versión de esquema 2 (hito 6): las fuentes nuevas se declaran como evidencias para las tablas fuente y evidencia; una
+ * fuente que ya está en la tabla trae su identificador y no se repite. La ficha de verificación pasa la afirmación que ya
+ * existe: entonces la ejecución la consume en vez de producir otra. La versión 1 se lee con {@link #migrar}.
  */
 @Component
 public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Config, EjecutorTriangulacion.Entrada, ResultadoTriangulacion>,
         ConModelo<EjecutorTriangulacion.Config, EjecutorTriangulacion.Entrada> {
 
     public static final IdTecnica ID = IdTecnica.de("T22");
-    public static final int VERSION_ESQUEMA = 1;
+    public static final int VERSION_ESQUEMA = 2;
     public static final String PROMPT = "t22-postura";
     public static final int VERSION_PROMPT = 2;
     public static final String SIN_ETIQUETAR = "sin_etiquetar";
@@ -75,15 +83,26 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
      * @param fecha        AAAA-MM-DD, opcional
      * @param postura      apoya, contradice, matiza, irrelevante o sin_etiquetar
      * @param etiquetadaPor "modelo" si la postura vino de una propuesta adoptada
+     * @param fuenteId      la fuente en la tabla fuente, si ya está guardada (la ficha de verificación); vacío si es nueva
      */
     public record FuenteRegistrada(String titulo, String tipoFuente, String diseno, String fecha, String grupo, boolean independiente,
-                                   boolean original, Integer craap, String pasaje, String postura, String etiquetadaPor) {
+                                   boolean original, Integer craap, String pasaje, String postura, String etiquetadaPor, String fuenteId) {
+
+        public FuenteRegistrada(String titulo, String tipoFuente, String diseno, String fecha, String grupo, boolean independiente, boolean original,
+                                Integer craap, String pasaje, String postura, String etiquetadaPor) {
+            this(titulo, tipoFuente, diseno, fecha, grupo, independiente, original, craap, pasaje, postura, etiquetadaPor, null);
+        }
     }
 
-    public record Entrada(String afirmacion, String tipo, List<FuenteRegistrada> fuentes, List<Propuesta> propuestas) {
+    /** @param afirmacionId la afirmación que ya existe (la ficha de verificación); vacío para producir una nueva */
+    public record Entrada(String afirmacion, String tipo, List<FuenteRegistrada> fuentes, List<Propuesta> propuestas, String afirmacionId) {
         public Entrada {
             fuentes = fuentes == null ? List.of() : List.copyOf(fuentes);
             propuestas = propuestas == null ? List.of() : List.copyOf(propuestas);
+        }
+
+        public Entrada(String afirmacion, String tipo, List<FuenteRegistrada> fuentes, List<Propuesta> propuestas) {
+            this(afirmacion, tipo, fuentes, propuestas, null);
         }
     }
 
@@ -155,11 +174,13 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
             throw new IllegalArgumentException("Entrada inválida para " + ID + ": " + validacion.errores());
         }
         TipoAfirmacion tipo = tipoAfirmacion(entrada.tipo()).orElseThrow();
-        UUID afirmacionId = ctx.nuevoId().get();
+        Optional<UUID> existente = uuid(entrada.afirmacionId());
+        UUID afirmacionId = existente.orElseGet(() -> ctx.nuevoId().get());
         LocalDate hoy = ctx.reloj().hoy();
         List<FuenteRegistrada> fuentes = conTitulo(entrada);
-        Set<Integer> conPropuestaPendiente = new HashSet<>();
-        entrada.propuestas().stream().filter(p -> !p.adoptada()).forEach(p -> conPropuestaPendiente.add(numero(p.destino())));
+        Map<Integer, String> propuestaPendiente = new HashMap<>();
+        entrada.propuestas().stream().filter(p -> !p.adoptada()).forEach(p -> propuestaPendiente.put(numero(p.destino()), p.valor()));
+        List<EvidenciaGuardada> paraTablas = new ArrayList<>();
         List<ResultadoTriangulacion.EvidenciaEvaluada> evaluadas = new ArrayList<>();
         List<Evidencia> cuentan = new ArrayList<>();
         Set<String> grupos = new HashSet<>();
@@ -175,7 +196,7 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
             Optional<Evidencia.Postura> p = postura(postura).flatMap(x -> x);
             String detalle = null;
             if (SIN_ETIQUETAR.equals(postura)) {
-                detalle = conPropuestaPendiente.contains(i + 1) ? "etiquetada por el modelo · sin adoptar · no cuenta" : "sin etiquetar · no cuenta";
+                detalle = propuestaPendiente.containsKey(i + 1) ? "etiquetada por el modelo · sin adoptar · no cuenta" : "sin etiquetar · no cuenta";
             } else if (IRRELEVANTE.equals(postura)) {
                 detalle = "irrelevante · no cuenta";
             }
@@ -188,8 +209,22 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
                     grupos.add(fuente.grupoOrigen().orElse("fuente:" + i));
                 }
             }
+            Optional<UUID> fuenteGuardada = uuid(f.fuenteId());
+            String idFuente = fuenteGuardada.map(UUID::toString).orElse(null);
+            if (fuenteGuardada.isEmpty()) {
+                Optional<Evidencia.Postura> propuesta = postura(propuestaPendiente.get(i + 1)).flatMap(x -> x);
+                if (cuenta) {
+                    paraTablas.add(new EvidenciaGuardada(ctx.nuevoId().get(), afirmacionId, ficha(fuente), Optional.empty(), f.pasaje().strip(), p.get(),
+                            fuerza, delModelo ? Evidencia.EtiquetadaPor.MODELO : Evidencia.EtiquetadaPor.USUARIO, true));
+                    idFuente = fuente.id().toString();
+                } else if (SIN_ETIQUETAR.equals(postura) && propuesta.isPresent()) {
+                    paraTablas.add(new EvidenciaGuardada(ctx.nuevoId().get(), afirmacionId, ficha(fuente), Optional.empty(), f.pasaje().strip(),
+                            propuesta.get(), fuerza, Evidencia.EtiquetadaPor.MODELO, false));
+                    idFuente = fuente.id().toString();
+                }
+            }
             evaluadas.add(new ResultadoTriangulacion.EvidenciaEvaluada("F" + (i + 1), f.titulo().strip(), Textos.vacio(f.grupo()) ? null : f.grupo().strip(),
-                    f.pasaje().strip(), postura, fuerza, cuenta, delModelo ? "modelo" : "usuario", detalle));
+                    f.pasaje().strip(), postura, fuerza, cuenta, delModelo ? "modelo" : "usuario", detalle, idFuente));
         }
         R02FuerzaNeta.FuerzaNeta neta = R02FuerzaNeta.neta(cuentan, R02FuerzaNeta.Parametros.v1());
         R03EstadoAfirmacion.Parametros r03 = new R03EstadoAfirmacion.Parametros(R03EstadoAfirmacion.Parametros.v1().umbralFuerte(), config.fuentesMinimas());
@@ -223,11 +258,28 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
         String resumen = Textos.mayusculaInicial(texto(estado)) + " · fuerza neta " + netaTexto + " (" + magnitud + ") · "
                 + Textos.contar(fuentes.size(), "fuente", "fuentes") + ", " + cuentan.size() + (cuentan.size() == 1 ? " cuenta." : " cuentan.");
         List<AfirmacionConRol> afirmaciones = List.of(new AfirmacionConRol(afirmacionId, afirmacion, tipo, RolAfirmacion.HIPOTESIS,
-                SentidoAfirmacion.PRODUCIDA, OrigenAfirmacion.USUARIO));
+                existente.isPresent() ? SentidoAfirmacion.CONSUMIDA : SentidoAfirmacion.PRODUCIDA, OrigenAfirmacion.USUARIO));
         ResultadoTriangulacion valor = new ResultadoTriangulacion(afirmacion, tipo.enBaseDeDatos(), evaluadas, neta.valor(), magnitud,
                 estado.name().toLowerCase(), motivo, cuentan.size(), grupos.size(), entrada.propuestas(), resumen);
         return new Resultado<>(VERSION_ESQUEMA, valor, afirmaciones, pendientes, resumen, List.of(), Resultado.registroDe(entrada.propuestas()),
-                Optional.empty());
+                Optional.empty()).conEvidencias(paraTablas);
+    }
+
+    /** La ficha de fuente que va a la tabla: lo que T22 sabe de la fuente, sin notas de SIFT ni criterios de CRAAP. */
+    private static FichaFuente ficha(Fuente f) {
+        return new FichaFuente(f.id(), f.titulo(), Optional.empty(), f.fecha(), f.tipo(), f.disenoEstudio(), f.grupoOrigen(), f.independienteDelAutor(),
+                f.accesoOriginal(), f.puntajeCraap(), Optional.empty(), FichaFuente.Sift.VACIA, Optional.empty(), Optional.empty(), Optional.empty());
+    }
+
+    private static Optional<UUID> uuid(String texto) {
+        if (Textos.vacio(texto)) {
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(UUID.fromString(texto.strip()));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
     }
 
     /** "verificada", "en verificación", "sin verificar"… */
@@ -254,8 +306,11 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
 
     @Override
     public ResultadoTriangulacion migrar(Json datosViejos, int desdeVersion) {
-        throw new IllegalArgumentException(ID + " no tiene versiones anteriores a la " + VERSION_ESQUEMA
-                + "; se pidió migrar desde la " + desdeVersion);
+        if (desdeVersion != 1) {
+            throw new IllegalArgumentException(ID + " no tiene versión " + desdeVersion + " anterior a la " + VERSION_ESQUEMA);
+        }
+        // La versión 1 es la 2 sin el identificador de cada fuente: sus fuentes pasaron a la tabla con V8, sin ligarse al JSONB.
+        return MapeadorJson.leer(datosViejos, ResultadoTriangulacion.class);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -314,8 +369,8 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
         }
         FuenteRegistrada f = fuentes.get(i);
         fuentes.set(i, new FuenteRegistrada(f.titulo(), f.tipoFuente(), f.diseno(), f.fecha(), f.grupo(), f.independiente(), f.original(), f.craap(),
-                f.pasaje(), p.valor(), "modelo"));
-        return new Entrada(entrada.afirmacion(), entrada.tipo(), fuentes, propuestas);
+                f.pasaje(), p.valor(), "modelo", f.fuenteId()));
+        return new Entrada(entrada.afirmacion(), entrada.tipo(), fuentes, propuestas, entrada.afirmacionId());
     }
 
     private static List<FuenteRegistrada> conTitulo(Entrada entrada) {
@@ -351,6 +406,9 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
 
     /** Vacío si el valor no es una postura válida; presente con vacío si es válida pero no cuenta (sin etiquetar, irrelevante). */
     private static Optional<Optional<Evidencia.Postura>> postura(String valor) {
+        if (valor == null) {
+            return Optional.empty();
+        }
         if (SIN_ETIQUETAR.equals(valor) || IRRELEVANTE.equals(valor)) {
             return Optional.of(Optional.empty());
         }

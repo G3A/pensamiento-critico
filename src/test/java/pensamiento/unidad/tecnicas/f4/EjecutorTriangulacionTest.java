@@ -126,4 +126,93 @@ class EjecutorTriangulacionTest {
         assertThat(r.estado()).isEqualTo("no_verificable");
         assertThat(r.motivo()).isEqualTo("Es un juicio de valor o una definición: no se verifica con fuentes.");
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // Versión de esquema 2 (hito 6): las fuentes van a sus tablas
+    // ---------------------------------------------------------------------------------------------
+
+    @Test
+    void las_fuentes_que_cuentan_se_declaran_como_evidencias_de_la_afirmacion_producida() {
+        Ejemplo trafico = ejemplos().filter(e -> e.titulo().equals("El tráfico del centro")).findFirst().orElseThrow();
+        Resultado<ResultadoTriangulacion> r = t22.ejecutar(MapeadorJson.leer(trafico.config(), EjecutorTriangulacion.Config.class),
+                MapeadorJson.leer(trafico.datos(), EjecutorTriangulacion.Entrada.class), Contextos.sinIa());
+
+        java.util.UUID afirmacion = r.afirmaciones().getFirst().afirmacionId();
+        assertThat(r.afirmaciones().getFirst().sentido()).isEqualTo(pensamiento.nucleo.SentidoAfirmacion.PRODUCIDA);
+        assertThat(r.evidencias()).hasSize(3).allSatisfy(e -> {
+            assertThat(e.afirmacionId()).isEqualTo(afirmacion);
+            assertThat(e.adoptada()).isTrue();
+            assertThat(e.etiquetadaPor()).isEqualTo(pensamiento.nucleo.Evidencia.EtiquetadaPor.USUARIO);
+        });
+        assertThat(r.evidencias()).extracting(e -> e.fuente().titulo(), pensamiento.nucleo.EvidenciaGuardada::fuerza).containsExactly(
+                org.assertj.core.groups.Tuple.tuple("Conteo peatonal del municipio", 6), org.assertj.core.groups.Tuple.tuple("Conteo propio de tres sábados", 4),
+                org.assertj.core.groups.Tuple.tuple("Informe de la cámara de comercio", 4));
+        assertThat(r.evidencias().getFirst().fuente().grupoOrigen()).contains("municipio");
+        assertThat(r.evidencias().getFirst().fuente().puntajeCraap()).contains(20);
+        assertThat(r.valor().evidencias()).extracting(ResultadoTriangulacion.EvidenciaEvaluada::fuenteId)
+                .containsExactlyElementsOf(r.evidencias().stream().map(e -> e.fuente().id().toString()).toList());
+    }
+
+    @Test
+    void la_etiqueta_del_modelo_sin_adoptar_va_a_la_tabla_sin_contar_y_el_pasaje_sin_etiquetar_no_va() {
+        Ejemplo robos = ejemplos().filter(e -> e.titulo().equals("Los robos de la cuadra")).findFirst().orElseThrow();
+        EjecutorTriangulacion.Config config = MapeadorJson.leer(robos.config(), EjecutorTriangulacion.Config.class);
+        EjecutorTriangulacion.Entrada entrada = MapeadorJson.leer(robos.datos(), EjecutorTriangulacion.Entrada.class);
+
+        assertThat(t22.ejecutar(config, entrada, Contextos.sinIa()).evidencias()).hasSize(2);
+
+        Propuesta apoya = new Propuesta("IA1", "3", "F3", "apoya", "12 contra 6", false, "qwen3:4b", "sha256:fake", "t22-postura.v2");
+        Resultado<ResultadoTriangulacion> conPropuesta = t22.ejecutar(config,
+                new EjecutorTriangulacion.Entrada(entrada.afirmacion(), entrada.tipo(), entrada.fuentes(), List.of(apoya)), Contextos.sinIa());
+        assertThat(conPropuesta.evidencias()).hasSize(3);
+        assertThat(conPropuesta.evidencias().get(2)).satisfies(e -> {
+            assertThat(e.etiquetadaPor()).isEqualTo(pensamiento.nucleo.Evidencia.EtiquetadaPor.MODELO);
+            assertThat(e.adoptada()).isFalse();
+            assertThat(e.comoEvidencia().cuenta()).isFalse();
+        });
+    }
+
+    @Test
+    void desde_la_ficha_la_afirmacion_existente_se_consume_y_las_fuentes_guardadas_no_se_repiten() {
+        java.util.UUID existente = java.util.UUID.fromString("01a118b3-94cc-76f0-afe1-daab7018e19c");
+        java.util.UUID fuenteGuardada = java.util.UUID.fromString("01a118b3-94cc-76f0-afe1-daab7018e1aa");
+        EjecutorTriangulacion.Entrada entrada = new EjecutorTriangulacion.Entrada("Pasan al menos 1.000 personas por la esquina cada mañana.",
+                "dato_estadistico", List.of(new EjecutorTriangulacion.FuenteRegistrada("Conteo peatonal del municipio", "primaria", "observacional",
+                "2025-03-15", "municipio", true, true, 20, "En la esquina de la plaza pasan en promedio 1.150 personas entre las 7 y las 10 de la mañana.",
+                "apoya", null, fuenteGuardada.toString())), List.of(), existente.toString());
+
+        Resultado<ResultadoTriangulacion> r = t22.ejecutar(new EjecutorTriangulacion.Config(2, EjecutorTriangulacion.Modo.PLANTILLAS), entrada,
+                Contextos.sinIa());
+
+        assertThat(r.afirmaciones()).singleElement().satisfies(a -> {
+            assertThat(a.afirmacionId()).isEqualTo(existente);
+            assertThat(a.sentido()).isEqualTo(pensamiento.nucleo.SentidoAfirmacion.CONSUMIDA);
+        });
+        assertThat(r.evidencias()).isEmpty();
+        assertThat(r.valor().evidencias()).extracting(ResultadoTriangulacion.EvidenciaEvaluada::fuenteId).containsExactly(fuenteGuardada.toString());
+        assertThat(r.resumen()).isEqualTo("En verificación · fuerza neta +6 (fuerte) · 1 fuente, 1 cuenta.");
+        assertThat(r.pendientes()).singleElement().satisfies(p -> {
+            assertThat(p.objetoId()).contains(existente);
+            assertThat(p.descripcion()).isEqualTo("Buscar una fuente independiente para: Pasan al menos 1.000 personas por la esquina cada mañana.");
+        });
+    }
+
+    @Test
+    void una_ejecucion_de_la_version_1_se_lee_sin_identificadores_de_fuente() {
+        pensamiento.nucleo.Json v1 = new pensamiento.nucleo.Json("""
+                {"afirmacion":"El centro tiene más tráfico peatonal que el barrio.","tipo":"hecho","evidencias":[{"codigo":"F1",
+                 "titulo":"Conteo peatonal del municipio","grupo":"municipio","pasaje":"En el centro pasan 1.200 personas por hora.",
+                 "postura":"apoya","fuerza":6,"cuenta":true,"etiquetadaPor":"usuario"}],"neta":6,"magnitud":"fuerte","estado":"en_verificacion",
+                 "motivo":"Fuerza neta +6 (fuerte), pero las fuentes a favor son de 1 grupo de origen: falta una fuente independiente (regla R03).",
+                 "cuentan":1,"grupos":1,"propuestas":[],"resumen":"En verificación · fuerza neta +6 (fuerte) · 1 fuente, 1 cuenta."}
+                """);
+
+        ResultadoTriangulacion r = t22.migrar(v1, 1);
+
+        assertThat(r.estado()).isEqualTo("en_verificacion");
+        assertThat(r.evidencias()).singleElement().satisfies(e -> {
+            assertThat(e.fuerza()).isEqualTo(6);
+            assertThat(e.fuenteId()).isNull();
+        });
+    }
 }
