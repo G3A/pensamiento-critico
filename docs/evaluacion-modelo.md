@@ -228,3 +228,40 @@ docker compose --profile test run --rm -e EVALUACION_MODELO=true tests \
 
 Las mismas condiciones del hito 3: temperatura 0, semilla 42, sin razonamiento, `num_predict=512`, `num_ctx=8192`, una
 petición a la vez y un turno de calentamiento que no cuenta.
+
+## Resultados del hito 5 (2026-10-09)
+
+Misma máquina que en los hitos anteriores (i7-11800H, 32 GB, Docker Desktop con WSL2), Ollama 0.40.1 en CPU,
+`qwen3:4b-instruct-2507-q4_K_M` con `t08-pregunta.v2` y `t36-ataque.v1`, bancos completos, la app levantada y nada más
+corriendo. Detalle de cada intento en `target/evaluacion/consejero-qwen3_4b-instruct-2507-q4_K_M.json`.
+
+| Qué (umbral) | Diálogos (30) | Modos (12) | Ataques (10) |
+|---|---|---|---|
+| Aprueban el validador al primer intento | 28 (al menos 24): **sí** | 12 (al menos 10): **sí** | 10 (al menos 8): **sí** |
+| Necesitan reintento y después pasan | 0 | 0 | 0 |
+| Caen al banco tras dos reintentos | 2 (como máximo 3): **sí** | 0 (como máximo 1): **sí** | 0 (como máximo 1): **sí** |
+| Llegan a la persona con voseo o veredicto | 0: **sí** | 0: **sí** | 0: **sí** |
+| Motivos de rechazo | voseo 6 (D06 y D27, tres veces cada uno) | ninguno | ninguno |
+| Primer token, p95 (menos de 3 s) | 4,3 s: **no** | 2,9 s: **sí** | 14,9 s: **no** |
+| Turno validado completo, p95 (menos de 15 s) | 10,2 s (mediana 6,2 s): **sí** | 6,7 s (mediana 4,7 s): **sí** | 18,0 s (mediana 5,7 s): **no** |
+
+Lectura:
+
+- **El validador hace su trabajo**: ninguna pregunta con voseo o veredicto llegó a la persona. El voseo del hito 3 (5
+  "asumís" y 1 "querés" en los turnos de supuestos) desapareció de los supuestos con el ejemplo "¿Qué das por sentado…?" del
+  prompt v2, pero apareció en dos turnos de propósito ("¿Qué querés lograr…?", D06 y D27).
+- **Reintentar no sirve contra el voseo con temperatura 0**: el modelo repite la misma pregunta en los tres intentos y el
+  turno cae a la pregunta del banco. La caída es la salvaguarda; un prompt v3 que en el reintento diga qué forma evitar es
+  una mejora para medir después, con los mismos bancos y umbrales.
+- **RNF-02 sigue sin cumplirse en esta máquina** por el primer token de los diálogos (4,3 s en p95), como en el hito 3.
+- **Ataques**: el p95 de 18,0 s es el primer pedido con el prompt de T36 (R01), que tiene que cargar su mensaje de sistema
+  en la caché de Ollama; los otros nueve tardan entre 4 y 7 s. Con la regla escrita antes de medir, el umbral no se cumple.
+
+Decisiones que salen de la medición:
+
+- **T08 · Preguntas socráticas y el Consejero con el modelo quedan "experimental"** porque RNF-02 no se cumple (primer
+  token); todo lo demás (pregunta, veredicto, voseo, caídas, turno completo) cumple.
+- **T36 · Equipo rojo / abogado del diablo con el modelo queda "experimental"** por el turno completo en p95 (18,0 s); sin el
+  modelo, los ataques del banco no esperan nada.
+- Los modos escalera y sombreros cumplen todos sus umbrales en esta corrida, incluido el primer token; como usan el mismo
+  prompt que los diálogos y la latencia de esta CPU varía cerca de un 30% entre corridas, no se declara RNF-02 cumplido.

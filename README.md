@@ -386,6 +386,30 @@ iteración); la undécima sigue pidiendo steelmans a T34 · Steelmanning por SSE
 `ejemplo`; todos los cálculos de la prosa (Bayes, Brier, logarítmico, Fermi, valor esperado y la sensibilidad de la matriz)
 coincidieron con el código en la primera corrida.
 
+## Mediciones del hito 5
+
+Misma máquina que en los hitos anteriores, el 9 de octubre de 2026, con Ollama 0.40.1 en CPU.
+
+**Consejero con el modelo (RNF-02, RNF-04)**: los bancos, los umbrales escritos antes de medir y los números están en
+[`docs/evaluacion-modelo.md`](docs/evaluacion-modelo.md#resultados-del-hito-5-2026-10-09). En los 30 diálogos, 28 preguntas
+pasan el validador al primer intento y 2 caen al banco por voseo (la misma forma de la segunda persona rioplatense, repetida en los tres intentos porque la
+temperatura es 0); ninguna pregunta con voseo o veredicto llega a la persona. El turno validado completo cumple (10,2 s en
+p95), el primer token no (4,3 s): **RNF-02 sigue sin cumplirse en esta máquina** y T08 y T36 con el modelo quedan
+"experimental" (T36 además por el primer ataque, que carga su prompt: 18,0 s en p95).
+
+**Carga básica con k6 (RNF-03)**: las diez personas del hito 4 abren además el Consejero y evalúan T09 · 5 porqués (Graphviz
+dibuja la cadena en cada iteración); la undécima tiene una sesión del Consejero con el modelo y lee cada turno por SSE hasta
+el evento final.
+
+| Métrica | Medido | Umbral que falla el build |
+|---|---|---|
+| p95 de las pantallas sin IA | 173 ms | menos de 500 ms (RNF-03) |
+| Peticiones fallidas | 0 de 898 | 0 % |
+| Chequeos de contenido | 828 de 828 | 100 % |
+
+**Oráculo**: los 30 ejemplos de las diez técnicas pasan como oráculo desde el JSON del catálogo y desde la tabla `ejemplo`,
+a la primera; las propiedades de jqwik encontraron cinco preguntas del banco que no terminaban en "?" y se reescribieron.
+
 ## Licencia
 
 Decidida por el dueño el 2026-10-07, antes del hito 1:
