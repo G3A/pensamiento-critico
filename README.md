@@ -5,7 +5,9 @@ más flujos guiados que las encadenan. Todo funciona offline, sin ninguna API ex
 docker-compose. La única IA es Ollama local con modelos de 4 GB o menos (qwen3:4b-instruct-2507 y bge-m3), y la
 aplicación funciona igual sin ella ("modo plantillas").
 
-Estado: **hito 5, "Cuestionamiento y perspectivas"**: el flujo C, Consejero socrático, con sus modos ensayo, decisión,
+Estado: **hito 6, "Fuentes y biblioteca"**: la biblioteca local con búsqueda semántica y por palabras, la ficha de
+verificación (flujo A+) con la ficha de fuente, y cuatro técnicas más de F4; ver [Qué se puede hacer en el hito 6](#qué-se-puede-hacer-en-el-hito-6).
+El hito 5 trajo el flujo C, Consejero socrático, con sus modos ensayo, decisión,
 escalera, sombreros y debate, y diez técnicas más de F2 y F6; ver [Qué se puede hacer en el hito 5](#qué-se-puede-hacer-en-el-hito-5).
 El hito 4 trajo el flujo D, Diario de decisiones y calibración, con su paso 0 para definir el problema, y catorce técnicas
 de F5 y F7; ver [Qué se puede hacer en el hito 4](#qué-se-puede-hacer-en-el-hito-4).
@@ -15,9 +17,45 @@ El hito 3 sumó doce técnicas, siete de ellas con el modelo local como ayuda op
 como esquemas fallidos (solo con reglas), más el Taller de argumentos y las 49 fichas "Qué es". La especificación
 completa está en [`docs/investigacion-y-propuestas.html`](docs/investigacion-y-propuestas.html); los prompts con que
 se construyó cada hito, en [`docs/prompt-hito-0.md`](docs/prompt-hito-0.md), [`docs/prompt-hito-1.md`](docs/prompt-hito-1.md),
-[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md), [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md), [`docs/prompt-hito-4.md`](docs/prompt-hito-4.md) y [`docs/prompt-hito-5.md`](docs/prompt-hito-5.md); el del siguiente, en [`docs/prompt-hito-6.md`](docs/prompt-hito-6.md).
+[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md), [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md), [`docs/prompt-hito-4.md`](docs/prompt-hito-4.md), [`docs/prompt-hito-5.md`](docs/prompt-hito-5.md) y [`docs/prompt-hito-6.md`](docs/prompt-hito-6.md); el del siguiente, en [`docs/prompt-hito-7.md`](docs/prompt-hito-7.md).
 Pendiente para cerrar RF-08: las sesiones moderadas de primer uso, con el guion en [`docs/sesiones-primer-uso.md`](docs/sesiones-primer-uso.md);
-al cerrar el hito 5 todavía no se habían hecho, así que no hay hallazgos que aplicar a las fichas.
+al cerrar el hito 6 todavía no se habían hecho, así que no hay hallazgos que aplicar a las fichas.
+
+## Qué se puede hacer en el hito 6
+
+- **Biblioteca** (`/biblioteca`, P13): importas tus documentos (PDF con texto, Markdown, texto o CSV, hasta 50 MB y 300
+  páginas) para citarlos como evidencia. El tipo se detecta por el contenido, no por la extensión; un PDF escaneado sin capa
+  de texto se rechaza con el motivo (no hay OCR). La subida muestra su barra de progreso y la lista se refresca sola mientras
+  el documento se indexa en segundo plano: `pdftotext` como proceso hijo con tiempo máximo y límite de páginas, troceado por
+  párrafos con su página y, si está Ollama, incrustaciones con bge-m3 en pgvector (índice HNSW). Los trabajos viven en la
+  tabla `trabajo` y se reencolan si la app se reinicia.
+  - Cada documento es **privado** hasta que lo compartes con tu institución (queda en la auditoría); puedes descargar el
+    original y borrarlo.
+  - **Búsqueda**: semántica con bge-m3 si el modelo y los vectores están; si no, por palabras con el texto completo de
+    PostgreSQL en español, y la pantalla dice cuál usó. Cada resultado es el **pasaje literal** con su documento y su página.
+- **Ficha de verificación** (`/verificar`, P10 y P11): se abre desde una premisa del Taller de argumentos o desde un
+  pendiente de verificación (los de T11 · Falsación y T38 · Double crux, por ejemplo). Eliges el tipo de afirmación (T17),
+  marcas sus preguntas críticas, buscas en tu biblioteca desde el panel lateral y usas un pasaje como evidencia.
+  - **Ficha de fuente** (P12): título, tipo, diseño del estudio, fecha, grupo de origen, independencia y acceso al
+    original (T20 · Lectura lateral), los cuatro pasos de T19 · SIFT y los cinco criterios de T21 · CRAAP. El panel "lo que
+    aporta" dice, mientras escribes, la fuerza que le da R01 y por qué. Hasta seis fuentes por afirmación.
+  - Con el modelo, una **propuesta** de postura (apoya, contradice, matiza o irrelevante) para el pasaje, con el prompt de
+    T22 · Triangulación. No cuenta hasta que la adoptas, y queda **experimental**: en la evaluación obedeció una instrucción
+    escondida en un documento ([`docs/evaluacion-modelo.md`](docs/evaluacion-modelo.md#resultados-del-hito-6-2026-10-09)).
+  - **Veredicto**: R01 a R04 se recalculan con cada evidencia (fuerza, fuerza neta, estado con la independencia de los
+    grupos de origen, y la aceptabilidad de Carneades en el argumento). La ficha **nunca dice "verdadero"**: dice
+    verificada, refutada, disputada, en verificación o sin evidencia. Guardar el veredicto con tu confianza cierra el
+    pendiente, guarda la ejecución de T22 en el expediente y, si tu confianza cambió, un cambio de opinión.
+  - **Chequeos por reglas**: cifra que no coincide con la de la fuente, circularidad (la evidencia repite la afirmación) y
+    contradicción sin revisar.
+- **Cuatro técnicas nuevas en F4**, con sus tres ejemplos calculados a mano, configuración, historial y Expediente:
+  T19 · SIFT, T20 · Lectura lateral, T21 · CRAAP y T23 · Jerarquía de evidencia. T22 · Triangulación pasa a la versión 2
+  de su esquema: consume una afirmación existente y escribe sus fuentes y evidencias en las tablas.
+- **Respaldo versión 5**: el paquete lleva los documentos indexados (fragmentos sin vectores ni original), las evidencias,
+  las verificaciones y los veredictos; los documentos restaurados quedan privados. Importa las versiones 1 a 5.
+
+Las reglas de la ficha y de la biblioteca, con el ejemplo de punta a punta del tráfico del centro, están en
+[`docs/verificacion.md`](docs/verificacion.md); los ejemplos de cada técnica, en [`docs/ejemplos/`](docs/ejemplos/).
 
 ## Qué se puede hacer en el hito 5
 
@@ -228,11 +266,11 @@ Paquetes (sección 4 del documento), verificados con ArchUnit en el perfil test:
 
 | Paquete | Contiene | Depende de |
 |---|---|---|
-| `nucleo` | Afirmación, Evidencia, Fuente, Argumento, Técnica, reglas R01 a R05 como código puro (R05, calibración: Brier, logarítmico y curva), la predicción inmutable al resolverse, el cambio de opinión y la sesión del Consejero con sus turnos, puertos (`Ia`, `Grafico`, `Reloj`, repositorios, entre ellos los de predicciones, cambios de opinión y sesiones), el contrato `Ejecutor<C, E, R>` y el record `Resultado<R>` | nadie: sin Spring, sin JPA, sin Ollama |
+| `nucleo` | Afirmación, Evidencia, Fuente, Argumento, Técnica, reglas R01 a R05 como código puro (R05, calibración: Brier, logarítmico y curva), la predicción inmutable al resolverse, el cambio de opinión y la sesión del Consejero con sus turnos, la verificación con su veredicto, el documento con sus fragmentos y pasajes, puertos (`Ia`, `Grafico`, `Reloj`, repositorios, entre ellos los de predicciones, cambios de opinión, sesiones, evidencias, verificaciones, `Biblioteca`, `ColaTrabajos`, `ExtractorPdf` y `TransaccionComoUsuario`), el contrato `Ejecutor<C, E, R>` y el record `Resultado<R>` | nadie: sin Spring, sin JPA, sin Ollama |
 | `catalogo` | lectura del JSON del repo, semilla repeatable de Flyway, repositorio de técnicas, verificación al arrancar, intenciones | `nucleo` |
-| `tecnicas.f1` a `f8` | un ejecutor por técnica: `f1` T01, T02 y T06 (con el mapa argumental y R04), `f2` T08 a T12 (con la estrategia socrática: tipo, elemento y rama del banco), `f3` T13 con sus reglas léxicas, `f5` T24 a T33 (con la matriz ponderada que comparten T31 y T33), `f6` T34 a T39 (con los ataques del equipo rojo por esquema de Walton), `f7` T40 a T44; `comun` lleva el validador del turno y la redacción con reintentos | `nucleo`, `catalogo` |
-| `flujos`, `expediente` | flujos guiados (el Taller de argumentos arma T02 y T13 desde el mapa; el Diario de decisiones da el tablero con R05, la revisión y el asistente de cinco pasos; el Consejero socrático es el motor híbrido de los modos ensayo, decisión, escalera, sombreros y debate); Expediente, respaldo de cada persona, guardado de ejecuciones con argumentos, predicciones y cambios de opinión, y los repositorios JDBC de ejecución, argumento, predicción, cambio de opinión, sesión del Consejero, expediente e identificadores | `tecnicas`, `catalogo`, `nucleo` |
-| `argdown`, `graficos`, `ia`, `biblioteca`, `trabajos` | adaptadores: parser del subconjunto Argdown, Graphviz como proceso hijo con saneador de SVG, Ollama vía Spring AI, extractor de PDF con límites | solo puertos de `nucleo` |
+| `tecnicas.f1` a `f8` | un ejecutor por técnica: `f1` T01, T02 y T06 (con el mapa argumental y R04), `f2` T08 a T12 (con la estrategia socrática: tipo, elemento y rama del banco), `f3` T13 con sus reglas léxicas, `f4` T19 a T23 (SIFT, lectura lateral, CRAAP con su puntaje, triangulación con sus evidencias y jerarquía de evidencia), `f5` T24 a T33 (con la matriz ponderada que comparten T31 y T33), `f6` T34 a T39 (con los ataques del equipo rojo por esquema de Walton), `f7` T40 a T44; `comun` lleva el validador del turno y la redacción con reintentos | `nucleo`, `catalogo` |
+| `flujos`, `expediente` | flujos guiados (el Taller de argumentos arma T02 y T13 desde el mapa; el Diario de decisiones da el tablero con R05, la revisión y el asistente de cinco pasos; el Consejero socrático es el motor híbrido de los modos ensayo, decisión, escalera, sombreros y debate; la ficha de verificación es el flujo A+ con el buscador de pasajes); Expediente, respaldo de cada persona, guardado de ejecuciones con argumentos, predicciones y cambios de opinión, y los repositorios JDBC de ejecución, argumento, predicción, cambio de opinión, sesión del Consejero, expediente e identificadores | `tecnicas`, `catalogo`, `nucleo` |
+| `argdown`, `graficos`, `ia`, `biblioteca`, `trabajos` | adaptadores: parser del subconjunto Argdown, Graphviz como proceso hijo con saneador de SVG, Ollama vía Spring AI; en `biblioteca`, el detector de tipo por contenido, el troceado, el importador, el indexador y el vectorizador, `pdftotext` con límites y pgvector con HNSW y texto completo; en `trabajos`, la cola con reencolado y un hilo virtual por tipo | solo puertos de `nucleo` |
 | `web` | controladores, plantillas JTE, seguridad (Spring Security, RLS, CSRF, CSP), usuarios | `flujos`, `tecnicas`, `catalogo` |
 
 Stack fijado: Spring Boot 4.1.1 sobre Java 25 con hilos virtuales, JTE 3.2.4 precompilado, htmx 2.0.11 y
@@ -260,13 +298,13 @@ Dos velocidades, al estilo Rainsberger (Fakes, sin `verify`), bajo `src/test/jav
 
 | Raíz | Qué hay | Cuándo corre |
 |---|---|---|
-| `unidad/` | collaboration tests de R01 a R04 con los ejemplos de la sección 5b como oráculo, propiedades jqwik (fuerza entre 0 y 8, estado total, R04 sin peso en ciclos), verificador del catálogo, servicio de usuarios, saneador de SVG; en el hito 1, el oráculo de T28 con sus ejemplos y sus propiedades jqwik, el formulario por lenguaje de campos, Expediente y respaldo con Fakes, y las pruebas de plantilla con jsoup; en el hito 2, los oráculos de T01, T02, T06 y T13, propiedades jqwik del mapa (R04 monótona entre estándares, una afirmación por nodo), el banco de 50 fragmentos con su umbral, el flujo del Taller, el guardado con argumentos y las plantillas V01, V02, V05 y del Taller; en el hito 4, R05 con su oráculo y sus propiedades (Brier entre 0 y 1 y que no empeora al acercar la confianza a lo que pasó), los oráculos de T24 a T27, T29 a T33 y T40 a T44, propiedades de Bayes (posterior entre 0 y 100, monótono en la verosimilitud), de la matriz (invariante al reordenar criterios) y del árbol MECE (sin nodos huérfanos), el Diario de punta a punta con el reloj avanzable y las plantillas V03b, V03c, V06, V07, la curva de V08, V11 y V12; en el hito 5, los oráculos de T08 a T12 y T35 a T39, propiedades de las estrategias (el motor no repite tipo si queda otro pendiente, la escalera nunca retrocede, los porqués no pasan los niveles, la rúbrica de T37 entre 0 y 100, el equipo rojo sin preguntas repetidas), el validador del turno, el Consejero de punta a punta con el modelo que redacta y cae al banco, el respaldo versión 4 y las plantillas de V09 y del Consejero | `mvn test` (sin red ni base) |
-| `contrato/` | una suite abstracta por puerto (`Ia`, `Grafico`, `Reloj`, repositorios de técnica, ejecución, usuarios, expediente, configuración y auditoría, registro de identificadores; en el hito 2, esquemas de Walton, argumentos y `Argdown`, este último con la propiedad de ida y vuelta contra el parser real, que es puro; en el hito 4, predicciones, y `Grafico` y el registro de identificadores con sus dimensiones nuevas; en el hito 5, cambios de opinión y sesiones del Consejero, la cadena de T09 con etiqueta hostil en `Grafico` y sesiones, turnos y cambios en el registro de identificadores), `Fake*ContractTest` | cada PR |
-| `contrato/real/` | `Real*ContractIT` contra Ollama, Graphviz y PostgreSQL del compose | nocturno, `CONTRACT_REAL=true` |
-| `integracion/`, `aceptacion/` | RLS por SQL; proyección de pendientes en la misma transacción (RF-07); oráculos de T28, T01, T02, T06 y T13 sobre la tabla `ejemplo`; RF-01, RF-02, RF-03, RF-11, el flujo completo de T28 y el del Taller por HTTP contra `app:8080`; pruebas de humo en Chromium con Playwright (RNF-09): primer uso, Taller, SSE de T34 y, en el hito 4, el flujo D a 360 px; en el hito 4, el oráculo de las catorce desde la tabla `ejemplo`, la predicción inmutable por SQL y el flujo D por HTTP con el reloj adelantado; en el hito 5, el oráculo de las diez desde la tabla `ejemplo`, el flujo C por HTTP (modo plantillas, debate con steelman y double crux, respaldo y RF-03, y con el modelo por SSE) y en Chromium a 360 px | perfil test del compose |
+| `unidad/` | collaboration tests de R01 a R04 con los ejemplos de la sección 5b como oráculo, propiedades jqwik (fuerza entre 0 y 8, estado total, R04 sin peso en ciclos), verificador del catálogo, servicio de usuarios, saneador de SVG; en el hito 1, el oráculo de T28 con sus ejemplos y sus propiedades jqwik, el formulario por lenguaje de campos, Expediente y respaldo con Fakes, y las pruebas de plantilla con jsoup; en el hito 2, los oráculos de T01, T02, T06 y T13, propiedades jqwik del mapa (R04 monótona entre estándares, una afirmación por nodo), el banco de 50 fragmentos con su umbral, el flujo del Taller, el guardado con argumentos y las plantillas V01, V02, V05 y del Taller; en el hito 4, R05 con su oráculo y sus propiedades (Brier entre 0 y 1 y que no empeora al acercar la confianza a lo que pasó), los oráculos de T24 a T27, T29 a T33 y T40 a T44, propiedades de Bayes (posterior entre 0 y 100, monótono en la verosimilitud), de la matriz (invariante al reordenar criterios) y del árbol MECE (sin nodos huérfanos), el Diario de punta a punta con el reloj avanzable y las plantillas V03b, V03c, V06, V07, la curva de V08, V11 y V12; en el hito 5, los oráculos de T08 a T12 y T35 a T39, propiedades de las estrategias (el motor no repite tipo si queda otro pendiente, la escalera nunca retrocede, los porqués no pasan los niveles, la rúbrica de T37 entre 0 y 100, el equipo rojo sin preguntas repetidas), el validador del turno, el Consejero de punta a punta con el modelo que redacta y cae al banco, el respaldo versión 4 y las plantillas de V09 y del Consejero; en el hito 6, los oráculos de T19, T20, T21 y T23, T22 versión 2, la ficha de verificación con el ejemplo de `docs/verificacion.md` como oráculo, el detector de tipo, el troceado (jqwik: no pierde ni repite palabras), el importador, el indexado y la vectorización, el ejecutor de trabajos, el buscador de pasajes, R03 con un solo grupo de origen (jqwik: nunca verificada ni refutada), el respaldo versión 5 y las plantillas de la biblioteca, la ficha y la fuente | `mvn test` (sin red ni base) |
+| `contrato/` | una suite abstracta por puerto (`Ia`, `Grafico`, `Reloj`, repositorios de técnica, ejecución, usuarios, expediente, configuración y auditoría, registro de identificadores; en el hito 2, esquemas de Walton, argumentos y `Argdown`, este último con la propiedad de ida y vuelta contra el parser real, que es puro; en el hito 4, predicciones, y `Grafico` y el registro de identificadores con sus dimensiones nuevas; en el hito 5, cambios de opinión y sesiones del Consejero, la cadena de T09 con etiqueta hostil en `Grafico` y sesiones, turnos y cambios en el registro de identificadores; en el hito 6, evidencias, verificaciones, `Biblioteca`, `ColaTrabajos`, `ExtractorPdf` y `TransaccionComoUsuario`, `conPremisa` en argumentos y documentos, fragmentos, evidencias y verificaciones en el registro de identificadores), `Fake*ContractTest` | cada PR |
+| `contrato/real/` | `Real*ContractIT` contra Ollama, Graphviz, `pdftotext` y PostgreSQL del compose | nocturno, `CONTRACT_REAL=true` |
+| `integracion/`, `aceptacion/` | RLS por SQL; proyección de pendientes en la misma transacción (RF-07); oráculos de T28, T01, T02, T06 y T13 sobre la tabla `ejemplo`; RF-01, RF-02, RF-03, RF-11, el flujo completo de T28 y el del Taller por HTTP contra `app:8080`; pruebas de humo en Chromium con Playwright (RNF-09): primer uso, Taller, SSE de T34 y, en el hito 4, el flujo D a 360 px; en el hito 4, el oráculo de las catorce desde la tabla `ejemplo`, la predicción inmutable por SQL y el flujo D por HTTP con el reloj adelantado; en el hito 5, el oráculo de las diez desde la tabla `ejemplo`, el flujo C por HTTP (modo plantillas, debate con steelman y double crux, respaldo y RF-03, y con el modelo por SSE) y en Chromium a 360 px; en el hito 6, el oráculo de las cuatro desde la tabla `ejemplo`, la privacidad de la biblioteca contra PostgreSQL bajo RLS (jqwik), el flujo A+ por HTTP (importar un PDF, encontrarlo desde la premisa, dos fuentes de grupos distintos, el veredicto que recalcula R04 y cierra el pendiente de T11, respaldo y RF-03) y en Chromium a 360 px con la barra de progreso de la subida | perfil test del compose |
 | `arquitectura/`, `sensores/` | ArchUnit; Fakes sin contrato; voseo sobre plantillas, catálogo y código; configuración segura | cada PR |
 
-Última corrida local del perfil completo (2026-10-09, hito 5), con `CONTRACT_REAL=true` y `-Pgates`: 698 pruebas rápidas y 157 de integración y aceptación en verde; 99 de ellas son contratos reales en 15 `Real*ContractIT` (10 contra Ollama 0.40.1). Cuatro omitidas a propósito: las dos aceptaciones con el servicio de Ollama detenido (flujo C y RF-14) y los dos arneses de evaluación del modelo, que se corren a mano. SpotBugs con FindSecBugs sin hallazgos y Dependency-Check en verde. Con Ollama detenido (`docker compose stop ollama`, y las pruebas con `--no-deps` para que no lo vuelvan a levantar) pasaron en una corrida aparte 36 de las 37 pruebas de aceptación, entre ellas las del modelo apagado del flujo C y de RF-14; la que falla es la de salud de RF-01, que exige a Ollama listo, y cuatro se omiten porque necesitan el modelo. La aceptación del flujo D necesita la app con `APP_RELOJ_AJUSTABLE=true`. La carga con k6 se corre aparte (`docker compose --profile test run --rm k6`).
+Última corrida local del perfil completo (2026-10-09, hito 6), con `CONTRACT_REAL=true` y `-Pgates`: 847 pruebas rápidas y 211 de integración y aceptación en verde; 146 de ellas son contratos reales en 21 `Real*ContractIT` (10 contra Ollama 0.40.1). Cinco omitidas a propósito: las dos aceptaciones con el servicio de Ollama detenido (flujo C y RF-14) y los tres arneses de evaluación del modelo, que se corren a mano. SpotBugs con FindSecBugs sin hallazgos (los tres que aparecieron en el hito, una expresión regular marcada como ReDoS y dos posibles nulos al leer el respaldo, se corrigieron) y Dependency-Check en verde. Con Ollama detenido (`docker compose stop ollama`, y las pruebas con `--no-deps`) pasaron en una corrida aparte 35 de las 36 pruebas de aceptación que no se omiten, entre ellas el flujo A+ y la ficha en Chromium con la búsqueda por palabras; la que falla es la de salud de RF-01, que exige a Ollama listo, y cuatro se omiten porque necesitan el modelo. La aceptación del flujo D necesita la app con `APP_RELOJ_AJUSTABLE=true`. La carga con k6 se corre aparte (`docker compose --profile test run --rm k6`).
 
 
 Sensores de línea de comandos: `sensores/voseo.sh` (mismo listado que `VoseoTest`, en `sensores/voseo-prohibido.txt`).
@@ -277,7 +315,7 @@ Sensores de línea de comandos: `sensores/voseo.sh` (mismo listado que `VoseoTes
   (Dependency-Check con `NVD_API_KEY` opcional como secreto del repo; SpotBugs con FindSecBugs).
 - **Nocturno** (`.github/workflows/nocturno.yml`, cron `0 7 * * *` UTC): `CONTRACT_REAL=true` contra el
   Ollama y el PostgreSQL del compose, con caché de los modelos.
-- **Última corrida nocturna en verde**: 2026-10-09 00:48 UTC en GitHub Actions, run [37866127513](https://github.com/G3A/pensamiento-critico/actions/runs/37866127513), lanzado a mano tras subir el hito 4. Los 13 `Real*ContractIT` corrieron completos: 82 pruebas, 0 omitidas, 10 de ellas contra Ollama 0.40.1 real con `qwen3:4b-instruct-2507-q4_K_M`; incluye `RealRepositorioPrediccionesContractIT` y las dimensiones nuevas de `Grafico` y del registro de identificadores. El paso "Sensor contra el falso verde" falla el workflow si algún contrato real queda omitido.
+- **Última corrida nocturna en verde**: 2026-10-09 18:08 UTC en GitHub Actions, run [37971157527](https://github.com/G3A/pensamiento-critico/actions/runs/37971157527), lanzado a mano tras subir el hito 5, con sus 15 `Real*ContractIT` completos y 10 pruebas contra Ollama 0.40.1 real. El hito 6 suma seis contratos reales a la lista del sensor (evidencias, verificaciones, `Biblioteca`, `ColaTrabajos`, `ExtractorPdf` y `TransaccionComoUsuario`, 21 en total); corren en el nocturno cuando el hito se suba a GitHub. El paso "Sensor contra el falso verde" falla el workflow si algún contrato real queda omitido.
 
 ## Mediciones del hito 0
 
@@ -411,6 +449,33 @@ el evento final.
 
 **Oráculo**: los 30 ejemplos de las diez técnicas pasan como oráculo desde el JSON del catálogo y desde la tabla `ejemplo`,
 a la primera; las propiedades de jqwik encontraron cinco preguntas del banco que no terminaban en "?" y se reescribieron.
+
+## Mediciones del hito 6
+
+Misma máquina que en los hitos anteriores, el 9 de octubre de 2026, con Ollama 0.40.1 en CPU.
+
+**Biblioteca con el modelo (RF-12, RNF-08)**: los bancos, los umbrales escritos antes de medir y los números están en
+[`docs/evaluacion-modelo.md`](docs/evaluacion-modelo.md#resultados-del-hito-6-2026-10-09). La búsqueda semántica con bge-m3
+encontró un pasaje esperado entre los tres primeros en 20 de 20 consultas (10 de 10 dichas con otras palabras), contra 15 de
+20 por texto completo; p95 de 116 ms al incrustar la consulta y buscar. Vectorizar los 8 documentos del banco (24
+fragmentos) tomó 8,6 s. Con los 10 documentos adversarios, los 10 pasajes llegaron tal cual y el modelo acertó la etiqueta en
+8, pero **obedeció una instrucción escondida** (el umbral era 0): el etiquetado de pasajes queda "experimental".
+
+**Carga básica con k6 (RNF-03)**: las diez personas abren además la biblioteca y buscan por palabras; una más importa sin
+parar documentos de unos 25 KB y espera a verlos indexados (troceado y vectorización con bge-m3 en segundo plano), mientras
+la undécima sigue con su sesión del Consejero con el modelo.
+
+| Métrica | Medido | Umbral que falla el build |
+|---|---|---|
+| p95 de las pantallas sin IA | 158 ms | menos de 500 ms (RNF-03) |
+| Peticiones fallidas | 0 de 1.021 | 0 % |
+| Chequeos de contenido | 889 de 889 | 100 % |
+| Documentos importados e indexados en el minuto | 55 | sin umbral |
+
+**Oráculo**: los 12 ejemplos de T19 · SIFT, T20 · Lectura lateral, T21 · CRAAP y T23 · Jerarquía de evidencia pasan como
+oráculo desde el JSON del catálogo y desde la tabla `ejemplo`, y el ejemplo de punta a punta de
+[`docs/verificacion.md`](docs/verificacion.md) pasa como oráculo de la ficha (fuerza, fuerza neta, estado, R04 y el cambio de
+opinión al aparecer la fuente que contradice).
 
 ## Licencia
 
@@ -582,3 +647,28 @@ las del flujo C, en [`docs/consejero.md`](docs/consejero.md).
 | 2026-10-09 | V03b admite filas sin puesto y columnas sin peso, con su caption y el título de la lista de abajo; T35 separa en la configuración los sombreros activos (casillas) de su orden (lista con subir y bajar). | T39 no ordena opciones ni pondera partes; la lista ordenada del lenguaje de campos no elige subconjuntos. |
 | 2026-10-09 | T11 y T38 dejan sus condiciones y su crux como pendientes de verificación hasta la ficha del hito 6. | La ficha de verificación es del hito 6. |
 | 2026-10-09 | Ninguna dependencia nueva de Maven en el hito 5. | Motor, validador, SSE y patrones se escribieron con lo que ya estaba. |
+
+## Decisiones tomadas en el hito 6
+
+Igual que en los hitos anteriores: lo que el documento no fijaba se resolvió con la opción más simple que respeta las
+reglas. Las reglas de cada técnica están en su archivo de [`docs/ejemplos/`](docs/ejemplos/); las de la ficha y la
+biblioteca, en [`docs/verificacion.md`](docs/verificacion.md).
+
+| Fecha | Decisión | Por qué |
+|---|---|---|
+| 2026-10-09 | `requiere_ia`: T19 · SIFT, T20 · Lectura lateral, T21 · CRAAP y T23 · Jerarquía de evidencia quedan sin IA; T22 · Triangulación sigue con Ollama opcional. Quedan 44 técnicas activas: 37 sin IA y 12 con Ollama opcional entre las 49 del catálogo. | Las cuatro se calculan con reglas; el modelo solo propone la postura de un pasaje, y eso es de T22. |
+| 2026-10-09 | T22 sube a la versión 2 de su esquema: la entrada puede traer el id de una afirmación existente y cada fuente el id de su fila en `fuente`; el resultado declara sus evidencias y `GuardadoDeEjecuciones` las escribe en `fuente` y `evidencia` en la misma transacción. V9 migra la configuración guardada de T22 de la versión 1 a la 2 y V8 copia las fuentes de las ejecuciones viejas a las tablas. | La ficha de verificación guarda una ejecución de T22 por veredicto; así hay una sola regla de cálculo y el expediente la muestra como cualquier otra técnica. |
+| 2026-10-09 | `FichaFuente` separa el puntaje CRAAP (0 a 25) de los cinco criterios: una fuente puede tener puntaje sin criterios (las de T22 versión 1 y las copiadas por V8). | R01 usa el puntaje; los criterios son de T21 y no siempre están. |
+| 2026-10-09 | El bono de R01 por CRAAP usa el umbral fijo de R01 (18 de 25 en la escala de la sección 5b), no el umbral configurable de T21. | Cambiar la configuración de T21 no puede cambiar la fuerza de las evidencias ya guardadas. |
+| 2026-10-09 | Hasta seis fuentes por afirmación en la ficha; un pasaje de la biblioteca tiene que ser una subcadena literal de la cita del fragmento. | Seis es el máximo de T22 en el catálogo; el pasaje literal impide que la evidencia diga algo que el documento no dice. |
+| 2026-10-09 | Las preguntas críticas por tipo de afirmación (8 tipos, 3 preguntas cada uno, con lo que probaría cada tipo) viven en `catalogo/verificacion.json`. Los chequeos de la ficha (cifra o tendencia distinta, circularidad con el mismo solapamiento de palabras de T42 · Árbol de hipótesis MECE, contradicción sin revisar) son solo reglas. | Contenido versionado como los esquemas de Walton; "el modelo propone, nunca califica". |
+| 2026-10-09 | El veredicto cierra los pendientes de verificación y de revisión de la afirmación y escribe un cambio de opinión con causa EVIDENCIA si la confianza cambió. | RF-07 y R05: el pendiente se proyecta y se cierra en la misma transacción que el veredicto. |
+| 2026-10-09 | Tablas nuevas o ampliadas en V8: `documento` (contenido, tamaño, páginas, error; hash único por persona), `fragmento` (columna `tsv` con índice GIN y orden único), `fuente` (SIFT, documento y página), `evidencia` (`creada_en` con `clock_timestamp`), `verificacion` con RLS forzada, y `trabajo` con `disponible_en`. `app_id_de_otro_usuario` cubre documentos, fragmentos, evidencias y verificaciones. | Las evidencias necesitan orden estable dentro de una transacción; RF-03 se extiende a todas. |
+| 2026-10-09 | Búsqueda por palabras con `plainto_tsquery('spanish')` convertida a OR y `ts_rank_cd`; búsqueda semántica con distancia coseno y `hnsw.iterative_scan = strict_order` (pgvector 0.8.7), para que el filtro por persona no deje la lista corta. | Con AND, una consulta dicha de otra forma casi nunca encontraba nada; sin el escaneo iterativo, HNSW filtra después de elegir los vecinos. |
+| 2026-10-09 | La cola de trabajos (`trabajo`) la toma un hilo virtual por tipo (`indexar` y `vectorizar`) con `FOR UPDATE SKIP LOCKED`, filtrando por tipos; al arrancar se reencola lo que quedó tomado. Cada trabajo corre como la persona dueña del documento, dentro de su contexto RLS. La vectorización va en lotes de 8 fragmentos y, si Ollama no responde, se reintenta al minuto. | Sin dependencias nuevas; filtrar por tipo evita que la app del compose tome los trabajos de las pruebas. Un documento queda buscable por palabras aunque el modelo no esté. |
+| 2026-10-09 | Troceado por párrafos con objetivo de 800 caracteres y máximo de 1.600; un CSV se trocea por filas, escritas como "columna: valor · columna: valor". El tipo se detecta por los bytes (cabecera `%PDF`, UTF-8 válido, separador consistente para CSV). | Pasajes cortos para citar y del tamaño que bge-m3 incrusta bien; la extensión del archivo no es confiable. |
+| 2026-10-09 | El respaldo versión 5 exporta solo los documentos indexados, con sus fragmentos pero sin vectores ni original; al importar quedan privados y se vuelven a vectorizar. Dejar de compartir un documento no se audita (compartir sí). | El paquete es para llevar el trabajo de la persona, no una copia del archivo; un respaldo no puede publicar nada por su cuenta. |
+| 2026-10-09 | Las evidencias de T20 y T23 se quedan en el JSONB de su ejecución; solo T22 escribe en `evidencia`. "Adoptada como premisa de valor" queda fuera. | La sección 5 pone la fuerza de la evidencia en T22; T20 y T23 califican fuentes, no afirmaciones. |
+| 2026-10-09 | La imagen de pruebas instala `poppler-utils` para el contrato real del extractor de PDF; la final ya lo tenía desde el hito 0. Ninguna dependencia nueva de Maven: el PDF de las pruebas lo genera `testutil.PdfMinimo`. | Los contratos reales necesitan el mismo `pdftotext` que la app. |
+| 2026-10-09 | El etiquetado de pasajes con el modelo en la ficha queda **experimental**, con el aviso junto a cada propuesta: en la evaluación obedeció 1 de 10 instrucciones escondidas (el umbral era 0). La búsqueda semántica cumple sus umbrales y no lleva aviso. El prompt no se ajustó para pasar el mismo banco. | Es la consecuencia escrita antes de medir; endurecerlo y medirlo con documentos adversarios nuevos queda para un hito siguiente. |
+| 2026-10-09 | En la evaluación, un pasaje de CSV cuenta como literal si es el fragmento tal cual y alguna fila tiene todos sus valores sin cambios en él. | El troceado reescribe la fila con los nombres de las columnas; la primera medición contaba eso como "alterado" por un error de la comprobación, no del producto. |
