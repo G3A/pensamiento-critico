@@ -455,3 +455,24 @@ pre.argdown { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--
 .tecnicas-paso { display: flex; flex-wrap: wrap; gap: .25rem 1rem; list-style: none; padding: 0; }
 .tecnicas-paso li.actual a { font-weight: 700; }
 .migas { color: var(--texto-suave); margin: 0; }
+
+/* V09 · transcripción con panel lateral (T08, T36) y diálogo del Consejero socrático (P15, P16) */
+.transcripcion-con-panel { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--espacio); align-items: start; }
+@media (max-width: 800px) { .transcripcion-con-panel { grid-template-columns: minmax(0, 1fr); } }
+.transcripcion { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
+.burbuja { border: 1px solid var(--borde); border-radius: var(--radio); padding: .5rem .75rem; max-width: 92%; background: var(--superficie); }
+.burbuja .autor { margin: 0 0 .25rem; font-size: .85rem; color: var(--texto-suave); }
+.burbuja .texto-burbuja { margin: 0; overflow-wrap: anywhere; }
+.burbuja-persona { align-self: flex-end; background: var(--acento-fondo); }
+.burbuja-consejero { align-self: flex-start; }
+.burbuja-equipo-rojo { align-self: flex-start; border-left: 4px solid var(--error); }
+.burbuja-siguiente { margin-top: .5rem; border-style: dashed; }
+.burbuja .provisional { color: var(--texto-suave); font-style: italic; overflow-wrap: anywhere; }
+.panel-lateral { border: 1px solid var(--borde); border-radius: var(--radio); padding: .75rem; background: var(--superficie); }
+.panel-lateral .titulo-panel { margin: .75rem 0 .25rem; font-size: .9rem; }
+.items-panel { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .35rem; }
+.items-panel .detalle { margin: .1rem 0 0; }
+.consejero-entrada { display: flex; gap: .5rem; align-items: flex-end; margin-top: .75rem; flex-wrap: wrap; }
+.consejero-entrada textarea { flex: 1 1 16rem; min-height: 4rem; }
+.consejero-modos { display: flex; gap: .35rem; flex-wrap: wrap; margin: .5rem 0; }
+.cola-ia { color: var(--aviso); }

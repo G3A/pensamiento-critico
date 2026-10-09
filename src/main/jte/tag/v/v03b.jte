@@ -7,13 +7,13 @@
   @endif
   <div class="tabla-desplazable" tabindex="0" role="region" aria-label="Matriz: desplázala si no cabe">
     <table class="matriz-ponderada">
-      <caption>Puntaje por criterio; el peso va entre paréntesis</caption>
+      <caption>${v.caption()}</caption>
       <thead>
         <tr>
-          <th scope="col">Puesto</th>
+          @if(v.conPuesto())<th scope="col">Puesto</th>@endif
           <th scope="col">${v.tituloOpcion()}</th>
           @for(V03b.Columna c : v.columnas())
-            <th scope="col">${c.criterio()} (${c.peso()})</th>
+            <th scope="col">${c.criterio()}@if(c.peso() != null) (${c.peso()})@endif</th>
           @endfor
           @if(v.conProbabilidad())<th scope="col">${v.tituloProbabilidad()}</th>@endif
           <th scope="col">${v.tituloTotal()}</th>
@@ -22,7 +22,7 @@
       <tbody>
         @for(V03b.Fila f : v.filas())
           <tr>
-            <td>${f.puesto()}@if(f.empate()) <span class="chip chip-pendiente">empate</span>@endif</td>
+            @if(v.conPuesto())<td>${f.puesto()}@if(f.empate()) <span class="chip chip-pendiente">empate</span>@endif</td>@endif
             <th scope="row">${f.opcion()}</th>
             @for(Integer p : f.puntajes())
               <td>${p}</td>
@@ -41,7 +41,7 @@
   @if(v.justificacion() != null)
     <p class="enunciado">${v.justificacion()}</p>
   @endif
-  <h4 class="subtitulo-resultado">Sensibilidad a los pesos</h4>
+  <h4 class="subtitulo-resultado">${v.tituloSensibilidad()}</h4>
   <ul class="sensibilidad">
     @for(String s : v.sensibilidad())
       <li>${s}</li>

@@ -86,6 +86,32 @@ public final class GeneradorDotDiagramas {
         return sb.append("}\n").toString();
     }
 
+    /**
+     * La cadena de T09 · 5 porqués (docs/ejemplos/T09.md, regla 9): el problema y cada porqué con el id de su afirmación y
+     * su clase (problema, porque, porque raiz, porque sin-terminar); las aristas van de lo que se pregunta a su respuesta.
+     */
+    public static String porques(pensamiento.tecnicas.f2.ResultadoCincoPorques r) {
+        StringBuilder sb = cabecera("porques", "nodesep=0.25, ranksep=0.45");
+        String problema = r.problemaId().toString();
+        nodo(sb, problema, "problema", r.problema());
+        java.util.Map<String, String> ids = new java.util.HashMap<>();
+        for (pensamiento.tecnicas.f2.ResultadoCincoPorques.Porque p : r.porques()) {
+            ids.put(p.codigo(), p.afirmacionId().toString());
+            String clase = switch (p.estado()) {
+                case CAUSA_RAIZ -> "porque raiz";
+                case SIN_TERMINAR -> "porque sin-terminar";
+                case INTERMEDIO -> "porque";
+            };
+            String etiqueta = p.codigo() + " · " + p.texto() + (p.estado() == pensamiento.tecnicas.f2.ResultadoCincoPorques.Estado.INTERMEDIO ? ""
+                    : "\n" + p.estado().texto());
+            nodo(sb, p.afirmacionId().toString(), clase, etiqueta);
+        }
+        for (pensamiento.tecnicas.f2.ResultadoCincoPorques.Porque p : r.porques()) {
+            arista(sb, p.padre() == null ? problema : ids.get(p.padre()), p.afirmacionId().toString(), "por-que", "¿por qué?");
+        }
+        return sb.append("}\n").toString();
+    }
+
     static StringBuilder cabecera(String nombre, String separacion) {
         StringBuilder sb = new StringBuilder("digraph ").append(nombre).append(" {\n");
         sb.append("  graph [rankdir=LR, ").append(separacion).append("];\n");

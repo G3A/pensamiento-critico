@@ -110,6 +110,28 @@ public abstract class GraficoContract {
     }
 
     @Test
+    void la_cadena_de_cinco_porques_con_una_etiqueta_hostil_conserva_id_y_clase_por_nodo_y_sale_inerte() {
+        java.util.UUID problema = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000c1");
+        java.util.UUID p1 = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000c2");
+        java.util.UUID p2 = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000c3");
+        var porques = new pensamiento.tecnicas.f2.ResultadoCincoPorques("Se quemó la tanda de pan de las 6.", problema, java.util.List.of(
+                new pensamiento.tecnicas.f2.ResultadoCincoPorques.Porque("P1", "El horno marcó 30 grados de más.", null, null, 1,
+                        pensamiento.tecnicas.f2.ResultadoCincoPorques.Estado.INTERMEDIO, p1),
+                new pensamiento.tecnicas.f2.ResultadoCincoPorques.Porque("P2", HOSTIL, null, "P1", 2,
+                        pensamiento.tecnicas.f2.ResultadoCincoPorques.Estado.CAUSA_RAIZ, p2)),
+                3, 0, 1, 0, java.util.List.of(), "2 porqués · 1 causa raíz · evidencia en 0 de 2.");
+
+        Document svg = parsear(crearSut().svg(pensamiento.web.patrones.GeneradorDotDiagramas.porques(porques)));
+
+        assertThat(svg.getElementById(problema.toString()).classNames()).contains("problema");
+        assertThat(svg.getElementById(p1.toString()).classNames()).contains("porque");
+        Element nodoHostil = svg.getElementById(p2.toString());
+        assertThat(nodoHostil.classNames()).contains("porque", "raiz");
+        assertThat(nodoHostil.text()).contains("<script>alert(1)</script>", "{llaves};", "causa raíz");
+        inerte(svg);
+    }
+
+    @Test
     void el_arbol_mece_con_una_etiqueta_hostil_conserva_id_y_clase_por_nodo_y_sale_inerte() {
         java.util.UUID raiz = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000a1");
         java.util.UUID rama = java.util.UUID.fromString("01900000-0000-7000-8000-0000000000a2");
