@@ -44,7 +44,7 @@
             <ul class="pendientes">
               @for(PendienteGuardado p : v.pendientes())
                 <li><span class="chip chip-aviso">${p.pendiente().tipo().name().toLowerCase()}</span>
-                  <a href="/ejecuciones/${p.ejecucionId().toString()}">${p.pendiente().descripcion()}</a></li>
+                  <a href="${pensamiento.web.EnlacePendiente.de(p)}">${p.pendiente().descripcion()}</a></li>
               @endfor
             </ul>
           @endif

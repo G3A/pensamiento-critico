@@ -54,6 +54,11 @@ class RealBibliotecaContractIT extends BibliotecaContract {
             }
 
             @Override
+            public boolean restaurar(UUID u, UUID i, Documento d, List<Fragmento> f) {
+                return bd.comoUsuario(usuarioId, inst, () -> real.restaurar(u, i, d, f));
+            }
+
+            @Override
             public Optional<Documento> propioPorHash(UUID u, String hash) {
                 return bd.comoUsuario(usuarioId, inst, () -> real.propioPorHash(u, hash));
             }
@@ -100,6 +105,11 @@ class RealBibliotecaContractIT extends BibliotecaContract {
                     real.guardarVectores(u, v);
                     return null;
                 });
+            }
+
+            @Override
+            public Optional<Cita> cita(UUID u, UUID f) {
+                return bd.comoUsuario(usuarioId, inst, () -> real.cita(u, f));
             }
 
             @Override

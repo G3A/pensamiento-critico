@@ -23,8 +23,8 @@ spring:
       rol_app: app
   servlet:
     multipart:
-      max-file-size: 5MB        # RF-12: el respaldo JSON de una persona
-      max-request-size: 6MB
+      max-file-size: 50MB       # RNF-08: un documento de la biblioteca; el respaldo JSON tiene su propio tope de 5 MB
+      max-request-size: 51MB
   jackson:
     default-property-inclusion: non_null
 

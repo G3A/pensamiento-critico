@@ -117,7 +117,7 @@ class FlujoDDiarioDeDecisionesIT {
         // RF-12: el respaldo lleva la predicción resuelta; importarlo de nuevo no duplica nada.
         Taller respaldo = Taller.de(diario.cliente());
         String archivo = respaldo.exportarMisDatos();
-        assertThat(archivo).contains("\"version\" : 4").contains(prediccion).contains("\"resultado\" : \"acierto\"");
+        assertThat(archivo).contains("\"version\" : 5").contains(prediccion).contains("\"resultado\" : \"acierto\"");
         ClienteApp.Respuesta importada = respaldo.importarMisDatos(archivo);
         assertThat(importada.estado()).isEqualTo(200);
         assertThat(importada.cuerpo()).contains("0 ejecuciones nuevas");

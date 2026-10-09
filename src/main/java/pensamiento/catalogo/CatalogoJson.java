@@ -92,6 +92,18 @@ public final class CatalogoJson {
         return leer("sesgos.json", new TypeReference<List<Sesgo>>() { });
     }
 
+    /**
+     * Lo que la ficha de verificación sabe de cada uno de los ocho tipos de afirmación (contenido): si es verificable, qué
+     * evidencia lo probaría y sus tres preguntas críticas cuando el argumento no trae esquema de Walton.
+     */
+    public record TipoVerificable(String tipo, String nombre, boolean verificable, String probaria, List<String> preguntas) {
+    }
+
+    /** Los ocho tipos de afirmación, en el orden de la sección 5b (catalogo/verificacion.json). */
+    public List<TipoVerificable> tiposVerificables() {
+        return leer("verificacion.json", new TypeReference<List<TipoVerificable>>() { });
+    }
+
     /** Los ejemplos de todas las técnicas que tienen archivo en catalogo/ejemplos/, por técnica y orden. */
     public List<EjemploJson> ejemplos() {
         List<EjemploJson> todos = new ArrayList<>();

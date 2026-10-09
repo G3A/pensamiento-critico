@@ -12,11 +12,12 @@ import java.util.UUID;
  * @param tamano      en bytes
  * @param paginas     las de un PDF; vacío en los demás tipos
  * @param error       por qué no se pudo indexar, en español
+ * @param conOriginal si el archivo original está guardado (un documento restaurado de un respaldo no lo trae)
  * @param fragmentos  cuántos fragmentos tiene
  * @param conVector   cuántos de ellos ya tienen embedding
  */
 public record Documento(UUID id, UUID usuarioId, String nombre, Tipo tipo, Estado estado, boolean compartido, String hash, long tamano,
-                        Optional<Integer> paginas, Optional<String> error, int fragmentos, int conVector, Instant creadoEn) {
+                        Optional<Integer> paginas, Optional<String> error, boolean conOriginal, int fragmentos, int conVector, Instant creadoEn) {
 
     /** Detectado por el contenido, no por la extensión (RNF-08). */
     public enum Tipo {

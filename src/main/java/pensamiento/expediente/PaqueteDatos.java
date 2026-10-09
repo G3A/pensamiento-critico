@@ -11,17 +11,20 @@ import tools.jackson.databind.JsonNode;
  * El archivo JSON con los datos de una persona (RF-12, P21): configuraciones, expedientes y ejecuciones con sus
  * afirmaciones, pendientes, argumentos, predicciones y cambios de opinión, y las sesiones del Consejero con sus turnos. Todos
  * los identificadores son uuidv7, así que importar en otra instalación no choca. La versión 2 (hito 2) agrega los argumentos,
- * la 3 (hito 4) las predicciones del Diario y la 4 (hito 5) los cambios de opinión y las sesiones del Consejero; un archivo
- * de una versión anterior se migra al leerlo: queda sin lo que todavía no existía.
+ * la 3 (hito 4) las predicciones del Diario, la 4 (hito 5) los cambios de opinión y las sesiones del Consejero y la 5 (hito 6)
+ * la biblioteca (metadatos y texto de cada fragmento, sin el archivo original ni los vectores), las fuentes con sus
+ * evidencias, las fichas de verificación y el veredicto de cada afirmación; un archivo de una versión anterior se migra al
+ * leerlo: queda sin lo que todavía no existía.
  */
 public record PaqueteDatos(String formato, int version, Instant exportadoEn, String persona,
                            List<Configuracion> configuraciones, List<ExpedienteDatos> expedientes, List<EjecucionDatos> ejecuciones,
-                           List<SesionDatos> sesiones) {
+                           List<SesionDatos> sesiones, List<DocumentoDatos> documentos, List<EvidenciaDatos> evidencias,
+                           List<VerificacionDatos> verificaciones, List<VeredictoDatos> veredictos) {
 
     public static final String FORMATO = "taller-de-pensamiento-critico/datos-de-una-persona";
-    public static final int VERSION = 4;
+    public static final int VERSION = 5;
     /** Las versiones que se pueden importar, de la más vieja a la vigente. */
-    public static final List<Integer> VERSIONES_LEIBLES = List.of(1, 2, 3, 4);
+    public static final List<Integer> VERSIONES_LEIBLES = List.of(1, 2, 3, 4, 5);
 
     public record Configuracion(String tecnica, int versionEsquema, JsonNode valores) {
     }
@@ -94,11 +97,52 @@ public record PaqueteDatos(String formato, int version, Instant exportadoEn, Str
         }
     }
 
+    /** Un fragmento de un documento de la biblioteca (versión 5): su texto literal y su página. */
+    public record FragmentoDatos(UUID id, int orden, String texto, Integer pagina) {
+    }
+
+    /**
+     * Un documento indexado de la biblioteca (versión 5): metadatos y fragmentos, sin el archivo original ni los vectores. Al
+     * importarlo queda indexado, privado y sin original, y se vuelve a vectorizar.
+     */
+    public record DocumentoDatos(UUID id, String nombre, String tipo, String hash, long tamano, Integer paginas, Instant creadoEn,
+                                 List<FragmentoDatos> fragmentos) {
+        public DocumentoDatos {
+            fragmentos = fragmentos == null ? List.of() : List.copyOf(fragmentos);
+        }
+    }
+
+    /** La ficha de una fuente (versión 5), con los cinco criterios de CRAAP si se puntuaron y las notas de SIFT. */
+    public record FuenteDatos(UUID id, String titulo, String autor, LocalDate fecha, String tipo, String diseno, String grupo, boolean independiente,
+                              boolean original, Integer puntajeCraap, List<Integer> craap, String siftInvestigue, String siftCobertura,
+                              String siftContexto, UUID documentoId, String documentoNombre, Integer pagina) {
+    }
+
+    /** Una evidencia sobre una afirmación de una ejecución del archivo (versión 5), con su fuente. */
+    public record EvidenciaDatos(UUID id, UUID afirmacionId, UUID fragmentoId, String pasaje, String postura, int fuerza, String etiquetadaPor,
+                                 boolean adoptada, FuenteDatos fuente) {
+    }
+
+    /** Las preguntas críticas marcadas en la ficha de una afirmación (versión 5). */
+    public record VerificacionDatos(UUID afirmacionId, List<String> preguntas, Instant actualizadaEn) {
+        public VerificacionDatos {
+            preguntas = preguntas == null ? List.of() : List.copyOf(preguntas);
+        }
+    }
+
+    /** El veredicto guardado en una afirmación (versión 5): tipo, estado, fuerza neta y confianza. */
+    public record VeredictoDatos(UUID afirmacionId, String tipo, String estado, int fuerzaNeta, Integer confianza) {
+    }
+
     public PaqueteDatos {
         configuraciones = configuraciones == null ? List.of() : List.copyOf(configuraciones);
         expedientes = expedientes == null ? List.of() : List.copyOf(expedientes);
         ejecuciones = ejecuciones == null ? List.of() : List.copyOf(ejecuciones);
         sesiones = sesiones == null ? List.of() : List.copyOf(sesiones);
+        documentos = documentos == null ? List.of() : List.copyOf(documentos);
+        evidencias = evidencias == null ? List.of() : List.copyOf(evidencias);
+        verificaciones = verificaciones == null ? List.of() : List.copyOf(verificaciones);
+        veredictos = veredictos == null ? List.of() : List.copyOf(veredictos);
     }
 
     /**
@@ -109,6 +153,7 @@ public record PaqueteDatos(String formato, int version, Instant exportadoEn, Str
         if (version == VERSION || !VERSIONES_LEIBLES.contains(version)) {
             return this;
         }
-        return new PaqueteDatos(formato, VERSION, exportadoEn, persona, configuraciones, expedientes, ejecuciones, sesiones);
+        return new PaqueteDatos(formato, VERSION, exportadoEn, persona, configuraciones, expedientes, ejecuciones, sesiones, documentos, evidencias,
+                verificaciones, veredictos);
     }
 }

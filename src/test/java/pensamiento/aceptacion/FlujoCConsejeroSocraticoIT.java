@@ -124,7 +124,7 @@ class FlujoCConsejeroSocraticoIT {
 
         ClienteApp.Respuesta archivo = duena.cliente().get("/mis-datos/exportar");
         assertThat(archivo.estado()).isEqualTo(200);
-        assertThat(archivo.cuerpo()).contains("\"version\" : 4", id.toString(), "Mi hija no llamó en dos semanas.");
+        assertThat(archivo.cuerpo()).contains("\"version\" : 5", id.toString(), "Mi hija no llamó en dos semanas.");
         ClienteApp.Respuesta reimportado = duena.cliente().postArchivo("/mis-datos/importar", "archivo", "datos.json", archivo.cuerpo().getBytes());
         assertThat(reimportado.estado()).isLessThan(400);
         assertThat(duena.sesion(id).select("#dialogo li").size()).as("postura, dos preguntas, el cierre y dos respuestas").isEqualTo(6);

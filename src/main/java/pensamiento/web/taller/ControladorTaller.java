@@ -78,10 +78,15 @@ public class ControladorTaller {
     private final Renderizadores renderizadores;
     private final Reloj reloj;
     private final Pagina.Fabrica paginas;
+    private final pensamiento.flujos.FichaDeVerificacion fichas;
+    private final pensamiento.nucleo.puertos.RepositorioVerificaciones verificaciones;
 
     public ControladorTaller(RepositorioTecnica tecnicas, RepositorioEjecucion ejecuciones, RepositorioExpediente expedientes,
                              RepositorioArgumentos argumentos, GuardadoDeEjecuciones guardado, ServicioExpedientes servicioExpedientes,
-                             MotorTecnicas motor, Renderizadores renderizadores, Reloj reloj, Pagina.Fabrica paginas) {
+                             MotorTecnicas motor, Renderizadores renderizadores, Reloj reloj, Pagina.Fabrica paginas,
+                             pensamiento.flujos.FichaDeVerificacion fichas, pensamiento.nucleo.puertos.RepositorioVerificaciones verificaciones) {
+        this.fichas = fichas;
+        this.verificaciones = verificaciones;
         this.tecnicas = tecnicas;
         this.ejecuciones = ejecuciones;
         this.expedientes = expedientes;
@@ -201,7 +206,11 @@ public class ControladorTaller {
             textos.put(a.afirmacionId(), a.texto());
         }
         modelo.addAttribute("pagina", paginas.crear("Argumento", request));
-        modelo.addAttribute("a", new VistaArgumento(g, textos));
+        Map<UUID, pensamiento.nucleo.EstadoAfirmacion> estados = new LinkedHashMap<>();
+        for (UUID afirmacion : textos.keySet()) {
+            verificaciones.afirmacion(yo.id(), afirmacion).ifPresent(a -> estados.put(afirmacion, a.estado()));
+        }
+        modelo.addAttribute("a", new VistaArgumento(g, textos, estados, fichas.r04DeArgumento(yo.id(), g.argumento().argumento().id())));
         return "argumento";
     }
 

@@ -63,6 +63,8 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
     public static final String SIN_ETIQUETAR = "sin_etiquetar";
     public static final String IRRELEVANTE = "irrelevante";
     public static final List<String> ETIQUETAS = List.of("apoya", "contradice", "matiza", IRRELEVANTE);
+    /** El comienzo del pendiente de revisión de una afirmación disputada: abre su ficha de verificación. */
+    public static final String REVISAR_CONFLICTO = "Revisar la evidencia en conflicto sobre: ";
 
     public enum Modo {
         PLANTILLAS, PLANTILLAS_Y_MODELO;
@@ -253,7 +255,7 @@ public class EjecutorTriangulacion implements Ejecutor<EjecutorTriangulacion.Con
         if (estado == EstadoAfirmacion.EN_VERIFICACION) {
             pendientes.add(new Pendiente(TipoPendiente.VERIFICACION, Optional.of(afirmacionId), Optional.empty(), "Buscar una fuente independiente para: " + afirmacion));
         } else if (estado == EstadoAfirmacion.DISPUTADA) {
-            pendientes.add(new Pendiente(TipoPendiente.REVISION, Optional.of(afirmacionId), Optional.empty(), "Revisar la evidencia en conflicto sobre: " + afirmacion));
+            pendientes.add(new Pendiente(TipoPendiente.REVISION, Optional.of(afirmacionId), Optional.empty(), REVISAR_CONFLICTO + afirmacion));
         }
         String resumen = Textos.mayusculaInicial(texto(estado)) + " · fuerza neta " + netaTexto + " (" + magnitud + ") · "
                 + Textos.contar(fuentes.size(), "fuente", "fuentes") + ", " + cuentan.size() + (cuentan.size() == 1 ? " cuenta." : " cuentan.");

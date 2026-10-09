@@ -21,6 +21,10 @@ public interface Biblioteca {
     record NuevoDocumento(UUID id, String nombre, Documento.Tipo tipo, String hash, byte[] contenido) {
     }
 
+    /** Un fragmento para citarlo: su texto literal, su documento y su página. */
+    record Cita(UUID fragmentoId, UUID documentoId, String documento, Optional<Integer> pagina, String texto) {
+    }
+
     /** La persona ya importó un archivo con el mismo contenido. */
     final class DocumentoRepetido extends RuntimeException {
         private final String nombre;
@@ -37,6 +41,12 @@ public interface Biblioteca {
 
     /** Crea el documento en proceso, privado. Lanza DocumentoRepetido si la persona ya tiene uno con el mismo hash. */
     Documento crear(UUID usuarioId, UUID institucionId, NuevoDocumento nuevo);
+
+    /**
+     * Restaura un documento de un respaldo (RF-12): indexado, privado, sin el archivo original ni vectores, con sus fragmentos
+     * y sus identificadores. Falso, sin cambiar nada, si la persona ya tiene ese documento o uno con el mismo hash.
+     */
+    boolean restaurar(UUID usuarioId, UUID institucionId, Documento documento, List<Fragmento> fragmentos);
 
     /** El documento propio con ese hash, si la persona ya importó ese contenido. */
     Optional<Documento> propioPorHash(UUID usuarioId, String hash);
@@ -61,6 +71,9 @@ public interface Biblioteca {
 
     /** Guarda el vector de cada fragmento. Solo el dueño. */
     void guardarVectores(UUID usuarioId, Map<UUID, float[]> vectores);
+
+    /** El fragmento de un documento visible, para citarlo; vacío si no existe o si es de un documento que no ve. */
+    Optional<Cita> cita(UUID usuarioId, UUID fragmentoId);
 
     /** Todos los fragmentos de un documento visible, en orden. */
     List<Fragmento> fragmentos(UUID usuarioId, UUID documentoId);

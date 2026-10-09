@@ -77,6 +77,16 @@ public class RepositorioArgumentosJdbc implements RepositorioArgumentos {
                 .param("usuario", usuarioId).param("id", argumentoId).query(RepositorioArgumentosJdbc::fila).list()).stream().findFirst();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ArgumentoGuardado> conPremisa(UUID usuarioId, UUID afirmacionId) {
+        return leer(jdbc.sql("SELECT " + COLUMNAS + """
+                 FROM argumento a WHERE a.usuario_id = :usuario
+                  AND EXISTS (SELECT 1 FROM premisa_argumento p WHERE p.argumento_id = a.id AND p.afirmacion_id = :afirmacion)
+                ORDER BY a.ejecucion_id, a.orden, a.id
+                """).param("usuario", usuarioId).param("afirmacion", afirmacionId).query(RepositorioArgumentosJdbc::fila).list());
+    }
+
     /** Cabecera del argumento sin premisas todavía. */
     private record Fila(UUID id, UUID ejecucionId, int orden, UUID conclusionId, String esquemaId, int peso, String sentido, String estandar,
                         String texto) {

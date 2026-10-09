@@ -78,6 +78,7 @@ public abstract class BibliotecaContract {
         assertThat(d.compartido()).isFalse();
         assertThat(d.tamano()).isEqualTo(n.contenido().length);
         assertThat(d.fragmentos()).isZero();
+        assertThat(d.conOriginal()).isTrue();
         assertThat(d.esDe(p.usuarioA())).isTrue();
         assertThat(comoUsuario(p.usuarioA()).contenido(p.usuarioA(), d.id())).hasValueSatisfying(b -> assertThat(b).isEqualTo(n.contenido()));
         assertThat(comoUsuario(p.usuarioA()).porId(p.usuarioA(), d.id())).contains(d);
@@ -118,6 +119,46 @@ public abstract class BibliotecaContract {
 
         repo.indexar(p.usuarioA(), d.id(), List.of(new Fragmento.Nuevo(0, "Solo un fragmento.", Optional.of(1))), Optional.of(1));
         assertThat(repo.fragmentos(p.usuarioA(), d.id())).extracting(Fragmento::texto).containsExactly("Solo un fragmento.");
+    }
+
+    @Test
+    void un_fragmento_se_cita_con_su_documento_y_su_pagina_y_otra_persona_no_lo_cita() {
+        Personas p = personas();
+        Biblioteca repo = comoUsuario(p.usuarioA());
+        Documento d = repo.crear(p.usuarioA(), p.institucion(), nuevo("conteo-citable.pdf", Documento.Tipo.PDF, "%PDF-1.4 citable " + UUID.randomUUID()));
+        repo.indexar(p.usuarioA(), d.id(), List.of(new Fragmento.Nuevo(0, "En el centro pasan 1.200 personas por hora.", Optional.of(2))),
+                Optional.of(3));
+        Fragmento f = repo.fragmentos(p.usuarioA(), d.id()).getFirst();
+
+        assertThat(repo.cita(p.usuarioA(), f.id())).contains(new Biblioteca.Cita(f.id(), d.id(), "conteo-citable.pdf", Optional.of(2),
+                "En el centro pasan 1.200 personas por hora."));
+        assertThat(comoUsuario(p.usuarioB()).cita(p.usuarioB(), f.id())).isEmpty();
+        assertThat(repo.cita(p.usuarioA(), UUID.randomUUID())).isEmpty();
+    }
+
+    @Test
+    void restaurar_de_un_respaldo_deja_el_documento_indexado_privado_sin_original_y_con_sus_fragmentos() {
+        Personas p = personas();
+        Biblioteca repo = comoUsuario(p.usuarioA());
+        UUID id = UUID.randomUUID();
+        UUID fragmento = UUID.randomUUID();
+        Documento respaldado = new Documento(id, p.usuarioA(), "encuesta-restaurada.md", Documento.Tipo.MARKDOWN, Documento.Estado.INDEXADO, true,
+                "hash-" + UUID.randomUUID(), 120, Optional.empty(), Optional.empty(), true, 1, 1, java.time.Instant.parse("2026-10-01T10:00:00Z"));
+
+        assertThat(repo.restaurar(p.usuarioA(), p.institucion(), respaldado,
+                List.of(new Fragmento(fragmento, id, 0, "El 58% compraría pan integral todos los días.", Optional.empty())))).isTrue();
+        assertThat(repo.restaurar(p.usuarioA(), p.institucion(), respaldado, List.of())).as("ya existe").isFalse();
+
+        assertThat(repo.porId(p.usuarioA(), id)).hasValueSatisfying(d -> {
+            assertThat(d.estado()).isEqualTo(Documento.Estado.INDEXADO);
+            assertThat(d.compartido()).isFalse();
+            assertThat(d.conOriginal()).isFalse();
+            assertThat(d.fragmentos()).isEqualTo(1);
+            assertThat(d.conVector()).isZero();
+        });
+        assertThat(repo.contenido(p.usuarioA(), id)).isEmpty();
+        assertThat(repo.cita(p.usuarioA(), fragmento)).hasValueSatisfying(c -> assertThat(c.texto()).isEqualTo("El 58% compraría pan integral todos los días."));
+        assertThat(repo.buscarPorTexto(p.usuarioA(), "integral", 5)).extracting(Pasaje::fragmentoId).contains(fragmento);
     }
 
     @Test

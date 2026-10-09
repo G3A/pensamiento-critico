@@ -38,8 +38,9 @@ import pensamiento.nucleo.puertos.RepositorioExpediente;
 import pensamiento.nucleo.puertos.RepositorioPredicciones;
 
 /**
- * Exportar e importar los datos de una persona (RF-12), con los argumentos de cada ejecución desde el hito 2 y sus
- * predicciones desde el hito 4. Importar es idempotente por identificador: lo que ya es
+ * Exportar e importar los datos de una persona (RF-12), con los argumentos de cada ejecución desde el hito 2, sus
+ * predicciones desde el hito 4 y la biblioteca, las evidencias y las fichas de verificación desde el hito 6
+ * (RespaldoDeLaBiblioteca). Importar es idempotente por identificador: lo que ya es
  * suyo se actualiza (nombre del expediente, asociación de la ejecución) y lo nuevo se agrega; nada se borra. Si
  * algún identificador ya es de otra persona, se rechaza el archivo completo. Ambas acciones quedan en auditoría.
  * La transacción la abre quien llama: si algo falla, no queda nada a medias.
@@ -79,11 +80,13 @@ public class ServicioRespaldo {
     private final RepositorioPredicciones predicciones;
     private final pensamiento.nucleo.puertos.RepositorioCambiosOpinion cambios;
     private final pensamiento.nucleo.puertos.RepositorioSesiones sesiones;
+    private final RespaldoDeLaBiblioteca biblioteca;
 
     public ServicioRespaldo(RepositorioExpediente expedientes, RepositorioEjecucion ejecuciones, RepositorioArgumentos argumentos,
                             RepositorioConfiguracion configuraciones, RegistroIdentificadores identificadores, RegistroAuditoria auditoria,
                             Reloj reloj, RepositorioPredicciones predicciones, pensamiento.nucleo.puertos.RepositorioCambiosOpinion cambios,
-                            pensamiento.nucleo.puertos.RepositorioSesiones sesiones) {
+                            pensamiento.nucleo.puertos.RepositorioSesiones sesiones, RespaldoDeLaBiblioteca biblioteca) {
+        this.biblioteca = biblioteca;
         this.cambios = cambios;
         this.sesiones = sesiones;
         this.expedientes = expedientes;
@@ -129,9 +132,12 @@ public class ServicioRespaldo {
         }
         List<PaqueteDatos.SesionDatos> ses = sesiones.deUsuario(usuarioId).reversed().stream().map(s -> sesionDatos(s, sesiones.turnos(usuarioId, s.id())))
                 .toList();
+        RespaldoDeLaBiblioteca.Exportado deLaBiblioteca = biblioteca.exportar(usuarioId,
+                ejs.stream().flatMap(e -> e.afirmaciones().stream()).map(PaqueteDatos.AfirmacionDatos::id).toList());
         auditoria.registrar(new RegistroAuditoria.Evento(Optional.of(usuarioId), institucionId, RegistroAuditoria.Accion.EXPORTAR,
                 "datos-de-una-persona", Optional.of(usuarioId), reloj.ahora()));
-        return new PaqueteDatos(PaqueteDatos.FORMATO, PaqueteDatos.VERSION, reloj.ahora(), persona, configs, exps, ejs, ses);
+        return new PaqueteDatos(PaqueteDatos.FORMATO, PaqueteDatos.VERSION, reloj.ahora(), persona, configs, exps, ejs, ses, deLaBiblioteca.documentos(),
+                deLaBiblioteca.evidencias(), deLaBiblioteca.verificaciones(), deLaBiblioteca.veredictos());
     }
 
     public String exportarComoTexto(UUID usuarioId, UUID institucionId, String persona) {
@@ -170,6 +176,7 @@ public class ServicioRespaldo {
             ids.add(exigir(s.id()));
             listaSegura(s.turnos()).forEach(t -> ids.add(exigir(t == null ? null : t.id())));
         }
+        ids.addAll(biblioteca.identificadores(paquete));
         long ajenos = ids.stream().filter(id -> identificadores.deOtroUsuario(usuarioId, id)).count();
         if (ajenos > 0) {
             throw new IdentificadorAjeno((int) ajenos);
@@ -228,6 +235,9 @@ public class ServicioRespaldo {
         for (PaqueteDatos.SesionDatos s : paquete.sesiones()) {
             restaurarSesion(usuarioId, institucionId, s);
         }
+        Set<UUID> afirmacionesDelArchivo = new java.util.HashSet<>();
+        paquete.ejecuciones().forEach(e -> listaSegura(e.afirmaciones()).forEach(a -> afirmacionesDelArchivo.add(a.id())));
+        biblioteca.importar(usuarioId, institucionId, paquete, afirmacionesDelArchivo);
         for (PaqueteDatos.Configuracion c : paquete.configuraciones()) {
             configuraciones.guardar(usuarioId, institucionId, IdTecnica.de(c.tecnica()), c.versionEsquema(), json(c.valores()));
         }

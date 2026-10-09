@@ -68,6 +68,11 @@ class RealRepositorioArgumentosContractIT extends RepositorioArgumentosContract 
             }
 
             @Override
+            public List<ArgumentoGuardado> conPremisa(UUID u, UUID a) {
+                return bd.comoUsuario(usuarioId, inst, () -> real.conPremisa(u, a));
+            }
+
+            @Override
             public Optional<ArgumentoGuardado> porId(UUID u, UUID id) {
                 return bd.comoUsuario(usuarioId, inst, () -> real.porId(u, id));
             }

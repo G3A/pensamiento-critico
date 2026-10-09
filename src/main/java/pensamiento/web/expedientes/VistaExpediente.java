@@ -38,7 +38,7 @@ public record VistaExpediente(Expediente expediente, boolean muestra, List<Item>
                 .map(e -> new Item(e, tecnicas.get(e.tecnica()), Fechas.corta(e.creadaEn(), zona), resultado.apply(e)))
                 .toList();
         List<Falta> falta = vista.faltaParaCerrar().stream()
-                .map(p -> new Falta(p, muestra ? "" : "/ejecuciones/" + p.ejecucionId()))
+                .map(p -> new Falta(p, muestra ? "" : pensamiento.web.EnlacePendiente.de(p)))
                 .toList();
         return new VistaExpediente(vista.expediente(), muestra, items, vista.porFamilia(), falta, vista.familiasConEjecuciones());
     }

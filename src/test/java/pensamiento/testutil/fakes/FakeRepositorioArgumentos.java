@@ -40,6 +40,15 @@ public final class FakeRepositorioArgumentos implements RepositorioArgumentos {
         return Optional.ofNullable(porId.get(argumentoId)).filter(f -> f.usuarioId().equals(usuarioId)).map(Fila::guardado);
     }
 
+    @Override
+    public List<ArgumentoGuardado> conPremisa(UUID usuarioId, UUID afirmacionId) {
+        return porId.values().stream().filter(f -> f.usuarioId().equals(usuarioId))
+                .map(Fila::guardado)
+                .filter(g -> g.argumento().argumento().premisas().stream().anyMatch(p -> p.afirmacionId().equals(afirmacionId)))
+                .sorted(Comparator.comparing((ArgumentoGuardado g) -> g.ejecucionId()).thenComparingInt(ArgumentoGuardado::orden))
+                .toList();
+    }
+
     /** Cuántos argumentos hay guardados en total, de cualquier persona. */
     public int total() {
         return porId.size();

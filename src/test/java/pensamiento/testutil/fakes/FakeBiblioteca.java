@@ -33,6 +33,7 @@ public final class FakeBiblioteca implements Biblioteca {
         final UUID usuario;
         final Instant creado;
         final Biblioteca.NuevoDocumento nuevo;
+        boolean conOriginal = true;
         Documento.Estado estado = Documento.Estado.EN_PROCESO;
         boolean compartido;
         Optional<Integer> paginas = Optional.empty();
@@ -62,6 +63,21 @@ public final class FakeBiblioteca implements Biblioteca {
     }
 
     @Override
+    public boolean restaurar(UUID usuarioId, UUID institucionId, Documento documento, List<Fragmento> fragmentos) {
+        if (documentos.containsKey(documento.id()) || propioPorHash(usuarioId, documento.hash()).isPresent()) {
+            return false;
+        }
+        Doc d = new Doc(usuarioId, documento.creadoEn(), new Biblioteca.NuevoDocumento(documento.id(), documento.nombre(), documento.tipo(),
+                documento.hash(), new byte[(int) documento.tamano()]));
+        d.conOriginal = false;
+        d.estado = Documento.Estado.INDEXADO;
+        d.paginas = documento.paginas();
+        d.fragmentos.addAll(fragmentos.stream().map(f -> new Fragmento(f.id(), documento.id(), f.orden(), f.texto(), f.pagina())).toList());
+        documentos.put(documento.id(), d);
+        return true;
+    }
+
+    @Override
     public Optional<Documento> propioPorHash(UUID usuarioId, String hash) {
         return documentos.values().stream().filter(d -> d.usuario.equals(usuarioId) && d.nuevo.hash().equals(hash)).findFirst()
                 .map(FakeBiblioteca::documento);
@@ -77,7 +93,7 @@ public final class FakeBiblioteca implements Biblioteca {
 
     private static Documento documento(Doc d) {
         return new Documento(d.nuevo.id(), d.usuario, d.nuevo.nombre(), d.nuevo.tipo(), d.estado, d.compartido, d.nuevo.hash(), d.nuevo.contenido().length,
-                d.paginas, d.error, d.fragmentos.size(), d.vectores.size(), d.creado);
+                d.paginas, d.error, d.conOriginal, d.fragmentos.size(), d.vectores.size(), d.creado);
     }
 
     @Override
@@ -93,7 +109,7 @@ public final class FakeBiblioteca implements Biblioteca {
 
     @Override
     public Optional<byte[]> contenido(UUID usuarioId, UUID id) {
-        return visible(usuarioId, id).map(d -> d.nuevo.contenido().clone());
+        return visible(usuarioId, id).filter(d -> d.conOriginal).map(d -> d.nuevo.contenido().clone());
     }
 
     @Override
@@ -138,6 +154,21 @@ public final class FakeBiblioteca implements Biblioteca {
                 }
             }
         }
+    }
+
+    @Override
+    public Optional<Cita> cita(UUID usuarioId, UUID fragmentoId) {
+        for (Doc d : documentos.values()) {
+            if (!(d.usuario.equals(usuarioId) || d.compartido)) {
+                continue;
+            }
+            for (Fragmento f : d.fragmentos) {
+                if (f.id().equals(fragmentoId)) {
+                    return Optional.of(new Cita(f.id(), d.nuevo.id(), d.nuevo.nombre(), f.pagina(), f.texto()));
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

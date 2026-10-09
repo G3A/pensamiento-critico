@@ -81,6 +81,21 @@ public abstract class RepositorioArgumentosContract {
     }
 
     @Test
+    void con_premisa_devuelve_los_argumentos_donde_la_afirmacion_es_premisa_y_nada_a_otra_persona() {
+        Personas p = personas();
+        EjecucionConAfirmaciones e = dadaUnaEjecucionConAfirmaciones(p.usuarioA(), 4);
+        List<ArgumentoProducido> argumentos = dosArgumentos(e);
+        comoUsuario(p.usuarioA()).guardar(p.usuarioA(), p.institucion(), e.ejecucionId(), argumentos);
+
+        assertThat(comoUsuario(p.usuarioA()).conPremisa(p.usuarioA(), e.afirmaciones().get(2)))
+                .extracting(RepositorioArgumentos.ArgumentoGuardado::argumento).containsExactly(argumentos.getFirst());
+        assertThat(comoUsuario(p.usuarioA()).conPremisa(p.usuarioA(), e.afirmaciones().get(3)))
+                .extracting(RepositorioArgumentos.ArgumentoGuardado::argumento).containsExactly(argumentos.get(1));
+        assertThat(comoUsuario(p.usuarioA()).conPremisa(p.usuarioA(), e.afirmaciones().get(0))).as("la conclusión no es premisa").isEmpty();
+        assertThat(comoUsuario(p.usuarioB()).conPremisa(p.usuarioB(), e.afirmaciones().get(2))).isEmpty();
+    }
+
+    @Test
     void otra_persona_no_ve_los_argumentos_ni_por_id_ni_por_ejecucion() {
         Personas p = personas();
         EjecucionConAfirmaciones e = dadaUnaEjecucionConAfirmaciones(p.usuarioA(), 4);

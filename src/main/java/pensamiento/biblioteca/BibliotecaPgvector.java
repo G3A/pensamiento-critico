@@ -28,6 +28,7 @@ public class BibliotecaPgvector implements Biblioteca {
 
     private static final String DOCUMENTO = """
             d.id, d.usuario_id, d.nombre, d.tipo, d.estado, d.compartido, d.hash, d.tamano, d.paginas, d.error, d.creado_en,
+            d.contenido IS NOT NULL AS con_original,
             (SELECT count(*) FROM fragmento f WHERE f.documento_id = d.id) AS fragmentos,
             (SELECT count(*) FROM fragmento f WHERE f.documento_id = d.id AND f.embedding IS NOT NULL) AS con_vector
             FROM documento d
@@ -56,6 +57,29 @@ public class BibliotecaPgvector implements Biblioteca {
                 .param("tamano", (long) nuevo.contenido().length)
                 .update();
         return porId(usuarioId, nuevo.id()).orElseThrow();
+    }
+
+    @Override
+    public boolean restaurar(UUID usuarioId, UUID institucionId, Documento d, List<Fragmento> fragmentos) {
+        boolean existe = jdbc.sql("SELECT EXISTS (SELECT 1 FROM documento WHERE id = :id OR (usuario_id = :usuario AND hash = :hash))")
+                .param("id", d.id()).param("usuario", usuarioId).param("hash", d.hash()).query(Boolean.class).single();
+        if (existe) {
+            return false;
+        }
+        jdbc.sql("""
+                INSERT INTO documento (id, usuario_id, institucion_id, nombre, tipo, estado, compartido, hash, contenido, tamano, paginas, creado_en)
+                VALUES (:id, :usuario, :institucion, :nombre, :tipo, 'indexado', false, :hash, NULL, :tamano, :paginas, :creado)
+                """)
+                .param("id", d.id()).param("usuario", usuarioId).param("institucion", institucionId).param("nombre", d.nombre())
+                .param("tipo", d.tipo().enBaseDeDatos()).param("hash", d.hash()).param("tamano", d.tamano()).param("paginas", d.paginas().orElse(null))
+                .param("creado", java.sql.Timestamp.from(d.creadoEn()))
+                .update();
+        for (Fragmento f : fragmentos) {
+            jdbc.sql("INSERT INTO fragmento (id, documento_id, orden, texto, pagina) VALUES (:id, :documento, :orden, :texto, :pagina)")
+                    .param("id", f.id()).param("documento", d.id()).param("orden", f.orden()).param("texto", f.texto())
+                    .param("pagina", f.pagina().orElse(null)).update();
+        }
+        return true;
     }
 
     @Override
@@ -139,6 +163,18 @@ public class BibliotecaPgvector implements Biblioteca {
                 .param("documento", documentoId).param("usuario", usuarioId).query(BibliotecaPgvector::fragmento).list();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Cita> cita(UUID usuarioId, UUID fragmentoId) {
+        return jdbc.sql("""
+                SELECT f.id, f.documento_id, d.nombre, f.pagina, f.texto FROM fragmento f JOIN documento d ON d.id = f.documento_id
+                WHERE f.id = :id AND
+                """ + VISIBLE).param("id", fragmentoId).param("usuario", usuarioId)
+                .query((rs, i) -> new Cita(rs.getObject("id", UUID.class), rs.getObject("documento_id", UUID.class), rs.getString("nombre"),
+                        Optional.ofNullable((Integer) rs.getObject("pagina")), rs.getString("texto")))
+                .optional();
+    }
+
     /** Cualquier palabra de la consulta: el tsquery en español con sus términos unidos por OR en vez de AND. */
     @Override
     @Transactional(readOnly = true)
@@ -203,7 +239,8 @@ public class BibliotecaPgvector implements Biblioteca {
         return new Documento(rs.getObject("id", UUID.class), rs.getObject("usuario_id", UUID.class), rs.getString("nombre"),
                 Documento.Tipo.valueOf(rs.getString("tipo").toUpperCase()), Documento.Estado.valueOf(rs.getString("estado").toUpperCase()),
                 rs.getBoolean("compartido"), rs.getString("hash"), rs.getLong("tamano"), Optional.ofNullable((Integer) rs.getObject("paginas")),
-                Optional.ofNullable(rs.getString("error")), rs.getInt("fragmentos"), rs.getInt("con_vector"), rs.getTimestamp("creado_en").toInstant());
+                Optional.ofNullable(rs.getString("error")), rs.getBoolean("con_original"), rs.getInt("fragmentos"), rs.getInt("con_vector"),
+                rs.getTimestamp("creado_en").toInstant());
     }
 
     private static Fragmento fragmento(ResultSet rs, int i) throws SQLException {

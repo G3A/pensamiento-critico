@@ -28,4 +28,10 @@ public interface RepositorioArgumentos {
 
     /** Vacío si no existe o si es de otra persona: para quien pregunta, es lo mismo. */
     Optional<ArgumentoGuardado> porId(UUID usuarioId, UUID argumentoId);
+
+    /**
+     * Los argumentos del usuario que tienen esa afirmación como premisa (la ficha de verificación recalcula su R04), por
+     * ejecución y en su orden; vacía si ninguno o si la afirmación es de otra persona.
+     */
+    List<ArgumentoGuardado> conPremisa(UUID usuarioId, UUID afirmacionId);
 }
