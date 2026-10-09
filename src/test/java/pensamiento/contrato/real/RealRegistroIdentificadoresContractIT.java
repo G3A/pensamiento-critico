@@ -82,6 +82,28 @@ class RealRegistroIdentificadoresContractIT extends RegistroIdentificadoresContr
     }
 
     @Override
+    protected java.util.List<UUID> documentoFragmentoFuenteYEvidenciaDe(UUID usuarioId) {
+        UUID documento = bd.jdbcAdmin().sql("""
+                INSERT INTO documento (usuario_id, institucion_id, nombre, tipo, estado, hash, tamano)
+                VALUES (:u, :i, 'acta-marzo.txt', 'texto', 'indexado', :h, 20) RETURNING id
+                """).param("u", usuarioId).param("i", personas.institucion()).param("h", "hash-" + UUID.randomUUID()).query(UUID.class).single();
+        UUID fragmento = bd.jdbcAdmin().sql("INSERT INTO fragmento (documento_id, orden, texto) VALUES (:d, 0, 'Se aprobó esperar.') RETURNING id")
+                .param("d", documento).query(UUID.class).single();
+        UUID afirmacion = bd.jdbcAdmin().sql("""
+                INSERT INTO afirmacion (usuario_id, institucion_id, texto, tipo, origen, adoptada)
+                VALUES (:u, :i, 'Los robos subieron', 'hecho', 'usuario', true) RETURNING id
+                """).param("u", usuarioId).param("i", personas.institucion()).query(UUID.class).single();
+        UUID fuente = bd.jdbcAdmin().sql("""
+                INSERT INTO fuente (usuario_id, institucion_id, titulo, tipo) VALUES (:u, :i, 'Acta de la junta', 'primaria') RETURNING id
+                """).param("u", usuarioId).param("i", personas.institucion()).query(UUID.class).single();
+        UUID evidencia = bd.jdbcAdmin().sql("""
+                INSERT INTO evidencia (afirmacion_id, fuente_id, fragmento_id, pasaje, postura, fuerza, etiquetada_por, adoptada)
+                VALUES (:a, :f, :fr, 'Se aprobó esperar.', 'matiza', 2, 'usuario', true) RETURNING id
+                """).param("a", afirmacion).param("f", fuente).param("fr", fragmento).query(UUID.class).single();
+        return java.util.List.of(documento, fragmento, fuente, evidencia);
+    }
+
+    @Override
     protected UUID ejecucionDe(UUID usuarioId) {
         return bd.jdbcAdmin().sql("""
                 INSERT INTO ejecucion (usuario_id, institucion_id, tecnica_id, version_esquema, clave_idempotencia)

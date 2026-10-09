@@ -43,6 +43,18 @@ public abstract class RegistroIdentificadoresContract {
         }
     }
 
+    /** Deja un documento con un fragmento y una fuente con una evidencia del usuario (hito 6); devuelve los cuatro identificadores. */
+    protected abstract List<UUID> documentoFragmentoFuenteYEvidenciaDe(UUID usuarioId);
+
+    @Test
+    void el_documento_su_fragmento_la_fuente_y_la_evidencia_del_usuario_a_son_de_otro_para_b_y_propios_para_a() {
+        Personas p = personas();
+        for (UUID id : documentoFragmentoFuenteYEvidenciaDe(p.usuarioA())) {
+            assertThat(comoUsuario(p.usuarioB()).deOtroUsuario(p.usuarioB(), id)).as(id.toString()).isTrue();
+            assertThat(comoUsuario(p.usuarioA()).deOtroUsuario(p.usuarioA(), id)).as(id.toString()).isFalse();
+        }
+    }
+
     @Test
     void la_prediccion_del_usuario_a_es_de_otro_para_el_usuario_b_y_propia_para_a() {
         Personas p = personas();
