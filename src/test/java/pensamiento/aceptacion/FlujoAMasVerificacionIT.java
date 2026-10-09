@@ -61,7 +61,8 @@ class FlujoAMasVerificacionIT {
         assertThat(premisa.select("a").attr("href")).isEqualTo("/verificar/" + trafico);
 
         // P13: importar el PDF (privado, en proceso) y esperar a que el trabajo largo lo indexe.
-        UUID conteo = verificacion.importarDocumento("conteo-peatonal-municipio-2025.pdf", conteoDelMunicipio(UUID.randomUUID().toString()));
+        String marca = "corrida" + UUID.randomUUID().toString().replace("-", "");
+        UUID conteo = verificacion.importarDocumento("conteo-peatonal-municipio-2025.pdf", conteoDelMunicipio(marca));
         Element indexado = verificacion.esperarEstado(conteo, "indexado", ESPERA);
         assertThat(indexado.text()).contains("PDF · 3 páginas", "privado");
 
@@ -143,13 +144,13 @@ class FlujoAMasVerificacionIT {
         assertThat(otra.get("/verificar/" + trafico + "/fuentes/nueva").estado()).isEqualTo(404);
         assertThat(ajena.veredicto(trafico, 10).estado()).isEqualTo(404);
         assertThat(otra.get("/biblioteca/" + conteo + "/original").estado()).isEqualTo(404);
-        assertThat(ajena.buscar("1.200 personas por hora", true, null).select("li[data-fragmento]")).isEmpty();
+        assertThat(ajena.buscar("conteo peatonal " + marca, true, null).select("li[data-documento=" + conteo + "]")).as("el documento privado de otra persona").isEmpty();
         assertThat(ajena.lista().select("li[data-documento=" + conteo + "]")).isEmpty();
         assertThat(otra.postFormulario("/biblioteca/" + conteo + "/borrar", java.util.Map.of(), true).estado()).isEqualTo(404);
 
         assertThat(persona.postFormulario("/biblioteca/" + conteo + "/compartir", java.util.Map.of("compartido", "true"), true).estado()).isEqualTo(200);
         assertThat(ajena.lista().select("li[data-documento=" + conteo + "]").text()).contains("de otra persona");
-        assertThat(ajena.buscar("1.200 personas por hora", true, null).select("li[data-fragmento]")).isNotEmpty();
+        assertThat(ajena.buscar("conteo peatonal " + marca, true, null).select("li[data-documento=" + conteo + "]")).as("compartido, ya aparece").isNotEmpty();
         assertThat(otra.postFormulario("/biblioteca/" + conteo + "/borrar", java.util.Map.of(), true).estado()).as("no puede borrar lo ajeno").isEqualTo(404);
         assertThat(persona.get("/biblioteca/" + conteo + "/original").cabecera("Content-Disposition")).hasValueSatisfying(c -> assertThat(c).contains("attachment"));
     }

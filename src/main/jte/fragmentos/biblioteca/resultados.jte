@@ -14,7 +14,7 @@
   @else
     <ol class="pasajes" aria-label="Pasajes encontrados">
       @for(Pasaje p : b.pasajes())
-        <li data-fragmento="${p.fragmentoId().toString()}">
+        <li data-fragmento="${p.fragmentoId().toString()}" data-documento="${p.documentoId().toString()}">
           <p class="origen-pasaje"><strong>${p.documento()}</strong>@if(p.pagina().isPresent()), p. ${p.pagina().get()}@endif
             · <span class="detalle">${p.modo() == Pasaje.Modo.SEMANTICA ? "similitud " + String.format(java.util.Locale.forLanguageTag("es-CO"), "%.2f", p.puntaje()) : "coincide por palabras"}</span></p>
           <blockquote class="pasaje">«${p.texto()}»</blockquote>

@@ -59,13 +59,15 @@ class RNF09VerificacionEnNavegadorIT {
             // P13: subir el PDF con su barra de progreso; la lista lo muestra indexado sin recargar.
             pagina.navigate(base + "/biblioteca");
             sinDesbordar(pagina);
-            pagina.locator("#archivo").setInputFiles(new FilePayload("conteo-peatonal-municipio-2025.pdf", "application/pdf",
+            // Nombre único: los documentos que otras pruebas compartieron en la misma institución también están en la lista.
+            String nombre = "conteo-peatonal-" + UUID.randomUUID().toString().substring(0, 8) + ".pdf";
+            pagina.locator("#archivo").setInputFiles(new FilePayload(nombre, "application/pdf",
                     FlujoAMasVerificacionIT.conteoDelMunicipio(UUID.randomUUID().toString())));
             pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Importar")).click();
             pagina.locator("#mensaje-subida").waitFor();
-            assertThat(pagina.locator("#mensaje-subida").textContent()).contains("Importado: conteo-peatonal-municipio-2025.pdf");
+            assertThat(pagina.locator("#mensaje-subida").textContent()).contains("Importado: " + nombre);
             assertThat(pagina.locator("#progreso-subida").evaluate("p => p.value > 0 && p.value === p.max")).as("la barra llegó al final").isEqualTo(true);
-            pagina.locator("li[data-estado=indexado] .nombre-documento:has-text('conteo-peatonal-municipio-2025.pdf')")
+            pagina.locator("li[data-estado=indexado] .nombre-documento:has-text('" + nombre + "')")
                     .waitFor(new com.microsoft.playwright.Locator.WaitForOptions().setTimeout(90_000));
             sinDesbordar(pagina);
 
@@ -82,7 +84,7 @@ class RNF09VerificacionEnNavegadorIT {
             pagina.locator("#consulta-ficha").fill("centro barrio personas");
             pagina.locator("label.casilla:has-text('Solo por palabras') input").check();
             pagina.locator("#form-busqueda-ficha button").click();
-            pagina.locator("#resultados-busqueda li[data-fragmento]:has-text('1.200 personas por hora') a:has-text('Usar como evidencia')").click();
+            pagina.locator("#resultados-busqueda li[data-fragmento]:has-text('" + nombre + "'):has-text('1.200 personas por hora') a:has-text('Usar como evidencia')").click();
             pagina.waitForURL(u -> u.contains("/fuentes/nueva"));
             sinDesbordar(pagina);
             assertThat(pagina.locator("#f-pasaje").inputValue()).contains("1.200 personas por hora");
