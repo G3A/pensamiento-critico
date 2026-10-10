@@ -1,0 +1,141 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "La semana de la segunda sucursal",
+    "versionEsquema": 1,
+    "config": { "familias": ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8"], "resumenSemanal": true, "semanas": 4 },
+    "datos": {
+      "registros": [
+        { "fecha": "2026-09-08", "tecnica": "T31", "resumen": "Matriz: dónde abrir la segunda sucursal", "expediente": "La segunda sucursal", "cambios": 0 },
+        { "fecha": "2026-09-28", "tecnica": "T14", "resumen": "Sesgos: compra del horno nuevo", "cambios": 0 },
+        { "fecha": "2026-10-01", "tecnica": "T22", "resumen": "Verificación: tráfico del centro", "expediente": "La segunda sucursal", "cambios": 1 },
+        { "fecha": "2026-10-02", "tecnica": "T28", "resumen": "ACH: por qué bajaron las ventas de los sábados", "expediente": "Ventas de los sábados", "cambios": 0 },
+        { "fecha": "2026-10-05", "tecnica": "T29", "resumen": "Pre-mortem de la segunda sucursal", "expediente": "La segunda sucursal", "cambios": 0 },
+        { "fecha": "2026-10-06", "tecnica": "T08", "resumen": "Sesión socrática: abrir en el centro", "expediente": "La segunda sucursal", "cambios": 1 },
+        { "fecha": "2026-10-07", "tecnica": "T32", "resumen": "Abrir en la terminal, no en el centro", "expediente": "La segunda sucursal", "cambios": 0 }
+      ]
+    },
+    "resultado": {
+      "semanas": [
+        {
+          "titulo": "Semana del 5 al 11 de octubre de 2026",
+          "resumen": "3 ejecuciones, 1 expediente, 1 cambio de opinión.",
+          "registros": [
+            { "fecha": "2026-10-07", "tecnica": "T32", "resumen": "Abrir en la terminal, no en el centro", "expediente": "La segunda sucursal", "cambios": 0 },
+            { "fecha": "2026-10-06", "tecnica": "T08", "resumen": "Sesión socrática: abrir en el centro", "expediente": "La segunda sucursal", "cambios": 1 },
+            { "fecha": "2026-10-05", "tecnica": "T29", "resumen": "Pre-mortem de la segunda sucursal", "expediente": "La segunda sucursal", "cambios": 0 }
+          ]
+        },
+        {
+          "titulo": "Semana del 28 de septiembre al 4 de octubre de 2026",
+          "resumen": "3 ejecuciones, 2 expedientes, 1 cambio de opinión.",
+          "registros": [
+            { "fecha": "2026-10-02", "tecnica": "T28", "resumen": "ACH: por qué bajaron las ventas de los sábados", "expediente": "Ventas de los sábados", "cambios": 0 },
+            { "fecha": "2026-10-01", "tecnica": "T22", "resumen": "Verificación: tráfico del centro", "expediente": "La segunda sucursal", "cambios": 1 },
+            { "fecha": "2026-09-28", "tecnica": "T14", "resumen": "Sesgos: compra del horno nuevo", "expediente": null, "cambios": 0 }
+          ]
+        }
+      ],
+      "porFamilia": [ { "familia": "F5", "registros": 3 }, { "familia": "F2", "registros": 1 }, { "familia": "F3", "registros": 1 }, { "familia": "F4", "registros": 1 } ],
+      "sinUsar": ["F1", "F6", "F7", "F8"],
+      "avisos": ["Fuera de la ventana: 1 registro de antes del 14 de septiembre de 2026."],
+      "pendientes": [],
+      "resumen": "6 ejecuciones en 2 semanas · 2 cambios de opinión."
+    },
+    "nota": "La dueña de la panadería abre su diario un miércoles; el registro del 8 de septiembre queda fuera de las 4 semanas. Cálculo a mano en docs/ejemplos/T45.md (reloj fijo de las pruebas: 7 de octubre de 2026)."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Estudiar afuera",
+    "versionEsquema": 1,
+    "config": { "familias": ["F2", "F5", "F6", "F8"], "resumenSemanal": false, "semanas": 2 },
+    "datos": {
+      "registros": [
+        { "fecha": "2026-09-30", "tecnica": "T38", "resumen": "Double crux: estudiar afuera o en la ciudad", "expediente": "Estudiar afuera", "cambios": 0 },
+        { "fecha": "2026-10-01", "tecnica": "T21", "resumen": "CRAAP: el folleto de la universidad", "expediente": "Estudiar afuera", "cambios": 0 },
+        { "fecha": "2026-10-03", "tecnica": "T27", "resumen": "Valor esperado: beca o crédito", "expediente": "Estudiar afuera", "cambios": 0 },
+        { "fecha": "2026-10-04", "tecnica": "T08", "resumen": "Sesión socrática: ¿debe estudiar afuera ya?", "expediente": "Estudiar afuera", "cambios": 1 },
+        { "fecha": "2026-10-06", "tecnica": "T43", "resumen": "Ishikawa: por qué sube la factura de luz", "cambios": 0 },
+        { "fecha": "2026-10-07", "tecnica": "T47", "resumen": "Reflexión: la sesión sobre estudiar afuera", "expediente": "Estudiar afuera", "cambios": 0 }
+      ]
+    },
+    "resultado": {
+      "semanas": [
+        {
+          "titulo": "Semana del 5 al 11 de octubre de 2026",
+          "resumen": null,
+          "registros": [
+            { "fecha": "2026-10-07", "tecnica": "T47", "resumen": "Reflexión: la sesión sobre estudiar afuera", "expediente": "Estudiar afuera", "cambios": 0 }
+          ]
+        },
+        {
+          "titulo": "Semana del 28 de septiembre al 4 de octubre de 2026",
+          "resumen": null,
+          "registros": [
+            { "fecha": "2026-10-04", "tecnica": "T08", "resumen": "Sesión socrática: ¿debe estudiar afuera ya?", "expediente": "Estudiar afuera", "cambios": 1 },
+            { "fecha": "2026-10-03", "tecnica": "T27", "resumen": "Valor esperado: beca o crédito", "expediente": "Estudiar afuera", "cambios": 0 },
+            { "fecha": "2026-09-30", "tecnica": "T38", "resumen": "Double crux: estudiar afuera o en la ciudad", "expediente": "Estudiar afuera", "cambios": 0 }
+          ]
+        }
+      ],
+      "porFamilia": [ { "familia": "F2", "registros": 1 }, { "familia": "F5", "registros": 1 }, { "familia": "F6", "registros": 1 }, { "familia": "F8", "registros": 1 } ],
+      "sinUsar": [],
+      "avisos": ["Fuera por familia: 2 registros de F4 y F7."],
+      "pendientes": [],
+      "resumen": "4 ejecuciones en 2 semanas · 1 cambio de opinión."
+    },
+    "nota": "La mamá revisa cómo pensaron la decisión de que la hija estudie en otra ciudad; F4 y F7 no entran."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras del barrio",
+    "versionEsquema": 1,
+    "config": { "familias": ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8"], "resumenSemanal": true, "semanas": 3 },
+    "datos": {
+      "registros": [
+        { "fecha": "2026-09-21", "tecnica": "T40", "resumen": "Definir el problema de los robos nocturnos", "expediente": "Cámaras del barrio", "cambios": 0 },
+        { "fecha": "2026-09-24", "tecnica": "T43", "resumen": "Ishikawa: por qué hay robos de noche", "expediente": "Cámaras del barrio", "cambios": 0 },
+        { "fecha": "2026-09-24", "tecnica": "T44", "resumen": "SCAMPER: ideas además de las cámaras", "expediente": "Cámaras del barrio", "cambios": 0 },
+        { "fecha": "2026-10-02", "tecnica": "T36", "resumen": "Equipo rojo: las cámaras son la solución", "expediente": "Cámaras del barrio", "cambios": 1 },
+        { "fecha": "2026-10-02", "tecnica": "T34", "resumen": "Steelman: la postura de quienes no quieren cámaras", "expediente": "Cámaras del barrio", "cambios": 0 },
+        { "fecha": "2026-10-06", "tecnica": "T32", "resumen": "Llevar la propuesta de cámaras a la asamblea", "expediente": "Asamblea de octubre", "cambios": 0 },
+        { "fecha": "2026-10-07", "tecnica": "T13", "resumen": "Falacias en el mensaje del grupo de vecinos", "cambios": 0 }
+      ]
+    },
+    "resultado": {
+      "semanas": [
+        {
+          "titulo": "Semana del 5 al 11 de octubre de 2026",
+          "resumen": "2 ejecuciones, 1 expediente, 0 cambios de opinión.",
+          "registros": [
+            { "fecha": "2026-10-07", "tecnica": "T13", "resumen": "Falacias en el mensaje del grupo de vecinos", "expediente": null, "cambios": 0 },
+            { "fecha": "2026-10-06", "tecnica": "T32", "resumen": "Llevar la propuesta de cámaras a la asamblea", "expediente": "Asamblea de octubre", "cambios": 0 }
+          ]
+        },
+        {
+          "titulo": "Semana del 28 de septiembre al 4 de octubre de 2026",
+          "resumen": "2 ejecuciones, 1 expediente, 1 cambio de opinión.",
+          "registros": [
+            { "fecha": "2026-10-02", "tecnica": "T34", "resumen": "Steelman: la postura de quienes no quieren cámaras", "expediente": "Cámaras del barrio", "cambios": 0 },
+            { "fecha": "2026-10-02", "tecnica": "T36", "resumen": "Equipo rojo: las cámaras son la solución", "expediente": "Cámaras del barrio", "cambios": 1 }
+          ]
+        },
+        {
+          "titulo": "Semana del 21 al 27 de septiembre de 2026",
+          "resumen": "3 ejecuciones, 1 expediente, 0 cambios de opinión.",
+          "registros": [
+            { "fecha": "2026-09-24", "tecnica": "T44", "resumen": "SCAMPER: ideas además de las cámaras", "expediente": "Cámaras del barrio", "cambios": 0 },
+            { "fecha": "2026-09-24", "tecnica": "T43", "resumen": "Ishikawa: por qué hay robos de noche", "expediente": "Cámaras del barrio", "cambios": 0 },
+            { "fecha": "2026-09-21", "tecnica": "T40", "resumen": "Definir el problema de los robos nocturnos", "expediente": "Cámaras del barrio", "cambios": 0 }
+          ]
+        }
+      ],
+      "porFamilia": [ { "familia": "F7", "registros": 3 }, { "familia": "F6", "registros": 2 }, { "familia": "F3", "registros": 1 }, { "familia": "F5", "registros": 1 } ],
+      "sinUsar": ["F1", "F2", "F4", "F8"],
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "7 ejecuciones en 3 semanas · 1 cambio de opinión."
+    },
+    "nota": "La secretaria de la junta repasa cómo llegaron a la propuesta de cámaras; a igual fecha va primero lo que se guardó después."
+  }
+]

@@ -1,0 +1,117 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "Las posturas de la panadería",
+    "versionEsquema": 1,
+    "config": { "registroAutomatico": true, "causas": ["evidencia", "steelman", "revision", "regla", "manual", "presion"], "mesesSinRevisar": 12 },
+    "datos": {
+      "cambios": [
+        { "fecha": "2025-11-20", "postura": "Conviene vender pan integral los domingos", "antes": 40, "despues": 70, "causa": "revision", "tecnica": "T32" },
+        { "fecha": "2026-03-02", "postura": "Cambiar el horno viejo antes de diciembre", "antes": 30, "despues": 80, "causa": "steelman", "tecnica": "T36" },
+        { "fecha": "2026-09-25", "postura": "Subir el precio del pan baja las ventas", "antes": 80, "despues": 60, "causa": "evidencia", "tecnica": "T22" },
+        { "fecha": "2026-10-03", "postura": "Conviene abrir la segunda sucursal en el centro este año", "antes": 80, "despues": 45, "causa": "evidencia", "tecnica": "T22" }
+      ],
+      "posturas": [
+        { "postura": "El pan de masa madre no se vende en este barrio", "desde": "2025-08-14" },
+        { "postura": "Conviene abrir la segunda sucursal en el centro este año", "desde": "2026-09-10" },
+        { "postura": "Conviene vender pan integral los domingos", "desde": "2025-09-01" }
+      ]
+    },
+    "resultado": {
+      "linea": [
+        { "fecha": "2026-10-03", "postura": "Conviene abrir la segunda sucursal en el centro este año", "antes": 80, "despues": 45, "causa": "evidencia", "tecnica": "T22" },
+        { "fecha": "2026-09-25", "postura": "Subir el precio del pan baja las ventas", "antes": 80, "despues": 60, "causa": "evidencia", "tecnica": "T22" },
+        { "fecha": "2026-03-02", "postura": "Cambiar el horno viejo antes de diciembre", "antes": 30, "despues": 80, "causa": "steelman", "tecnica": "T36" },
+        { "fecha": "2025-11-20", "postura": "Conviene vender pan integral los domingos", "antes": 40, "despues": 70, "causa": "revision", "tecnica": "T32" }
+      ],
+      "anio": 2026,
+      "total": 3,
+      "porCausa": { "evidencia": 2, "steelman": 1, "revision": 0, "regla": 0, "manual": 0, "presion": 0 },
+      "lectura": "Cambias de opinión por razones (evidencia, steelman, revisión o regla), no por presión social.",
+      "sinRevisar": [ { "postura": "El pan de masa madre no se vende en este barrio", "desde": "2025-08-14", "meses": 13 } ],
+      "avisos": [],
+      "cambiosDeclarados": [],
+      "pendientes": [],
+      "resumen": "3 cambios de opinión en 2026 · 1 postura sin revisar."
+    },
+    "nota": "La tarjeta de la sección 7b. El cambio del pan integral es de 2025: aparece en la línea de tiempo pero no en el resumen del año. Cálculo a mano en docs/ejemplos/T46.md."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Las cámaras y la presión del grupo",
+    "versionEsquema": 1,
+    "config": { "registroAutomatico": true, "causas": ["evidencia", "steelman", "revision", "manual", "presion"], "mesesSinRevisar": 6 },
+    "datos": {
+      "cambios": [
+        { "fecha": "2026-02-10", "postura": "Los vecinos nuevos no participan en la junta", "antes": 70, "despues": 50, "causa": "manual", "tecnica": "T08" },
+        { "fecha": "2026-09-15", "postura": "La junta aprueba las cámaras en la asamblea", "antes": 95, "despues": 70, "causa": "revision", "tecnica": "T32" }
+      ],
+      "posturas": [
+        { "postura": "Los vecinos nuevos no participan en la junta", "desde": "2025-12-01" },
+        { "postura": "Las luces con sensor bastan para la cuadra 3", "desde": "2026-03-20" },
+        { "postura": "La ronda vecinal funciona mejor que las cámaras", "desde": "2026-06-30" }
+      ],
+      "nuevaPostura": "Las cámaras son la solución para los robos",
+      "nuevaAntes": 90,
+      "nuevaDespues": 60,
+      "nuevaCausa": "presion"
+    },
+    "resultado": {
+      "linea": [
+        { "fecha": "2026-10-07", "postura": "Las cámaras son la solución para los robos", "antes": 90, "despues": 60, "causa": "presion", "tecnica": "T46" },
+        { "fecha": "2026-09-15", "postura": "La junta aprueba las cámaras en la asamblea", "antes": 95, "despues": 70, "causa": "revision", "tecnica": "T32" },
+        { "fecha": "2026-02-10", "postura": "Los vecinos nuevos no participan en la junta", "antes": 70, "despues": 50, "causa": "manual", "tecnica": "T08" }
+      ],
+      "anio": 2026,
+      "total": 3,
+      "porCausa": { "evidencia": 0, "steelman": 0, "revision": 1, "regla": 0, "manual": 1, "presion": 1 },
+      "lectura": "Este año cambiaste de opinión por presión social tanto o más que por razones: revisa esos cambios con T34 · Steelmanning.",
+      "sinRevisar": [
+        { "postura": "Los vecinos nuevos no participan en la junta", "desde": "2026-02-10", "meses": 7 },
+        { "postura": "Las luces con sensor bastan para la cuadra 3", "desde": "2026-03-20", "meses": 6 }
+      ],
+      "avisos": [],
+      "cambiosDeclarados": [ { "postura": "Las cámaras son la solución para los robos", "antes": 90, "despues": 60, "causa": "presion" } ],
+      "pendientes": [],
+      "resumen": "3 cambios de opinión en 2026 · 2 posturas sin revisar."
+    },
+    "nota": "La secretaria de la junta registra a mano que bajó su confianza en las cámaras después de la discusión en el grupo de mensajería, y reconoce que fue por presión."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "La factura y el colegio",
+    "versionEsquema": 1,
+    "config": { "registroAutomatico": false, "causas": ["evidencia", "steelman", "revision", "regla", "manual", "presion"], "mesesSinRevisar": 12 },
+    "datos": {
+      "cambios": [
+        { "fecha": "2025-06-12", "postura": "Mi hija debe estudiar afuera ya", "antes": 85, "despues": 40, "causa": "evidencia", "tecnica": "T22" },
+        { "fecha": "2025-10-01", "postura": "Cambiar de compañía de luz no conviene", "antes": 70, "despues": 30, "causa": "steelman", "tecnica": "T08" }
+      ],
+      "posturas": [
+        { "postura": "Mi hija debe estudiar afuera ya", "desde": "2025-06-12" },
+        { "postura": "La factura de luz sube por la nevera vieja", "desde": "2025-10-07" },
+        { "postura": "Es mejor pagar el colegio por año que por mes", "desde": "2025-10-06" }
+      ]
+    },
+    "resultado": {
+      "linea": [
+        { "fecha": "2025-10-01", "postura": "Cambiar de compañía de luz no conviene", "antes": 70, "despues": 30, "causa": "steelman", "tecnica": "T08" },
+        { "fecha": "2025-06-12", "postura": "Mi hija debe estudiar afuera ya", "antes": 85, "despues": 40, "causa": "evidencia", "tecnica": "T22" }
+      ],
+      "anio": 2026,
+      "total": 0,
+      "porCausa": { "evidencia": 0, "steelman": 0, "revision": 0, "regla": 0, "manual": 0, "presion": 0 },
+      "lectura": "Este año todavía no registraste cambios de opinión.",
+      "sinRevisar": [
+        { "postura": "Mi hija debe estudiar afuera ya", "desde": "2025-06-12", "meses": 15 },
+        { "postura": "Cambiar de compañía de luz no conviene", "desde": "2025-10-01", "meses": 12 },
+        { "postura": "Es mejor pagar el colegio por año que por mes", "desde": "2025-10-06", "meses": 12 }
+      ],
+      "avisos": ["El registro automático está apagado: T08, el Consejero y la ficha de verificación no anotan tus cambios; solo cuentan los que registras a mano."],
+      "cambiosDeclarados": [],
+      "pendientes": [],
+      "resumen": "0 cambios de opinión en 2026 · 3 posturas sin revisar."
+    },
+    "nota": "El papá revisa sus posturas de la casa. La de la factura (7 de octubre de 2025) cumple justo 12 meses y no aparece: tiene que ser más de 12."
+  }
+]

@@ -1,0 +1,76 @@
+[
+  {
+    "ambito": "comunidad",
+    "titulo": "Las luces de la cuadra 3",
+    "versionEsquema": 1,
+    "config": { "preguntas": ["aprendi", "sin_claro", "distinto"], "obligatoriaAlCerrar": true },
+    "datos": {
+      "sobre": "Sesión socrática: las luces de la cuadra 3",
+      "aprendi": "Que mi cifra favorita venía del vendedor de las luces.",
+      "sinClaro": "Si la baja del 12% en los robos fue por las luces o por la ronda."
+    },
+    "resultado": {
+      "items": [
+        { "pregunta": "aprendi", "respuesta": "Que mi cifra favorita venía del vendedor de las luces." },
+        { "pregunta": "sin_claro", "respuesta": "Si la baja del 12% en los robos fue por las luces o por la ronda." },
+        { "pregunta": "distinto", "respuesta": null }
+      ],
+      "respondidas": 2,
+      "nota": "Obligatoria al cerrar una sesión del Consejero · se guarda en el diario (T45 · Diario de razonamiento).",
+      "pendientes": [],
+      "resumen": "2 de 3 preguntas respondidas · Sesión socrática: las luces de la cuadra 3."
+    },
+    "nota": "La tarjeta de la sección 7b: la secretaria de la junta cierra una sesión del Consejero sobre las luces con sensor. Ejemplos en docs/ejemplos/T47.md."
+  },
+  {
+    "ambito": "trabajo",
+    "titulo": "El pre-mortem de la sucursal",
+    "versionEsquema": 1,
+    "config": { "preguntas": ["aprendi", "cambio", "siguiente"], "obligatoriaAlCerrar": false },
+    "datos": {
+      "sobre": "Pre-mortem de la segunda sucursal.",
+      "aprendi": "Que nadie había pensado en quién abre a las 5 de la mañana.",
+      "distinto": "Invitar a la cajera al pre-mortem.",
+      "cambio": "Ya no doy por hecho que el personal alcanza para dos locales.",
+      "siguiente": "Hablar con el panadero del turno de la madrugada antes del viernes."
+    },
+    "resultado": {
+      "items": [
+        { "pregunta": "aprendi", "respuesta": "Que nadie había pensado en quién abre a las 5 de la mañana." },
+        { "pregunta": "cambio", "respuesta": "Ya no doy por hecho que el personal alcanza para dos locales." },
+        { "pregunta": "siguiente", "respuesta": "Hablar con el panadero del turno de la madrugada antes del viernes." }
+      ],
+      "respondidas": 3,
+      "nota": "Opcional al cerrar una sesión del Consejero · se guarda en el diario (T45 · Diario de razonamiento).",
+      "pendientes": [],
+      "resumen": "3 de 3 preguntas respondidas · Pre-mortem de la segunda sucursal."
+    },
+    "nota": "La dueña de la panadería reflexiona después del pre-mortem. La respuesta a «¿Qué haría distinto?» no cuenta: esa pregunta está apagada."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Estudiar afuera",
+    "versionEsquema": 1,
+    "config": { "preguntas": ["aprendi", "sin_claro", "distinto", "cambio", "sentimientos", "siguiente"], "obligatoriaAlCerrar": true },
+    "datos": {
+      "sobre": "Decisión: estudiar afuera",
+      "sentimientos": "Miedo a que se vaya; me hacía buscar solo los riesgos.",
+      "siguiente": "Preguntar en la universidad si la beca se puede diferir un año."
+    },
+    "resultado": {
+      "items": [
+        { "pregunta": "aprendi", "respuesta": null },
+        { "pregunta": "sin_claro", "respuesta": null },
+        { "pregunta": "distinto", "respuesta": null },
+        { "pregunta": "cambio", "respuesta": null },
+        { "pregunta": "sentimientos", "respuesta": "Miedo a que se vaya; me hacía buscar solo los riesgos." },
+        { "pregunta": "siguiente", "respuesta": "Preguntar en la universidad si la beca se puede diferir un año." }
+      ],
+      "respondidas": 2,
+      "nota": "Obligatoria al cerrar una sesión del Consejero · se guarda en el diario (T45 · Diario de razonamiento).",
+      "pendientes": [],
+      "resumen": "2 de 6 preguntas respondidas · Decisión: estudiar afuera."
+    },
+    "nota": "La mamá reflexiona después de decidir con la familia si la hija estudia en otra ciudad."
+  }
+]

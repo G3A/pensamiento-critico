@@ -1,0 +1,102 @@
+[
+  {
+    "ambito": "trabajo",
+    "titulo": "La dueña practica falacias",
+    "versionEsquema": 1,
+    "config": { "niveles": ["identificar", "analizar", "evaluar", "crear"], "avanceAutomatico": true, "aciertosParaDominar": 3 },
+    "datos": {
+      "tema": "T13",
+      "intentos": [
+        { "nivel": "identificar", "resultado": "acierto" },
+        { "nivel": "identificar", "resultado": "error" },
+        { "nivel": "identificar", "resultado": "acierto" },
+        { "nivel": "analizar", "resultado": "acierto" },
+        { "nivel": "identificar", "resultado": "acierto" },
+        { "nivel": "analizar", "resultado": "acierto" },
+        { "nivel": "analizar", "resultado": "error" },
+        { "nivel": "evaluar", "resultado": "acierto" },
+        { "nivel": "analizar", "resultado": "acierto" }
+      ]
+    },
+    "resultado": {
+      "niveles": [
+        { "nivel": "identificar", "estado": "dominado", "aciertos": 3, "intentos": 4 },
+        { "nivel": "analizar", "estado": "en_curso", "aciertos": 2, "intentos": 3 },
+        { "nivel": "evaluar", "estado": "bloqueado", "aciertos": 0, "intentos": 0 },
+        { "nivel": "crear", "estado": "bloqueado", "aciertos": 0, "intentos": 0 }
+      ],
+      "actual": "analizar",
+      "mensaje": "El nivel «evaluar» se abre al dominar «analizar».",
+      "avisos": ["2 intentos en un nivel todavía bloqueado no cuentan."],
+      "pendientes": [],
+      "resumen": "T13 · Falacias como esquemas fallidos: nivel analizar · 2 de 3 aciertos."
+    },
+    "nota": "Los intentos 4 y 8 llegan a niveles todavía bloqueados y no cuentan. Cálculo a mano en docs/ejemplos/T48.md."
+  },
+  {
+    "ambito": "comunidad",
+    "titulo": "Las fuentes del grupo del barrio",
+    "versionEsquema": 1,
+    "config": { "niveles": ["identificar", "analizar", "evaluar"], "avanceAutomatico": true, "aciertosParaDominar": 3 },
+    "datos": {
+      "tema": "T19",
+      "intentos": [
+        { "nivel": "identificar", "resultado": "acierto" },
+        { "nivel": "identificar", "resultado": "acierto" },
+        { "nivel": "identificar", "resultado": "acierto" },
+        { "nivel": "analizar", "resultado": "acierto" },
+        { "nivel": "analizar", "resultado": "error" },
+        { "nivel": "analizar", "resultado": "acierto" },
+        { "nivel": "analizar", "resultado": "acierto" },
+        { "nivel": "crear", "resultado": "acierto" },
+        { "nivel": "evaluar", "resultado": "acierto" },
+        { "nivel": "evaluar", "resultado": "acierto" },
+        { "nivel": "evaluar", "resultado": "acierto" }
+      ]
+    },
+    "resultado": {
+      "niveles": [
+        { "nivel": "identificar", "estado": "dominado", "aciertos": 3, "intentos": 3 },
+        { "nivel": "analizar", "estado": "dominado", "aciertos": 3, "intentos": 4 },
+        { "nivel": "evaluar", "estado": "dominado", "aciertos": 3, "intentos": 3 },
+        { "nivel": "crear", "estado": "apagado", "aciertos": 0, "intentos": 0 }
+      ],
+      "actual": "evaluar",
+      "mensaje": "Dominaste los 3 niveles activos.",
+      "avisos": ["1 intento en niveles apagados no cuenta."],
+      "pendientes": [],
+      "resumen": "T19 · SIFT: dominaste los 3 niveles activos."
+    },
+    "nota": "La secretaria de la junta practica SIFT con los mensajes del grupo del barrio; el nivel crear está apagado."
+  },
+  {
+    "ambito": "personal",
+    "titulo": "Los sesgos de la familia",
+    "versionEsquema": 1,
+    "config": { "niveles": ["identificar", "analizar", "evaluar", "crear"], "avanceAutomatico": false, "aciertosParaDominar": 3 },
+    "datos": {
+      "tema": "T14",
+      "intentos": [
+        { "nivel": "evaluar", "resultado": "acierto" },
+        { "nivel": "evaluar", "resultado": "acierto" },
+        { "nivel": "identificar", "resultado": "error" },
+        { "nivel": "crear", "resultado": "acierto" },
+        { "nivel": "evaluar", "resultado": "acierto" }
+      ]
+    },
+    "resultado": {
+      "niveles": [
+        { "nivel": "identificar", "estado": "en_curso", "aciertos": 0, "intentos": 1 },
+        { "nivel": "analizar", "estado": "en_curso", "aciertos": 0, "intentos": 0 },
+        { "nivel": "evaluar", "estado": "dominado", "aciertos": 3, "intentos": 3 },
+        { "nivel": "crear", "estado": "en_curso", "aciertos": 1, "intentos": 1 }
+      ],
+      "actual": "identificar",
+      "mensaje": "Avance manual: eliges el nivel en el Dojo y ningún nivel se bloquea.",
+      "avisos": [],
+      "pendientes": [],
+      "resumen": "T14 · Sesgos cognitivos: 1 de 4 niveles dominados · avance manual."
+    },
+    "nota": "El hijo mayor practica sesgos con avance manual y salta directo a los retos de evaluar."
+  }
+]
