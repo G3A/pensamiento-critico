@@ -82,7 +82,9 @@ public class ControladorInicio {
         List<PendienteGuardado> pendientes = ejecuciones.pendientes(yo.id()).stream()
                 .filter(p -> !(p.pendiente().tipo() == pensamiento.nucleo.TipoPendiente.REVISION && p.pendiente().vence().isPresent())).toList();
         modelo.addAttribute("pagina", paginas.crear("Inicio", request));
-        modelo.addAttribute("v", new VistaInicio(Intencion.values(), recientes.isEmpty() && suyos.isEmpty(), primerEjemplo,
+        // Quien solo practicó en el Dojo ya no ve el primer uso: tiene repasos que hacer.
+        boolean practico = dojo.practico(yo.id());
+        modelo.addAttribute("v", new VistaInicio(Intencion.values(), recientes.isEmpty() && suyos.isEmpty() && !practico, primerEjemplo,
                 MuestraExpediente.NOMBRE, pendientes, recientes, suyos, diario.porRevisar(yo.id()),
                 dojo.retosParaHoy(yo.id(), configuraciones.dojo(yo.id())), dojo.racha(yo.id())));
         return "inicio";

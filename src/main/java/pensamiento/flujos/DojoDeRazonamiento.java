@@ -281,6 +281,11 @@ public class DojoDeRazonamiento {
         return (int) Math.min(faltan, tocan + nuevos);
     }
 
+    /** Si la persona respondió algún reto alguna vez. */
+    public boolean practico(UUID usuarioId) {
+        return !repositorio.intentos(usuarioId).isEmpty();
+    }
+
     public int racha(UUID usuarioId) {
         return racha(repositorio.intentos(usuarioId), reloj.hoy());
     }
