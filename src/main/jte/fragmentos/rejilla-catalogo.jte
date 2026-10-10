@@ -43,6 +43,10 @@
         @if(filtros.alguno()) · <a href="/catalogo">quitar filtros</a>@endif
       </p>
     </div>
+    @if("practicar".equals(filtros.intencion()))
+      <p class="aviso-lista aviso-nota" data-flujo="dojo">Para practicar todos los días, el <a href="/dojo">Dojo de razonamiento</a> te da retos
+        cortos de falacias, sesgos, datos y fuentes, y programa cada repaso.</p>
+    @endif
     @if(tarjetas.isEmpty())
       <div class="tarjeta vacio"><p>Ninguna técnica coincide. Prueba con otra palabra o quita los filtros.</p></div>
     @endif

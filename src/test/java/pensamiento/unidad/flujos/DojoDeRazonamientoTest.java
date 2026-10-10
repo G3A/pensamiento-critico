@@ -161,6 +161,19 @@ class DojoDeRazonamientoTest {
     }
 
     @Test
+    void respuestas_en_el_mismo_instante_quedan_en_el_orden_en_que_se_dieron() {
+        var mucho = new DojoDeRazonamiento.Configuracion(CONFIG.bloom(), new EjecutorRepeticion.Config(20, "2.5"));
+        List<String> respondidos = new java.util.ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            DojoDeRazonamiento.RetoElegido e = dojo.pantalla(YO, Optional.empty(), Optional.empty(), mucho).reto().orElseThrow();
+            dojo.responder(YO, INSTITUCION, e.reto().id(), respuesta(e.reto(), true), UUID.randomUUID().toString(), mucho);
+            respondidos.add(e.reto().id());
+        }
+
+        assertThat(repositorio.intentos(YO)).extracting(pensamiento.nucleo.IntentoDojo::retoId).containsExactlyElementsOf(respondidos);
+    }
+
+    @Test
     void quien_nunca_practico_no_ve_retos_del_dojo_en_inicio() {
         assertThat(dojo.retosParaHoy(YO, CONFIG)).isZero();
     }

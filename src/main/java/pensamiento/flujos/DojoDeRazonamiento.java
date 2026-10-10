@@ -216,8 +216,12 @@ public class DojoDeRazonamiento {
             antes = intentos.stream().filter(i -> !i.id().equals(intento.id())).toList();
         } else {
             antes = List.copyOf(intentos);
-            intento = new IntentoDojo(Uuid7.en(ahora), clave, reto.id(), tema.tecnica(), concepto.id(), reto.nivel(), texto, reto.califica(texto), hoy,
-                    ahora);
+            // Siempre después del anterior: el orden de los intentos decide SM-2 y Bloom, y dos respuestas en el mismo instante
+            // quedarían ordenadas por su identificador, que dentro de un milisegundo es aleatorio.
+            Instant creado = intentos.isEmpty() || ahora.isAfter(intentos.getLast().creadoEn()) ? ahora
+                    : intentos.getLast().creadoEn().plusNanos(1_000);
+            intento = new IntentoDojo(Uuid7.en(creado), clave, reto.id(), tema.tecnica(), concepto.id(), reto.nivel(), texto, reto.califica(texto), hoy,
+                    creado);
             intentos.add(intento);
             EscaleraBloom.Progreso tras = bloom(tema, intentos, c);
             List<IntentoDojo> delTema = intentos.stream().filter(i -> i.tecnica().equals(tema.tecnica())).toList();
