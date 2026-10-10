@@ -22,6 +22,17 @@ public record IdTecnica(String valor) implements Comparable<IdTecnica> {
         return Integer.parseInt(valor.substring(1));
     }
 
+    /** La familia del catálogo canónico (sección 5b): T01 a T07 F1, T08 a T12 F2, … T45 a T49 F8. */
+    public String familia() {
+        int[] primeras = {1, 8, 13, 19, 24, 34, 40, 45};
+        int n = numero();
+        int f = primeras.length;
+        while (n < primeras[f - 1]) {
+            f--;
+        }
+        return "F" + f;
+    }
+
     @Override
     public int compareTo(IdTecnica otro) {
         return valor.compareTo(otro.valor);

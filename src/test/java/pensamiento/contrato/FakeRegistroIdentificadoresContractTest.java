@@ -54,4 +54,11 @@ class FakeRegistroIdentificadoresContractTest extends RegistroIdentificadoresCon
         ids.forEach(id -> fake.existe(id, usuarioId));
         return ids;
     }
+
+    @Override
+    protected UUID intentoDojoDe(UUID usuarioId) {
+        UUID id = UUID.randomUUID();
+        fake.existe(id, usuarioId);
+        return id;
+    }
 }

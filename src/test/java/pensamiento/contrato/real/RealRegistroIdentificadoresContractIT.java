@@ -111,4 +111,13 @@ class RealRegistroIdentificadoresContractIT extends RegistroIdentificadoresContr
                 """).param("u", usuarioId).param("i", personas.institucion()).param("c", "identificadores-" + UUID.randomUUID())
                 .query(UUID.class).single();
     }
+
+    @Override
+    protected UUID intentoDojoDe(UUID usuarioId) {
+        return bd.jdbcAdmin().sql("""
+                INSERT INTO intento_dojo (usuario_id, institucion_id, clave, reto_id, tecnica_id, concepto, nivel, respuesta, acierto, dia)
+                VALUES (:u, :i, :c, 'generalizacion-i1', 'T13', 'T13:generalizacion', 'identificar', 'b', true, DATE '2026-10-07') RETURNING id
+                """).param("u", usuarioId).param("i", personas.institucion()).param("c", "identificadores-" + UUID.randomUUID())
+                .query(UUID.class).single();
+    }
 }

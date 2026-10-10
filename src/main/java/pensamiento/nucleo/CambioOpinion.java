@@ -6,8 +6,8 @@ import java.util.UUID;
 
 /**
  * Un cambio de opinión (tabla cambio_opinion, R05): la confianza que la persona declaró sobre una afirmación antes y
- * después, con la causa. Es inmutable: solo se inserta. El registro global (T46 · Registro de cambios de opinión, P20)
- * llega en el hito 7; desde el hito 5 lo escriben las técnicas y el Consejero al cerrar.
+ * después, con la causa. Es inmutable: solo se inserta. Lo escriben T08, el cierre del Consejero, la ficha de verificación y
+ * el registro a mano de T46 · Registro de cambios de opinión, que los muestra todos en una línea de tiempo (P20).
  *
  * @param texto       el texto de la afirmación, leído de la tabla afirmacion
  * @param ejecucionId la ejecución que lo produjo; vacío si se borró
@@ -15,9 +15,29 @@ import java.util.UUID;
 public record CambioOpinion(UUID id, UUID afirmacionId, String texto, int confianzaAntes, int confianzaDespues, Causa causa,
                             Optional<UUID> ejecucionId, Instant creadoEn) {
 
-    /** Las causas permitidas por la tabla. El Consejero ofrece evidencia, steelman y manual. */
+    /**
+     * Las causas permitidas por la tabla, en el orden del resumen de T46 · Registro de cambios de opinión. El Consejero ofrece
+     * evidencia, steelman y manual; presión social (V10) se registra a mano en P20.
+     */
     public enum Causa {
-        EVIDENCIA, STEELMAN, REVISION, REGLA, MANUAL;
+        EVIDENCIA("evidencia nueva"), STEELMAN("steelman o debate"), REVISION("revisión de una decisión"), REGLA("cambio de regla"),
+        MANUAL("a mano"), PRESION("presión social");
+
+        private final String nombre;
+
+        Causa(String nombre) {
+            this.nombre = nombre;
+        }
+
+        /** Cómo la dice el registro: "evidencia nueva", "presión social". */
+        public String nombre() {
+            return nombre;
+        }
+
+        /** Evidencia, steelman, revisión y regla son razones; a mano y presión social, no. */
+        public boolean esRazon() {
+            return this == EVIDENCIA || this == STEELMAN || this == REVISION || this == REGLA;
+        }
 
         @Override
         public String toString() {

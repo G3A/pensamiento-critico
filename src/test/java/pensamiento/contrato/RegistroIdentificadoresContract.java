@@ -55,6 +55,17 @@ public abstract class RegistroIdentificadoresContract {
         }
     }
 
+    /** Deja un intento del Dojo del usuario (hito 7) y devuelve su identificador. */
+    protected abstract UUID intentoDojoDe(UUID usuarioId);
+
+    @Test
+    void el_intento_del_dojo_del_usuario_a_es_de_otro_para_b_y_propio_para_a() {
+        Personas p = personas();
+        UUID intento = intentoDojoDe(p.usuarioA());
+        assertThat(comoUsuario(p.usuarioB()).deOtroUsuario(p.usuarioB(), intento)).isTrue();
+        assertThat(comoUsuario(p.usuarioA()).deOtroUsuario(p.usuarioA(), intento)).isFalse();
+    }
+
     @Test
     void la_prediccion_del_usuario_a_es_de_otro_para_el_usuario_b_y_propia_para_a() {
         Personas p = personas();
