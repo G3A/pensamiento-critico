@@ -51,7 +51,7 @@ class ConsejeroTest {
     private final FakeRepositorioEjecucion ejecuciones = new FakeRepositorioEjecucion();
     private final FakeRepositorioCambiosOpinion cambios = new FakeRepositorioCambiosOpinion(ejecuciones);
     private final GuardadoDeEjecuciones guardado = new GuardadoDeEjecuciones(ejecuciones, new FakeRepositorioArgumentos(),
-            new FakeRepositorioPredicciones(ejecuciones), cambios, new pensamiento.testutil.fakes.FakeRepositorioEvidencias(ejecuciones, new pensamiento.testutil.fakes.FakeBiblioteca()));
+            new FakeRepositorioPredicciones(ejecuciones), cambios, new pensamiento.testutil.fakes.FakeRepositorioEvidencias(ejecuciones, new pensamiento.testutil.fakes.FakeBiblioteca()), new pensamiento.testutil.fakes.FakeRepositorioConfiguracion());
     private final EjecutorEquipoRojo t36 = new EjecutorEquipoRojo(new FakeRepositorioEsquemas());
     private final Consejero consejero = new Consejero(sesiones, expedientes, guardado, new FakeReloj(), new EjecutorPreguntasSocraticas(),
             new EjecutorEscalera(), new EjecutorSeisSombreros(), t36);

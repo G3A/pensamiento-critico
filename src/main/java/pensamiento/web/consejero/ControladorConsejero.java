@@ -109,8 +109,14 @@ public class ControladorConsejero {
 
     @GetMapping("/consejero")
     @Transactional(readOnly = true)
-    public String inicio(HttpServletRequest request, Model modelo) {
-        return pintarInicio("", VistaConsejero.Valores.vacios(), request, modelo);
+    public String inicio(@RequestParam(required = false) String modo, @RequestParam(required = false) String postura, HttpServletRequest request,
+                         Model modelo) {
+        // Desde las posturas sin revisar de P20 se llega con el modo debate y la postura ya escritos.
+        VistaConsejero.Valores vacios = VistaConsejero.Valores.vacios();
+        String modoInicial = modo != null && List.of("ensayo", "decision", "escalera", "sombreros", "debate").contains(modo) ? modo : vacios.modo();
+        String posturaInicial = postura == null ? "" : postura.strip().substring(0, Math.min(postura.strip().length(), 300));
+        return pintarInicio("", new VistaConsejero.Valores(modoInicial, posturaInicial, vacios.razones(), vacios.apoyos(), vacios.confianza(),
+                vacios.expediente(), vacios.usaModelo()), request, modelo);
     }
 
     private String pintarInicio(String error, VistaConsejero.Valores valores, HttpServletRequest request, Model modelo) {

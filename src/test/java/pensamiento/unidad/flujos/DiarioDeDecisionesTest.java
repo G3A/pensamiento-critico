@@ -47,7 +47,7 @@ class DiarioDeDecisionesTest {
     private final FakeRepositorioPredicciones predicciones = new FakeRepositorioPredicciones(ejecuciones);
     private final FakeRepositorioExpediente expedientes = new FakeRepositorioExpediente();
     private final GuardadoDeEjecuciones guardado = new GuardadoDeEjecuciones(ejecuciones, new FakeRepositorioArgumentos(), predicciones, new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones),
-                new pensamiento.testutil.fakes.FakeRepositorioEvidencias(ejecuciones, new pensamiento.testutil.fakes.FakeBiblioteca()));
+                new pensamiento.testutil.fakes.FakeRepositorioEvidencias(ejecuciones, new pensamiento.testutil.fakes.FakeBiblioteca()), new pensamiento.testutil.fakes.FakeRepositorioConfiguracion());
     private final DiarioDeDecisiones diario = new DiarioDeDecisiones(predicciones, ejecuciones, expedientes, reloj);
     private final EjecutorDiarioDecisiones t32 = new EjecutorDiarioDecisiones();
     private final AtomicLong secuencia = new AtomicLong(1);

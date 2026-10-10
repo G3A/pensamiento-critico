@@ -70,7 +70,7 @@ class RespaldoVersion5Test {
         final FakeRepositorioArgumentos argumentos = new FakeRepositorioArgumentos();
         final FakeRepositorioCambiosOpinion cambios = new FakeRepositorioCambiosOpinion(ejecuciones);
         final GuardadoDeEjecuciones guardado = new GuardadoDeEjecuciones(ejecuciones, argumentos, new FakeRepositorioPredicciones(ejecuciones), cambios,
-                evidencias);
+                evidencias, new pensamiento.testutil.fakes.FakeRepositorioConfiguracion());
         final ServicioRespaldo respaldo = new ServicioRespaldo(new FakeRepositorioExpediente(), ejecuciones, argumentos, new FakeRepositorioConfiguracion(),
                 new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj, new FakeRepositorioPredicciones(ejecuciones), cambios,
                 new FakeRepositorioSesiones(), new RespaldoDeLaBiblioteca(evidencias, verificaciones, biblioteca, cola, reloj));

@@ -73,7 +73,7 @@ class PlantillasDeLaVerificacionTest {
     private final FakeRepositorioEvidencias evidencias = new FakeRepositorioEvidencias(ejecuciones, biblioteca);
     private final FakeRepositorioVerificaciones verificaciones = new FakeRepositorioVerificaciones(ejecuciones);
     private final GuardadoDeEjecuciones guardado = new GuardadoDeEjecuciones(ejecuciones, argumentos, new FakeRepositorioPredicciones(ejecuciones),
-            new FakeRepositorioCambiosOpinion(ejecuciones), evidencias);
+            new FakeRepositorioCambiosOpinion(ejecuciones), evidencias, new pensamiento.testutil.fakes.FakeRepositorioConfiguracion());
     private final FichaDeVerificacion fichas = new FichaDeVerificacion(verificaciones, evidencias, argumentos, ejecuciones, new FakeRepositorioEsquemas(),
             biblioteca, guardado, reloj);
     private final FichaDeVerificacion.Configuracion config = new FichaDeVerificacion.Configuracion(

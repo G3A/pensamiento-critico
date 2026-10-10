@@ -111,7 +111,17 @@ public final class RenderizadoresF8 {
             return "«" + s.postura() + "» · hace " + Textos.contar(s.meses(), "mes", "meses") + " (desde el " + s.desdeTexto() + ")";
         }
 
+        /** "Posturas sin revisar hace más de 12 meses". */
+        public static String tituloSinRevisar(ResultadoCambiosOpinion r) {
+            return "Posturas sin revisar hace más de " + Textos.contar(r.mesesSinRevisar(), "mes", "meses");
+        }
+
         public static V11 vista(Optional<UUID> idEjecucion, String sufijo, ResultadoCambiosOpinion r, Modo modo) {
+            return vista(idEjecucion, sufijo, r, modo, true);
+        }
+
+        /** Con conAparte en falso, sin la lista de posturas sin revisar: P20 la pinta con su acceso al debate. */
+        public static V11 vista(Optional<UUID> idEjecucion, String sufijo, ResultadoCambiosOpinion r, Modo modo, boolean conAparte) {
             List<V11.Hito> linea = r.linea().stream().map(c -> new V11.Hito(c.fecha(), c.fechaTexto(), cambio(c))).toList();
             int maximo = Math.max(1, r.porCausa().stream().mapToInt(ResultadoCambiosOpinion.PorCausa::cambios).max().orElse(1));
             List<V11.Barra> barras = r.porCausa().stream().map(p -> new V11.Barra(p.causa().toString(), Textos.mayusculaInicial(p.causa().nombre()),
@@ -119,8 +129,8 @@ public final class RenderizadoresF8 {
             List<V11.Campo> campos = List.of(new V11.Campo("Este año (" + r.anio() + ")",
                     Textos.contar(r.total(), "cambio de opinión", "cambios de opinión")), new V11.Campo("Lectura", r.lectura()));
             return new V11(idEjecucion, sufijo, modo, "Registro de cambios de opinión", campos, null, null, linea, List.of(),
-                    "Causas de este año", barras, "Posturas sin revisar hace más de " + Textos.contar(r.mesesSinRevisar(), "mes", "meses"),
-                    r.sinRevisar().stream().map(CambiosOpinion::sinRevisar).toList(), null, r.avisos(), r.resumen(),
+                    "Causas de este año", barras, conAparte ? tituloSinRevisar(r) : null,
+                    conAparte ? r.sinRevisar().stream().map(CambiosOpinion::sinRevisar).toList() : List.of(), null, r.avisos(), r.resumen(),
                     "Cambiar de opinión por una razón es buena señal; el registro no juzga, muestra qué te movió.");
         }
     }

@@ -70,7 +70,7 @@ class FichaDeVerificacionTest {
     private final FakeRepositorioVerificaciones verificaciones = new FakeRepositorioVerificaciones(ejecuciones);
     private final FakeRepositorioCambiosOpinion cambios = new FakeRepositorioCambiosOpinion(ejecuciones);
     private final GuardadoDeEjecuciones guardado = new GuardadoDeEjecuciones(ejecuciones, argumentos, new FakeRepositorioPredicciones(ejecuciones), cambios,
-            evidencias);
+            evidencias, new pensamiento.testutil.fakes.FakeRepositorioConfiguracion());
     private final FichaDeVerificacion fichas = new FichaDeVerificacion(verificaciones, evidencias, argumentos, ejecuciones, new FakeRepositorioEsquemas(),
             biblioteca, guardado, reloj);
     private final FichaDeVerificacion.Configuracion config = new FichaDeVerificacion.Configuracion(

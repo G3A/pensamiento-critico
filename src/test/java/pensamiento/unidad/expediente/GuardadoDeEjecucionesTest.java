@@ -31,7 +31,7 @@ class GuardadoDeEjecucionesTest {
     private final pensamiento.testutil.fakes.FakeRepositorioEvidencias evidencias =
             new pensamiento.testutil.fakes.FakeRepositorioEvidencias(ejecuciones, new pensamiento.testutil.fakes.FakeBiblioteca());
     private final GuardadoDeEjecuciones guardado = new GuardadoDeEjecuciones(ejecuciones, argumentos, predicciones,
-            new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones), evidencias);
+            new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones), evidencias, new pensamiento.testutil.fakes.FakeRepositorioConfiguracion());
 
     @Test
     void guardar_t22_deja_sus_fuentes_y_evidencias_en_sus_tablas_y_el_doble_clic_no_las_repite() {
