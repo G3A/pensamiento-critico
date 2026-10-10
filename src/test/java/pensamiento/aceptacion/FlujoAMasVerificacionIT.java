@@ -129,7 +129,7 @@ class FlujoAMasVerificacionIT {
 
         // RF-12: el respaldo versión 5 lleva el documento sin el original, las evidencias y el veredicto.
         String archivo = taller.exportarMisDatos();
-        assertThat(archivo).contains("\"version\" : 5", "conteo-peatonal-municipio-2025.pdf", "En la esquina de la plaza pasan en promedio 1.150",
+        assertThat(archivo).contains("\"version\" : 6", "conteo-peatonal-municipio-2025.pdf", "En la esquina de la plaza pasan en promedio 1.150",
                 "\"estado\" : \"verificada\"");
         PaqueteDatos paquete = MapeadorJson.mapper().readValue(archivo, PaqueteDatos.class);
         assertThat(paquete.evidencias()).hasSize(3);

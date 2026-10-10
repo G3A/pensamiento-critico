@@ -13,18 +13,19 @@ import tools.jackson.databind.JsonNode;
  * los identificadores son uuidv7, así que importar en otra instalación no choca. La versión 2 (hito 2) agrega los argumentos,
  * la 3 (hito 4) las predicciones del Diario, la 4 (hito 5) los cambios de opinión y las sesiones del Consejero y la 5 (hito 6)
  * la biblioteca (metadatos y texto de cada fragmento, sin el archivo original ni los vectores), las fuentes con sus
- * evidencias, las fichas de verificación y el veredicto de cada afirmación; un archivo de una versión anterior se migra al
- * leerlo: queda sin lo que todavía no existía.
+ * evidencias, las fichas de verificación y el veredicto de cada afirmación, y la 6 (hito 7) los intentos del Dojo y la competencia
+ * de cada tema; un archivo de una versión anterior se migra al leerlo: queda sin lo que todavía no existía.
  */
 public record PaqueteDatos(String formato, int version, Instant exportadoEn, String persona,
                            List<Configuracion> configuraciones, List<ExpedienteDatos> expedientes, List<EjecucionDatos> ejecuciones,
                            List<SesionDatos> sesiones, List<DocumentoDatos> documentos, List<EvidenciaDatos> evidencias,
-                           List<VerificacionDatos> verificaciones, List<VeredictoDatos> veredictos) {
+                           List<VerificacionDatos> verificaciones, List<VeredictoDatos> veredictos, List<IntentoDatos> intentosDojo,
+                           List<CompetenciaDatos> competencias) {
 
     public static final String FORMATO = "taller-de-pensamiento-critico/datos-de-una-persona";
-    public static final int VERSION = 5;
+    public static final int VERSION = 6;
     /** Las versiones que se pueden importar, de la más vieja a la vigente. */
-    public static final List<Integer> VERSIONES_LEIBLES = List.of(1, 2, 3, 4, 5);
+    public static final List<Integer> VERSIONES_LEIBLES = List.of(1, 2, 3, 4, 5, 6);
 
     public record Configuracion(String tecnica, int versionEsquema, JsonNode valores) {
     }
@@ -134,6 +135,15 @@ public record PaqueteDatos(String formato, int version, Instant exportadoEn, Str
     public record VeredictoDatos(UUID afirmacionId, String tipo, String estado, int fuerzaNeta, Integer confianza) {
     }
 
+    /** Un reto respondido en el Dojo (versión 6), tal como está en intento_dojo. */
+    public record IntentoDatos(UUID id, String clave, String retoId, String tecnica, String concepto, String nivel, String respuesta, boolean acierto,
+                               LocalDate dia, Instant creadoEn) {
+    }
+
+    /** La competencia de un tema del Dojo (versión 6): nivel de Bloom, intentos, aciertos y última práctica. */
+    public record CompetenciaDatos(String tecnica, String nivel, int intentos, int aciertos, Instant ultimaPractica) {
+    }
+
     public PaqueteDatos {
         configuraciones = configuraciones == null ? List.of() : List.copyOf(configuraciones);
         expedientes = expedientes == null ? List.of() : List.copyOf(expedientes);
@@ -143,17 +153,19 @@ public record PaqueteDatos(String formato, int version, Instant exportadoEn, Str
         evidencias = evidencias == null ? List.of() : List.copyOf(evidencias);
         verificaciones = verificaciones == null ? List.of() : List.copyOf(verificaciones);
         veredictos = veredictos == null ? List.of() : List.copyOf(veredictos);
+        intentosDojo = intentosDojo == null ? List.of() : List.copyOf(intentosDojo);
+        competencias = competencias == null ? List.of() : List.copyOf(competencias);
     }
 
     /**
-     * Un archivo de una versión anterior pasa a la vigente: el mismo contenido, sin argumentos (versión 1) ni predicciones
-     * (versiones 1 y 2), que las listas vacías ya representan. Otra versión no se toca.
+     * Un archivo de una versión anterior pasa a la vigente: el mismo contenido, sin argumentos (versión 1), predicciones
+     * (versiones 1 y 2) ni intentos del Dojo (versiones 1 a 5), que las listas vacías ya representan. Otra versión no se toca.
      */
     public PaqueteDatos migrado() {
         if (version == VERSION || !VERSIONES_LEIBLES.contains(version)) {
             return this;
         }
         return new PaqueteDatos(formato, VERSION, exportadoEn, persona, configuraciones, expedientes, ejecuciones, sesiones, documentos, evidencias,
-                verificaciones, veredictos);
+                verificaciones, veredictos, intentosDojo, competencias);
     }
 }

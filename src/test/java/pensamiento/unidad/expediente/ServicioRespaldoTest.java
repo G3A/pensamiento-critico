@@ -61,8 +61,9 @@ class ServicioRespaldoTest {
     private final FakeRepositorioPredicciones predicciones = new FakeRepositorioPredicciones(ejecuciones);
     private final pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion cambios = new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(ejecuciones);
     private final pensamiento.testutil.fakes.FakeRepositorioSesiones sesiones = new pensamiento.testutil.fakes.FakeRepositorioSesiones();
+    private final pensamiento.testutil.fakes.FakeRepositorioDojo dojo = new pensamiento.testutil.fakes.FakeRepositorioDojo();
     private final ServicioRespaldo respaldo = new ServicioRespaldo(expedientes, ejecuciones, argumentos, configuraciones, identificadores, auditoria, reloj,
-            predicciones, cambios, sesiones, sinBiblioteca());
+            predicciones, cambios, sesiones, sinBiblioteca(), dojo);
     private final ServicioExpedientes servicioExpedientes = new ServicioExpedientes(expedientes, ejecuciones, new FakeRepositorioTecnica(), auditoria, reloj);
 
     /** La dueña corre las ventas de los sábados, la guarda en "La segunda sucursal" y personaliza T28. */
@@ -122,7 +123,7 @@ class ServicioRespaldoTest {
         FakeRepositorioConfiguracion otrasConfiguraciones = new FakeRepositorioConfiguracion();
         ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(otrosExpedientes, otrasEjecuciones, new FakeRepositorioArgumentos(), otrasConfiguraciones,
                 new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj, new FakeRepositorioPredicciones(new FakeRepositorioEjecucion()),
-                new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(otrasEjecuciones), new pensamiento.testutil.fakes.FakeRepositorioSesiones(), sinBiblioteca());
+                new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(otrasEjecuciones), new pensamiento.testutil.fakes.FakeRepositorioSesiones(), sinBiblioteca(), new pensamiento.testutil.fakes.FakeRepositorioDojo());
 
         ServicioRespaldo.Importacion r = enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
 
@@ -188,7 +189,7 @@ class ServicioRespaldoTest {
 
         PaqueteDatos paquete = respaldo.exportar(DUENA, INSTITUCION, "dueña de la panadería");
 
-        assertThat(paquete.version()).isEqualTo(5);
+        assertThat(paquete.version()).isEqualTo(6);
         assertThat(paquete.ejecuciones()).singleElement().satisfies(d -> {
             assertThat(d.id()).isEqualTo(mapa.id());
             assertThat(d.argumentos()).extracting(PaqueteDatos.ArgumentoDatos::sentido, PaqueteDatos.ArgumentoDatos::peso)
@@ -207,7 +208,7 @@ class ServicioRespaldoTest {
         ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(new FakeRepositorioExpediente(), new FakeRepositorioEjecucion(), otrosArgumentos,
                 new FakeRepositorioConfiguracion(), new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj,
                 new FakeRepositorioPredicciones(new FakeRepositorioEjecucion()), new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(new FakeRepositorioEjecucion()),
-                new pensamiento.testutil.fakes.FakeRepositorioSesiones(), sinBiblioteca());
+                new pensamiento.testutil.fakes.FakeRepositorioSesiones(), sinBiblioteca(), new pensamiento.testutil.fakes.FakeRepositorioDojo());
 
         enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
         enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
@@ -217,11 +218,53 @@ class ServicioRespaldoTest {
     }
 
     @Test
+    void la_version_6_lleva_los_intentos_del_dojo_y_la_competencia_de_ida_y_vuelta() {
+        pensamiento.nucleo.IntentoDojo intento = new pensamiento.nucleo.IntentoDojo(Uuid7.en(reloj.ahora()), "clave-reto", "generalizacion-c1",
+                IdTecnica.de("T13"), "T13:generalizacion", pensamiento.nucleo.NivelBloom.CREAR, "Es un solo caso; antes de decidir, contaría más.",
+                true, java.time.LocalDate.parse("2026-10-07"), reloj.ahora());
+        pensamiento.nucleo.Competencia competencia = new pensamiento.nucleo.Competencia(IdTecnica.de("T13"), pensamiento.nucleo.NivelBloom.CREAR, 1, 1,
+                reloj.ahora());
+        dojo.guardar(DUENA, INSTITUCION, intento, competencia);
+
+        String archivo = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
+        assertThat(archivo).contains("\"version\" : 6", "\"intentosDojo\"", "generalizacion-c1", "\"competencias\"");
+        pensamiento.testutil.fakes.FakeRepositorioDojo otroDojo = new pensamiento.testutil.fakes.FakeRepositorioDojo();
+        FakeRepositorioEjecucion otrasEjecuciones = new FakeRepositorioEjecucion();
+        ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(new FakeRepositorioExpediente(), otrasEjecuciones, new FakeRepositorioArgumentos(),
+                new FakeRepositorioConfiguracion(), new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj,
+                new FakeRepositorioPredicciones(otrasEjecuciones), new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(otrasEjecuciones),
+                new pensamiento.testutil.fakes.FakeRepositorioSesiones(), sinBiblioteca(), otroDojo);
+        enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
+        enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
+
+        assertThat(otroDojo.intentos(DUENA)).containsExactly(intento);
+        assertThat(otroDojo.competencias(DUENA)).containsExactly(competencia);
+    }
+
+    @Test
+    void un_intento_del_dojo_de_otra_persona_o_de_un_tema_que_no_existe_rechaza_el_archivo_entero() {
+        pensamiento.nucleo.IntentoDojo intento = new pensamiento.nucleo.IntentoDojo(Uuid7.en(reloj.ahora()), "clave-ajena", "anclaje-i1",
+                IdTecnica.de("T14"), "T14:anclaje", pensamiento.nucleo.NivelBloom.IDENTIFICAR, "b", true, java.time.LocalDate.parse("2026-10-07"),
+                reloj.ahora());
+        dojo.guardar(DUENA, INSTITUCION, intento, new pensamiento.nucleo.Competencia(IdTecnica.de("T14"), pensamiento.nucleo.NivelBloom.IDENTIFICAR, 1, 1,
+                reloj.ahora()));
+        String archivo = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
+        UUID otra = UUID.randomUUID();
+        identificadores.existe(intento.id(), otra);
+
+        assertThatThrownBy(() -> respaldo.importarTexto(DUENA, INSTITUCION, archivo)).isInstanceOf(ServicioRespaldo.IdentificadorAjeno.class);
+        String deOtroTema = archivo.replace("\"tecnica\" : \"T14\"", "\"tecnica\" : \"T28\"");
+        identificadores.existe(intento.id(), DUENA);
+        assertThatThrownBy(() -> respaldo.importarTexto(DUENA, INSTITUCION, deOtroTema)).isInstanceOf(ServicioRespaldo.ArchivoInvalido.class)
+                .hasMessageContaining("Dojo");
+    }
+
+    @Test
     void un_archivo_de_la_version_1_se_migra_y_se_importa_sin_argumentos() {
         dadoQueLaDuenaTieneUnExpedienteConUnaEjecucion();
         String version3 = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
         // Un archivo exportado en el hito 1: versión 1 y ejecuciones sin los campos argumentos ni predicciones.
-        String version1 = version3.replace("\"version\" : 5", "\"version\" : 1").replaceAll(",\\s*\"argumentos\" : \\[ \\]", "")
+        String version1 = version3.replace("\"version\" : 6", "\"version\" : 1").replaceAll(",\\s*\"argumentos\" : \\[ \\]", "")
                 .replaceAll(",\\s*\"predicciones\" : \\[ \\]", "").replaceAll(",\\s*\"cambios\" : \\[ \\]", "")
                 .replaceAll(",\\s*\"sesiones\" : \\[ \\]", "");
         assertThat(version1).contains("\"version\" : 1").doesNotContain("\"argumentos\"").doesNotContain("\"predicciones\"");
@@ -229,7 +272,7 @@ class ServicioRespaldoTest {
         ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(new FakeRepositorioExpediente(), otrasEjecuciones, new FakeRepositorioArgumentos(),
                 new FakeRepositorioConfiguracion(), new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj,
                 new FakeRepositorioPredicciones(new FakeRepositorioEjecucion()), new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(new FakeRepositorioEjecucion()),
-                new pensamiento.testutil.fakes.FakeRepositorioSesiones(), sinBiblioteca());
+                new pensamiento.testutil.fakes.FakeRepositorioSesiones(), sinBiblioteca(), new pensamiento.testutil.fakes.FakeRepositorioDojo());
 
         ServicioRespaldo.Importacion r = enOtraInstalacion.importarTexto(DUENA, INSTITUCION, version1);
 
@@ -258,7 +301,7 @@ class ServicioRespaldoTest {
         FakeRepositorioPredicciones otrasPredicciones = new FakeRepositorioPredicciones(otrasEjecuciones);
         ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(new FakeRepositorioExpediente(), otrasEjecuciones, new FakeRepositorioArgumentos(),
                 new FakeRepositorioConfiguracion(), new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj, otrasPredicciones,
-                new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(otrasEjecuciones), new pensamiento.testutil.fakes.FakeRepositorioSesiones(), sinBiblioteca());
+                new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(otrasEjecuciones), new pensamiento.testutil.fakes.FakeRepositorioSesiones(), sinBiblioteca(), new pensamiento.testutil.fakes.FakeRepositorioDojo());
         enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
         enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
 
@@ -299,14 +342,14 @@ class ServicioRespaldoTest {
                 Contextos.sinIa());
 
         String archivo = respaldo.exportarComoTexto(DUENA, INSTITUCION, "dueña de la panadería");
-        assertThat(archivo).contains("\"version\" : 5", "\"sesiones\"", "\"cambios\"");
+        assertThat(archivo).contains("\"version\" : 6", "\"sesiones\"", "\"cambios\"");
         FakeRepositorioEjecucion otrasEjecuciones = new FakeRepositorioEjecucion();
         pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion otrosCambios = new pensamiento.testutil.fakes.FakeRepositorioCambiosOpinion(otrasEjecuciones);
         pensamiento.testutil.fakes.FakeRepositorioSesiones otrasSesiones = new pensamiento.testutil.fakes.FakeRepositorioSesiones();
         FakeRepositorioExpediente otrosExpedientes = new FakeRepositorioExpediente();
         ServicioRespaldo enOtraInstalacion = new ServicioRespaldo(otrosExpedientes, otrasEjecuciones, new FakeRepositorioArgumentos(),
                 new FakeRepositorioConfiguracion(), new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj,
-                new FakeRepositorioPredicciones(otrasEjecuciones), otrosCambios, otrasSesiones, sinBiblioteca());
+                new FakeRepositorioPredicciones(otrasEjecuciones), otrosCambios, otrasSesiones, sinBiblioteca(), new pensamiento.testutil.fakes.FakeRepositorioDojo());
 
         enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);
         enOtraInstalacion.importarTexto(DUENA, INSTITUCION, archivo);

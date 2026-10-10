@@ -79,7 +79,7 @@ class RF09TallerDeArgumentosIT {
         // RF-12: exportar trae los argumentos con su ejecución; importar lo propio no duplica nada.
         String archivo = taller.exportarMisDatos();
         PaqueteDatos paquete = MapeadorJson.mapper().readValue(archivo, PaqueteDatos.class);
-        assertThat(paquete.version()).as("versión 5 desde el hito 6").isEqualTo(5);
+        assertThat(paquete.version()).as("versión 6 desde el hito 7").isEqualTo(6);
         PaqueteDatos.EjecucionDatos delMapa = paquete.ejecuciones().stream().filter(e -> e.id().equals(guardadas.getFirst())).findFirst().orElseThrow();
         assertThat(delMapa.argumentos()).hasSize(3);
         UUID argumento = delMapa.argumentos().getFirst().id();

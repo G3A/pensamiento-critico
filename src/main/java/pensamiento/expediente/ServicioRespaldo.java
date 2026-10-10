@@ -81,12 +81,15 @@ public class ServicioRespaldo {
     private final pensamiento.nucleo.puertos.RepositorioCambiosOpinion cambios;
     private final pensamiento.nucleo.puertos.RepositorioSesiones sesiones;
     private final RespaldoDeLaBiblioteca biblioteca;
+    private final pensamiento.nucleo.puertos.RepositorioDojo dojo;
 
     public ServicioRespaldo(RepositorioExpediente expedientes, RepositorioEjecucion ejecuciones, RepositorioArgumentos argumentos,
                             RepositorioConfiguracion configuraciones, RegistroIdentificadores identificadores, RegistroAuditoria auditoria,
                             Reloj reloj, RepositorioPredicciones predicciones, pensamiento.nucleo.puertos.RepositorioCambiosOpinion cambios,
-                            pensamiento.nucleo.puertos.RepositorioSesiones sesiones, RespaldoDeLaBiblioteca biblioteca) {
+                            pensamiento.nucleo.puertos.RepositorioSesiones sesiones, RespaldoDeLaBiblioteca biblioteca,
+                            pensamiento.nucleo.puertos.RepositorioDojo dojo) {
         this.biblioteca = biblioteca;
+        this.dojo = dojo;
         this.cambios = cambios;
         this.sesiones = sesiones;
         this.expedientes = expedientes;
@@ -137,7 +140,11 @@ public class ServicioRespaldo {
         auditoria.registrar(new RegistroAuditoria.Evento(Optional.of(usuarioId), institucionId, RegistroAuditoria.Accion.EXPORTAR,
                 "datos-de-una-persona", Optional.of(usuarioId), reloj.ahora()));
         return new PaqueteDatos(PaqueteDatos.FORMATO, PaqueteDatos.VERSION, reloj.ahora(), persona, configs, exps, ejs, ses, deLaBiblioteca.documentos(),
-                deLaBiblioteca.evidencias(), deLaBiblioteca.verificaciones(), deLaBiblioteca.veredictos());
+                deLaBiblioteca.evidencias(), deLaBiblioteca.verificaciones(), deLaBiblioteca.veredictos(),
+                dojo.intentos(usuarioId).stream().map(i -> new PaqueteDatos.IntentoDatos(i.id(), i.clave(), i.retoId(), i.tecnica().valor(), i.concepto(),
+                        i.nivel().toString(), i.respuesta(), i.acierto(), i.dia(), i.creadoEn())).toList(),
+                dojo.competencias(usuarioId).stream().map(c -> new PaqueteDatos.CompetenciaDatos(c.tecnica().valor(), c.nivel().toString(), c.intentos(),
+                        c.aciertos(), c.ultimaPractica())).toList());
     }
 
     public String exportarComoTexto(UUID usuarioId, UUID institucionId, String persona) {
@@ -177,6 +184,9 @@ public class ServicioRespaldo {
             listaSegura(s.turnos()).forEach(t -> ids.add(exigir(t == null ? null : t.id())));
         }
         ids.addAll(biblioteca.identificadores(paquete));
+        paquete.intentosDojo().forEach(i -> ids.add(exigir(i == null ? null : i.id())));
+        List<pensamiento.nucleo.IntentoDojo> intentos = paquete.intentosDojo().stream().map(ServicioRespaldo::intento).toList();
+        List<pensamiento.nucleo.Competencia> competencias = paquete.competencias().stream().map(ServicioRespaldo::competencia).toList();
         long ajenos = ids.stream().filter(id -> identificadores.deOtroUsuario(usuarioId, id)).count();
         if (ajenos > 0) {
             throw new IdentificadorAjeno((int) ajenos);
@@ -238,12 +248,42 @@ public class ServicioRespaldo {
         Set<UUID> afirmacionesDelArchivo = new java.util.HashSet<>();
         paquete.ejecuciones().forEach(e -> listaSegura(e.afirmaciones()).forEach(a -> afirmacionesDelArchivo.add(a.id())));
         biblioteca.importar(usuarioId, institucionId, paquete, afirmacionesDelArchivo);
+        intentos.forEach(i -> dojo.restaurar(usuarioId, institucionId, i));
+        competencias.forEach(c -> dojo.restaurar(usuarioId, institucionId, c));
         for (PaqueteDatos.Configuracion c : paquete.configuraciones()) {
             configuraciones.guardar(usuarioId, institucionId, IdTecnica.de(c.tecnica()), c.versionEsquema(), json(c.valores()));
         }
         auditoria.registrar(new RegistroAuditoria.Evento(Optional.of(usuarioId), institucionId, RegistroAuditoria.Accion.IMPORTAR,
                 "datos-de-una-persona", Optional.of(usuarioId), reloj.ahora()));
         return new Importacion(expNuevos, expActualizados, ejNuevas, ejYaEstaban, paquete.configuraciones().size());
+    }
+
+    /** Un intento del Dojo del archivo, validado: técnica, nivel, día y clave. */
+    private static pensamiento.nucleo.IntentoDojo intento(PaqueteDatos.IntentoDatos d) {
+        try {
+            if (d.dia() == null || d.creadoEn() == null) {
+                throw new IllegalArgumentException("sin fecha");
+            }
+            pensamiento.tecnicas.f8.TemaDojo.de(IdTecnica.de(obligatorio(d.tecnica())));
+            return new pensamiento.nucleo.IntentoDojo(d.id(), d.clave(), d.retoId(), IdTecnica.de(d.tecnica()), d.concepto(),
+                    pensamiento.nucleo.NivelBloom.de(obligatorio(d.nivel())), d.respuesta(), d.acierto(), d.dia(), d.creadoEn());
+        } catch (IllegalArgumentException e) {
+            throw new ArchivoInvalido("Un intento del Dojo del archivo no es válido.");
+        }
+    }
+
+    /** La competencia de un tema del archivo, validada. */
+    private static pensamiento.nucleo.Competencia competencia(PaqueteDatos.CompetenciaDatos d) {
+        try {
+            if (d == null || d.ultimaPractica() == null) {
+                throw new IllegalArgumentException("sin práctica");
+            }
+            pensamiento.tecnicas.f8.TemaDojo.de(IdTecnica.de(obligatorio(d.tecnica())));
+            return new pensamiento.nucleo.Competencia(IdTecnica.de(d.tecnica()), pensamiento.nucleo.NivelBloom.de(obligatorio(d.nivel())), d.intentos(),
+                    d.aciertos(), d.ultimaPractica());
+        } catch (IllegalArgumentException e) {
+            throw new ArchivoInvalido("La competencia de un tema del archivo no es válida.");
+        }
     }
 
     /** Un cambio de opinión del archivo, validado: su afirmación es de la ejecución y la causa es una de las de la tabla. */

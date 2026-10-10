@@ -73,7 +73,7 @@ class RespaldoVersion5Test {
                 evidencias, new pensamiento.testutil.fakes.FakeRepositorioConfiguracion());
         final ServicioRespaldo respaldo = new ServicioRespaldo(new FakeRepositorioExpediente(), ejecuciones, argumentos, new FakeRepositorioConfiguracion(),
                 new FakeRegistroIdentificadores(), new FakeRegistroAuditoria(), reloj, new FakeRepositorioPredicciones(ejecuciones), cambios,
-                new FakeRepositorioSesiones(), new RespaldoDeLaBiblioteca(evidencias, verificaciones, biblioteca, cola, reloj));
+                new FakeRepositorioSesiones(), new RespaldoDeLaBiblioteca(evidencias, verificaciones, biblioteca, cola, reloj), new pensamiento.testutil.fakes.FakeRepositorioDojo());
         final FichaDeVerificacion fichas = new FichaDeVerificacion(verificaciones, evidencias, argumentos, ejecuciones, new FakeRepositorioEsquemas(),
                 biblioteca, guardado, reloj);
     }
@@ -108,7 +108,7 @@ class RespaldoVersion5Test {
 
         String archivo = origen.respaldo.exportarComoTexto(YO, INST, "dueña");
         PaqueteDatos paquete = MapeadorJson.mapper().readValue(archivo, PaqueteDatos.class);
-        assertThat(paquete.version()).isEqualTo(5);
+        assertThat(paquete.version()).isEqualTo(6);
         assertThat(paquete.documentos()).singleElement().satisfies(x -> {
             assertThat(x.nombre()).isEqualTo("conteo-peatonal-municipio-2025.pdf");
             assertThat(x.fragmentos()).extracting(PaqueteDatos.FragmentoDatos::texto).containsExactly("En el centro pasan 1.200 personas por hora.");
@@ -156,7 +156,7 @@ class RespaldoVersion5Test {
         PaqueteDatos alterado = new PaqueteDatos(paquete.formato(), paquete.version(), paquete.exportadoEn(), paquete.persona(), paquete.configuraciones(),
                 paquete.expedientes(), paquete.ejecuciones(), paquete.sesiones(), paquete.documentos(),
                 List.of(new PaqueteDatos.EvidenciaDatos(e.id(), UUID.randomUUID(), null, e.pasaje(), e.postura(), e.fuerza(), e.etiquetadaPor(), e.adoptada(),
-                        e.fuente())), paquete.verificaciones(), paquete.veredictos());
+                        e.fuente())), paquete.verificaciones(), paquete.veredictos(), paquete.intentosDojo(), paquete.competencias());
 
         assertThatThrownBy(() -> new Instalacion().respaldo.importar(YO, INST, alterado)).isInstanceOf(ServicioRespaldo.ArchivoInvalido.class)
                 .hasMessage("Una evidencia del archivo apunta a una afirmación que no es de sus ejecuciones.");
