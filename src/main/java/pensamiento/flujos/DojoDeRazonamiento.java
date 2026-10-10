@@ -264,10 +264,16 @@ public class DojoDeRazonamiento {
         return new Progreso(temas, EjecutorRepeticion.calcular(c.repeticion(), hechos, reloj.hoy()), racha(intentos, reloj.hoy()));
     }
 
-    /** Para Inicio: el menor entre lo que falta del límite del día y los repasos que tocan más los conceptos nuevos. */
+    /**
+     * Para Inicio: el menor entre lo que falta del límite del día y los repasos que tocan más los conceptos nuevos; 0 si la
+     * persona nunca practicó (Inicio no la invita a un módulo que no abrió).
+     */
     public int retosParaHoy(UUID usuarioId, Configuracion c) {
         LocalDate hoy = reloj.hoy();
         List<IntentoDojo> intentos = repositorio.intentos(usuarioId);
+        if (intentos.isEmpty()) {
+            return 0;
+        }
         Map<String, Sm2.Estado> estados = estados(intentos, c);
         long tocan = estados.values().stream().filter(e -> !e.proximo().isAfter(hoy)).count();
         long nuevos = banco.conceptos().stream().filter(x -> !estados.containsKey(x.id())).count();

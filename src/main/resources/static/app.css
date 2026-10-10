@@ -496,3 +496,26 @@ pre.argdown { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--
 .tabla-estandares { min-width: 16rem; }
 .panel-biblioteca, .panel-previa { min-width: 0; }
 .formulario-fuente textarea, .formulario-fuente input[type="text"], .formulario-fuente select { width: 100%; max-width: 100%; }
+
+/* Hito 7: Dojo (P19), progreso, calendario (V13c), niveles de Bloom (V13b) y registro de cambios (P20). A 360 px, una columna. */
+.temas-dojo ul { list-style: none; padding: 0; margin: .5rem 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.temas-dojo a { display: inline-block; padding: .35rem .75rem; border: 1px solid var(--borde); border-radius: var(--radio); text-decoration: none; }
+.temas-dojo a.activo, .temas-dojo a[aria-current="page"] { background: var(--acento); color: var(--acento-texto); border-color: var(--acento); }
+.estado-dojo { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.reto { max-width: 44rem; }
+.texto-reto { margin: .75rem 0; padding: .5rem .75rem; border-left: 4px solid var(--acento); background: var(--acento-fondo); overflow-wrap: anywhere; }
+.formulario-reto fieldset { border: 1px solid var(--borde); border-radius: var(--radio); padding: .5rem .75rem; margin: 0 0 .75rem; }
+.opcion-reto { display: flex; gap: .5rem; align-items: baseline; padding: .5rem 0; min-height: 2.75rem; }
+.formulario-reto textarea { width: 100%; max-width: 100%; }
+.chequeos-rubrica, .lista-aparte, .conceptos-repaso { padding-left: 1.25rem; display: grid; gap: .35rem; }
+.acciones-reto { display: flex; flex-wrap: wrap; gap: .5rem; }
+.nivel-manual { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .5rem 0; }
+.calendario { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(4.5rem, 1fr)); gap: .4rem; }
+.calendario .dia { border: 1px solid var(--borde); border-radius: var(--radio); padding: .4rem; display: grid; gap: .15rem; text-align: center; }
+.calendario .dia-hoy { border-color: var(--acento); border-width: 2px; }
+.calendario .dia-libre .repasos-dia { color: var(--texto-suave); }
+.niveles-bloom { list-style: none; padding: 0; display: grid; gap: .6rem; }
+.nivel-bloom meter { width: 100%; max-width: 22rem; display: block; }
+.resumen-grupo { color: var(--texto-suave); margin: .25rem 0; }
+.registro-cambio { display: grid; gap: .5rem; max-width: 36rem; }
+.registro-cambio input[type="text"], .registro-cambio select { width: 100%; max-width: 100%; }

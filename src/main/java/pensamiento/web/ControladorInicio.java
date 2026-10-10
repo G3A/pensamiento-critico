@@ -43,7 +43,7 @@ public class ControladorInicio {
     /** Lo que pinta el Inicio. */
     public record VistaInicio(Intencion[] intenciones, boolean vacio, String primerEjemplo, String nombreMuestra,
                               List<PendienteGuardado> pendientes, List<Reciente> recientes, List<Expediente> expedientes,
-                              List<pensamiento.flujos.DiarioDeDecisiones.Decision> revisiones) {
+                              List<pensamiento.flujos.DiarioDeDecisiones.Decision> revisiones, int retosDojo, int rachaDojo) {
     }
 
     private final RepositorioEjecucion ejecuciones;
@@ -52,10 +52,15 @@ public class ControladorInicio {
     private final Reloj reloj;
     private final Pagina.Fabrica paginas;
     private final pensamiento.flujos.DiarioDeDecisiones diario;
+    private final pensamiento.flujos.DojoDeRazonamiento dojo;
+    private final ConfiguracionesF8 configuraciones;
 
     public ControladorInicio(RepositorioEjecucion ejecuciones, RepositorioExpediente expedientes, RepositorioTecnica tecnicas, Reloj reloj,
-                             Pagina.Fabrica paginas, pensamiento.flujos.DiarioDeDecisiones diario) {
+                             Pagina.Fabrica paginas, pensamiento.flujos.DiarioDeDecisiones diario,
+                             pensamiento.flujos.DojoDeRazonamiento dojo, ConfiguracionesF8 configuraciones) {
         this.diario = diario;
+        this.dojo = dojo;
+        this.configuraciones = configuraciones;
         this.ejecuciones = ejecuciones;
         this.expedientes = expedientes;
         this.tecnicas = tecnicas;
@@ -78,7 +83,8 @@ public class ControladorInicio {
                 .filter(p -> !(p.pendiente().tipo() == pensamiento.nucleo.TipoPendiente.REVISION && p.pendiente().vence().isPresent())).toList();
         modelo.addAttribute("pagina", paginas.crear("Inicio", request));
         modelo.addAttribute("v", new VistaInicio(Intencion.values(), recientes.isEmpty() && suyos.isEmpty(), primerEjemplo,
-                MuestraExpediente.NOMBRE, pendientes, recientes, suyos, diario.porRevisar(yo.id())));
+                MuestraExpediente.NOMBRE, pendientes, recientes, suyos, diario.porRevisar(yo.id()),
+                dojo.retosParaHoy(yo.id(), configuraciones.dojo(yo.id())), dojo.racha(yo.id())));
         return "inicio";
     }
 }

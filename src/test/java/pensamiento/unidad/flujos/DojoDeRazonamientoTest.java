@@ -161,6 +161,11 @@ class DojoDeRazonamientoTest {
     }
 
     @Test
+    void quien_nunca_practico_no_ve_retos_del_dojo_en_inicio() {
+        assertThat(dojo.retosParaHoy(YO, CONFIG)).isZero();
+    }
+
+    @Test
     void con_avance_manual_sale_el_nivel_que_la_persona_elige() {
         var manual = new DojoDeRazonamiento.Configuracion(new EjecutorBloom.Config(List.of(NivelBloom.values()), false, 10),
                 new EjecutorRepeticion.Config(10, "2.5"));

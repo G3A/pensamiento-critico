@@ -38,7 +38,14 @@
               @endfor
             </ul>
           @endif
-          @if(v.pendientes().isEmpty() && v.revisiones().isEmpty())
+          @if(v.retosDojo() > 0)
+            <ul class="pendientes repasos-dojo" aria-label="Repasos del Dojo">
+              <li data-dojo="${v.retosDojo()}"><span class="chip chip-aviso">repaso</span>
+                <a href="/dojo">B · ${v.retosDojo()} ${v.retosDojo() == 1 ? "reto" : "retos"} del Dojo para hoy</a>
+                <span class="detalle">· racha ${v.rachaDojo()}</span></li>
+            </ul>
+          @endif
+          @if(v.pendientes().isEmpty() && v.revisiones().isEmpty() && v.retosDojo() == 0)
             <p class="detalle">Nada pendiente.</p>
           @else
             <ul class="pendientes">

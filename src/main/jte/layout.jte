@@ -49,8 +49,9 @@
         <li><a href="/verificar" class="${pagina.titulo().equals("Verificación") ? "activo" : ""}">Verificación</a></li>
         <li><a href="/biblioteca" class="${pagina.titulo().equals("Biblioteca") ? "activo" : ""}">Biblioteca</a></li>
         <li><a href="/diario" class="${pagina.titulo().equals("Diario") ? "activo" : ""}">Diario</a></li>
-        <li><span class="pendiente-menu">Dojo <small>hito 7</small></span></li>
-        <li><span class="pendiente-menu">Cambios de opinión <small>hito 7</small></span></li>
+        <li><a href="/dojo" class="${pagina.titulo().equals("Dojo") ? "activo" : ""}">Dojo</a></li>
+        <li><a href="/cambios-de-opinion" class="${pagina.titulo().equals("Cambios de opinión") ? "activo" : ""}">Cambios de opinión</a></li>
+        <li><a href="/manual" class="${pagina.titulo().equals("Manual") ? "activo" : ""}">Manual</a></li>
         @if(pagina.esAdministrador())
           <li><a href="/usuarios" class="${pagina.titulo().equals("Usuarios") ? "activo" : ""}">Usuarios</a></li>
         @endif

@@ -76,7 +76,8 @@ T49, y los intentos que ya hizo:
 ## En el resto de la app
 
 - **Inicio**: "B · {n} retos del Dojo para hoy · racha {r}", con n = el menor entre lo que falta del límite del día y los
-  repasos que tocan más los conceptos nuevos. No aparece si n es 0.
+  repasos que tocan más los conceptos nuevos. No aparece si n es 0 ni si la persona nunca practicó (decisión: Inicio no
+  invita a un módulo que no abrió).
 - **Progreso** (`/dojo/progreso`): por cada tema, los cuatro niveles con su estado (T48, patrón V13b) y el calendario de
   los próximos 7 días con los conceptos (T49, patrón V13c).
 - **Fichas de T48 y T49**: "Usar mis datos" llena el formulario con los intentos del Dojo; guardar deja una ejecución como
