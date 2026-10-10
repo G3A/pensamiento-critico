@@ -10,6 +10,8 @@
 // Hito 6: cada persona abre la biblioteca y busca por palabras; una persona más importa documentos sin parar (trabajo
 // largo: troceado e incrustaciones con bge-m3 en segundo plano) y espera a verlos indexados. El p95 exigido sigue siendo el
 // de las pantallas sin IA: la importación no debe empujarlo.
+// Hito 7: cada persona abre el Dojo, responde el reto que toca (se guarda el intento y se recalculan SM-2 y Bloom), mira su
+// progreso y el registro de cambios de opinión (P20).
 // Se corre con: docker compose --profile test run --rm k6
 import http from 'k6/http';
 import { check, sleep, fail } from 'k6';
@@ -123,8 +125,25 @@ export default function (datos) {
   check(biblioteca, { 'Biblioteca con su formulario de subida': (r) => r.status === 200 && r.body.includes('id="form-subida"') });
   const busqueda = http.get(`${BASE}/biblioteca/buscar?q=personas+por+hora&palabras=true`, Object.assign({ headers: { 'HX-Request': 'true' } }, pantalla));
   check(busqueda, { 'Biblioteca: búsqueda por palabras': (r) => r.status === 200 && r.body.includes('id="resultados-busqueda"') });
+  sleep(1);
+
+  // Hito 7: el Dojo (el reto que toca y su respuesta, calificada por reglas), su progreso y el registro de cambios (P20).
+  const dojo = http.get(`${BASE}/dojo`, pantalla);
+  check(dojo, { 'Dojo: el reto de hoy o el aviso de que terminaste': (r) => r.status === 200 && r.body.includes('id="reto"') });
+  const reto = RETO.exec(dojo.body || '');
+  if (reto !== null) {
+    const respuesta = http.post(`${BASE}/dojo/retos/${reto[1]}`, { _clave: `${__VU}-${__ITER}-${Date.now()}`, tema: '', respuesta: 'a' },
+      Object.assign({ headers: { 'X-CSRF-TOKEN': csrf, 'HX-Request': 'true' } }, pantalla));
+    check(respuesta, { 'Dojo: la respuesta calificada por reglas': (r) => r.status === 200 && r.body.includes('data-resultado=') });
+  }
+  const progreso = http.get(`${BASE}/dojo/progreso`, pantalla);
+  check(progreso, { 'Dojo: progreso con el calendario': (r) => r.status === 200 && r.body.includes('data-patron="V13c"') });
+  const cambios = http.get(`${BASE}/cambios-de-opinion`, pantalla);
+  check(cambios, { 'Cambios de opinión: la línea de tiempo': (r) => r.status === 200 && r.body.includes('data-patron="V11"') });
   sleep(2);
 }
+
+const RETO = /data-reto="([a-z_]+-[iaec][0-9])"/;
 
 /** Un conteo ficticio de unos 25 KB (unos 30 fragmentos para bge-m3): único por iteración para que el hash no lo dé por repetido. */
 function documento(n) {
