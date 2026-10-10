@@ -22,6 +22,12 @@ public class ConfiguracionCatalogo {
         return new RegistroEjecutores(ejecutores);
     }
 
+    /** El banco del Dojo (catalogo/dojo.json): contenido versionado, se lee una vez al arrancar. */
+    @Bean
+    pensamiento.nucleo.BancoDojo bancoDojo() {
+        return new CatalogoJson().bancoDojo();
+    }
+
     @Bean
     VerificadorCatalogo verificadorCatalogo(RepositorioTecnica tecnicas, RegistroEjecutores ejecutores) {
         return new VerificadorCatalogo(tecnicas, ejecutores);

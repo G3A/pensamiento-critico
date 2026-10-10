@@ -14,10 +14,12 @@ import java.util.UUID;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 
+import pensamiento.nucleo.BancoDojo;
 import pensamiento.nucleo.Ejemplo;
 import pensamiento.nucleo.Esquema;
 import pensamiento.nucleo.Familia;
 import pensamiento.nucleo.IdTecnica;
+import pensamiento.nucleo.NivelBloom;
 import pensamiento.nucleo.Json;
 import pensamiento.nucleo.Tecnica;
 
@@ -102,6 +104,24 @@ public final class CatalogoJson {
     /** Los ocho tipos de afirmación, en el orden de la sección 5b (catalogo/verificacion.json). */
     public List<TipoVerificable> tiposVerificables() {
         return leer("verificacion.json", new TypeReference<List<TipoVerificable>>() { });
+    }
+
+    record ConceptoDojoJson(String id, String tecnica, String nombre, String definicion, String esquema) {
+    }
+
+    record RetoDojoJson(String id, String concepto, String nivel, String ambito, String texto, String pregunta, List<BancoDojo.Opcion> opciones,
+                        String correcta, List<BancoDojo.Chequeo> rubrica, String respuestaModelo, String explicacion) {
+    }
+
+    record ArchivoDojo(Integer version, List<Map<String, Object>> temas, List<ConceptoDojoJson> conceptos, List<RetoDojoJson> retos) {
+    }
+
+    /** El banco del Dojo de razonamiento (catalogo/dojo.json): 26 conceptos y sus retos, en el orden del archivo. */
+    public BancoDojo bancoDojo() {
+        ArchivoDojo a = leer("dojo.json", new TypeReference<ArchivoDojo>() { });
+        return new BancoDojo(a.conceptos().stream().map(c -> new BancoDojo.Concepto(c.id(), c.tecnica(), c.nombre(), c.definicion())).toList(),
+                a.retos().stream().map(r -> new BancoDojo.Reto(r.id(), r.concepto(), NivelBloom.de(r.nivel()), r.ambito(), r.texto(), r.pregunta(),
+                        r.opciones(), r.correcta(), r.rubrica(), r.respuestaModelo(), r.explicacion())).toList());
     }
 
     /** Los ejemplos de todas las técnicas que tienen archivo en catalogo/ejemplos/, por técnica y orden. */

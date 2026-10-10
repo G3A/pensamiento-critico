@@ -1696,7 +1696,7 @@
       "campos": [
         { "nombre": "niveles", "tipo": "conjunto", "etiqueta": "Niveles activos", "opciones": [ { "valor": "identificar", "etiqueta": "Identificar: elige el nombre" }, { "valor": "analizar", "etiqueta": "Analizar: señala dónde está" }, { "valor": "evaluar", "etiqueta": "Evaluar: ¿se sostiene sin el error?" }, { "valor": "crear", "etiqueta": "Crear: reescríbelo sin el error" } ] },
         { "nombre": "avanceAutomatico", "tipo": "booleano", "etiqueta": "Avance automático por aciertos", "ayuda": "Apagado, eliges el nivel en el Dojo y ningún nivel se bloquea." },
-        { "nombre": "aciertosParaDominar", "tipo": "entero", "etiqueta": "Aciertos para dominar un nivel", "obligatorio": true, "minimo": 3, "maximo": 30 }
+        { "nombre": "aciertosParaDominar", "tipo": "entero", "etiqueta": "Aciertos para dominar un nivel", "obligatorio": true, "minimo": 2, "maximo": 30 }
       ]
     },
     "esquemaEntrada": {

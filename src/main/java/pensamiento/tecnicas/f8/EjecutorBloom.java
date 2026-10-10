@@ -77,8 +77,8 @@ public class EjecutorBloom implements Ejecutor<EjecutorBloom.Config, EjecutorBlo
         if (config.niveles().isEmpty()) {
             errores.add(new Validacion.Error("config.niveles", "Deja al menos un nivel activo."));
         }
-        if (config.aciertosParaDominar() < 3 || config.aciertosParaDominar() > 30) {
-            errores.add(new Validacion.Error("config.aciertosParaDominar", "Los aciertos para dominar un nivel van de 3 a 30."));
+        if (config.aciertosParaDominar() < 2 || config.aciertosParaDominar() > 30) {
+            errores.add(new Validacion.Error("config.aciertosParaDominar", "Los aciertos para dominar un nivel van de 2 a 30."));
         }
         if (entrada.tema() == null) {
             errores.add(new Validacion.Error("tema", "Elige el tema que practicas."));
