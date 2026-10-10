@@ -1,0 +1,4824 @@
+{
+  "version": 1,
+  "temas": [
+    {
+      "id": "falacias",
+      "tecnica": "T13",
+      "nombre": "Falacias"
+    },
+    {
+      "id": "sesgos",
+      "tecnica": "T14",
+      "nombre": "Sesgos"
+    },
+    {
+      "id": "datos",
+      "tecnica": "T18",
+      "nombre": "Datos"
+    },
+    {
+      "id": "fuentes",
+      "tecnica": "T19",
+      "nombre": "Fuentes"
+    }
+  ],
+  "conceptos": [
+    {
+      "id": "T13:generalizacion",
+      "tecnica": "T13",
+      "nombre": "Generalización apresurada",
+      "definicion": "Sacar una regla general de uno o pocos casos.",
+      "esquema": "ejemplo"
+    },
+    {
+      "id": "T14:anclaje",
+      "tecnica": "T14",
+      "nombre": "Anclaje",
+      "definicion": "Juzgar todo comparándolo contra el primer precio o la primera cifra que viste."
+    },
+    {
+      "id": "T19:detente",
+      "tecnica": "T19",
+      "nombre": "Detente",
+      "definicion": "Antes de creer o compartir, parar y preguntarte si conoces la fuente y qué emoción te provoca."
+    },
+    {
+      "id": "T18:tasa_base",
+      "tecnica": "T18",
+      "nombre": "Ignorar la tasa base",
+      "definicion": "Juzgar por un caso o por un porcentaje sin preguntar de cuántos casos se parte en total."
+    },
+    {
+      "id": "T13:ad_hominem",
+      "tecnica": "T13",
+      "nombre": "Ataque a la persona",
+      "definicion": "Rechazar lo que alguien dice por cómo es o por su situación, sin responder a sus razones.",
+      "esquema": "ad_hominem"
+    },
+    {
+      "id": "T14:confirmacion",
+      "tecnica": "T14",
+      "nombre": "Confirmación",
+      "definicion": "Buscar y recordar solo lo que apoya lo que ya pensabas, y dejar de lado lo demás."
+    },
+    {
+      "id": "T19:investiga",
+      "tecnica": "T19",
+      "nombre": "Investiga la fuente",
+      "definicion": "Averiguar quién está detrás de la fuente, qué sabe del tema y qué interés tiene, mirando qué dicen otros de ella."
+    },
+    {
+      "id": "T13:falso_dilema",
+      "tecnica": "T13",
+      "nombre": "Falso dilema",
+      "definicion": "Presentar solo dos o pocas opciones como si fueran las únicas y descartar todas menos una.",
+      "esquema": "alternativas"
+    },
+    {
+      "id": "T14:costo_hundido",
+      "tecnica": "T14",
+      "nombre": "Costo hundido",
+      "definicion": "Seguir con algo solo porque ya pusiste tiempo o dinero que no vas a recuperar."
+    },
+    {
+      "id": "T18:correlacion_causa",
+      "tecnica": "T18",
+      "nombre": "Confundir correlación con causa",
+      "definicion": "Concluir que una cosa causa otra solo porque suben o bajan juntas, sin descartar otra causa ni el azar."
+    },
+    {
+      "id": "T13:pendiente_resbaladiza",
+      "tecnica": "T13",
+      "nombre": "Pendiente resbaladiza",
+      "definicion": "Rechazar un primer paso porque llevaría, por una cadena de pasos que no se prueban, a un final terrible.",
+      "esquema": "pendiente_resbaladiza"
+    },
+    {
+      "id": "T14:disponibilidad",
+      "tecnica": "T14",
+      "nombre": "Disponibilidad",
+      "definicion": "Creer que algo pasa mucho porque recuerdas fácil un caso, sin mirar cuántas veces pasa."
+    },
+    {
+      "id": "T19:cobertura",
+      "tecnica": "T19",
+      "nombre": "Encuentra mejor cobertura",
+      "definicion": "Buscar si otras fuentes confiables e independientes dicen lo mismo, en vez de quedarte con una sola."
+    },
+    {
+      "id": "T13:autoridad",
+      "tecnica": "T13",
+      "nombre": "Apelación a una autoridad inapropiada",
+      "definicion": "Dar algo por cierto porque lo dice alguien que se presenta como conocedor, aunque no sepa del tema o tenga interés propio.",
+      "esquema": "autoridad"
+    },
+    {
+      "id": "T14:exceso_confianza",
+      "tecnica": "T14",
+      "nombre": "Exceso de confianza",
+      "definicion": "Sentirte seguro de algo sin tener cómo comprobarlo."
+    },
+    {
+      "id": "T18:riesgo_relativo",
+      "tecnica": "T18",
+      "nombre": "Riesgo relativo sin la cifra absoluta",
+      "definicion": "Decir que un riesgo se duplicó o subió un porcentaje sin decir de cuánto a cuánto."
+    },
+    {
+      "id": "T13:falsa_analogia",
+      "tecnica": "T13",
+      "nombre": "Falsa analogía",
+      "definicion": "Concluir que lo que pasa en un caso pasará en otro porque se parecen, aunque no se parezcan en lo que importa.",
+      "esquema": "analogia"
+    },
+    {
+      "id": "T14:statu_quo",
+      "tecnica": "T14",
+      "nombre": "Statu quo",
+      "definicion": "Preferir dejar todo igual solo porque así ha sido, sin pesar lo que cuesta quedarse igual."
+    },
+    {
+      "id": "T19:origen",
+      "tecnica": "T19",
+      "nombre": "Rastrea el origen",
+      "definicion": "Llegar a la cita, el dato o la foto original y ver si el contexto cambia lo que dice."
+    },
+    {
+      "id": "T13:falsa_causa",
+      "tecnica": "T13",
+      "nombre": "Falsa causa",
+      "definicion": "Concluir que una cosa causa otra solo porque ocurren juntas o una después de la otra.",
+      "esquema": "causa_efecto"
+    },
+    {
+      "id": "T14:arrastre",
+      "tecnica": "T14",
+      "nombre": "Efecto de arrastre",
+      "definicion": "Hacer algo porque muchos lo están haciendo, no por las razones que tiene."
+    },
+    {
+      "id": "T13:senal_debil",
+      "tecnica": "T13",
+      "nombre": "Señal débil tomada como prueba",
+      "definicion": "Tomar una señal que se ve como prueba segura de algo que no se ve.",
+      "esquema": "signo"
+    },
+    {
+      "id": "T14:halo",
+      "tecnica": "T14",
+      "nombre": "Efecto halo",
+      "definicion": "Dejar que una cualidad que te gusta tape o decida cómo ves las demás."
+    },
+    {
+      "id": "T13:mayoria",
+      "tecnica": "T13",
+      "nombre": "Apelación a la mayoría",
+      "definicion": "Dar algo por cierto o conveniente solo porque mucha gente lo cree o lo hace.",
+      "esquema": "opinion_popular"
+    },
+    {
+      "id": "T13:equivoco",
+      "tecnica": "T13",
+      "nombre": "Equívoco",
+      "definicion": "Cambiar el sentido de una palabra a mitad del argumento, o acomodar su definición para que el caso encaje.",
+      "esquema": "clasificacion_verbal"
+    },
+    {
+      "id": "T13:alarmismo",
+      "tecnica": "T13",
+      "nombre": "Apelación a las consecuencias",
+      "definicion": "Aceptar o rechazar una afirmación por lo bueno o lo malo que traería, no por si es cierta.",
+      "esquema": "consecuencias"
+    }
+  ],
+  "retos": [
+    {
+      "id": "generalizacion-i1",
+      "concepto": "T13:generalizacion",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "Una panadería de otro barrio abrió un local en la terminal y cerró a los tres meses. La dueña concluye: las panaderías en la terminal no funcionan, mejor ni intentar abrir la segunda sucursal allá.",
+      "pregunta": "¿Qué falacia hay en la conclusión de la dueña?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Pendiente resbaladiza"
+        },
+        {
+          "id": "b",
+          "texto": "Falsa causa"
+        },
+        {
+          "id": "c",
+          "texto": "Apelación a la mayoría"
+        },
+        {
+          "id": "d",
+          "texto": "Generalización apresurada"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Un solo local que cerró no dice cómo les va a todas las panaderías de la terminal; ese caso pudo fallar por razones propias."
+    },
+    {
+      "id": "generalizacion-i2",
+      "concepto": "T13:generalizacion",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "En la última asamblea, dos jóvenes llegaron tarde y se fueron antes de terminar. El tesorero de la junta dice: los jóvenes del barrio no se comprometen con nada, no tiene sentido invitarlos a la ronda vecinal.",
+      "pregunta": "¿Qué falacia hay en lo que dice el tesorero?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Ataque a la persona"
+        },
+        {
+          "id": "b",
+          "texto": "Generalización apresurada"
+        },
+        {
+          "id": "c",
+          "texto": "Equívoco"
+        },
+        {
+          "id": "d",
+          "texto": "Señal débil tomada como prueba"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "De dos personas en una reunión saca una regla sobre todos los jóvenes del barrio; dos casos no bastan para eso."
+    },
+    {
+      "id": "generalizacion-a1",
+      "concepto": "T13:generalizacion",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "La tía cuenta que la hija de una amiga estudió en otra ciudad y volvió a los seis meses. Los muchachos que se van a estudiar afuera no aguantan lejos de la casa. Por eso la hija debería estudiar aquí.",
+      "pregunta": "¿En qué frase está la generalización apresurada?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "la hija de una amiga estudió en otra ciudad"
+        },
+        {
+          "id": "b",
+          "texto": "volvió a los seis meses"
+        },
+        {
+          "id": "c",
+          "texto": "Los muchachos que se van a estudiar afuera no aguantan lejos de la casa"
+        },
+        {
+          "id": "d",
+          "texto": "Por eso la hija debería estudiar aquí"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Ahí se pasa de un solo caso, la hija de una amiga, a una regla sobre todos los muchachos que estudian afuera."
+    },
+    {
+      "id": "generalizacion-a2",
+      "concepto": "T13:generalizacion",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "El sábado pasado probamos el pan de masa madre a un precio más alto y se vendió todo antes de las diez. Los clientes del barrio pagan lo que sea por masa madre. Hay que subirle más el precio desde el lunes.",
+      "pregunta": "¿Qué frase saca una regla general de un solo caso?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Los clientes del barrio pagan lo que sea por masa madre"
+        },
+        {
+          "id": "b",
+          "texto": "probamos el pan de masa madre a un precio más alto"
+        },
+        {
+          "id": "c",
+          "texto": "se vendió todo antes de las diez"
+        },
+        {
+          "id": "d",
+          "texto": "El sábado pasado"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Un sábado con buenas ventas es un solo caso, y el sábado puede no ser típico; de ahí no sale que los clientes paguen cualquier precio."
+    },
+    {
+      "id": "generalizacion-e1",
+      "concepto": "T13:generalizacion",
+      "nivel": "evaluar",
+      "ambito": "comunidad",
+      "texto": "Una vecina de la cuadra 3 instaló luces con sensor y en un mes no le robaron. El grupo de mensajería del barrio concluye que las luces con sensor acaban con los robos y pide que la junta compre cincuenta.",
+      "pregunta": "¿Alcanza este caso para sostener la conclusión del grupo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "No: una casa durante un mes no muestra si los robos bajan; hace falta comparar varias casas con y sin luces durante más tiempo."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: si funcionó en una casa, funcionará en todas."
+        },
+        {
+          "id": "c",
+          "texto": "Sí: un mes sin robos es tiempo suficiente para saberlo."
+        },
+        {
+          "id": "d",
+          "texto": "No: la vecina no sabe de seguridad."
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Quizá a esa casa tampoco le iban a robar sin luces; un solo caso en poco tiempo no basta para una regla sobre todo el barrio."
+    },
+    {
+      "id": "generalizacion-c1",
+      "concepto": "T13:generalizacion",
+      "nivel": "crear",
+      "ambito": "personal",
+      "texto": "El papá compró una nevera de segunda y se dañó al mes. Ahora dice: las neveras de segunda siempre salen malas, nunca más compramos nada usado.",
+      "pregunta": "Reescribe la conclusión del papá sin la generalización apresurada.",
+      "rubrica": [
+        {
+          "texto": "No saca una regla de un solo caso",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "siempre",
+            "nunca",
+            "nunca mas"
+          ]
+        },
+        {
+          "texto": "Reconoce que es un caso o dice qué revisaría",
+          "tipo": "conAlguna",
+          "marcas": [
+            "un caso",
+            "una sola",
+            "una vez",
+            "otros casos",
+            "varios",
+            "revisar",
+            "garantia",
+            "comparar",
+            "preguntar",
+            "datos"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Esta nevera de segunda salió mala, pero es una sola; la próxima vez voy a revisar su estado y pedir garantía antes de comprar.",
+      "explicacion": "Una nevera dañada es un caso, no una regla; lo útil es aprender qué revisar la próxima vez."
+    },
+    {
+      "id": "anclaje-i1",
+      "concepto": "T14:anclaje",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "El vendedor les dijo primero que el auto costaba 60 millones y después se lo dejó en 48. El papá salió contento: 'nos ahorramos 12 millones', aunque no miró cuánto cuesta ese mismo modelo en otros lugares.",
+      "pregunta": "¿Qué sesgo está empujando la lectura del papá?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Anclaje"
+        },
+        {
+          "id": "b",
+          "texto": "Costo hundido"
+        },
+        {
+          "id": "c",
+          "texto": "Efecto halo"
+        },
+        {
+          "id": "d",
+          "texto": "Statu quo"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "El papá mide el ahorro contra los 60 millones que dijo el vendedor, la primera cifra que oyó, y no contra lo que cuesta el auto en otros lugares."
+    },
+    {
+      "id": "anclaje-i2",
+      "concepto": "T14:anclaje",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "El proveedor de harina empezó pidiendo 120 mil por bulto y terminó en 95 mil. La dueña firmó por un año porque 'bajó casi un 20 %', sin pedir el precio a ningún otro proveedor.",
+      "pregunta": "¿Qué atajo mental llevó a la dueña a firmar?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Efecto de arrastre"
+        },
+        {
+          "id": "b",
+          "texto": "Anclaje"
+        },
+        {
+          "id": "c",
+          "texto": "Confirmación"
+        },
+        {
+          "id": "d",
+          "texto": "Disponibilidad"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "El descuento solo parece bueno comparado con el primer precio que puso el mismo proveedor; sin otro precio de referencia no sabe si 95 mil es caro o barato."
+    },
+    {
+      "id": "anclaje-a1",
+      "concepto": "T14:anclaje",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "El tesorero de la junta dijo que una empresa cobra 30 millones por las cámaras. Después llegó otra oferta de 18 millones y en la asamblea todos dijeron que era una ganga. Nadie preguntó cuánto cuestan cámaras parecidas en otros barrios.",
+      "pregunta": "¿Qué frase delata el anclaje?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "El tesorero de la junta"
+        },
+        {
+          "id": "b",
+          "texto": "otra oferta de 18 millones"
+        },
+        {
+          "id": "c",
+          "texto": "todos dijeron que era una ganga"
+        },
+        {
+          "id": "d",
+          "texto": "cámaras parecidas en otros barrios"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Llamar ganga a 18 millones solo tiene sentido al lado de los 30 millones del primer precio; nadie la comparó con otra referencia."
+    },
+    {
+      "id": "anclaje-a2",
+      "concepto": "T14:anclaje",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "La tía vio la nevera nueva en 5 millones en la primera tienda. Ahora cualquier nevera de menos de 4 millones le parece barata, y quiere comprar una de 3,8 sin mirar su consumo de luz.",
+      "pregunta": "¿Qué frase muestra que el primer precio está mandando en la comparación?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La tía vio la nevera nueva"
+        },
+        {
+          "id": "b",
+          "texto": "quiere comprar una de 3,8"
+        },
+        {
+          "id": "c",
+          "texto": "sin mirar su consumo de luz"
+        },
+        {
+          "id": "d",
+          "texto": "cualquier nevera de menos de 4 millones le parece barata"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Que todo lo que baje de 4 millones le parezca barato viene de los 5 millones que vio primero, no de saber cuánto cuesta una nevera así."
+    },
+    {
+      "id": "anclaje-e1",
+      "concepto": "T14:anclaje",
+      "nivel": "evaluar",
+      "ambito": "trabajo",
+      "texto": "Un cliente ofreció comprar 200 panes diarios para su restaurante y pidió precio. La dueña recordó que la panadería de la terminal cobra 2.000 por pan y le ofreció 1.800 'para ser más barata'. No calculó cuánto le cuesta a ella hacer cada pan.",
+      "pregunta": "¿Se sostiene el precio de 1.800 si quitas el anclaje?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: 1.800 es menos que 2.000, así que el cliente va a aceptar y ella gana."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: si la otra panadería cobra 2.000, ese precio ya cubre los costos de cualquiera."
+        },
+        {
+          "id": "c",
+          "texto": "No: debería cobrar exactamente 2.000 para no perder plata."
+        },
+        {
+          "id": "d",
+          "texto": "No se sabe: sin el precio de la otra panadería no queda ninguna razón para 1.800; falta saber cuánto le cuesta hacer cada pan."
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "El único apoyo del 1.800 es la cifra de la otra panadería; sin conocer su propio costo, la dueña no sabe si con ese precio gana o pierde."
+    },
+    {
+      "id": "anclaje-c1",
+      "concepto": "T14:anclaje",
+      "nivel": "crear",
+      "ambito": "comunidad",
+      "texto": "Para la olla comunitaria, el proveedor de verduras dijo que el bulto de papa normalmente cuesta 90 mil y que a la junta se lo deja en 70 mil. El tesorero quiere aceptar hoy mismo porque 'es un descuento enorme'.",
+      "pregunta": "Reescribe el plan del tesorero con el antídoto del anclaje.",
+      "rubrica": [
+        {
+          "texto": "No se queda con el descuento contra el primer precio",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "descuento enorme",
+            "hoy mismo"
+          ]
+        },
+        {
+          "texto": "Busca otro precio de referencia",
+          "tipo": "conAlguna",
+          "marcas": [
+            "otro precio",
+            "otros precios",
+            "otro proveedor",
+            "otros proveedores",
+            "cotizacion",
+            "cotizaciones",
+            "comparar",
+            "preguntar",
+            "plaza",
+            "mercado",
+            "referencia"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Antes de aceptar, voy a preguntar el precio del bulto de papa en la plaza y a otro proveedor para tener una referencia.",
+      "explicacion": "El 'normalmente 90 mil' lo puso el mismo vendedor; solo un segundo precio de otra parte dice si 70 mil es buen negocio."
+    },
+    {
+      "id": "detente-i1",
+      "concepto": "T19:detente",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "Llega al grupo del barrio un audio reenviado muchas veces: una voz agitada dice que esta noche cortan el agua por tres días y que hay que llenar todos los baldes ya. Una vecina de la cuadra 3 está a punto de reenviarlo a todos sus contactos.",
+      "pregunta": "¿Qué movimiento de SIFT toca ahora?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Rastrea el origen"
+        },
+        {
+          "id": "b",
+          "texto": "Encuentra mejor cobertura"
+        },
+        {
+          "id": "c",
+          "texto": "Detente"
+        },
+        {
+          "id": "d",
+          "texto": "Investiga la fuente"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "La vecina no sabe de quién es el audio, la voz agitada le provoca urgencia y está por compartirlo: lo primero es parar antes de reenviar."
+    },
+    {
+      "id": "detente-i2",
+      "concepto": "T19:detente",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "A la mamá le llega por mensaje una captura de un supuesto aviso de la empresa de luz: si no paga hoy una deuda pendiente con el enlace adjunto, le cortan el servicio en dos horas. Siente miedo y ya tiene la tarjeta en la mano.",
+      "pregunta": "¿Qué movimiento de SIFT toca ahora?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Detente"
+        },
+        {
+          "id": "b",
+          "texto": "Investiga la fuente"
+        },
+        {
+          "id": "c",
+          "texto": "Rastrea el origen"
+        },
+        {
+          "id": "d",
+          "texto": "Encuentra mejor cobertura"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "El miedo y el plazo de dos horas empujan a pagar sin pensar; antes de cualquier otro paso, toca parar y notar que no sabe quién mandó el aviso."
+    },
+    {
+      "id": "detente-a1",
+      "concepto": "T19:detente",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "La dueña recibe en el grupo de proveedores un mensaje sobre la harina de trigo. Dice: la harina va a triplicar su precio el lunes, compren hoy todo lo que puedan antes de que se acabe.",
+      "pregunta": "¿Qué detalle del mensaje te dice que hay que detenerse antes de actuar?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "en el grupo de proveedores"
+        },
+        {
+          "id": "b",
+          "texto": "sobre la harina de trigo"
+        },
+        {
+          "id": "c",
+          "texto": "La dueña recibe"
+        },
+        {
+          "id": "d",
+          "texto": "compren hoy todo lo que puedan antes de que se acabe"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "La prisa y el miedo a quedarse sin harina buscan que la dueña compre sin pensar; esa presión es la señal para parar antes de actuar."
+    },
+    {
+      "id": "detente-e1",
+      "concepto": "T19:detente",
+      "nivel": "evaluar",
+      "ambito": "comunidad",
+      "texto": "En el grupo de mensajería del barrio circula la foto de un hombre con gorra y el texto: este es el que está robando en la cuadra 3, compártanlo para que todos lo reconozcan. Nadie sabe quién tomó la foto ni de dónde salió. Ya la compartieron treinta vecinos.",
+      "pregunta": "¿Alcanza con esto para compartir la foto?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: si treinta vecinos ya la compartieron, algo de cierto tendrá"
+        },
+        {
+          "id": "b",
+          "texto": "Sí: es mejor prevenir, y si no es él no pasa nada"
+        },
+        {
+          "id": "c",
+          "texto": "No: no se sabe quién tomó la foto ni de dónde salió; antes de compartir hay que parar, porque se puede acusar a alguien sin pruebas"
+        },
+        {
+          "id": "d",
+          "texto": "No: las fotos de celular nunca sirven como prueba"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Que muchos la compartan no dice nada de quién la tomó; sin conocer la fuente, compartirla puede señalar a una persona inocente."
+    },
+    {
+      "id": "detente-c1",
+      "concepto": "T19:detente",
+      "nivel": "crear",
+      "ambito": "personal",
+      "texto": "Al papá le llega un audio de un supuesto médico que dice que tomar agua con limón en ayunas cura la presión alta y que hay que dejar las pastillas. El papá quiere reenviárselo al abuelo ya mismo.",
+      "pregunta": "Escribe qué te preguntarías antes de reenviar el audio y qué harías primero.",
+      "rubrica": [
+        {
+          "texto": "Se pregunta por la fuente o por la emoción antes de compartir",
+          "tipo": "conAlguna",
+          "marcas": [
+            "conozco",
+            "quien",
+            "fuente",
+            "de donde",
+            "emocion",
+            "miedo",
+            "esperar",
+            "espero",
+            "pausa",
+            "detenerme",
+            "antes de"
+          ]
+        },
+        {
+          "texto": "Dice qué haría antes de reenviar",
+          "tipo": "conAlguna",
+          "marcas": [
+            "preguntar",
+            "pregunto",
+            "preguntaria",
+            "consultar",
+            "consulto",
+            "consultaria",
+            "buscar",
+            "verificar",
+            "revisar",
+            "averiguar"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Antes de reenviarlo me pregunto si conozco a ese médico y de dónde salió el audio; primero lo consulto con el médico del abuelo.",
+      "explicacion": "Un audio que pide dejar un tratamiento y llega con urgencia es justo el caso para parar: saber quién habla y consultarlo antes de que llegue al abuelo."
+    },
+    {
+      "id": "tasa_base-i1",
+      "concepto": "T18:tasa_base",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "El tesorero de la junta dice en la asamblea: de los ocho asaltos en la calle de este año, seis fueron en la avenida, así que la avenida es la calle más peligrosa del barrio. Por la avenida pasa casi todo el barrio para llegar al bus.",
+      "pregunta": "¿Qué error con los datos hay en este razonamiento?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Ignorar la tasa base"
+        },
+        {
+          "id": "b",
+          "texto": "Confundir correlación con causa"
+        },
+        {
+          "id": "c",
+          "texto": "Anclaje"
+        },
+        {
+          "id": "d",
+          "texto": "Riesgo relativo sin la cifra absoluta"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Si casi todo el barrio camina por la avenida, es esperable que ahí pasen la mayoría de los asaltos; sin saber cuánta gente pasa por cada calle, el dato no dice cuál es más peligrosa."
+    },
+    {
+      "id": "tasa_base-i2",
+      "concepto": "T18:tasa_base",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "La mamá se hizo en la farmacia una prueba rápida para una enfermedad que tiene 1 de cada 1.000 personas. Salió positiva y dice: la prueba acierta el 95% de las veces, así que tengo un 95% de probabilidad de estar enferma.",
+      "pregunta": "¿Qué error con los datos hay en este razonamiento?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Riesgo relativo sin la cifra absoluta"
+        },
+        {
+          "id": "b",
+          "texto": "Exceso de confianza"
+        },
+        {
+          "id": "c",
+          "texto": "Ignorar la tasa base"
+        },
+        {
+          "id": "d",
+          "texto": "Confundir correlación con causa"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "De cada 1.000 personas, 1 está enferma y unas 50 sanas dan positivo por error (el 5% de 999): de unos 51 positivos solo 1 está enferma, cerca del 2%, no el 95%."
+    },
+    {
+      "id": "tasa_base-a1",
+      "concepto": "T18:tasa_base",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "La dueña revisa las quejas del mes: de las 20 quejas por pan quemado, 15 fueron de pan del turno de la madrugada. Concluye que el panadero de la madrugada es descuidado. Ese turno hornea tres de cada cuatro panes del día.",
+      "pregunta": "¿Qué frase del texto muestra la tasa base que la dueña pasó por alto?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "de las 20 quejas por pan quemado"
+        },
+        {
+          "id": "b",
+          "texto": "Concluye que el panadero de la madrugada es descuidado"
+        },
+        {
+          "id": "c",
+          "texto": "15 fueron de pan del turno de la madrugada"
+        },
+        {
+          "id": "d",
+          "texto": "Ese turno hornea tres de cada cuatro panes del día"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Si el turno hornea el 75% del pan, es esperable que tenga el 75% de las quejas: 15 de 20 es justo el 75%, así que el dato no muestra más descuido que en el otro turno."
+    },
+    {
+      "id": "tasa_base-a2",
+      "concepto": "T18:tasa_base",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "Un mensaje en el grupo del barrio dice que las luces con sensor no sirven, porque 4 de los 10 robos del año fueron en cuadras con esas luces. En el barrio, 4 de cada 10 cuadras tienen luces con sensor. La secretaria de la junta propone quitarlas.",
+      "pregunta": "¿Qué frase del texto da el dato con el que hay que comparar los robos?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "las luces con sensor no sirven"
+        },
+        {
+          "id": "b",
+          "texto": "En el barrio, 4 de cada 10 cuadras tienen luces con sensor"
+        },
+        {
+          "id": "c",
+          "texto": "4 de los 10 robos del año fueron en cuadras con esas luces"
+        },
+        {
+          "id": "d",
+          "texto": "La secretaria de la junta propone quitarlas"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Si el 40% de las cuadras tiene luces con sensor y en ellas pasó el 40% de los robos, el dato no muestra que las luces sirvan ni que no sirvan."
+    },
+    {
+      "id": "tasa_base-e1",
+      "concepto": "T18:tasa_base",
+      "nivel": "evaluar",
+      "ambito": "personal",
+      "texto": "La hija quiere estudiar en otra ciudad. El papá dice: de los cinco muchachos del barrio que se fueron a estudiar afuera, tres dejaron la carrera, así que mejor estudia aquí. No sabe cuántos de los que estudian aquí dejan la carrera.",
+      "pregunta": "¿Se sostiene la conclusión del papá con ese dato?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: tres de cinco es más de la mitad, y eso basta para decidir"
+        },
+        {
+          "id": "b",
+          "texto": "Sí: si fueran pocos casos, el papá no los habría notado"
+        },
+        {
+          "id": "c",
+          "texto": "No: sin saber cuántos dejan la carrera estudiando aquí, no hay con qué comparar el tres de cinco"
+        },
+        {
+          "id": "d",
+          "texto": "No: el papá debería dejar que la hija decida sola"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Tres de cinco solo dice algo si se compara con cuántos abandonan en la ciudad propia; si allí también abandonan muchos, irse afuera no cambia nada."
+    },
+    {
+      "id": "tasa_base-c1",
+      "concepto": "T18:tasa_base",
+      "nivel": "crear",
+      "ambito": "trabajo",
+      "texto": "El proveedor de harina le dice a la dueña: el 90% de las panaderías que se quejaron de grumos en la masa usaban la harina de la competencia, así que la de ellos es peor. No dice qué parte de las panaderías de la ciudad compra esa harina.",
+      "pregunta": "Reescribe la conclusión del proveedor sin ignorar la tasa base.",
+      "rubrica": [
+        {
+          "texto": "No afirma que la otra harina es peor",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "la de ellos es peor",
+            "su harina es peor"
+          ]
+        },
+        {
+          "texto": "Pregunta por el total de panaderías que usan cada harina",
+          "tipo": "conAlguna",
+          "marcas": [
+            "que parte",
+            "cuantas",
+            "de cada",
+            "porcentaje",
+            "tasa base",
+            "compran",
+            "comparar",
+            "compara",
+            "del total",
+            "proporcion"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Antes de decir que esa harina da más grumos, hay que saber qué parte de las panaderías de la ciudad la compra: si el 90% la usa, el dato no dice nada.",
+      "explicacion": "Si nueve de cada diez panaderías compran esa harina, es esperable que nueve de cada diez quejas vengan de ella; el porcentaje de quejas solo sirve comparado con ese total."
+    },
+    {
+      "id": "ad_hominem-i1",
+      "concepto": "T13:ad_hominem",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "En la asamblea, la secretaria de la junta propuso poner luces con sensor en la cuadra 3. El tesorero respondió: ella ni siquiera es dueña de su casa, vive en arriendo, así que no tiene por qué opinar sobre los gastos del barrio.",
+      "pregunta": "¿Qué falacia hay en la respuesta del tesorero?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Falso dilema"
+        },
+        {
+          "id": "b",
+          "texto": "Apelación a la mayoría"
+        },
+        {
+          "id": "c",
+          "texto": "Ataque a la persona"
+        },
+        {
+          "id": "d",
+          "texto": "Equívoco"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "El tesorero no dice nada sobre las luces con sensor: descalifica a la secretaria por vivir en arriendo, y eso no cambia si la propuesta es buena o mala."
+    },
+    {
+      "id": "ad_hominem-i2",
+      "concepto": "T13:ad_hominem",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "El panadero del turno de la madrugada sugirió bajar la temperatura del horno para que el pan no salga quemado. La dueña le contestó: tú llegas tarde dos veces por semana, no me vengas a enseñar cómo se hace el pan.",
+      "pregunta": "¿Qué falacia hay en la respuesta de la dueña?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Ataque a la persona"
+        },
+        {
+          "id": "b",
+          "texto": "Falsa causa"
+        },
+        {
+          "id": "c",
+          "texto": "Pendiente resbaladiza"
+        },
+        {
+          "id": "d",
+          "texto": "Generalización apresurada"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Que el panadero llegue tarde no dice nada sobre la temperatura del horno; la dueña responde a la persona y no a su sugerencia."
+    },
+    {
+      "id": "ad_hominem-a1",
+      "concepto": "T13:ad_hominem",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "La hija dice que la nevera vieja gasta mucha luz y que conviene cambiarla. El papá responde: tú qué vas a saber de electrodomésticos, si nunca has pagado una factura en tu vida. La nevera se queda.",
+      "pregunta": "¿Qué frase descalifica a la hija en vez de responder a lo que dice?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La hija dice que la nevera vieja gasta mucha luz"
+        },
+        {
+          "id": "b",
+          "texto": "si nunca has pagado una factura en tu vida"
+        },
+        {
+          "id": "c",
+          "texto": "La nevera se queda"
+        },
+        {
+          "id": "d",
+          "texto": "conviene cambiarla"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Haber pagado o no una factura no cambia cuánta luz gasta la nevera; esa frase ataca a la hija y deja sin respuesta su razón."
+    },
+    {
+      "id": "ad_hominem-a2",
+      "concepto": "T13:ad_hominem",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "Una vecina de la cuadra 3 escribió en el grupo de mensajería del barrio que la ronda vecinal debería empezar a las diez. Alguien contestó: claro, lo dice la que se pasó la última asamblea quejándose de todo. Otro vecino pidió ver el horario de los robos.",
+      "pregunta": "¿Qué frase descalifica a la persona en vez de responder a su propuesta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "la ronda vecinal debería empezar a las diez"
+        },
+        {
+          "id": "b",
+          "texto": "Otro vecino pidió ver el horario de los robos"
+        },
+        {
+          "id": "c",
+          "texto": "lo dice la que se pasó la última asamblea quejándose de todo"
+        },
+        {
+          "id": "d",
+          "texto": "escribió en el grupo de mensajería del barrio"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Recordar que la vecina se queja mucho no dice nada sobre la hora de la ronda; en cambio, pedir el horario de los robos sí responde a su razón."
+    },
+    {
+      "id": "ad_hominem-e1",
+      "concepto": "T13:ad_hominem",
+      "nivel": "evaluar",
+      "ambito": "trabajo",
+      "texto": "El proveedor de harina propuso un descuento si la panadería le compra por mes. La cajera dijo: ese señor solo quiere vender más, así que la propuesta no sirve.",
+      "pregunta": "¿Se sostiene el rechazo de la propuesta sin el ataque a la persona?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: si el proveedor gana con la venta, la propuesta es mala por definición."
+        },
+        {
+          "id": "b",
+          "texto": "No: que el proveedor gane algo no dice si el descuento le conviene a la panadería; hay que hacer las cuentas."
+        },
+        {
+          "id": "c",
+          "texto": "Sí: la cajera conoce al proveedor y eso basta para decidir."
+        },
+        {
+          "id": "d",
+          "texto": "No: los proveedores siempre ofrecen lo mejor para sus clientes."
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "El interés del proveedor es una buena razón para revisar con cuidado, pero no para rechazar sin mirar: sin el ataque no queda ninguna cuenta que muestre que el descuento no conviene."
+    },
+    {
+      "id": "ad_hominem-c1",
+      "concepto": "T13:ad_hominem",
+      "nivel": "crear",
+      "ambito": "personal",
+      "texto": "El hijo mayor propone revisar la factura de luz para ver qué aparato gasta más. El abuelo responde: tú eres un desordenado que deja todo prendido, así que no tienes cara para hablar de ahorro.",
+      "pregunta": "Reescribe la respuesta del abuelo sin atacar al hijo mayor, respondiendo a su propuesta.",
+      "rubrica": [
+        {
+          "texto": "No descalifica al hijo mayor",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "desordenado",
+            "no tienes cara"
+          ]
+        },
+        {
+          "texto": "Responde a la propuesta de revisar el consumo",
+          "tipo": "conAlguna",
+          "marcas": [
+            "revisar",
+            "revisemos",
+            "factura",
+            "aparato",
+            "aparatos",
+            "consumo",
+            "gasta",
+            "gastan",
+            "propuesta",
+            "idea"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Me parece buena idea revisar la factura; miremos juntos qué aparato gasta más y decidamos con esos datos.",
+      "explicacion": "Una buena respuesta discute la propuesta de revisar la factura, no los hábitos de quien la hace."
+    },
+    {
+      "id": "confirmacion-i1",
+      "concepto": "T14:confirmacion",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "Una vecina de la cuadra 3 está segura de que los robos los hacen muchachos de otro barrio. En el grupo de mensajería solo comparte las noticias donde detienen a gente de afuera, y las que dicen otra cosa las deja pasar sin comentar.",
+      "pregunta": "¿Qué sesgo está empujando lo que comparte la vecina?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Efecto de arrastre"
+        },
+        {
+          "id": "b",
+          "texto": "Confirmación"
+        },
+        {
+          "id": "c",
+          "texto": "Costo hundido"
+        },
+        {
+          "id": "d",
+          "texto": "Anclaje"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "La vecina se queda con las noticias que apoyan lo que ya pensaba y deja pasar las demás, así que su idea nunca se pone a prueba."
+    },
+    {
+      "id": "confirmacion-i2",
+      "concepto": "T14:confirmacion",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "La dueña cree que la sucursal del centro va a funcionar. Les preguntó a tres amigos que trabajan en el centro y los tres dijeron que comprarían pan ahí; no buscó cuántas panaderías ya hay en esas cuadras ni por qué cerró la última.",
+      "pregunta": "¿Qué atajo mental hay en la forma en que la dueña se informó?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Statu quo"
+        },
+        {
+          "id": "b",
+          "texto": "Efecto halo"
+        },
+        {
+          "id": "c",
+          "texto": "Confirmación"
+        },
+        {
+          "id": "d",
+          "texto": "Costo hundido"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Preguntó donde esperaba un sí y no buscó lo que podría contradecirla, como la competencia o la panadería que cerró."
+    },
+    {
+      "id": "confirmacion-a1",
+      "concepto": "T14:confirmacion",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "El abuelo está convencido de que el té de hierbas le baja la presión. Los días que la presión sale baja dice 'ya ves, es el té', y los días que sale alta dice que el aparato está malo. Nunca anota los resultados.",
+      "pregunta": "¿Qué frase delata la confirmación?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "El abuelo está convencido"
+        },
+        {
+          "id": "b",
+          "texto": "el té de hierbas le baja la presión"
+        },
+        {
+          "id": "c",
+          "texto": "Nunca anota los resultados"
+        },
+        {
+          "id": "d",
+          "texto": "los días que sale alta dice que el aparato está malo"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Cuando el resultado lo contradice, el abuelo culpa al aparato en vez de dudar de su idea: solo cuenta lo que la apoya."
+    },
+    {
+      "id": "confirmacion-a2",
+      "concepto": "T14:confirmacion",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "El tesorero de la junta quiere luces con sensor y leyó sobre el tema una semana. Guardó cinco artículos que dicen que funcionan y dijo: 'no me interesa leer los que dicen lo contrario, ya lo tengo claro'. La asamblea vota el sábado.",
+      "pregunta": "¿En qué parte está la confirmación?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "no me interesa leer los que dicen lo contrario"
+        },
+        {
+          "id": "b",
+          "texto": "quiere luces con sensor"
+        },
+        {
+          "id": "c",
+          "texto": "leyó sobre el tema una semana"
+        },
+        {
+          "id": "d",
+          "texto": "La asamblea vota el sábado"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Decidir no leer lo que va en contra es la forma más clara del sesgo: la idea queda protegida de cualquier dato que la ponga a prueba."
+    },
+    {
+      "id": "confirmacion-e1",
+      "concepto": "T14:confirmacion",
+      "nivel": "evaluar",
+      "ambito": "trabajo",
+      "texto": "La dueña piensa que la cajera nueva es descuidada. Esta semana anotó las dos veces que el cambio salió mal, pero no anotó los días en que la caja cuadró exacta. Con esas dos anotaciones quiere cambiarla de turno.",
+      "pregunta": "¿Alcanza lo que anotó la dueña para decidir?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: dos errores en una semana ya muestran un patrón."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: la dueña conoce su negocio y no necesita anotar todo."
+        },
+        {
+          "id": "c",
+          "texto": "No: las cajeras nuevas siempre cometen errores y hay que tenerles paciencia."
+        },
+        {
+          "id": "d",
+          "texto": "No: solo anotó lo que confirmaba su idea; sin contar los días en que la caja cuadró no sabe cuántos errores hay de cada cuántos turnos."
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Un registro que solo guarda los errores siempre va a parecer malo; hace falta contar también los turnos sin problema para comparar."
+    },
+    {
+      "id": "confirmacion-c1",
+      "concepto": "T14:confirmacion",
+      "nivel": "crear",
+      "ambito": "personal",
+      "texto": "La mamá quiere comprar la nevera que vio en una tienda. Leyó solo los comentarios de cinco estrellas y dijo: 'ves, todos dicen que es buenísima'.",
+      "pregunta": "Escribe qué haría la mamá con el antídoto de la confirmación antes de comprar.",
+      "rubrica": [
+        {
+          "texto": "No se queda con los comentarios que le dan la razón",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "todos dicen",
+            "buenisima"
+          ]
+        },
+        {
+          "texto": "Busca razones en contra",
+          "tipo": "conAlguna",
+          "marcas": [
+            "en contra",
+            "una estrella",
+            "negativos",
+            "negativo",
+            "malos",
+            "quejas",
+            "queja",
+            "problemas",
+            "critica",
+            "criticas",
+            "peor"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Antes de comprar, voy a leer los comentarios negativos de una estrella para buscar la mejor razón en contra de esa nevera.",
+      "explicacion": "Los comentarios de cinco estrellas solo muestran a los contentos; buscar a propósito las quejas dice si hay un problema que se repite."
+    },
+    {
+      "id": "investiga-i1",
+      "concepto": "T19:investiga",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "La hija encontró el folleto de una universidad de otra ciudad que promete trabajo seguro al terminar la carrera. Ya leyó el folleto con calma y ahora quiere saber si esa universidad existe, quién la dirige y qué dicen de ella otras páginas.",
+      "pregunta": "¿Qué movimiento de SIFT toca ahora?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Encuentra mejor cobertura"
+        },
+        {
+          "id": "b",
+          "texto": "Detente"
+        },
+        {
+          "id": "c",
+          "texto": "Rastrea el origen"
+        },
+        {
+          "id": "d",
+          "texto": "Investiga la fuente"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "La hija quiere saber quién está detrás del folleto y qué dicen otros de esa universidad: eso es investigar la fuente con lectura lateral."
+    },
+    {
+      "id": "investiga-i2",
+      "concepto": "T19:investiga",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "Un portal de noticias de la ciudad que la dueña nunca había visto publica que el pan de masa madre hecho en fábrica es dañino. Antes de leer la nota completa, la dueña quiere saber quién está detrás de ese portal y si vende algún producto.",
+      "pregunta": "¿Qué movimiento de SIFT toca ahora?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Investiga la fuente"
+        },
+        {
+          "id": "b",
+          "texto": "Rastrea el origen"
+        },
+        {
+          "id": "c",
+          "texto": "Detente"
+        },
+        {
+          "id": "d",
+          "texto": "Encuentra mejor cobertura"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Saber quién maneja el portal y qué interés tiene en el tema es investigar la fuente, antes de darle peso a lo que dice."
+    },
+    {
+      "id": "investiga-a1",
+      "concepto": "T19:investiga",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "Llega al grupo del barrio un enlace a un estudio de un centro de seguridad urbana: recomienda instalar en todas las cuadras las cámaras de la marca que patrocina este estudio.",
+      "pregunta": "¿Qué detalle del mensaje te dice que hay que investigar la fuente?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Llega al grupo del barrio un enlace"
+        },
+        {
+          "id": "b",
+          "texto": "la marca que patrocina este estudio"
+        },
+        {
+          "id": "c",
+          "texto": "un centro de seguridad urbana"
+        },
+        {
+          "id": "d",
+          "texto": "en todas las cuadras"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Si quien paga el estudio vende las cámaras que el estudio recomienda, la fuente tiene un interés directo; hay que averiguar quién es y qué dicen otros de ella."
+    },
+    {
+      "id": "investiga-e1",
+      "concepto": "T19:investiga",
+      "nivel": "evaluar",
+      "ambito": "trabajo",
+      "texto": "Un folleto que dejaron en la panadería dice que un instituto de nutrición recomienda dejar el pan blanco. Al buscarlo, el instituto aparece en una sola página, creada hace un mes, que vende un pan especial. La dueña piensa poner el folleto en la vitrina.",
+      "pregunta": "¿Alcanza con esto para creerle al folleto?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: un instituto de nutrición sabe del tema"
+        },
+        {
+          "id": "b",
+          "texto": "No: todo lo que dice un folleto es mentira"
+        },
+        {
+          "id": "c",
+          "texto": "Sí: si estuviera mal, no lo dejarían repartir"
+        },
+        {
+          "id": "d",
+          "texto": "No: el instituto es una página nueva que vende pan, así que tiene interés en la recomendación; habría que ver qué dicen de él otras fuentes"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Lo que se averiguó de la fuente muestra un interés comercial y ninguna trayectoria; eso no prueba que la recomendación esté mal, pero no alcanza para creerla."
+    },
+    {
+      "id": "investiga-c1",
+      "concepto": "T19:investiga",
+      "nivel": "crear",
+      "ambito": "comunidad",
+      "texto": "Un portal de noticias de la ciudad publica que la junta de vecinos del barrio gastó mal la plata de la olla comunitaria. Nadie en el barrio conoce ese portal.",
+      "pregunta": "Escribe qué buscarías sobre ese portal y dónde, antes de creerle.",
+      "rubrica": [
+        {
+          "texto": "Pregunta quién está detrás o qué interés tiene",
+          "tipo": "conAlguna",
+          "marcas": [
+            "quien",
+            "quienes",
+            "dueno",
+            "detras",
+            "autor",
+            "interes",
+            "intereses"
+          ]
+        },
+        {
+          "texto": "Dice dónde lo buscaría, fuera del propio portal",
+          "tipo": "conAlguna",
+          "marcas": [
+            "buscador",
+            "otras paginas",
+            "otros sitios",
+            "otras fuentes",
+            "que dicen",
+            "lectura lateral",
+            "resenas",
+            "otros medios"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Buscaría en otras páginas quién está detrás de ese portal, quién escribe ahí y qué interés tiene en hablar de la junta.",
+      "explicacion": "Investigar la fuente es salir del portal y ver qué dicen otros de él: quién lo maneja y qué gana con la nota."
+    },
+    {
+      "id": "falso_dilema-i1",
+      "concepto": "T13:falso_dilema",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "La mamá le dice a la hija: o estudias aquí en la ciudad o te quedas sin estudiar, porque irte a otra ciudad es imposible para nosotros.",
+      "pregunta": "¿Qué falacia hay en lo que dice la mamá?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Pendiente resbaladiza"
+        },
+        {
+          "id": "b",
+          "texto": "Apelación a las consecuencias"
+        },
+        {
+          "id": "c",
+          "texto": "Señal débil tomada como prueba"
+        },
+        {
+          "id": "d",
+          "texto": "Falso dilema"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Se presentan solo dos caminos y se dejan fuera otros, como una beca, un crédito o estudiar a distancia, sin descartarlos con razones."
+    },
+    {
+      "id": "falso_dilema-i2",
+      "concepto": "T13:falso_dilema",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "El tesorero de la junta dijo en la asamblea: o ponemos cámaras en todas las cuadras o aceptamos que nos sigan robando. No hay más opciones.",
+      "pregunta": "¿Qué falacia hay en lo que dice el tesorero?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Falsa analogía"
+        },
+        {
+          "id": "b",
+          "texto": "Falso dilema"
+        },
+        {
+          "id": "c",
+          "texto": "Equívoco"
+        },
+        {
+          "id": "d",
+          "texto": "Ataque a la persona"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Hay más caminos que esos dos, como luces con sensor, una ronda vecinal o cámaras solo en algunas cuadras, y ninguno se descartó con razones."
+    },
+    {
+      "id": "falso_dilema-a1",
+      "concepto": "T13:falso_dilema",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "La dueña reunió al personal: las ventas de los sábados bajaron. O subimos los precios del pan de masa madre o cerramos la sucursal del barrio, no veo otra salida. Mañana les cuento qué decidí.",
+      "pregunta": "¿En qué parte está el falso dilema?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "O subimos los precios del pan de masa madre o cerramos la sucursal del barrio, no veo otra salida"
+        },
+        {
+          "id": "b",
+          "texto": "las ventas de los sábados bajaron"
+        },
+        {
+          "id": "c",
+          "texto": "La dueña reunió al personal"
+        },
+        {
+          "id": "d",
+          "texto": "Mañana les cuento qué decidí"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Que bajen las ventas es un dato; el error está en reducir la respuesta a dos salidas extremas sin mirar otras, como cambiar horarios o promociones."
+    },
+    {
+      "id": "falso_dilema-a2",
+      "concepto": "T13:falso_dilema",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "Mensaje en el grupo de mensajería del barrio: la cancha está llena de basura otra vez. Si no pagamos entre todos un vigilante, tendremos que cerrarla para siempre. Ya hablé con la secretaria de la junta.",
+      "pregunta": "¿Qué frase presenta solo dos opciones?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "la cancha está llena de basura otra vez"
+        },
+        {
+          "id": "b",
+          "texto": "Ya hablé con la secretaria de la junta"
+        },
+        {
+          "id": "c",
+          "texto": "Si no pagamos entre todos un vigilante, tendremos que cerrarla para siempre"
+        },
+        {
+          "id": "d",
+          "texto": "Mensaje en el grupo de mensajería del barrio"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Entre pagar un vigilante y cerrar la cancha hay otras opciones, como turnos de limpieza o más canecas, que el mensaje ni menciona."
+    },
+    {
+      "id": "falso_dilema-e1",
+      "concepto": "T13:falso_dilema",
+      "nivel": "evaluar",
+      "ambito": "personal",
+      "texto": "El papá sobre la compra del auto: o compramos un carro nuevo este mes o seguimos gastando una fortuna en arreglar el viejo. Así que hay que comprar el nuevo ya.",
+      "pregunta": "¿La conclusión de comprar el carro nuevo ya se sostiene tal como está planteada?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: solo hay dos caminos y uno es claramente peor."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: el papá conoce mejor que nadie los gastos del carro."
+        },
+        {
+          "id": "c",
+          "texto": "No: se dejan fuera otras opciones, como un usado en buen estado o esperar unos meses, y no se compararon los costos."
+        },
+        {
+          "id": "d",
+          "texto": "No: comprar un carro siempre es mala idea."
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "La conclusión depende de que solo existan esas dos opciones, y el texto no muestra que las demás se hayan considerado ni descartado con cifras."
+    },
+    {
+      "id": "falso_dilema-c1",
+      "concepto": "T13:falso_dilema",
+      "nivel": "crear",
+      "ambito": "trabajo",
+      "texto": "El horno de la sucursal del barrio falla cada semana. El panadero del turno de la madrugada dice: o compramos un horno nuevo o seguimos botando pan quemado, no hay de otra.",
+      "pregunta": "Reescribe lo que dice el panadero sin el falso dilema, nombrando al menos otra opción.",
+      "rubrica": [
+        {
+          "texto": "No cierra las opciones",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "no hay de otra",
+            "no hay otra"
+          ]
+        },
+        {
+          "texto": "Nombra otra opción",
+          "tipo": "conAlguna",
+          "marcas": [
+            "reparar",
+            "arreglar",
+            "mantenimiento",
+            "revisar",
+            "tecnico",
+            "otra opcion",
+            "otras opciones",
+            "tambien podriamos",
+            "alquilar",
+            "usado"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "El horno falla cada semana; antes de comprar uno nuevo podríamos llamar a un técnico para repararlo y comparar los costos.",
+      "explicacion": "Nombrar la reparación, el mantenimiento o un horno usado abre el abanico y permite comparar en vez de elegir a ciegas entre dos extremos."
+    },
+    {
+      "id": "costo_hundido-i1",
+      "concepto": "T14:costo_hundido",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "La dueña ya gastó 15 millones este año arreglando el horno viejo y otra vez se dañó. El técnico dice que un horno nuevo saldría más barato a dos años, pero ella insiste en repararlo: 'después de todo lo que le metí, no lo voy a botar ahora'.",
+      "pregunta": "¿Qué sesgo está empujando la decisión de la dueña?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Exceso de confianza"
+        },
+        {
+          "id": "b",
+          "texto": "Anclaje"
+        },
+        {
+          "id": "c",
+          "texto": "Costo hundido"
+        },
+        {
+          "id": "d",
+          "texto": "Efecto halo"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Los 15 millones ya se fueron con cualquiera de las dos opciones; la dueña decide por lo gastado y no por lo que cuesta cada opción de aquí en adelante."
+    },
+    {
+      "id": "costo_hundido-i2",
+      "concepto": "T14:costo_hundido",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "La hija lleva dos años en una carrera que no le gusta y ya sabe que quiere estudiar otra cosa en otra ciudad. El papá le dice: 'ya pagamos cuatro semestres, sería botar esa plata si te cambias ahora'.",
+      "pregunta": "¿Qué atajo mental hay en el consejo del papá?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Statu quo"
+        },
+        {
+          "id": "b",
+          "texto": "Disponibilidad"
+        },
+        {
+          "id": "c",
+          "texto": "Efecto de arrastre"
+        },
+        {
+          "id": "d",
+          "texto": "Costo hundido"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Los cuatro semestres ya están pagados y no vuelven, siga o no; la razón del papá mira hacia atrás y no a lo que conviene desde hoy."
+    },
+    {
+      "id": "costo_hundido-a1",
+      "concepto": "T14:costo_hundido",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "La junta pagó un año de un servicio de vigilancia que casi nunca contesta las llamadas. En la asamblea, el tesorero propuso renovarlo: 'ya invertimos mucho en ese contrato como para cambiar'. Una vecina de la cuadra 3 mostró otra empresa con mejor respuesta y precio parecido.",
+      "pregunta": "¿Qué frase delata el costo hundido?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "ya invertimos mucho en ese contrato como para cambiar"
+        },
+        {
+          "id": "b",
+          "texto": "casi nunca contesta las llamadas"
+        },
+        {
+          "id": "c",
+          "texto": "Una vecina de la cuadra 3 mostró otra empresa"
+        },
+        {
+          "id": "d",
+          "texto": "con mejor respuesta y precio parecido"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Lo invertido el año pasado no se recupera renovando; el tesorero lo usa como razón para seguir en vez de comparar los dos servicios desde hoy."
+    },
+    {
+      "id": "costo_hundido-a2",
+      "concepto": "T14:costo_hundido",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "El panadero del turno de la madrugada lleva tres meses intentando que el pan de masa madre se venda en la terminal. Se venden cinco al día y se botan veinte. Él dice que hay que seguir porque 'ya perdimos tanto con la masa madre que ahora no podemos parar'.",
+      "pregunta": "¿En qué parte está el costo hundido?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "lleva tres meses intentando"
+        },
+        {
+          "id": "b",
+          "texto": "ya perdimos tanto con la masa madre que ahora no podemos parar"
+        },
+        {
+          "id": "c",
+          "texto": "Se venden cinco al día y se botan veinte"
+        },
+        {
+          "id": "d",
+          "texto": "en la terminal"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Lo perdido en tres meses no se recupera siguiendo; los datos de hoy (cinco vendidos, veinte botados) son los que deberían decidir."
+    },
+    {
+      "id": "costo_hundido-e1",
+      "concepto": "T14:costo_hundido",
+      "nivel": "evaluar",
+      "ambito": "personal",
+      "texto": "La familia pagó la matrícula de un curso de inglés para el hijo mayor y no la devuelven. Ahora él consiguió un trabajo con el mismo horario y el curso no le sirve para ese trabajo. La mamá dice: 'tienes que ir, esa plata ya está pagada'.",
+      "pregunta": "¿Se sostiene la decisión de seguir yendo al curso si quitas el costo hundido?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: si no va, la matrícula se pierde."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: terminar lo que uno empieza siempre es mejor."
+        },
+        {
+          "id": "c",
+          "texto": "No con lo que dice el texto: la matrícula ya se perdió con cualquiera de las dos opciones, y es la única razón que da la mamá."
+        },
+        {
+          "id": "d",
+          "texto": "No: el inglés nunca sirve para conseguir trabajo."
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "La matrícula no vuelve vaya o no vaya; quitada esa razón, lo que queda en el texto (choque de horario, curso que no le sirve) apunta a dejarlo."
+    },
+    {
+      "id": "costo_hundido-c1",
+      "concepto": "T14:costo_hundido",
+      "nivel": "crear",
+      "ambito": "comunidad",
+      "texto": "La junta lleva seis meses y 4 millones gastados en la cancha con un contratista que no termina. Otro contratista cobra 3 millones por terminarla en un mes. El tesorero dice: 'con lo que ya le pagamos al primero, no podemos dejarlo ahora'.",
+      "pregunta": "Reescribe la decisión del tesorero como si la junta empezara hoy.",
+      "rubrica": [
+        {
+          "texto": "No usa lo ya pagado como razón para seguir",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "ya le pagamos",
+            "no podemos dejarlo"
+          ]
+        },
+        {
+          "texto": "Mira lo que falta desde hoy",
+          "tipo": "conAlguna",
+          "marcas": [
+            "desde hoy",
+            "hoy",
+            "de aqui en adelante",
+            "falta",
+            "cuanto cuesta",
+            "comparar",
+            "comparamos",
+            "no vuelve",
+            "no se recupera",
+            "terminar"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 14 palabras",
+          "tipo": "largo",
+          "minimo": 14
+        }
+      ],
+      "respuestaModelo": "Lo gastado no vuelve con ninguna opción; desde hoy comparamos cuánto falta pagar y en cuánto tiempo termina cada contratista la cancha.",
+      "explicacion": "Los 4 millones ya se fueron con cualquiera de los dos contratistas; la decisión depende de lo que cuesta y tarda terminar desde hoy."
+    },
+    {
+      "id": "correlacion_causa-i1",
+      "concepto": "T18:correlacion_causa",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "En la panadería ponen música solo los sábados, y los sábados se vende el doble que entre semana. La dueña concluye que la música hace vender más y quiere ponerla toda la semana.",
+      "pregunta": "¿Qué error con los datos hay en este razonamiento?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Riesgo relativo sin la cifra absoluta"
+        },
+        {
+          "id": "b",
+          "texto": "Disponibilidad"
+        },
+        {
+          "id": "c",
+          "texto": "Ignorar la tasa base"
+        },
+        {
+          "id": "d",
+          "texto": "Confundir correlación con causa"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Música y ventas suben juntas porque las dos van con el sábado, cuando más gente sale a comprar; el texto no separa el efecto de la música del efecto del día."
+    },
+    {
+      "id": "correlacion_causa-i2",
+      "concepto": "T18:correlacion_causa",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "La secretaria de la junta nota que en las cuadras donde hay más perros hay menos robos. Propone que la junta regale un perro a cada casa que no tenga para bajar los robos.",
+      "pregunta": "¿Qué error con los datos hay en este razonamiento?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Apelación a la mayoría"
+        },
+        {
+          "id": "b",
+          "texto": "Confundir correlación con causa"
+        },
+        {
+          "id": "c",
+          "texto": "Riesgo relativo sin la cifra absoluta"
+        },
+        {
+          "id": "d",
+          "texto": "Ignorar la tasa base"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Que perros y pocos robos vayan juntos no muestra que los perros los eviten: puede haber una tercera causa, como que esas cuadras tienen casas con patio y más gente en casa."
+    },
+    {
+      "id": "correlacion_causa-a1",
+      "concepto": "T18:correlacion_causa",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "El hijo mayor leyó que los estudiantes que desayunan todos los días sacan mejores notas. Le dice a su hermana: si desayunas, vas a sacar mejores notas. La nota no dice si esas familias también tienen más tiempo y más apoyo en las tareas.",
+      "pregunta": "¿Qué frase convierte una relación entre dos cosas en una causa?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "si desayunas, vas a sacar mejores notas"
+        },
+        {
+          "id": "b",
+          "texto": "los estudiantes que desayunan todos los días sacan mejores notas"
+        },
+        {
+          "id": "c",
+          "texto": "más tiempo y más apoyo en las tareas"
+        },
+        {
+          "id": "d",
+          "texto": "El hijo mayor leyó"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "La nota solo dice que desayunar y las buenas notas van juntos; la frase del hijo mayor afirma que lo primero produce lo segundo, sin descartar el tiempo y el apoyo en casa."
+    },
+    {
+      "id": "correlacion_causa-a2",
+      "concepto": "T18:correlacion_causa",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "Desde que la panadería cambió de proveedor de harina, las ventas del pan de masa madre subieron un 30%. En esas mismas semanas abrió una oficina grande al frente del local. El panadero dice que la harina nueva es la razón.",
+      "pregunta": "¿Qué frase muestra otra causa posible que el panadero no descartó?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "las ventas del pan de masa madre subieron un 30%"
+        },
+        {
+          "id": "b",
+          "texto": "El panadero dice que la harina nueva es la razón"
+        },
+        {
+          "id": "c",
+          "texto": "abrió una oficina grande al frente del local"
+        },
+        {
+          "id": "d",
+          "texto": "Desde que la panadería cambió de proveedor de harina"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "La oficina nueva trae clientes al mismo tiempo que cambió la harina; mientras no se separen las dos cosas, la subida no se puede atribuir a la harina."
+    },
+    {
+      "id": "correlacion_causa-e1",
+      "concepto": "T18:correlacion_causa",
+      "nivel": "evaluar",
+      "ambito": "comunidad",
+      "texto": "En la cuadra 3 pusieron cámaras en marzo, y en abril hubo dos robos menos que en marzo. El tesorero de la junta propone cobrar una cuota a cada casa para poner cámaras en todas las cuadras, porque ya se vio que funcionan.",
+      "pregunta": "¿Alcanza ese dato para decir que las cámaras bajaron los robos?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: los robos bajaron justo después de poner las cámaras"
+        },
+        {
+          "id": "b",
+          "texto": "Sí: dos robos menos en un mes es una mejora clara"
+        },
+        {
+          "id": "c",
+          "texto": "No: las cámaras nunca sirven para bajar los robos"
+        },
+        {
+          "id": "d",
+          "texto": "No: un mes contra otro, con tan pocos casos, puede ser azar u otra cosa que cambió; habría que comparar con cuadras sin cámaras"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Que los robos bajen después de las cámaras no muestra que bajaron por ellas: dos casos de diferencia en un mes pueden ser azar, y hace falta un punto de comparación."
+    },
+    {
+      "id": "correlacion_causa-c1",
+      "concepto": "T18:correlacion_causa",
+      "nivel": "crear",
+      "ambito": "personal",
+      "texto": "La tía leyó que en los meses en que más helado se vende hay más gente con quemaduras de sol. Le dice a la familia que en las vacaciones nadie coma helado, porque causa quemaduras.",
+      "pregunta": "Reescribe lo que dice la tía sin confundir correlación con causa.",
+      "rubrica": [
+        {
+          "texto": "No dice que el helado causa las quemaduras",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "causa quemaduras",
+            "porque causa",
+            "provoca quemaduras"
+          ]
+        },
+        {
+          "texto": "Nombra una tercera causa o dice que solo van juntos",
+          "tipo": "conAlguna",
+          "marcas": [
+            "calor",
+            "verano",
+            "tercera",
+            "otra causa",
+            "coinciden",
+            "juntos",
+            "juntas",
+            "al mismo tiempo",
+            "no significa",
+            "temporada"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "En los meses de calor se vende más helado y también hay más gente al sol; las dos cosas suben juntas por el verano, no una por la otra.",
+      "explicacion": "El calor del verano explica las dos cosas a la vez: más helado y más horas al sol. Que suban juntas no hace que una produzca la otra."
+    },
+    {
+      "id": "pendiente_resbaladiza-i1",
+      "concepto": "T13:pendiente_resbaladiza",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "El abuelo sobre las vacaciones: si dejamos que la hija vaya a la playa con sus amigas, después querrá irse a vivir sola, luego descuidará los estudios y terminará sin futuro.",
+      "pregunta": "¿Qué falacia hay en lo que dice el abuelo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Falsa causa"
+        },
+        {
+          "id": "b",
+          "texto": "Generalización apresurada"
+        },
+        {
+          "id": "c",
+          "texto": "Pendiente resbaladiza"
+        },
+        {
+          "id": "d",
+          "texto": "Equívoco"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Un viaje a la playa se encadena con pasos cada vez peores sin mostrar que cada uno sea probable ni que la familia no pueda detenerse en el camino."
+    },
+    {
+      "id": "pendiente_resbaladiza-i2",
+      "concepto": "T13:pendiente_resbaladiza",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "En la asamblea, un vecino dijo: si permitimos que la olla comunitaria use el salón los domingos, pronto lo pedirán todos los grupos, el salón se dañará y la junta tendrá que venderlo.",
+      "pregunta": "¿Qué falacia hay en lo que dice el vecino?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Pendiente resbaladiza"
+        },
+        {
+          "id": "b",
+          "texto": "Falso dilema"
+        },
+        {
+          "id": "c",
+          "texto": "Apelación a una autoridad inapropiada"
+        },
+        {
+          "id": "d",
+          "texto": "Falsa analogía"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Del préstamo de un salón se salta a su venta por una cadena de pasos que nadie prueba, y la junta puede poner reglas en cualquier punto."
+    },
+    {
+      "id": "pendiente_resbaladiza-a1",
+      "concepto": "T13:pendiente_resbaladiza",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "La cajera pidió un descanso de diez minutos en el turno largo. La dueña respondió: si te doy diez minutos, mañana serán veinte, después todos querrán lo mismo y la panadería se irá a la quiebra. El horno ya está encendido.",
+      "pregunta": "¿Qué frase arma la cadena de pasos hacia un final indeseable?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La cajera pidió un descanso de diez minutos"
+        },
+        {
+          "id": "b",
+          "texto": "en el turno largo"
+        },
+        {
+          "id": "c",
+          "texto": "El horno ya está encendido"
+        },
+        {
+          "id": "d",
+          "texto": "mañana serán veinte, después todos querrán lo mismo y la panadería se irá a la quiebra"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Ahí está la cadena: de diez minutos a la quiebra, sin mostrar que cada paso sea probable ni que la dueña no pueda poner un límite."
+    },
+    {
+      "id": "pendiente_resbaladiza-a2",
+      "concepto": "T13:pendiente_resbaladiza",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "La hija quiere un celular para el último año del colegio. El papá dice: hoy es un celular, mañana vivirá pegada a la pantalla, bajará sus notas y no entrará a ninguna universidad. La mamá propone poner reglas de uso.",
+      "pregunta": "¿En qué parte está la pendiente resbaladiza?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La mamá propone poner reglas de uso"
+        },
+        {
+          "id": "b",
+          "texto": "mañana vivirá pegada a la pantalla, bajará sus notas y no entrará a ninguna universidad"
+        },
+        {
+          "id": "c",
+          "texto": "quiere un celular para el último año del colegio"
+        },
+        {
+          "id": "d",
+          "texto": "El papá dice"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "El papá encadena tres pasos sin probar ninguno; la propuesta de la mamá muestra justo un punto donde la cadena se puede detener."
+    },
+    {
+      "id": "pendiente_resbaladiza-e1",
+      "concepto": "T13:pendiente_resbaladiza",
+      "nivel": "evaluar",
+      "ambito": "comunidad",
+      "texto": "El tesorero de la junta: si instalamos una cámara en la cuadra 3, luego habrá que ponerla en todas, después pedirán guardias pagados y la cuota mensual será imposible de pagar. Mejor no instalar ninguna.",
+      "pregunta": "¿Alcanza este argumento para descartar la cámara de la cuadra 3?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: cada paso lleva necesariamente al siguiente."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: el tesorero maneja la plata y sabe de cuotas."
+        },
+        {
+          "id": "c",
+          "texto": "No: las cámaras nunca sirven para nada."
+        },
+        {
+          "id": "d",
+          "texto": "No: la asamblea puede decidir en cada paso si sigue o no, y el tesorero no muestra que cada paso sea probable."
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "La cadena solo asusta si cada paso es seguro; como la asamblea vota cada gasto, hay varios puntos donde se puede parar."
+    },
+    {
+      "id": "pendiente_resbaladiza-c1",
+      "concepto": "T13:pendiente_resbaladiza",
+      "nivel": "crear",
+      "ambito": "trabajo",
+      "texto": "El panadero del turno de la madrugada propone probar un pan de masa madre nuevo los sábados. La dueña dice: si probamos un pan nuevo, después querremos cambiar todo el menú, perderemos a los clientes de siempre y tendremos que cerrar.",
+      "pregunta": "Reescribe la respuesta de la dueña sin la pendiente resbaladiza: evalúa solo el primer paso.",
+      "rubrica": [
+        {
+          "texto": "No encadena pasos hasta un final catastrófico",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "tendremos que cerrar",
+            "todo el menu",
+            "perderemos"
+          ]
+        },
+        {
+          "texto": "Habla del primer paso y de cómo medirlo",
+          "tipo": "conAlguna",
+          "marcas": [
+            "probar",
+            "prueba",
+            "probemos",
+            "un mes",
+            "unas semanas",
+            "sabados",
+            "medir",
+            "contemos",
+            "contar",
+            "ventas",
+            "si no funciona"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Probemos el pan de masa madre nuevo durante cuatro sábados, contemos cuántos se venden y si no funciona lo quitamos.",
+      "explicacion": "Evaluar solo el primer paso, con un plazo y una forma de medirlo, muestra que la cadena se puede detener donde la dueña quiera."
+    },
+    {
+      "id": "disponibilidad-i1",
+      "concepto": "T14:disponibilidad",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "El papá no quiere que la hija viaje en bus a estudiar a otra ciudad porque la semana pasada vio en las noticias un accidente de bus en la carretera. Prefiere que viaje en el auto de un conocido, aunque no sabe cuántos accidentes hay en cada caso.",
+      "pregunta": "¿Qué sesgo está empujando la decisión del papá?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Costo hundido"
+        },
+        {
+          "id": "b",
+          "texto": "Efecto halo"
+        },
+        {
+          "id": "c",
+          "texto": "Disponibilidad"
+        },
+        {
+          "id": "d",
+          "texto": "Statu quo"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Decide por el caso que tiene fresco en la memoria, no por cuántos accidentes hay de cada cuántos viajes en bus y en auto."
+    },
+    {
+      "id": "disponibilidad-i2",
+      "concepto": "T14:disponibilidad",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "Desde que robaron una bicicleta frente a la cancha, el grupo de mensajería del barrio dice que la cancha es el lugar más peligroso del barrio. Nadie ha revisado dónde ocurrieron los otros robos del año.",
+      "pregunta": "¿Qué atajo mental hay en la conclusión del grupo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Exceso de confianza"
+        },
+        {
+          "id": "b",
+          "texto": "Anclaje"
+        },
+        {
+          "id": "c",
+          "texto": "Costo hundido"
+        },
+        {
+          "id": "d",
+          "texto": "Disponibilidad"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Un robo reciente y comentado pesa más que el conteo de todos los robos del año, que nadie ha mirado."
+    },
+    {
+      "id": "disponibilidad-a1",
+      "concepto": "T14:disponibilidad",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "La dueña quiere dejar de vender a crédito a los restaurantes. 'Me acuerdo clarito del que se fue sin pagar hace dos años', dice. Hoy le compran a crédito doce restaurantes y todos pagan a tiempo.",
+      "pregunta": "¿Qué frase delata la disponibilidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Me acuerdo clarito del que se fue sin pagar hace dos años"
+        },
+        {
+          "id": "b",
+          "texto": "quiere dejar de vender a crédito"
+        },
+        {
+          "id": "c",
+          "texto": "doce restaurantes"
+        },
+        {
+          "id": "d",
+          "texto": "todos pagan a tiempo"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "La razón es un caso que recuerda con fuerza, aunque los datos de hoy (doce que pagan a tiempo) dicen otra cosa."
+    },
+    {
+      "id": "disponibilidad-a2",
+      "concepto": "T14:disponibilidad",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "El abuelo no quiere vacunarse contra la gripe. Dice que a un amigo suyo le dio fiebre después de la vacuna y que eso se le quedó grabado. No ha preguntado en el centro de salud cuántas personas tienen reacciones.",
+      "pregunta": "¿En qué parte está el caso que el abuelo usa en lugar de la tasa base?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "no quiere vacunarse contra la gripe"
+        },
+        {
+          "id": "b",
+          "texto": "a un amigo suyo le dio fiebre después de la vacuna"
+        },
+        {
+          "id": "c",
+          "texto": "No ha preguntado en el centro de salud"
+        },
+        {
+          "id": "d",
+          "texto": "cuántas personas tienen reacciones"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "El caso del amigo es fácil de recordar, pero no dice de cada cuántas personas vacunadas pasa algo así."
+    },
+    {
+      "id": "disponibilidad-e1",
+      "concepto": "T14:disponibilidad",
+      "nivel": "evaluar",
+      "ambito": "trabajo",
+      "texto": "Un sábado se quemó toda una tanda de pan y la dueña quedó tan impresionada que quiere cambiar el horno. En el registro de los últimos seis meses hay ese caso y otro más, de unas 300 tandas.",
+      "pregunta": "¿Se sostiene cambiar el horno si quitas la impresión del caso que recuerda?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: un horno que quema una tanda entera ya no sirve."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: si a la dueña le impresionó, debe ser grave."
+        },
+        {
+          "id": "c",
+          "texto": "No con estos datos: son 2 de unas 300 tandas; el caso se recuerda por lo fuerte, no porque pase seguido."
+        },
+        {
+          "id": "d",
+          "texto": "No: los hornos nunca queman el pan, la culpa fue del panadero."
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "El registro da la tasa base: dos tandas quemadas de unas 300; con eso, el caso del sábado no basta para cambiar el horno."
+    },
+    {
+      "id": "disponibilidad-c1",
+      "concepto": "T14:disponibilidad",
+      "nivel": "crear",
+      "ambito": "comunidad",
+      "texto": "Después de que una vecina de la cuadra 3 contó en el grupo que le robaron el celular saliendo de la asamblea, la junta propone pasar todas las asambleas a la mañana porque de noche roban mucho.",
+      "pregunta": "Escribe qué revisaría la junta con el antídoto de la disponibilidad antes de decidir.",
+      "rubrica": [
+        {
+          "texto": "No repite la conclusión sacada de un caso",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "roban mucho"
+          ]
+        },
+        {
+          "texto": "Busca la tasa base",
+          "tipo": "conAlguna",
+          "marcas": [
+            "de cada",
+            "cuantos",
+            "cuantas",
+            "tasa",
+            "registro",
+            "registros",
+            "datos",
+            "dato",
+            "contar",
+            "veces",
+            "frecuencia"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Antes de cambiar el horario, la junta va a contar cuántos robos hubo de noche y de día en el último año.",
+      "explicacion": "Un robo contado en el grupo se recuerda fácil; solo el conteo por horario dice si de noche roban más."
+    },
+    {
+      "id": "cobertura-i1",
+      "concepto": "T19:cobertura",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "Un portal de noticias de la ciudad dice que van a cerrar la cancha del barrio para hacer un parqueadero. La junta ya averiguó quién está detrás del portal y no encontró nada raro. Ahora quieren saber si otros portales o la alcaldía dicen lo mismo.",
+      "pregunta": "¿Qué movimiento de SIFT toca ahora?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Detente"
+        },
+        {
+          "id": "b",
+          "texto": "Encuentra mejor cobertura"
+        },
+        {
+          "id": "c",
+          "texto": "Investiga la fuente"
+        },
+        {
+          "id": "d",
+          "texto": "Rastrea el origen"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "La fuente ya se investigó; ahora se trata de ver si otras fuentes confiables cuentan lo mismo, en vez de quedarse con una sola nota."
+    },
+    {
+      "id": "cobertura-i2",
+      "concepto": "T19:cobertura",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "El abuelo vio en un video que una vacuna nueva para adultos mayores llega gratis el mes que viene. No le importa tanto quién hizo el video: lo que quiere es ver si otras fuentes confiables, como el centro de salud, cuentan lo mismo.",
+      "pregunta": "¿Qué movimiento de SIFT toca ahora?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Investiga la fuente"
+        },
+        {
+          "id": "b",
+          "texto": "Rastrea el origen"
+        },
+        {
+          "id": "c",
+          "texto": "Encuentra mejor cobertura"
+        },
+        {
+          "id": "d",
+          "texto": "Detente"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Buscar si el centro de salud y otras fuentes confiables dicen lo mismo es encontrar mejor cobertura de la noticia."
+    },
+    {
+      "id": "cobertura-a1",
+      "concepto": "T19:cobertura",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "Un portal de noticias de la ciudad titula: la harina subirá 40% en noviembre, según un solo comerciante consultado. La dueña está pensando en subir el precio del pan desde ya.",
+      "pregunta": "¿Qué detalle del mensaje te dice que hay que buscar mejor cobertura?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "según un solo comerciante consultado"
+        },
+        {
+          "id": "b",
+          "texto": "la harina subirá 40% en noviembre"
+        },
+        {
+          "id": "c",
+          "texto": "subir el precio del pan"
+        },
+        {
+          "id": "d",
+          "texto": "Un portal de noticias de la ciudad titula"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Una sola voz consultada no basta para un anuncio de precios; hay que ver si el gremio, otros proveedores u otros portales dicen lo mismo."
+    },
+    {
+      "id": "cobertura-e1",
+      "concepto": "T19:cobertura",
+      "nivel": "evaluar",
+      "ambito": "comunidad",
+      "texto": "En el grupo del barrio comparten un titular: un portal de noticias de la ciudad dice que la alcaldía va a quitar las luces con sensor de todas las calles. Otros dos portales copiaron la misma nota palabra por palabra, citando al primero.",
+      "pregunta": "¿Alcanza con esto para creerlo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: ya son tres portales que lo dicen"
+        },
+        {
+          "id": "b",
+          "texto": "Sí: el titular es claro y no deja dudas"
+        },
+        {
+          "id": "c",
+          "texto": "No: los portales de noticias nunca dicen la verdad"
+        },
+        {
+          "id": "d",
+          "texto": "No: los tres repiten la misma nota, así que es una sola fuente; hay que buscar una cobertura independiente, como un anuncio de la alcaldía"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Tres copias de la misma nota no son tres fuentes: falta alguien que lo cuente por su cuenta, como la propia alcaldía."
+    },
+    {
+      "id": "cobertura-c1",
+      "concepto": "T19:cobertura",
+      "nivel": "crear",
+      "ambito": "trabajo",
+      "texto": "El panadero del turno de la madrugada vio en un video que el gobierno dará un subsidio para hornos a gas a las panaderías pequeñas. Solo ese video lo dice.",
+      "pregunta": "Escribe qué buscarías y dónde para saber si otras fuentes dicen lo mismo.",
+      "rubrica": [
+        {
+          "texto": "Nombra otras fuentes donde buscar",
+          "tipo": "conAlguna",
+          "marcas": [
+            "otras fuentes",
+            "otros medios",
+            "otros portales",
+            "pagina oficial",
+            "sitio oficial",
+            "gremio",
+            "camara de comercio",
+            "anuncio oficial",
+            "alcaldia",
+            "ministerio"
+          ]
+        },
+        {
+          "texto": "Dice que buscaría o compararía",
+          "tipo": "conAlguna",
+          "marcas": [
+            "buscar",
+            "buscaria",
+            "busco",
+            "revisar",
+            "revisaria",
+            "comparar",
+            "compararia",
+            "averiguar",
+            "preguntar",
+            "preguntaria"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Buscaría el subsidio en la página oficial del gobierno y en otros medios, y preguntaría en el gremio de panaderos si alguien más lo anunció.",
+      "explicacion": "Un solo video no basta: si el subsidio existe, tiene que aparecer en un anuncio oficial y en otras fuentes que no copien ese video."
+    },
+    {
+      "id": "autoridad-i1",
+      "concepto": "T13:autoridad",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "El hijo mayor dice que la mamá debería dejar la medicina para la presión, porque un futbolista famoso contó en una entrevista que él se curó solo con jugos.",
+      "pregunta": "¿Qué falacia hay en lo que dice el hijo mayor?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Apelación a la mayoría"
+        },
+        {
+          "id": "b",
+          "texto": "Apelación a una autoridad inapropiada"
+        },
+        {
+          "id": "c",
+          "texto": "Falsa analogía"
+        },
+        {
+          "id": "d",
+          "texto": "Ataque a la persona"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Un futbolista sabe de fútbol, no de presión arterial; su fama no convierte su experiencia en una razón médica."
+    },
+    {
+      "id": "autoridad-i2",
+      "concepto": "T13:autoridad",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "El proveedor de harina asegura que su harina es la más sana del mercado: lo dice un nutricionista que aparece en sus folletos y que trabaja para su empresa.",
+      "pregunta": "¿Qué falacia hay en lo que dice el proveedor?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Señal débil tomada como prueba"
+        },
+        {
+          "id": "b",
+          "texto": "Equívoco"
+        },
+        {
+          "id": "c",
+          "texto": "Pendiente resbaladiza"
+        },
+        {
+          "id": "d",
+          "texto": "Apelación a una autoridad inapropiada"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "El nutricionista trabaja para la empresa que vende la harina: tiene interés propio y no se sabe en qué se basa ni si otros expertos dicen lo mismo."
+    },
+    {
+      "id": "autoridad-a1",
+      "concepto": "T13:autoridad",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "En el grupo de mensajería del barrio circula un audio: un señor que se presenta como experto en seguridad dice que las luces con sensor atraen a los ladrones. No dice su nombre ni en qué se basa. La secretaria de la junta pidió los datos de robos.",
+      "pregunta": "¿En qué parte está la apelación a una autoridad inapropiada?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "un señor que se presenta como experto en seguridad"
+        },
+        {
+          "id": "b",
+          "texto": "La secretaria de la junta pidió los datos de robos"
+        },
+        {
+          "id": "c",
+          "texto": "En el grupo de mensajería del barrio circula un audio"
+        },
+        {
+          "id": "d",
+          "texto": "las luces con sensor"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Todo el peso del audio está en que alguien se presenta como experto, pero no se sabe quién es ni en qué se basa; pedir los datos es la forma de comprobarlo."
+    },
+    {
+      "id": "autoridad-a2",
+      "concepto": "T13:autoridad",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "La tía insiste en que la nevera vieja gasta poco: su vecino es mecánico de carros y le dijo que las neveras de antes eran mejores. La factura de luz subió este mes. El papá quiere medir el consumo.",
+      "pregunta": "¿Qué frase usa a un conocedor de otro tema para dar por cierta la afirmación?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La factura de luz subió este mes"
+        },
+        {
+          "id": "b",
+          "texto": "El papá quiere medir el consumo"
+        },
+        {
+          "id": "c",
+          "texto": "su vecino es mecánico de carros y le dijo que las neveras de antes eran mejores"
+        },
+        {
+          "id": "d",
+          "texto": "la nevera vieja gasta poco"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Saber de carros no hace a nadie experto en el consumo de una nevera; medir el consumo, como propone el papá, sí responde la pregunta."
+    },
+    {
+      "id": "autoridad-e1",
+      "concepto": "T13:autoridad",
+      "nivel": "evaluar",
+      "ambito": "trabajo",
+      "texto": "La dueña quiere poner la segunda sucursal en la terminal porque un influenciador de cocina con muchos seguidores dijo en un video que las panaderías de terminal son el mejor negocio.",
+      "pregunta": "¿Alcanza la opinión del influenciador para decidir dónde poner la sucursal?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "No: saber de cocina no lo hace experto en dónde poner un local, no se sabe en qué se basa y faltan datos de ventas y arriendos de la terminal."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: si tiene muchos seguidores, debe saber de negocios."
+        },
+        {
+          "id": "c",
+          "texto": "No: los influenciadores siempre se equivocan."
+        },
+        {
+          "id": "d",
+          "texto": "Sí: un video con muchas vistas ya es una prueba."
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "La cantidad de seguidores no dice nada sobre el negocio en la terminal; la decisión necesita datos propios, no la frase de alguien que habla fuera de su tema."
+    },
+    {
+      "id": "autoridad-c1",
+      "concepto": "T13:autoridad",
+      "nivel": "crear",
+      "ambito": "comunidad",
+      "texto": "La secretaria de la junta escribió: el sobrino de un concejal, que estudia derecho, dice que las cámaras del barrio son ilegales, así que hay que desmontarlas ya.",
+      "pregunta": "Escribe qué buscarías o preguntarías antes de aceptar lo que dice el sobrino del concejal.",
+      "rubrica": [
+        {
+          "texto": "No da la conclusión por cierta",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "hay que desmontarlas ya",
+            "desmontarlas ya"
+          ]
+        },
+        {
+          "texto": "Dice dónde o a quién comprobaría",
+          "tipo": "conAlguna",
+          "marcas": [
+            "norma",
+            "ley",
+            "abogado",
+            "abogada",
+            "experto",
+            "experta",
+            "en que se basa",
+            "fuente",
+            "consultar",
+            "consultaria",
+            "preguntar",
+            "preguntaria",
+            "alcaldia",
+            "reglamento"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 10 palabras",
+          "tipo": "largo",
+          "minimo": 10
+        }
+      ],
+      "respuestaModelo": "Preguntaría en qué se basa, buscaría la norma sobre cámaras en la alcaldía y consultaría a un abogado que sepa del tema.",
+      "explicacion": "Un estudiante emparentado con un concejal no es una fuente suficiente: hay que ver la norma y preguntar a alguien que sí sea experto."
+    },
+    {
+      "id": "exceso_confianza-i1",
+      "concepto": "T14:exceso_confianza",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "El panadero del turno de la madrugada asegura que puede sacar el doble de pan para la sucursal de la terminal con el mismo horno y sin ayuda. 'Lo tengo clarísimo, no hace falta probar', dice, aunque nunca ha hecho más de 300 panes en una noche.",
+      "pregunta": "¿Qué sesgo hay en lo que asegura el panadero?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Exceso de confianza"
+        },
+        {
+          "id": "b",
+          "texto": "Disponibilidad"
+        },
+        {
+          "id": "c",
+          "texto": "Confirmación"
+        },
+        {
+          "id": "d",
+          "texto": "Efecto de arrastre"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Está seguro de algo que nunca ha hecho y además rechaza probarlo, así que su certeza no tiene cómo comprobarse."
+    },
+    {
+      "id": "exceso_confianza-i2",
+      "concepto": "T14:exceso_confianza",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "El coordinador de la ronda vecinal dice que con cuatro voluntarios cubren todo el barrio toda la noche. 'Seguro que alcanza, yo conozco estas calles', explica, aunque nadie ha medido cuánto se tarda una vuelta completa.",
+      "pregunta": "¿Qué atajo mental hay en el cálculo del coordinador?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Anclaje"
+        },
+        {
+          "id": "b",
+          "texto": "Exceso de confianza"
+        },
+        {
+          "id": "c",
+          "texto": "Statu quo"
+        },
+        {
+          "id": "d",
+          "texto": "Efecto halo"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Conocer las calles no es lo mismo que haber medido la vuelta; su seguridad no se apoya en ningún dato que se pueda revisar."
+    },
+    {
+      "id": "exceso_confianza-a1",
+      "concepto": "T14:exceso_confianza",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "El hijo mayor quiere manejar el auto nuevo hasta la costa en las vacaciones. Sacó la licencia hace un mes y dice: 'manejo mejor que la mayoría, no necesito que nadie me acompañe'. El viaje es de nueve horas por carretera de montaña.",
+      "pregunta": "¿Qué frase delata el exceso de confianza?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sacó la licencia hace un mes"
+        },
+        {
+          "id": "b",
+          "texto": "El viaje es de nueve horas"
+        },
+        {
+          "id": "c",
+          "texto": "manejo mejor que la mayoría, no necesito que nadie me acompañe"
+        },
+        {
+          "id": "d",
+          "texto": "por carretera de montaña"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Con un mes de licencia no tiene cómo saber que maneja mejor que la mayoría; esa certeza sin prueba es la que lo lleva a ir solo."
+    },
+    {
+      "id": "exceso_confianza-a2",
+      "concepto": "T14:exceso_confianza",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "La dueña calculó que la sucursal del centro recupera la inversión en seis meses. Cuando la cajera le preguntó qué pasa si las ventas salen la mitad, respondió: 'eso no va a pasar, estoy segura de mis números'. No tiene ventas de prueba en esa zona.",
+      "pregunta": "¿En qué parte está el exceso de confianza?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "recupera la inversión en seis meses"
+        },
+        {
+          "id": "b",
+          "texto": "qué pasa si las ventas salen la mitad"
+        },
+        {
+          "id": "c",
+          "texto": "No tiene ventas de prueba en esa zona"
+        },
+        {
+          "id": "d",
+          "texto": "eso no va a pasar, estoy segura de mis números"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Descarta el escenario malo sin ningún dato de ventas en la zona; estar segura no reemplaza una prueba."
+    },
+    {
+      "id": "exceso_confianza-e1",
+      "concepto": "T14:exceso_confianza",
+      "nivel": "evaluar",
+      "ambito": "comunidad",
+      "texto": "La secretaria de la junta asegura que la asamblea aprobará las cámaras sin ninguna duda, y por eso no preparó el presupuesto detallado. No les ha preguntado a los vecinos ni contado cuántos piensan ir.",
+      "pregunta": "¿Se sostiene la decisión de no preparar el presupuesto si quitas el exceso de confianza?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: si ella está tan segura, es porque conoce bien al barrio."
+        },
+        {
+          "id": "b",
+          "texto": "No: su seguridad no se apoya en nada que pueda comprobar; sin preguntar ni contar no sabe si se aprobará."
+        },
+        {
+          "id": "c",
+          "texto": "Sí: un presupuesto detallado no cambia lo que vota la gente."
+        },
+        {
+          "id": "d",
+          "texto": "No: las asambleas nunca aprueban cámaras."
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "La única razón para saltarse el presupuesto es su certeza, y el texto muestra que no tiene ningún dato que la respalde."
+    },
+    {
+      "id": "exceso_confianza-c1",
+      "concepto": "T14:exceso_confianza",
+      "nivel": "crear",
+      "ambito": "personal",
+      "texto": "La hija dice que va a sacar el puntaje para la beca en otra ciudad sí o sí, así que no quiere presentarse a la universidad de aquí como plan de respaldo.",
+      "pregunta": "Reescribe el plan de la hija con el antídoto del exceso de confianza.",
+      "rubrica": [
+        {
+          "texto": "No da por seguro el resultado",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "si o si"
+          ]
+        },
+        {
+          "texto": "Dice qué tendría que pasar para equivocarse o qué haría en ese caso",
+          "tipo": "conAlguna",
+          "marcas": [
+            "equivoco",
+            "equivocarme",
+            "equivocaria",
+            "equivocarse",
+            "si no",
+            "que pasa si",
+            "plan b",
+            "respaldo",
+            "por si acaso",
+            "en caso de"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Me equivocaría si el puntaje sale bajo en matemáticas; por si acaso, también me presento a la universidad de aquí.",
+      "explicacion": "Escribir qué tendría que pasar para fallar convierte la certeza en algo que se puede revisar, y deja listo un camino si pasa."
+    },
+    {
+      "id": "riesgo_relativo-i1",
+      "concepto": "T18:riesgo_relativo",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "El abuelo lee en un folleto que una pastilla para el dolor de rodilla duplica el riesgo de una reacción en la piel, y decide dejar de tomarla. El folleto no dice cuántas personas tienen esa reacción.",
+      "pregunta": "¿Qué error con los datos hay en este razonamiento?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Confundir correlación con causa"
+        },
+        {
+          "id": "b",
+          "texto": "Riesgo relativo sin la cifra absoluta"
+        },
+        {
+          "id": "c",
+          "texto": "Apelación a las consecuencias"
+        },
+        {
+          "id": "d",
+          "texto": "Ignorar la tasa base"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Duplicar puede ser pasar de 1 a 2 personas de cada 10.000 o de 10 a 20 de cada 100; sin saber de cuánto a cuánto, el abuelo no puede pesar ese riesgo contra el alivio del dolor."
+    },
+    {
+      "id": "riesgo_relativo-i2",
+      "concepto": "T18:riesgo_relativo",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "Una vecina de la cuadra 3 escribe en el grupo de mensajería del barrio: los robos de bicicletas subieron un 100% este año, hay que hacer ronda todas las noches. No dice cuántas bicicletas se robaron.",
+      "pregunta": "¿Qué error con los datos hay en este mensaje?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Ignorar la tasa base"
+        },
+        {
+          "id": "b",
+          "texto": "Efecto de arrastre"
+        },
+        {
+          "id": "c",
+          "texto": "Confundir correlación con causa"
+        },
+        {
+          "id": "d",
+          "texto": "Riesgo relativo sin la cifra absoluta"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Subir un 100% puede ser pasar de 1 a 2 bicicletas o de 20 a 40; sin la cifra de cuánto a cuánto no se sabe si el cambio justifica una ronda todas las noches."
+    },
+    {
+      "id": "riesgo_relativo-a1",
+      "concepto": "T18:riesgo_relativo",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "El vendedor de un horno nuevo le dice a la dueña: con nuestro horno, el pan quemado baja un 50%. Hoy se queman unos 4 panes de cada 1.000, y el horno cuesta lo que la panadería gana en un año.",
+      "pregunta": "¿Qué frase da la cifra absoluta que el vendedor no mencionó?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "el pan quemado baja un 50%"
+        },
+        {
+          "id": "b",
+          "texto": "el horno cuesta lo que la panadería gana en un año"
+        },
+        {
+          "id": "c",
+          "texto": "se queman unos 4 panes de cada 1.000"
+        },
+        {
+          "id": "d",
+          "texto": "El vendedor de un horno nuevo le dice a la dueña"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Bajar un 50% es pasar de 4 a 2 panes quemados de cada 1.000: 2 panes menos por cada mil, algo pequeño frente a lo que cuesta el horno."
+    },
+    {
+      "id": "riesgo_relativo-a2",
+      "concepto": "T18:riesgo_relativo",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "La tía reenvía un titular: comer carne asada dos veces por semana sube un 20% el riesgo de una enfermedad del estómago. Más abajo, la nota dice que el riesgo pasa de 5 a 6 casos por cada 10.000 personas. La tía decide que en la familia no se asa más.",
+      "pregunta": "¿Qué frase permite ver el tamaño real del cambio?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "sube un 20% el riesgo de una enfermedad del estómago"
+        },
+        {
+          "id": "b",
+          "texto": "el riesgo pasa de 5 a 6 casos por cada 10.000 personas"
+        },
+        {
+          "id": "c",
+          "texto": "en la familia no se asa más"
+        },
+        {
+          "id": "d",
+          "texto": "comer carne asada dos veces por semana"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Pasar de 5 a 6 casos es subir un 20%, pero es un caso más por cada 10.000 personas; el titular solo daba el porcentaje, que suena mucho más grande."
+    },
+    {
+      "id": "riesgo_relativo-e1",
+      "concepto": "T18:riesgo_relativo",
+      "nivel": "evaluar",
+      "ambito": "comunidad",
+      "texto": "El tesorero de la junta dice en la asamblea que sacar la basura la noche anterior triplica el riesgo de ratas en la cuadra, y propone una multa para quien lo haga.",
+      "pregunta": "¿Alcanza el dato de que el riesgo se triplica para decidir la multa?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: triplicar es un aumento enorme, sea cual sea el punto de partida"
+        },
+        {
+          "id": "b",
+          "texto": "No: falta saber de cuánto a cuánto; no es lo mismo pasar de 1 a 3 cuadras con ratas de cada 100 que de 10 a 30"
+        },
+        {
+          "id": "c",
+          "texto": "Sí: el tesorero maneja las cuentas de la junta y sabe de números"
+        },
+        {
+          "id": "d",
+          "texto": "No: las multas nunca sirven en un barrio"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Triplicar dice cuántas veces crece el riesgo, no cuánto es; para decidir una multa hace falta saber cuántas cuadras más tendrían ratas."
+    },
+    {
+      "id": "riesgo_relativo-c1",
+      "concepto": "T18:riesgo_relativo",
+      "nivel": "crear",
+      "ambito": "trabajo",
+      "texto": "La cajera lee en un aviso del gremio que los panaderos que trabajan de madrugada tienen un 50% más de riesgo de accidentes con el horno. La dueña quiere cerrar el turno de la madrugada sin más.",
+      "pregunta": "Escribe cómo debería decir el aviso ese riesgo para que se entienda su tamaño real.",
+      "rubrica": [
+        {
+          "texto": "Da la cifra de cuánto a cuánto o por cada cuántos",
+          "tipo": "conAlguna",
+          "marcas": [
+            "de cada",
+            "por cada",
+            "cada cien",
+            "cada mil",
+            "pasa de",
+            "paso de",
+            "de cuanto a cuanto",
+            "sobre cada",
+            "casos de"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "El riesgo de accidente con el horno pasa de 2 a 3 de cada 100 panaderos al año cuando trabajan de madrugada: es un 50% más, pero es un caso más por cada 100.",
+      "explicacion": "El 50% solo se entiende con el punto de partida: pasar de 2 a 3 accidentes por cada 100 panaderos es un caso más, y con esa cifra se puede decidir con calma."
+    },
+    {
+      "id": "falsa_analogia-i1",
+      "concepto": "T13:falsa_analogia",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "La dueña dice: la panadería es como una familia, y en una familia nadie cobra horas extra; así que el personal del turno de la madrugada tampoco debería cobrarlas.",
+      "pregunta": "¿Qué falacia hay en lo que dice la dueña?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Falso dilema"
+        },
+        {
+          "id": "b",
+          "texto": "Falsa causa"
+        },
+        {
+          "id": "c",
+          "texto": "Falsa analogía"
+        },
+        {
+          "id": "d",
+          "texto": "Generalización apresurada"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Una panadería y una familia se parecen en el trato cercano, pero no en lo que importa aquí: el personal trabaja por un salario y tiene un contrato."
+    },
+    {
+      "id": "falsa_analogia-i2",
+      "concepto": "T13:falsa_analogia",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "El papá sobre estudiar afuera: mandar a la hija a otra ciudad es como soltar un pájaro que nunca ha volado; se va a estrellar. Mejor que estudie aquí.",
+      "pregunta": "¿Qué falacia hay en lo que dice el papá?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Falsa analogía"
+        },
+        {
+          "id": "b",
+          "texto": "Apelación a las consecuencias"
+        },
+        {
+          "id": "c",
+          "texto": "Ataque a la persona"
+        },
+        {
+          "id": "d",
+          "texto": "Señal débil tomada como prueba"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "La hija no es un pájaro sin experiencia: puede prepararse, tener apoyo y volver; la comparación ignora justo esas diferencias."
+    },
+    {
+      "id": "falsa_analogia-a1",
+      "concepto": "T13:falsa_analogia",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "En la asamblea, el tesorero de la junta dijo: el barrio vecino puso una ronda vecinal y le fue bien, así que a nosotros también nos irá bien, aunque allá son cuarenta casas y aquí son cuatrocientas. Pido votar hoy.",
+      "pregunta": "¿Qué frase traslada a este barrio lo que pasó en el otro sin mirar si se parecen en lo que importa?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Pido votar hoy"
+        },
+        {
+          "id": "b",
+          "texto": "aunque allá son cuarenta casas y aquí son cuatrocientas"
+        },
+        {
+          "id": "c",
+          "texto": "el tesorero de la junta dijo"
+        },
+        {
+          "id": "d",
+          "texto": "el barrio vecino puso una ronda vecinal y le fue bien, así que a nosotros también nos irá bien"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Ahí se pasa del otro barrio a este; la frase sobre las casas muestra la diferencia importante que esa conclusión pasa por alto."
+    },
+    {
+      "id": "falsa_analogia-a2",
+      "concepto": "T13:falsa_analogia",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "El proveedor de harina le dice a la dueña: un horno es como un carro, mientras más viejo, más gasta; así que el de tu panadería hay que cambiarlo. Ese horno tiene seis años y le hicieron mantenimiento en marzo.",
+      "pregunta": "¿En qué parte está la falsa analogía?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "le hicieron mantenimiento en marzo"
+        },
+        {
+          "id": "b",
+          "texto": "El proveedor de harina le dice a la dueña"
+        },
+        {
+          "id": "c",
+          "texto": "un horno es como un carro, mientras más viejo, más gasta"
+        },
+        {
+          "id": "d",
+          "texto": "Ese horno tiene seis años"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "La comparación con un carro reemplaza al dato que importa, que es cuánto gasta y cómo funciona este horno con su mantenimiento al día."
+    },
+    {
+      "id": "falsa_analogia-e1",
+      "concepto": "T13:falsa_analogia",
+      "nivel": "evaluar",
+      "ambito": "comunidad",
+      "texto": "Una vecina de la cuadra 3 escribe: en el edificio de mi hermana pusieron rejas y se acabaron los robos, entonces si cerramos con rejas la cuadra 3 tampoco habrá robos.",
+      "pregunta": "¿Se sostiene la conclusión de la vecina?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: si funcionó en un lugar, funciona en cualquier otro."
+        },
+        {
+          "id": "b",
+          "texto": "No: un edificio con una sola entrada y una cuadra abierta con muchas casas se diferencian justo en lo que importa para los robos."
+        },
+        {
+          "id": "c",
+          "texto": "Sí: la hermana vio el resultado con sus propios ojos."
+        },
+        {
+          "id": "d",
+          "texto": "No: las rejas nunca reducen los robos."
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Lo que pasó en el edificio solo sirve de guía si los dos casos se parecen en cómo entran los ladrones, y el texto no lo muestra."
+    },
+    {
+      "id": "falsa_analogia-c1",
+      "concepto": "T13:falsa_analogia",
+      "nivel": "crear",
+      "ambito": "personal",
+      "texto": "El hijo mayor dice: la factura de luz de la tía bajó a la mitad cuando cambió los bombillos; nuestra casa es como la de ella, así que si cambiamos los bombillos nuestra factura también bajará a la mitad.",
+      "pregunta": "Reescribe el razonamiento sin la falsa analogía: di en qué tendrías que comparar las dos casas.",
+      "rubrica": [
+        {
+          "texto": "No da por hecho que las casas son iguales",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "es como la de ella",
+            "tambien bajara a la mitad"
+          ]
+        },
+        {
+          "texto": "Dice qué compararía",
+          "tipo": "conAlguna",
+          "marcas": [
+            "comparar",
+            "compara",
+            "comparemos",
+            "diferencia",
+            "diferencias",
+            "nevera",
+            "aparatos",
+            "consumo",
+            "cuantos",
+            "personas",
+            "parecido",
+            "parecen"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Antes de esperar lo mismo, comparemos el consumo de las dos casas: cuántos bombillos, qué aparatos y cuántas personas viven en cada una.",
+      "explicacion": "La analogía solo ayuda si las casas se parecen en lo que hace gastar luz; por eso hay que comparar aparatos, bombillos y personas."
+    },
+    {
+      "id": "statu_quo-i1",
+      "concepto": "T14:statu_quo",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "Hace años la panadería le compra la harina al mismo proveedor. Otro proveedor ofrece la misma calidad 15 % más barata y entrega en la puerta, pero la dueña dice: 'siempre hemos trabajado con él, mejor no movamos nada'.",
+      "pregunta": "¿Qué sesgo está empujando la decisión de la dueña?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Confirmación"
+        },
+        {
+          "id": "b",
+          "texto": "Statu quo"
+        },
+        {
+          "id": "c",
+          "texto": "Efecto de arrastre"
+        },
+        {
+          "id": "d",
+          "texto": "Anclaje"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "La única razón es que así ha sido siempre; quedarse con el proveedor de siempre también tiene un costo, el 15 % de más."
+    },
+    {
+      "id": "statu_quo-i2",
+      "concepto": "T14:statu_quo",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "La factura de luz subió y un técnico mostró que la nevera vieja gasta el triple que una nueva. La mamá no quiere cambiarla: 'así ha estado siempre en la cocina y funciona'.",
+      "pregunta": "¿Qué atajo mental hay en la respuesta de la mamá?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Statu quo"
+        },
+        {
+          "id": "b",
+          "texto": "Disponibilidad"
+        },
+        {
+          "id": "c",
+          "texto": "Exceso de confianza"
+        },
+        {
+          "id": "d",
+          "texto": "Efecto halo"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Prefiere dejar la nevera porque así ha estado siempre, sin poner en la balanza lo que cuesta cada mes quedarse igual."
+    },
+    {
+      "id": "statu_quo-a1",
+      "concepto": "T14:statu_quo",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "En la asamblea se propuso sacar la basura los martes en vez de los lunes, porque el camión pasa los miércoles. La secretaria de la junta dijo: 'toda la vida la hemos sacado los lunes, para qué cambiar'. La basura se queda dos días en la calle.",
+      "pregunta": "¿Qué frase delata el statu quo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "En la asamblea se propuso"
+        },
+        {
+          "id": "b",
+          "texto": "porque el camión pasa los miércoles"
+        },
+        {
+          "id": "c",
+          "texto": "toda la vida la hemos sacado los lunes, para qué cambiar"
+        },
+        {
+          "id": "d",
+          "texto": "La basura se queda dos días en la calle"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "La secretaria defiende el lunes solo porque así se ha hecho, sin pesar el costo de dejar la basura dos días en la calle."
+    },
+    {
+      "id": "statu_quo-a2",
+      "concepto": "T14:statu_quo",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "La cajera propone anotar las ventas en una planilla del computador en vez del cuaderno, porque cada mes faltan cuentas. La dueña responde: 'el cuaderno nos ha servido veinte años, no hay por qué cambiarlo'.",
+      "pregunta": "¿En qué parte está el statu quo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La cajera propone anotar las ventas"
+        },
+        {
+          "id": "b",
+          "texto": "en vez del cuaderno"
+        },
+        {
+          "id": "c",
+          "texto": "porque cada mes faltan cuentas"
+        },
+        {
+          "id": "d",
+          "texto": "el cuaderno nos ha servido veinte años, no hay por qué cambiarlo"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Veinte años de costumbre no responden al problema que trae la cajera: que cada mes faltan cuentas con el cuaderno."
+    },
+    {
+      "id": "statu_quo-e1",
+      "concepto": "T14:statu_quo",
+      "nivel": "evaluar",
+      "ambito": "personal",
+      "texto": "La familia paga un plan de celular que ya no usa completo; otro plan cuesta la mitad y les sirve igual. El papá dice que lo dejen así porque siempre han tenido ese y cambiar es un enredo.",
+      "pregunta": "¿Se sostiene seguir con el plan de siempre si quitas el statu quo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: cambiar de plan siempre trae problemas."
+        },
+        {
+          "id": "b",
+          "texto": "No con esas razones: haberlo tenido siempre no es un beneficio; el enredo de un trámite hay que compararlo con pagar el doble cada mes."
+        },
+        {
+          "id": "c",
+          "texto": "Sí: si lo han tenido tanto tiempo, por algo será."
+        },
+        {
+          "id": "d",
+          "texto": "No: los planes nuevos siempre son mejores."
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Quedarse igual también es una opción con costo; puesto al lado del otro plan, el enredo de un día pesa poco frente a pagar el doble todos los meses."
+    },
+    {
+      "id": "statu_quo-c1",
+      "concepto": "T14:statu_quo",
+      "nivel": "crear",
+      "ambito": "comunidad",
+      "texto": "La junta lleva diez años haciendo la ronda vecinal a pie entre las 10 y las 12 de la noche, aunque la mayoría de los robos son de madrugada. Cuando alguien propuso cambiar el horario, el coordinador dijo: 'siempre se ha hecho así'.",
+      "pregunta": "Reescribe la respuesta del coordinador comparando quedarse igual como una opción más.",
+      "rubrica": [
+        {
+          "texto": "No defiende el horario solo por costumbre",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "siempre se ha hecho asi"
+          ]
+        },
+        {
+          "texto": "Pesa lo que cuesta quedarse igual",
+          "tipo": "conAlguna",
+          "marcas": [
+            "costo",
+            "costos",
+            "cuesta",
+            "comparar",
+            "comparemos",
+            "si seguimos",
+            "quedarnos igual",
+            "madrugada",
+            "ventaja",
+            "desventaja",
+            "opcion",
+            "opciones"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Comparemos las dos opciones: seguir de 10 a 12 cuesta dejar sola la madrugada, que es cuando más roban.",
+      "explicacion": "Mirado como una opción nueva, el horario de siempre tiene un costo claro: deja sin ronda las horas en que pasan la mayoría de los robos."
+    },
+    {
+      "id": "origen-i1",
+      "concepto": "T19:origen",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "En el grupo del barrio circula una foto de una calle inundada con el texto: así quedó la avenida anoche. Una vecina sospecha que la foto es vieja o de otra ciudad y quiere encontrar dónde y cuándo se publicó por primera vez.",
+      "pregunta": "¿Qué movimiento de SIFT toca ahora?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Investiga la fuente"
+        },
+        {
+          "id": "b",
+          "texto": "Detente"
+        },
+        {
+          "id": "c",
+          "texto": "Encuentra mejor cobertura"
+        },
+        {
+          "id": "d",
+          "texto": "Rastrea el origen"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Buscar la primera publicación de la foto para ver si es de otro lugar o de otro año es rastrear el origen."
+    },
+    {
+      "id": "origen-i2",
+      "concepto": "T19:origen",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "Un cliente le muestra a la cajera una frase que circula en las redes: según un estudio, el pan de masa madre no engorda. La cajera quiere encontrar ese estudio y leer qué dice exactamente.",
+      "pregunta": "¿Qué movimiento de SIFT toca ahora?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Rastrea el origen"
+        },
+        {
+          "id": "b",
+          "texto": "Encuentra mejor cobertura"
+        },
+        {
+          "id": "c",
+          "texto": "Investiga la fuente"
+        },
+        {
+          "id": "d",
+          "texto": "Detente"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "La frase dice citar un estudio; ir al estudio mismo y leer qué dice es rastrear el origen del dato."
+    },
+    {
+      "id": "origen-a1",
+      "concepto": "T19:origen",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "La tía reenvía al grupo de la familia un mensaje: un ingeniero dijo en una entrevista que una nevera vieja gasta el triple de luz, por eso hay que cambiarla ya.",
+      "pregunta": "¿Qué detalle del mensaje te dice que hay que rastrear el origen?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "hay que cambiarla ya"
+        },
+        {
+          "id": "b",
+          "texto": "un ingeniero dijo en una entrevista"
+        },
+        {
+          "id": "c",
+          "texto": "La tía reenvía al grupo de la familia"
+        },
+        {
+          "id": "d",
+          "texto": "una nevera vieja"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "El mensaje se apoya en una entrevista que no muestra; hay que encontrarla y ver si el ingeniero dijo eso y en qué contexto."
+    },
+    {
+      "id": "origen-e1",
+      "concepto": "T19:origen",
+      "nivel": "evaluar",
+      "ambito": "personal",
+      "texto": "El hijo mayor ve en un portal de noticias de la ciudad un recorte del rector de una universidad: estudiar fuera de casa no sirve. Busca el video completo y el rector decía: estudiar fuera de casa no sirve si uno no tiene con qué sostenerse.",
+      "pregunta": "¿Alcanza con el recorte para decir que el rector está en contra de estudiar afuera?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: la frase sale textual en el portal"
+        },
+        {
+          "id": "b",
+          "texto": "No: en el video completo la frase tiene una condición que cambia su sentido; el recorte la saca de contexto"
+        },
+        {
+          "id": "c",
+          "texto": "Sí: un rector sabe de lo que habla"
+        },
+        {
+          "id": "d",
+          "texto": "No: los rectores siempre defienden a su propia universidad"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Al llegar al video original aparece la condición que el recorte quitó: el rector habla de tener con qué sostenerse, no de estudiar afuera en general."
+    },
+    {
+      "id": "origen-c1",
+      "concepto": "T19:origen",
+      "nivel": "crear",
+      "ambito": "comunidad",
+      "texto": "En el grupo del barrio circula una captura de un supuesto aviso de la empresa de luz: mañana habrá un corte de 12 horas en toda la zona. La captura está recortada arriba y abajo.",
+      "pregunta": "Escribe qué buscarías y dónde para llegar al aviso original.",
+      "rubrica": [
+        {
+          "texto": "Busca el aviso en su lugar de origen",
+          "tipo": "conAlguna",
+          "marcas": [
+            "original",
+            "pagina oficial",
+            "sitio oficial",
+            "cuenta oficial",
+            "linea de atencion",
+            "fuente original",
+            "primera vez",
+            "donde se publico"
+          ]
+        },
+        {
+          "texto": "Mira la fecha o el texto completo",
+          "tipo": "conAlguna",
+          "marcas": [
+            "fecha",
+            "cuando",
+            "completo",
+            "completa",
+            "contexto",
+            "sin recortar",
+            "entero",
+            "entera"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Buscaría el aviso original en la página oficial de la empresa de luz y miraría la fecha y el texto completo, sin recortar.",
+      "explicacion": "Una captura recortada puede esconder la fecha o la zona; el aviso completo en el canal oficial de la empresa dice si el corte es mañana y si es en este barrio."
+    },
+    {
+      "id": "falsa_causa-i1",
+      "concepto": "T13:falsa_causa",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "Desde que la junta pintó la cancha de azul bajaron los robos nocturnos en el barrio. El color azul espanta a los ladrones.",
+      "pregunta": "¿Qué falacia hay en este razonamiento?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Equívoco"
+        },
+        {
+          "id": "b",
+          "texto": "Falsa analogía"
+        },
+        {
+          "id": "c",
+          "texto": "Apelación a la mayoría"
+        },
+        {
+          "id": "d",
+          "texto": "Falsa causa"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "La única razón es que una cosa pasó después de la otra; no se buscaron otras causas, como más luces o la ronda vecinal."
+    },
+    {
+      "id": "falsa_causa-i2",
+      "concepto": "T13:falsa_causa",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "Los sábados que trabaja la cajera nueva se vende menos pan. La dueña concluye que la cajera nueva espanta a los clientes, aunque esos sábados también llovió.",
+      "pregunta": "¿Qué falacia hay en la conclusión de la dueña?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Generalización apresurada"
+        },
+        {
+          "id": "b",
+          "texto": "Falsa causa"
+        },
+        {
+          "id": "c",
+          "texto": "Ataque a la persona"
+        },
+        {
+          "id": "d",
+          "texto": "Pendiente resbaladiza"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Que dos cosas coincidan no muestra que una cause la otra, y aquí hay otra causa a la vista: la lluvia de esos sábados."
+    },
+    {
+      "id": "falsa_causa-a1",
+      "concepto": "T13:falsa_causa",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "El abuelo empezó a tomar un té de hierbas el lunes y el viernes ya no le dolía la rodilla. Ahora le dice a toda la familia que el té le curó la rodilla. Esa semana también dejó de subir a la terraza.",
+      "pregunta": "¿Qué frase saca una conclusión de causa sin más prueba que el orden en el tiempo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "el viernes ya no le dolía la rodilla"
+        },
+        {
+          "id": "b",
+          "texto": "Esa semana también dejó de subir a la terraza"
+        },
+        {
+          "id": "c",
+          "texto": "El abuelo empezó a tomar un té de hierbas el lunes"
+        },
+        {
+          "id": "d",
+          "texto": "Ahora le dice a toda la familia que el té le curó la rodilla"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Ahí se afirma la causa; el texto mismo da otra posible, que dejó de subir escaleras, y la rodilla pudo mejorar sola."
+    },
+    {
+      "id": "falsa_causa-a2",
+      "concepto": "T13:falsa_causa",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "Mensaje en el grupo de mensajería del barrio: desde que llegaron los nuevos vecinos de la cuadra 3 hay más basura en la calle, así que ellos son los que la botan. Ese mismo mes el camión de la basura cambió de horario.",
+      "pregunta": "¿En qué parte está la falsa causa?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "así que ellos son los que la botan"
+        },
+        {
+          "id": "b",
+          "texto": "Ese mismo mes el camión de la basura cambió de horario"
+        },
+        {
+          "id": "c",
+          "texto": "Mensaje en el grupo de mensajería del barrio"
+        },
+        {
+          "id": "d",
+          "texto": "hay más basura en la calle"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "La conclusión culpa a los nuevos vecinos solo por la coincidencia en el tiempo, cuando el cambio de horario del camión es otra causa posible."
+    },
+    {
+      "id": "falsa_causa-e1",
+      "concepto": "T13:falsa_causa",
+      "nivel": "evaluar",
+      "ambito": "trabajo",
+      "texto": "La dueña cambió de proveedor de harina en junio y en julio subieron las ventas de los sábados. Quiere firmar un contrato de dos años porque la harina nueva hizo vender más. En julio también empezaron las vacaciones escolares.",
+      "pregunta": "¿Alcanza esto para creer que la harina nueva hizo subir las ventas?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: las ventas subieron justo después del cambio."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: un mes de datos es suficiente para firmar dos años."
+        },
+        {
+          "id": "c",
+          "texto": "No: las vacaciones escolares u otra cosa pudieron subir las ventas; hace falta comparar más meses o preguntar a los clientes."
+        },
+        {
+          "id": "d",
+          "texto": "No: cambiar de proveedor nunca afecta las ventas."
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Un solo mes y una coincidencia en el tiempo no separan el efecto de la harina del de las vacaciones; hacen falta más razones antes de firmar."
+    },
+    {
+      "id": "falsa_causa-c1",
+      "concepto": "T13:falsa_causa",
+      "nivel": "crear",
+      "ambito": "personal",
+      "texto": "La hija sacó mejores notas el mes en que el papá le compró un escritorio nuevo. El papá dice: fue el escritorio, así que le compro uno igual al hijo mayor para que también mejore.",
+      "pregunta": "Escribe qué otras causas revisarías antes de concluir que el escritorio subió las notas.",
+      "rubrica": [
+        {
+          "texto": "No da por hecha la causa",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "fue el escritorio"
+          ]
+        },
+        {
+          "texto": "Nombra otras causas posibles",
+          "tipo": "conAlguna",
+          "marcas": [
+            "otra causa",
+            "otras causas",
+            "estudio",
+            "estudiar",
+            "profesor",
+            "examenes",
+            "horas",
+            "coincidencia",
+            "casualidad",
+            "revisaria",
+            "revisar",
+            "preguntar"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Revisaría si ese mes estudió más horas, si los exámenes fueron más fáciles o si cambió de profesor, antes de darle el mérito al escritorio.",
+      "explicacion": "Que las notas subieran el mismo mes no prueba que el escritorio sea la causa; hay que descartar otras explicaciones antes de comprar otro."
+    },
+    {
+      "id": "arrastre-i1",
+      "concepto": "T14:arrastre",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "En el grupo de mensajería del barrio ya van cuarenta vecinos que pusieron alambre de púas en sus rejas. La tía dice que ella también lo va a poner: 'si todo el mundo lo está haciendo, por algo será'.",
+      "pregunta": "¿Qué sesgo está empujando la decisión de la tía?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Anclaje"
+        },
+        {
+          "id": "b",
+          "texto": "Confirmación"
+        },
+        {
+          "id": "c",
+          "texto": "Statu quo"
+        },
+        {
+          "id": "d",
+          "texto": "Efecto de arrastre"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "La razón de la tía es cuántos lo hacen, no qué razones tiene cada uno ni si sirve para su casa."
+    },
+    {
+      "id": "arrastre-i2",
+      "concepto": "T14:arrastre",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "Todas las panaderías de la terminal empezaron a vender café. La dueña quiere comprar una cafetera cara para la sucursal nueva porque ahora todas lo hacen, sin saber si a sus clientes les interesa.",
+      "pregunta": "¿Qué atajo mental hay en el plan de la dueña?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Costo hundido"
+        },
+        {
+          "id": "b",
+          "texto": "Efecto de arrastre"
+        },
+        {
+          "id": "c",
+          "texto": "Disponibilidad"
+        },
+        {
+          "id": "d",
+          "texto": "Exceso de confianza"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Quiere invertir porque las demás lo hacen, sin ninguna razón propia sobre sus clientes."
+    },
+    {
+      "id": "arrastre-a1",
+      "concepto": "T14:arrastre",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "La hija quiere estudiar Administración porque casi todo su curso se inscribió ahí. 'Si tantos la escogen, debe ser lo mejor', dice. Ella misma cuenta que le gusta más el dibujo.",
+      "pregunta": "¿Qué frase muestra la conclusión que saca la hija de lo que hacen los demás?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "quiere estudiar Administración"
+        },
+        {
+          "id": "b",
+          "texto": "Ella misma cuenta"
+        },
+        {
+          "id": "c",
+          "texto": "Si tantos la escogen, debe ser lo mejor"
+        },
+        {
+          "id": "d",
+          "texto": "le gusta más el dibujo"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Pasa de cuántos la escogen a que es lo mejor para ella, sin mirar las razones de cada uno ni las suyas."
+    },
+    {
+      "id": "arrastre-a2",
+      "concepto": "T14:arrastre",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "Una vecina de la cuadra 3 cambió su voto sobre la cuota de la olla comunitaria. Antes decía que la cuota era muy alta. Cuando le preguntaron por qué cambió, contestó: 'vi que casi todos estaban levantando la mano'.",
+      "pregunta": "¿En qué parte está el efecto de arrastre?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "vi que casi todos estaban levantando la mano"
+        },
+        {
+          "id": "b",
+          "texto": "cambió su voto sobre la cuota"
+        },
+        {
+          "id": "c",
+          "texto": "Antes decía que la cuota era muy alta"
+        },
+        {
+          "id": "d",
+          "texto": "Cuando le preguntaron por qué cambió"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Su única razón para cambiar fue ver a muchos votando; no dice que la cuota haya bajado ni que alguien le diera un argumento."
+    },
+    {
+      "id": "arrastre-e1",
+      "concepto": "T14:arrastre",
+      "nivel": "evaluar",
+      "ambito": "personal",
+      "texto": "Muchos vecinos están cambiando sus neveras por un modelo que se puso de moda. El papá quiere hacer lo mismo porque todos la están comprando, aunque la nevera de la casa funciona bien y gasta poco.",
+      "pregunta": "¿Se sostiene la compra si quitas el efecto de arrastre?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: si muchos la compran, seguro es mejor."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: comprar lo mismo que los vecinos ahorra tiempo de buscar."
+        },
+        {
+          "id": "c",
+          "texto": "No con lo que dice el texto: la única razón es cuántos la compran, y la nevera de la casa funciona y gasta poco."
+        },
+        {
+          "id": "d",
+          "texto": "No: las neveras de moda siempre salen malas."
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Sin el 'todos la están comprando' no queda ninguna razón para cambiar una nevera que funciona bien y gasta poco."
+    },
+    {
+      "id": "arrastre-c1",
+      "concepto": "T14:arrastre",
+      "nivel": "crear",
+      "ambito": "trabajo",
+      "texto": "La dueña quiere subir el precio del pan un 20 % porque todas las panaderías del barrio lo subieron este mes. No ha revisado si sus costos de harina subieron.",
+      "pregunta": "Reescribe el plan de la dueña con el antídoto del efecto de arrastre.",
+      "rubrica": [
+        {
+          "texto": "No usa lo que hacen todas como razón",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "todas las panaderias",
+            "todos lo hacen",
+            "todas lo hacen"
+          ]
+        },
+        {
+          "texto": "Busca razones propias",
+          "tipo": "conAlguna",
+          "marcas": [
+            "razones",
+            "razon",
+            "por que",
+            "costos",
+            "costo",
+            "harina",
+            "mis numeros",
+            "calcular",
+            "cuanto me cuesta",
+            "revisar"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Antes de subir el precio, voy a revisar cuánto me cuesta hoy la harina y qué razones tuvieron las otras panaderías para subir.",
+      "explicacion": "Que muchas panaderías suban no dice nada de los costos propios; las razones de cada una y los números de la dueña son los que pesan."
+    },
+    {
+      "id": "senal_debil-i1",
+      "concepto": "T13:senal_debil",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "Anoche un muchacho con capucha pasó dos veces por la cuadra 3 mirando las casas. Seguro es el que está robando de noche; hay que avisar a la ronda vecinal para que lo saquen del barrio.",
+      "pregunta": "¿Qué falacia hay en este razonamiento?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Falsa analogía"
+        },
+        {
+          "id": "b",
+          "texto": "Equívoco"
+        },
+        {
+          "id": "c",
+          "texto": "Señal débil tomada como prueba"
+        },
+        {
+          "id": "d",
+          "texto": "Apelación a la mayoría"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Pasar con capucha y mirar las casas tiene muchas explicaciones posibles; esa señal no prueba que el muchacho sea quien roba."
+    },
+    {
+      "id": "senal_debil-i2",
+      "concepto": "T13:senal_debil",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "La hija casi no comió en la cena dos noches seguidas. El papá concluye: está deprimida por lo de la universidad, no hay otra explicación.",
+      "pregunta": "¿Qué falacia hay en la conclusión del papá?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Señal débil tomada como prueba"
+        },
+        {
+          "id": "b",
+          "texto": "Generalización apresurada"
+        },
+        {
+          "id": "c",
+          "texto": "Pendiente resbaladiza"
+        },
+        {
+          "id": "d",
+          "texto": "Ataque a la persona"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Comer poco dos noches es una señal que puede venir de muchas cosas, como cansancio o un malestar; el papá la toma como prueba segura de una sola causa."
+    },
+    {
+      "id": "senal_debil-a1",
+      "concepto": "T13:senal_debil",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "El horno hizo un ruido raro esta mañana. Eso quiere decir que el horno está por fallar del todo, así que hay que comprar uno nuevo esta semana. Ya llamé al proveedor para pedir precios.",
+      "pregunta": "¿Qué frase delata que una señal débil se tomó como prueba?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "El horno hizo un ruido raro esta mañana"
+        },
+        {
+          "id": "b",
+          "texto": "Eso quiere decir que el horno está por fallar del todo"
+        },
+        {
+          "id": "c",
+          "texto": "hay que comprar uno nuevo esta semana"
+        },
+        {
+          "id": "d",
+          "texto": "Ya llamé al proveedor para pedir precios"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "El ruido es solo la señal; el salto está en afirmar que quiere decir que el horno va a fallar, sin preguntar si el ruido tiene otra causa, como una pieza floja."
+    },
+    {
+      "id": "senal_debil-a2",
+      "concepto": "T13:senal_debil",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "En el grupo de mensajería del barrio, una vecina de la cuadra 3 escribe: Vi una moto sin placa estacionada frente a la cancha toda la tarde. Esa moto es robada, clarísimo. Mañana la junta debería hablar de las cámaras.",
+      "pregunta": "¿En qué parte está la señal débil tomada como prueba?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Mañana la junta debería hablar de las cámaras"
+        },
+        {
+          "id": "b",
+          "texto": "Vi una moto sin placa estacionada frente a la cancha toda la tarde"
+        },
+        {
+          "id": "c",
+          "texto": "En el grupo de mensajería del barrio"
+        },
+        {
+          "id": "d",
+          "texto": "Esa moto es robada, clarísimo"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Una moto sin placa es una señal con varias explicaciones posibles, como una placa en trámite; la vecina la convierte en prueba segura de un robo."
+    },
+    {
+      "id": "senal_debil-e1",
+      "concepto": "T13:senal_debil",
+      "nivel": "evaluar",
+      "ambito": "trabajo",
+      "texto": "La cajera llegó cinco minutos tarde dos días de esta semana. La dueña dice: llegar tarde es señal de que ya no le importa el trabajo; seguro está buscando otro empleo.",
+      "pregunta": "¿Alcanza esa señal para sostener la conclusión de la dueña?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: llegar tarde siempre muestra falta de interés por el trabajo."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: dos días en una semana ya son un patrón suficiente."
+        },
+        {
+          "id": "c",
+          "texto": "No: la tardanza puede tener otras causas, como el bus o algo en la casa, y conviene preguntarle antes de concluir."
+        },
+        {
+          "id": "d",
+          "texto": "No: la dueña no debería opinar sobre el personal."
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Dos tardanzas son una señal con muchas explicaciones posibles; para concluir que la cajera busca otro empleo hace falta algo más que esa señal."
+    },
+    {
+      "id": "senal_debil-c1",
+      "concepto": "T13:senal_debil",
+      "nivel": "crear",
+      "ambito": "personal",
+      "texto": "La factura de luz llegó más alta este mes. El papá dice: seguro el hijo mayor deja el computador prendido toda la noche, esta factura lo prueba.",
+      "pregunta": "Reescribe la conclusión del papá sin tomar la factura como prueba segura.",
+      "rubrica": [
+        {
+          "texto": "No toma la factura como prueba de la culpa del hijo",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "lo prueba",
+            "esta factura lo prueba",
+            "seguro el hijo"
+          ]
+        },
+        {
+          "texto": "Abre otras explicaciones o dice qué revisaría",
+          "tipo": "conAlguna",
+          "marcas": [
+            "puede",
+            "podria",
+            "tal vez",
+            "quizas",
+            "otra explicacion",
+            "otras causas",
+            "revisar",
+            "comparar",
+            "preguntar",
+            "medidor"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "La factura subió este mes, pero puede tener otras causas; voy a revisar el consumo de cada aparato y preguntar en la casa antes de culpar a alguien.",
+      "explicacion": "Una factura más alta es una señal; antes de culpar a alguien conviene mirar otras causas posibles, como la nevera, una tarifa nueva o más días en casa."
+    },
+    {
+      "id": "halo-i1",
+      "concepto": "T14:halo",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "El panadero nuevo llegó muy bien vestido, habla muy bonito y les cayó bien a todos. La dueña ya quiere dejarlo a cargo del turno de la madrugada, aunque todavía no lo ha visto hornear ni una tanda.",
+      "pregunta": "¿Qué sesgo está empujando la decisión de la dueña?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Efecto de arrastre"
+        },
+        {
+          "id": "b",
+          "texto": "Exceso de confianza"
+        },
+        {
+          "id": "c",
+          "texto": "Efecto halo"
+        },
+        {
+          "id": "d",
+          "texto": "Statu quo"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "La buena impresión por cómo viste y habla tapa lo que de verdad importa para el turno: cómo hornea, que todavía no ha visto."
+    },
+    {
+      "id": "halo-i2",
+      "concepto": "T14:halo",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "El candidato a presidente de la junta organizó el campeonato de fútbol en la cancha y a todos les encantó. Una vecina de la cuadra 3 dice que va a votar por él porque 'si organizó tan bien el campeonato, seguro maneja bien la plata'.",
+      "pregunta": "¿Qué atajo mental hay en el voto de la vecina?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Disponibilidad"
+        },
+        {
+          "id": "b",
+          "texto": "Costo hundido"
+        },
+        {
+          "id": "c",
+          "texto": "Anclaje"
+        },
+        {
+          "id": "d",
+          "texto": "Efecto halo"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Organizar un campeonato y manejar la plata de la junta son cualidades distintas; lo bueno de una no prueba la otra."
+    },
+    {
+      "id": "halo-a1",
+      "concepto": "T14:halo",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "La tía recomienda un médico para el abuelo: 'es simpatiquísimo, tiene un consultorio precioso, seguro que es el mejor para el corazón'. No sabe si es cardiólogo.",
+      "pregunta": "¿En qué frase la buena impresión se convierte en conclusión sobre otra cualidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "es simpatiquísimo"
+        },
+        {
+          "id": "b",
+          "texto": "seguro que es el mejor para el corazón"
+        },
+        {
+          "id": "c",
+          "texto": "tiene un consultorio precioso"
+        },
+        {
+          "id": "d",
+          "texto": "No sabe si es cardiólogo"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "De lo simpático y lo bonito del consultorio salta a su capacidad para tratar el corazón, que necesita su propio dato."
+    },
+    {
+      "id": "halo-a2",
+      "concepto": "T14:halo",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "El proveedor de harina nuevo tiene una camioneta moderna y unos empaques muy bonitos. La dueña dijo: 'con esa presentación, su harina tiene que ser de primera'. Todavía no ha hecho una prueba de pan con esa harina.",
+      "pregunta": "¿Qué frase delata el efecto halo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "con esa presentación, su harina tiene que ser de primera"
+        },
+        {
+          "id": "b",
+          "texto": "tiene una camioneta moderna"
+        },
+        {
+          "id": "c",
+          "texto": "unos empaques muy bonitos"
+        },
+        {
+          "id": "d",
+          "texto": "Todavía no ha hecho una prueba de pan"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "La presentación es una cualidad; la calidad de la harina es otra, y solo una prueba de pan la muestra."
+    },
+    {
+      "id": "halo-e1",
+      "concepto": "T14:halo",
+      "nivel": "evaluar",
+      "ambito": "personal",
+      "texto": "La hija quiere estudiar en una universidad de otra ciudad porque su edificio es moderno y sale muy bien en las fotos. No ha mirado cuántos de sus egresados consiguen trabajo ni cuánto cuesta vivir allá.",
+      "pregunta": "¿Alcanza lo que sabe la hija para elegir esa universidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: un edificio moderno muestra que la universidad invierte en todo."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: si sale bien en las fotos, otros estudiantes también la van a elegir."
+        },
+        {
+          "id": "c",
+          "texto": "No: las universidades de otras ciudades siempre son peores."
+        },
+        {
+          "id": "d",
+          "texto": "No: el edificio es una sola cualidad; la calidad de la carrera y el costo de vivir allá necesitan su propio dato."
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Lo bonito del edificio no dice nada del empleo de los egresados ni del costo de vida; cada cualidad se mira con su propio dato."
+    },
+    {
+      "id": "halo-c1",
+      "concepto": "T14:halo",
+      "nivel": "crear",
+      "ambito": "comunidad",
+      "texto": "La junta quiere contratar para las cámaras a la empresa del cuñado de un vecino, porque 'es gente muy amable y seria'. Nadie ha pedido la garantía ni comparado el precio.",
+      "pregunta": "Reescribe la propuesta de la junta con el antídoto del efecto halo.",
+      "rubrica": [
+        {
+          "texto": "No usa la simpatía como razón para contratar",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "muy amable",
+            "gente seria"
+          ]
+        },
+        {
+          "texto": "Evalúa cada cualidad por separado",
+          "tipo": "conAlguna",
+          "marcas": [
+            "garantia",
+            "precio",
+            "precios",
+            "por separado",
+            "cada cualidad",
+            "calidad",
+            "comparar",
+            "dato",
+            "datos",
+            "referencias",
+            "instalaciones"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Antes de contratar, revisemos por separado la garantía, el precio y la calidad de las cámaras de esa empresa.",
+      "explicacion": "Que sean amables es una cualidad; la garantía, el precio y la calidad de las cámaras se miran cada una con su propio dato."
+    },
+    {
+      "id": "mayoria-i1",
+      "concepto": "T13:mayoria",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "En el grupo de mensajería del barrio ya van ochenta mensajes a favor de poner rejas en la entrada de la cancha. Si tanta gente lo apoya, es porque las rejas son la mejor solución contra los robos.",
+      "pregunta": "¿Qué falacia hay en este razonamiento?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Falso dilema"
+        },
+        {
+          "id": "b",
+          "texto": "Apelación a una autoridad inapropiada"
+        },
+        {
+          "id": "c",
+          "texto": "Apelación a la mayoría"
+        },
+        {
+          "id": "d",
+          "texto": "Generalización apresurada"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Que muchos apoyen las rejas muestra lo que la gente prefiere, no si las rejas reducen los robos."
+    },
+    {
+      "id": "mayoria-i2",
+      "concepto": "T13:mayoria",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "El proveedor de harina le dice a la dueña: casi todas las panaderías de la ciudad ya usan nuestra harina especial, así que es la mejor para tu pan.",
+      "pregunta": "¿Qué falacia usa el proveedor?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Falsa analogía"
+        },
+        {
+          "id": "b",
+          "texto": "Equívoco"
+        },
+        {
+          "id": "c",
+          "texto": "Señal débil tomada como prueba"
+        },
+        {
+          "id": "d",
+          "texto": "Apelación a la mayoría"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Que muchas panaderías la usen no dice si es la mejor para este pan; además, el dato de que casi todas la usan viene del mismo proveedor."
+    },
+    {
+      "id": "mayoria-a1",
+      "concepto": "T13:mayoria",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "La hija quiere estudiar diseño en otra ciudad. El hijo mayor le dice: todos mis compañeros estudiaron ingeniería, así que eso es lo que conviene estudiar. Además, la universidad de aquí queda cerca.",
+      "pregunta": "¿En qué parte está la apelación a la mayoría?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La hija quiere estudiar diseño en otra ciudad"
+        },
+        {
+          "id": "b",
+          "texto": "todos mis compañeros estudiaron ingeniería, así que eso es lo que conviene estudiar"
+        },
+        {
+          "id": "c",
+          "texto": "Además, la universidad de aquí queda cerca"
+        },
+        {
+          "id": "d",
+          "texto": "El hijo mayor le dice"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Que muchos compañeros eligieran ingeniería no dice qué le conviene a la hija, que tiene otros intereses."
+    },
+    {
+      "id": "mayoria-a2",
+      "concepto": "T13:mayoria",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "La cajera dice que hay que bajar el precio del pan francés. Cuenta que en la fila todo el mundo comenta que está caro, y que si la mayoría lo dice, debe ser cierto que nos están dejando de comprar. Las ventas del mes todavía no se han revisado.",
+      "pregunta": "¿Qué frase delata la apelación a la mayoría?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "si la mayoría lo dice, debe ser cierto que nos están dejando de comprar"
+        },
+        {
+          "id": "b",
+          "texto": "hay que bajar el precio del pan francés"
+        },
+        {
+          "id": "c",
+          "texto": "en la fila todo el mundo comenta que está caro"
+        },
+        {
+          "id": "d",
+          "texto": "Las ventas del mes todavía no se han revisado"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "Ahí se pasa de lo que muchos comentan a dar por cierto que las ventas bajan, cuando eso se sabe mirando las ventas, que nadie ha revisado."
+    },
+    {
+      "id": "mayoria-e1",
+      "concepto": "T13:mayoria",
+      "nivel": "evaluar",
+      "ambito": "personal",
+      "texto": "Para las vacaciones, la mamá propone ir a la playa porque en su trabajo todo el mundo va allá en diciembre. El abuelo camina con dificultad en la arena y el presupuesto alcanza justo.",
+      "pregunta": "¿Se sostiene la propuesta sin el argumento de que todo el mundo va?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: si todos van, debe ser un buen destino para cualquier familia."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: ir a donde va la mayoría evita sorpresas."
+        },
+        {
+          "id": "c",
+          "texto": "No: la playa es mala opción para cualquier vacación."
+        },
+        {
+          "id": "d",
+          "texto": "No: sin ese argumento no queda ninguna razón; falta mirar si al abuelo y al presupuesto les sirve la playa."
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Que otros vayan a la playa no dice nada sobre lo que le conviene a esta familia; la propuesta necesita razones propias."
+    },
+    {
+      "id": "mayoria-c1",
+      "concepto": "T13:mayoria",
+      "nivel": "crear",
+      "ambito": "comunidad",
+      "texto": "La secretaria de la junta escribe en el grupo de mensajería: casi todo el barrio ya está pagando la ronda vecinal privada, así que es la mejor manera de cuidar las casas. Los que falten, únanse.",
+      "pregunta": "Reescribe el mensaje de la secretaria sin apelar a la mayoría.",
+      "rubrica": [
+        {
+          "texto": "No usa cuánta gente paga como razón",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "casi todo el barrio",
+            "todo el barrio",
+            "todos",
+            "la mayoria"
+          ]
+        },
+        {
+          "texto": "Da una razón o un dato sobre la ronda",
+          "tipo": "conAlguna",
+          "marcas": [
+            "porque",
+            "dato",
+            "datos",
+            "robos",
+            "bajaron",
+            "resultados",
+            "comparar",
+            "cuantos",
+            "costo",
+            "funciona"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Propongo la ronda vecinal privada porque en las cuadras donde se paga los robos bajaron; pueden ver los datos en la próxima asamblea.",
+      "explicacion": "Cuántos pagan no dice si la ronda funciona; una buena propuesta muestra qué resultados tiene."
+    },
+    {
+      "id": "equivoco-i1",
+      "concepto": "T13:equivoco",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "La dueña anuncia que el pan de la sucursal es artesanal. Cuando un cliente pregunta, explica: es artesanal porque lo hornean personas, aunque la masa llegue congelada de una fábrica.",
+      "pregunta": "¿Qué falacia hay en la explicación de la dueña?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Equívoco"
+        },
+        {
+          "id": "b",
+          "texto": "Falsa causa"
+        },
+        {
+          "id": "c",
+          "texto": "Apelación a la mayoría"
+        },
+        {
+          "id": "d",
+          "texto": "Ataque a la persona"
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "La dueña acomoda la definición de artesanal para que su pan entre en la categoría; el cliente entiende artesanal como pan hecho a mano desde la masa."
+    },
+    {
+      "id": "equivoco-i2",
+      "concepto": "T13:equivoco",
+      "nivel": "identificar",
+      "ambito": "comunidad",
+      "texto": "En la asamblea, el tesorero de la junta dice: la ley dice que el barrio tiene derecho a la seguridad. Y un derecho no se discute, así que nadie puede discutir el gasto en cámaras que yo propongo.",
+      "pregunta": "¿Qué falacia hay en lo que dice el tesorero?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Pendiente resbaladiza"
+        },
+        {
+          "id": "b",
+          "texto": "Apelación a las consecuencias"
+        },
+        {
+          "id": "c",
+          "texto": "Equívoco"
+        },
+        {
+          "id": "d",
+          "texto": "Falso dilema"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Tener derecho a la seguridad no es lo mismo que tener que aprobar un gasto en cámaras; el tesorero pasa de un sentido al otro sin decirlo."
+    },
+    {
+      "id": "equivoco-a1",
+      "concepto": "T13:equivoco",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "El papá dice que el auto que quiere comprar es económico. Cuando la mamá pregunta por el precio, responde: es económico porque gasta poca gasolina, aunque cueste el doble que el otro. Entonces cabe en nuestro presupuesto.",
+      "pregunta": "¿En qué frase la palabra económico cambia de sentido?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "el auto que quiere comprar es económico"
+        },
+        {
+          "id": "b",
+          "texto": "es económico porque gasta poca gasolina"
+        },
+        {
+          "id": "c",
+          "texto": "aunque cueste el doble que el otro"
+        },
+        {
+          "id": "d",
+          "texto": "Entonces cabe en nuestro presupuesto"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "El papá probó que el auto gasta poca gasolina, pero al final usa económico como si fuera barato de comprar, que es otra cosa."
+    },
+    {
+      "id": "equivoco-a2",
+      "concepto": "T13:equivoco",
+      "nivel": "analizar",
+      "ambito": "trabajo",
+      "texto": "El panadero del turno de la madrugada dice que el pan de ayer está fresco: fresco es lo que no tiene moho, y este pan no tiene moho. Así que podemos venderlo como pan fresco del día.",
+      "pregunta": "¿Qué frase acomoda la definición para que el caso encaje?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "el pan de ayer está fresco"
+        },
+        {
+          "id": "b",
+          "texto": "fresco es lo que no tiene moho"
+        },
+        {
+          "id": "c",
+          "texto": "este pan no tiene moho"
+        },
+        {
+          "id": "d",
+          "texto": "podemos venderlo como pan fresco del día"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Para un cliente, pan fresco es pan hecho ese día; definirlo como pan sin moho estira la palabra para que el pan de ayer entre."
+    },
+    {
+      "id": "equivoco-e1",
+      "concepto": "T13:equivoco",
+      "nivel": "evaluar",
+      "ambito": "comunidad",
+      "texto": "La junta acordó que solo vota en la asamblea quien sea vecino activo. El tesorero dice que vecino activo es el que paga la cuota de la olla comunitaria, así que quien cocina en la olla pero no paga la cuota no puede votar.",
+      "pregunta": "¿Se sostiene la exclusión sin el cambio de sentido de la palabra activo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "No: el acuerdo no definió activo como pagar la cuota; primero hay que acordar la definición y después aplicarla."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: pagar es la única forma de participar en el barrio."
+        },
+        {
+          "id": "c",
+          "texto": "Sí: el tesorero maneja la plata, así que su definición es la buena."
+        },
+        {
+          "id": "d",
+          "texto": "No: en una asamblea deben votar todos sin ninguna condición."
+        }
+      ],
+      "correcta": "a",
+      "explicacion": "La exclusión depende de una definición que el tesorero acomodó; con el sentido común de activo, quien cocina en la olla sí participa."
+    },
+    {
+      "id": "equivoco-c1",
+      "concepto": "T13:equivoco",
+      "nivel": "crear",
+      "ambito": "personal",
+      "texto": "El hijo mayor dice que ya cumplió con lo que pidió el médico: caminar hasta la nevera también es actividad física, y el médico dijo que hiciera actividad física todos los días.",
+      "pregunta": "Reescribe lo que dice el hijo mayor usando actividad física en el mismo sentido que el médico.",
+      "rubrica": [
+        {
+          "texto": "No estira la palabra para que el caso encaje",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "hasta la nevera",
+            "nevera"
+          ]
+        },
+        {
+          "texto": "Nombra una actividad física de verdad",
+          "tipo": "conAlguna",
+          "marcas": [
+            "minutos",
+            "caminar",
+            "camine",
+            "camina",
+            "caminata",
+            "ejercicio",
+            "bicicleta",
+            "trotar",
+            "media hora",
+            "rato"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Hoy no hice la actividad física que pidió el médico; voy a caminar treinta minutos por el barrio en la tarde.",
+      "explicacion": "El médico se refería a moverse con un propósito y por un rato; caminar hasta la nevera solo cabe si se estira la palabra."
+    },
+    {
+      "id": "alarmismo-i1",
+      "concepto": "T13:alarmismo",
+      "nivel": "identificar",
+      "ambito": "personal",
+      "texto": "La hija dice que la universidad de la otra ciudad es mejor para lo que quiere estudiar. La mamá responde: eso no puede ser cierto, porque si lo fuera tendrías que irte lejos y la familia se separaría.",
+      "pregunta": "¿Qué falacia hay en la respuesta de la mamá?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Falso dilema"
+        },
+        {
+          "id": "b",
+          "texto": "Apelación a las consecuencias"
+        },
+        {
+          "id": "c",
+          "texto": "Pendiente resbaladiza"
+        },
+        {
+          "id": "d",
+          "texto": "Equívoco"
+        }
+      ],
+      "correcta": "b",
+      "explicacion": "Que la hija tenga que irse sería triste, pero eso no dice nada sobre si la universidad es mejor o no."
+    },
+    {
+      "id": "alarmismo-i2",
+      "concepto": "T13:alarmismo",
+      "nivel": "identificar",
+      "ambito": "trabajo",
+      "texto": "La dueña lee un informe del laboratorio que dice que la harina del proveedor actual trae más impurezas. Responde: ese informe tiene que estar mal, porque si fuera cierto tendríamos que cambiar de proveedor y eso nos sale carísimo.",
+      "pregunta": "¿Qué falacia hay en la respuesta de la dueña?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Generalización apresurada"
+        },
+        {
+          "id": "b",
+          "texto": "Señal débil tomada como prueba"
+        },
+        {
+          "id": "c",
+          "texto": "Ataque a la persona"
+        },
+        {
+          "id": "d",
+          "texto": "Apelación a las consecuencias"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "Lo caro de cambiar de proveedor no dice si el informe está bien o mal; eso se sabe revisando el informe."
+    },
+    {
+      "id": "alarmismo-a1",
+      "concepto": "T13:alarmismo",
+      "nivel": "analizar",
+      "ambito": "comunidad",
+      "texto": "En la asamblea se presentan las cifras de la estación de policía: los robos en la cuadra 3 no han subido este año. El tesorero de la junta dice: esas cifras no pueden ser ciertas, porque si las creemos la gente deja de pagar la ronda vecinal. Mejor no las publiquemos.",
+      "pregunta": "¿Qué frase delata la apelación a las consecuencias?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "los robos en la cuadra 3 no han subido este año"
+        },
+        {
+          "id": "b",
+          "texto": "esas cifras no pueden ser ciertas"
+        },
+        {
+          "id": "c",
+          "texto": "porque si las creemos la gente deja de pagar la ronda vecinal"
+        },
+        {
+          "id": "d",
+          "texto": "Mejor no las publiquemos"
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "La única razón que da el tesorero contra las cifras es lo malo que pasaría si se creen, no un error en las cifras."
+    },
+    {
+      "id": "alarmismo-a2",
+      "concepto": "T13:alarmismo",
+      "nivel": "analizar",
+      "ambito": "personal",
+      "texto": "El abuelo dice que la nevera vieja gasta poca luz: si gastara mucho, tendríamos que comprar otra, y no hay plata para eso. La factura de luz subió el mes pasado.",
+      "pregunta": "¿Qué frase muestra que se decide por la consecuencia y no por el dato?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "la nevera vieja gasta poca luz"
+        },
+        {
+          "id": "b",
+          "texto": "La factura de luz subió el mes pasado"
+        },
+        {
+          "id": "c",
+          "texto": "no hay plata para eso"
+        },
+        {
+          "id": "d",
+          "texto": "si gastara mucho, tendríamos que comprar otra"
+        }
+      ],
+      "correcta": "d",
+      "explicacion": "El abuelo no mide el consumo: rechaza que gaste mucho porque eso obligaría a comprar otra nevera."
+    },
+    {
+      "id": "alarmismo-e1",
+      "concepto": "T13:alarmismo",
+      "nivel": "evaluar",
+      "ambito": "trabajo",
+      "texto": "El panadero del turno de la madrugada dice que el horno de la segunda sucursal no puede tener una fuga de gas, porque si la tuviera tocaría parar la producción una semana y perderíamos los pedidos del sábado.",
+      "pregunta": "¿Se sostiene la conclusión sin la apelación a las consecuencias?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: parar una semana sería un daño tan grande que el horno tiene que estar bien."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: el panadero conoce el horno mejor que nadie."
+        },
+        {
+          "id": "c",
+          "texto": "No: perder pedidos sería malo, pero eso no dice si hay fuga; eso se sabe revisando el horno."
+        },
+        {
+          "id": "d",
+          "texto": "No: los hornos de gas siempre tienen fugas."
+        }
+      ],
+      "correcta": "c",
+      "explicacion": "Lo que costaría parar no cambia si hay o no una fuga; sin esa consecuencia no queda ninguna razón para descartarla."
+    },
+    {
+      "id": "alarmismo-c1",
+      "concepto": "T13:alarmismo",
+      "nivel": "crear",
+      "ambito": "comunidad",
+      "texto": "Una vecina de la cuadra 3 escribe en el grupo de mensajería: no puede ser verdad que la basura acumulada atraiga ratas, porque si fuera así nos tocaría pagar otro camión de basura.",
+      "pregunta": "Reescribe el mensaje separando si la afirmación es cierta de lo que costaría.",
+      "rubrica": [
+        {
+          "texto": "No rechaza la afirmación por su costo",
+          "tipo": "sinMarcas",
+          "marcas": [
+            "no puede ser verdad",
+            "no puede ser cierto",
+            "nos tocaria pagar"
+          ]
+        },
+        {
+          "texto": "Dice cómo averiguaría si es cierto",
+          "tipo": "conAlguna",
+          "marcas": [
+            "revisar",
+            "averiguar",
+            "preguntar",
+            "datos",
+            "mirar",
+            "comprobar",
+            "si es cierto",
+            "evidencia",
+            "ver si",
+            "contar"
+          ]
+        },
+        {
+          "texto": "Tiene al menos 12 palabras",
+          "tipo": "largo",
+          "minimo": 12
+        }
+      ],
+      "respuestaModelo": "Antes de discutir el costo del camión, conviene averiguar si la basura acumulada atrae ratas y después ver cómo pagarlo.",
+      "explicacion": "Primero se averigua si la basura atrae ratas; lo que cueste resolverlo es otra discusión que viene después."
+    }
+  ]
+}
