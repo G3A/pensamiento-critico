@@ -23,8 +23,11 @@ import pensamiento.web.seguridad.GestorTransaccionesRls;
 
 /**
  * Contra el PostgreSQL del compose. El catálogo es compartido y ya está sembrado (49 técnicas), así que
- * "dadoQueExisten" hace upsert de las filas de prueba como administrador y "dadoQueNoExiste" retira la fila
- * guardando una copia que se restaura al terminar cada prueba. Las lecturas van como rol de aplicación.
+ * "dadoQueExisten" hace upsert de las filas de prueba como administrador (guardando una copia que se restaura al terminar
+ * cada prueba). "dadoQueNoExiste" no borra nada: la lectura de esa técnica corre en una transacción del administrador que
+ * quita la fila sin disparar las claves foráneas (session_replication_role = replica) y siempre se deshace, porque desde el
+ * hito 7 las 49 técnicas tienen ejemplos, configuraciones, competencias e intentos que una cascada se llevaría, y ejecuciones
+ * que la impedirían. Las demás lecturas van como rol de aplicación.
  */
 @EnabledIfEnvironmentVariable(named = "CONTRACT_REAL", matches = "true")
 class RealRepositorioTecnicaContractIT extends RepositorioTecnicaContract {
@@ -44,7 +47,7 @@ class RealRepositorioTecnicaContractIT extends RepositorioTecnicaContract {
     private final BaseDatosDePrueba bd = new BaseDatosDePrueba();
     private final TransactionTemplate tx = new TransactionTemplate(new GestorTransaccionesRls(bd.dataSourceApp()));
     private final List<Map<String, Object>> filasRetiradas = new ArrayList<>();
-    private final List<Map<String, Object>> relacionesRetiradas = new ArrayList<>();
+    private java.util.Optional<IdTecnica> retirada = java.util.Optional.empty();
 
     @AfterEach
     void restaurarCatalogo() {
@@ -59,12 +62,8 @@ class RealRepositorioTecnicaContractIT extends RepositorioTecnicaContract {
                     .param("ec", fila.get("esquema_config")).param("ee", fila.get("esquema_entrada")).param("cd", fila.get("config_default"))
                     .param("est", fila.get("estado")).update();
         }
-        for (Map<String, Object> r : relacionesRetiradas) {
-            admin.sql("INSERT INTO relacion_tecnica (origen_id, destino_id, tipo) VALUES (:o, :d, :t) ON CONFLICT DO NOTHING")
-                    .param("o", r.get("origen_id")).param("d", r.get("destino_id")).param("t", r.get("tipo")).update();
-        }
         filasRetiradas.clear();
-        relacionesRetiradas.clear();
+        retirada = java.util.Optional.empty();
     }
 
     @Override
@@ -74,7 +73,9 @@ class RealRepositorioTecnicaContractIT extends RepositorioTecnicaContract {
             @Override public List<Familia> familias() { return tx.execute(e -> real.familias()); }
             @Override public List<Tecnica> todas() { return tx.execute(e -> real.todas()); }
             @Override public List<Tecnica> porFamilia(String codigoFamilia) { return tx.execute(e -> real.porFamilia(codigoFamilia)); }
-            @Override public java.util.Optional<Tecnica> porId(IdTecnica id) { return tx.execute(e -> real.porId(id)); }
+            @Override public java.util.Optional<Tecnica> porId(IdTecnica id) {
+                return retirada.equals(java.util.Optional.of(id)) ? sinLaFila(id) : tx.execute(e -> real.porId(id));
+            }
             @Override public long contar() { return tx.execute(e -> real.contar()); }
             @Override public List<Ejemplo> ejemplos(IdTecnica t) { return tx.execute(e -> real.ejemplos(t)); }
             @Override public java.util.Optional<Ejemplo> ejemplo(UUID id) { return tx.execute(e -> real.ejemplo(id)); }
@@ -144,11 +145,19 @@ class RealRepositorioTecnicaContractIT extends RepositorioTecnicaContract {
 
     @Override
     protected void dadoQueNoExiste(IdTecnica id) {
-        JdbcClient admin = bd.jdbcAdmin();
-        relacionesRetiradas.addAll(admin.sql("SELECT origen_id, destino_id, tipo FROM relacion_tecnica WHERE origen_id = :id OR destino_id = :id")
-                .param("id", id.valor()).query().listOfRows());
-        guardarCopia(id);
-        admin.sql("DELETE FROM tecnica WHERE id = :id").param("id", id.valor()).update();
+        retirada = java.util.Optional.of(id);
+    }
+
+    /** La lectura real con la fila quitada dentro de una transacción que siempre se deshace: nada cambia en la base. */
+    private java.util.Optional<Tecnica> sinLaFila(IdTecnica id) {
+        TransactionTemplate deshacer = new TransactionTemplate(new org.springframework.jdbc.datasource.DataSourceTransactionManager(bd.dataSourceAdmin()));
+        return deshacer.execute(estado -> {
+            estado.setRollbackOnly();
+            JdbcClient admin = JdbcClient.create(bd.dataSourceAdmin());
+            admin.sql("SET LOCAL session_replication_role = replica").update();
+            admin.sql("DELETE FROM tecnica WHERE id = :id").param("id", id.valor()).update();
+            return new RepositorioTecnicaJdbc(admin).porId(id);
+        });
     }
 
     private void guardarCopia(IdTecnica id) {

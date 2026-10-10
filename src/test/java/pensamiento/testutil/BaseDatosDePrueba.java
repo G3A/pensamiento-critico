@@ -46,6 +46,10 @@ public final class BaseDatosDePrueba {
         return app;
     }
 
+    public DataSource dataSourceAdmin() {
+        return admin;
+    }
+
     /** Transacción como el usuario dado: fija app.usuario y app.institucion igual que la aplicación. */
     public <T> T comoUsuario(UUID usuarioId, UUID institucionId, Supplier<T> accion) {
         return ContextoRls.conUsuario(usuarioId, institucionId, () -> transaccion.execute(e -> accion.get()));

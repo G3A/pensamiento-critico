@@ -27,7 +27,7 @@ public abstract class RepositorioTecnicaContract {
     /** Deja el catálogo con estas familias y técnicas (además de lo que ya haya si la implementación es compartida). */
     protected abstract void dadoQueExisten(List<Familia> familias, List<Tecnica> tecnicas);
 
-    /** Garantiza que la técnica no está (el real la retira temporalmente del catálogo compartido y la restaura al final). */
+    /** Garantiza que la técnica no está (el real la quita dentro de una transacción que se deshace: no borra nada). */
     protected abstract void dadoQueNoExiste(IdTecnica id);
 
     @Test
