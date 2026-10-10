@@ -91,10 +91,14 @@ public final class DialogoConsejero {
         return Jsoup.parseBodyFragment(r.cuerpo());
     }
 
-    /** "Cerrar y guardar": el servidor redirige a la sesión, que queda cerrada. */
+    /**
+     * "Cerrar y guardar": el servidor redirige a la sesión, que queda cerrada. Responde además "¿Qué aprendí?", porque T47 ·
+     * Reflexión estructurada es obligatoria al cerrar con la configuración del catálogo.
+     */
     public void cerrar(UUID id, String reflexion, String confianza, String causa, List<String> comprobados) {
         List<Map.Entry<String, String>> pares = new ArrayList<>();
         pares.add(Map.entry("reflexion", reflexion));
+        pares.add(Map.entry("r_aprendi", "Que escribir qué me haría cambiar de opinión me ordenó la idea."));
         pares.add(Map.entry("confianzaDespues", confianza));
         pares.add(Map.entry("causa", causa));
         comprobados.forEach(c -> pares.add(Map.entry("comprobados", c)));

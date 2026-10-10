@@ -52,7 +52,9 @@ class PlantillasDelConsejeroTest {
                 new V09.ItemPanel("proposito", "Propósito", "lleno", "chip chip-ok", "Vender más.", null)));
         return new VistaConsejero.Sesion(sesion("cerrada".equals(estado) ? SesionConsejero.Estado.CERRADA : SesionConsejero.Estado.ABIERTA),
                 "Conviene abrir los domingos.", List.of(), new VistaConsejero.Panel("Elementos del razonamiento (Paul-Elder)", List.of(elementos), propuestas),
-                estado, true, Optional.empty(), List.of(), List.of(), "", Optional.empty());
+                estado, true, Optional.empty(), List.of(), List.of(), "", Optional.empty(),
+                new VistaConsejero.Reflexion(List.of(pensamiento.tecnicas.f8.EjecutorReflexion.Pregunta.APRENDI,
+                        pensamiento.tecnicas.f8.EjecutorReflexion.Pregunta.SIN_CLARO), true));
     }
 
     @Test
@@ -105,7 +107,11 @@ class PlantillasDelConsejeroTest {
         Document cerrada = pintar("fragmentos/consejero/entrada.jte", Map.of("v", vista("cerrada", List.of()), "oob", false));
 
         assertThat(lista.select("form.cerrar-sesion").attr("hx-post")).isEqualTo("/consejero/sesiones/" + SESION + "/cerrar");
-        assertThat(lista.select("label[for=reflexion]").text()).isEqualTo("¿Qué cambió en lo que piensas? (opcional)");
+        assertThat(lista.select("label[for=reflexion]").text()).isEqualTo("¿Qué cambió en lo que piensas?");
+        assertThat(lista.select("fieldset.reflexion-cierre legend").text())
+                .isEqualTo("Reflexión (T47 · Reflexión estructurada): responde al menos una pregunta");
+        assertThat(lista.select("fieldset.reflexion-cierre textarea").eachAttr("name")).containsExactly("reflexion", "r_aprendi", "r_sin_claro");
+        assertThat(lista.select("label[for=r-aprendi]").text()).isEqualTo("¿Qué aprendí?");
         assertThat(lista.select("input[name=causa]")).hasSize(3);
         assertThat(cerrada.select("[role=status]").text()).contains("Esta sesión está cerrada");
     }

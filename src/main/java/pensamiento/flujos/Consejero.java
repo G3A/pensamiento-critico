@@ -41,6 +41,7 @@ import pensamiento.tecnicas.f2.EjecutorPreguntasSocraticas;
 import pensamiento.tecnicas.f2.EstrategiaSocratica;
 import pensamiento.tecnicas.f6.EjecutorEquipoRojo;
 import pensamiento.tecnicas.f6.EjecutorSeisSombreros;
+import pensamiento.tecnicas.f8.EjecutorReflexion;
 
 /**
  * Flujo C · Consejero socrático (P15 y P16): el motor híbrido. En cada turno elige qué toca preguntar con la estrategia
@@ -96,6 +97,7 @@ public class Consejero {
     private final EjecutorEquipoRojo t36;
     private final EstrategiaSocratica estrategia;
     private final BancoSocratico banco;
+    private final EjecutorReflexion t47 = new EjecutorReflexion();
 
     public Consejero(RepositorioSesiones sesiones, RepositorioExpediente expedientes, GuardadoDeEjecuciones guardado, Reloj reloj,
                      EjecutorPreguntasSocraticas t08, EjecutorEscalera t10, EjecutorSeisSombreros t35, EjecutorEquipoRojo t36) {
@@ -526,11 +528,32 @@ public class Consejero {
     }
 
     /**
-     * Cierra la sesión: guarda la ejecución de la técnica del modo con lo que pasó (y el cambio de opinión, si la confianza
-     * cambió) en el expediente de la sesión, y deja la sesión en solo lectura. Exige la respuesta a la pregunta de cierre.
+     * La reflexión del cierre con las preguntas de T47 · Reflexión estructurada (docs/ejemplos/T47.md): la configuración de la
+     * persona y sus respuestas a las preguntas activas, sin "qué cambió", que el Consejero siempre pregunta aparte.
      */
+    public record Reflexion(EjecutorReflexion.Config config, String aprendi, String sinClaro, String distinto, String sentimientos,
+                            String siguiente) {
+
+        /** Sin preguntas de T47 y opcional: solo cuenta "qué cambió". */
+        public static Reflexion soloQueCambio() {
+            return new Reflexion(new EjecutorReflexion.Config(List.of(EjecutorReflexion.Pregunta.CAMBIO), false), null, null, null, null, null);
+        }
+    }
+
+    /** Cierra la sesión sin preguntas de T47 (solo "qué cambió", opcional). */
     public Ejecucion cerrar(UUID usuarioId, UUID sesionId, Optional<String> reflexion, Optional<Integer> confianzaDespues, Optional<String> causa,
                             List<String> comprobados, Contexto ctx) {
+        return cerrar(usuarioId, sesionId, reflexion, confianzaDespues, causa, comprobados, Reflexion.soloQueCambio(), ctx);
+    }
+
+    /**
+     * Cierra la sesión: guarda la ejecución de la técnica del modo con lo que pasó (y el cambio de opinión, si la confianza
+     * cambió) en el expediente de la sesión, y deja la sesión en solo lectura. Exige la respuesta a la pregunta de cierre y, si
+     * la configuración de T47 la hace obligatoria, al menos una respuesta de la reflexión; con alguna respuesta guarda además
+     * una ejecución de T47 en el mismo expediente.
+     */
+    public Ejecucion cerrar(UUID usuarioId, UUID sesionId, Optional<String> reflexion, Optional<Integer> confianzaDespues, Optional<String> causa,
+                            List<String> comprobados, Reflexion preguntas, Contexto ctx) {
         SesionConsejero s = sesion(usuarioId, sesionId);
         if (s.cerrada()) {
             throw new NoPermitido("Esta sesión ya está cerrada.");
@@ -545,6 +568,19 @@ public class Consejero {
         if (causa.isPresent() && !causa.get().isBlank() && !List.of("evidencia", "steelman", "manual").contains(causa.get())) {
             throw new NoPermitido("La causa es evidencia, steelman o manual.");
         }
+        // T47: "qué cambió" siempre cuenta como respuesta de la reflexión; lo demás, según las preguntas activas de la persona.
+        List<EjecutorReflexion.Pregunta> activas = new ArrayList<>(preguntas.config().preguntas());
+        if (!activas.contains(EjecutorReflexion.Pregunta.CAMBIO)) {
+            activas.add(EjecutorReflexion.Pregunta.CAMBIO);
+        }
+        EjecutorReflexion.Config configReflexion = new EjecutorReflexion.Config(activas, preguntas.config().obligatoriaAlCerrar());
+        EjecutorReflexion.Entrada respuestas = new EjecutorReflexion.Entrada(recortar("Sesión del Consejero: " + s.postura(), 200), preguntas.aprendi(),
+                preguntas.sinClaro(), preguntas.distinto(), reflexion.orElse(null), preguntas.sentimientos(), preguntas.siguiente());
+        boolean conReflexion = EjecutorReflexion.respondidas(configReflexion, respuestas) > 0;
+        if (preguntas.config().obligatoriaAlCerrar() && !conReflexion) {
+            throw new NoPermitido("Para cerrar, responde al menos una pregunta de la reflexión: es obligatoria en tu configuración de "
+                    + "T47 · Reflexión estructurada.");
+        }
         Armado a = armar(s, turnos, ctx, confianzaDespues, causa, comprobados);
         Resultado<?> r = a.resultado();
         Json config = MapeadorJson.escribir(a.config());
@@ -554,6 +590,12 @@ public class Consejero {
         Ejecucion nueva = new Ejecucion(Uuid7.en(ahora), usuarioId, s.institucionId(), tecnica, r.versionEsquema(), s.expedienteId(), config, entrada,
                 MapeadorJson.escribir(r.valor()), r.resumen(), r.modelo(), "consejero-" + s.id(), ahora);
         Ejecucion guardada = guardado.guardar(nueva, r);
+        if (conReflexion) {
+            Resultado<?> rt47 = t47.ejecutar(configReflexion, respuestas, ctx);
+            guardado.guardar(new Ejecucion(Uuid7.en(ahora), usuarioId, s.institucionId(), EjecutorReflexion.ID, rt47.versionEsquema(), s.expedienteId(),
+                    MapeadorJson.escribir(configReflexion), MapeadorJson.escribir(respuestas), MapeadorJson.escribir(rt47.valor()), rt47.resumen(),
+                    Optional.empty(), "consejero-reflexion-" + s.id(), ahora), rt47);
+        }
         sesiones.cerrar(usuarioId, sesionId, reflexion.filter(x -> !x.isBlank()).map(String::strip), confianzaDespues, Optional.of(guardada.id()), ahora);
         return guardada;
     }

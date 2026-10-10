@@ -260,7 +260,7 @@ class PlantillasTest {
     @Test
     void la_ficha_tiene_tres_pestanas_con_roles_aria_y_un_panel() {
         var usar = new ControladorTecnicas.VistaUsar(T28, CATALOGO.ejemplosDe(EjecutorAch.ID), Optional.empty(), Optional.empty(),
-                new ControladorTecnicas.VistaConfiguracion("T28", List.of(), "escala: C, I, N", false, ""), formularioT28(Map.of()));
+                new ControladorTecnicas.VistaConfiguracion("T28", List.of(), "escala: C, I, N", false, ""), formularioT28(Map.of()), Optional.empty());
         var ficha = new ControladorTecnicas.VistaFicha(T28, "F5 · Pensamiento probabilístico y decisiones", ControladorTecnicas.Pestana.USAR,
                 true, "escala: C, I, N", 1, List.of(), usar, List.of(), null);
         Document d = pintar("fragmentos/ficha/cuerpo.jte", Map.of("ficha", ficha));

@@ -111,6 +111,43 @@ class ConsejeroTest {
         assertThat(entrada.cierre()).isEqualTo("Que el conteo de una semana completa dé menos de 600 personas por mañana.");
     }
 
+    private SesionConsejero listaParaCerrar() {
+        SesionConsejero s = iniciarDecision();
+        consejero.irAlCierre(YO, s.id());
+        consejero.responder(YO, s.id(), "Que el conteo de una semana completa dé menos de 600 personas por mañana.", false);
+        return s;
+    }
+
+    private static final pensamiento.tecnicas.f8.EjecutorReflexion.Config T47_POR_DEFECTO = new pensamiento.tecnicas.f8.EjecutorReflexion.Config(
+            List.of(pensamiento.tecnicas.f8.EjecutorReflexion.Pregunta.APRENDI, pensamiento.tecnicas.f8.EjecutorReflexion.Pregunta.SIN_CLARO,
+                    pensamiento.tecnicas.f8.EjecutorReflexion.Pregunta.DISTINTO), true);
+
+    @Test
+    void con_la_reflexion_obligatoria_no_se_cierra_sin_ninguna_respuesta_y_no_se_guarda_nada() {
+        SesionConsejero s = listaParaCerrar();
+        Consejero.Reflexion vacia = new Consejero.Reflexion(T47_POR_DEFECTO, " ", null, null, null, null);
+
+        assertThatThrownBy(() -> consejero.cerrar(YO, s.id(), Optional.empty(), Optional.empty(), Optional.empty(), List.of(), vacia, Contextos.sinIa()))
+                .isInstanceOf(Consejero.NoPermitido.class).hasMessage("Para cerrar, responde al menos una pregunta de la reflexión: es obligatoria en tu "
+                        + "configuración de T47 · Reflexión estructurada.");
+        assertThat(ejecuciones.todas()).isEmpty();
+        assertThat(consejero.sesion(YO, s.id()).cerrada()).isFalse();
+    }
+
+    @Test
+    void cerrar_con_respuestas_guarda_ademas_una_reflexion_de_t47_en_el_expediente_de_la_sesion() {
+        SesionConsejero s = listaParaCerrar();
+        Consejero.Reflexion preguntas = new Consejero.Reflexion(T47_POR_DEFECTO, "Que mi cifra favorita venía del vendedor.", null, null, null, null);
+
+        consejero.cerrar(YO, s.id(), Optional.of("Necesito contar una semana entera."), Optional.empty(), Optional.empty(), List.of(), preguntas,
+                Contextos.sinIa());
+
+        assertThat(ejecuciones.porExpediente(YO, s.expedienteId().orElseThrow())).extracting(e -> e.tecnica().valor()).containsExactlyInAnyOrder("T08", "T47");
+        Ejecucion reflexion = ejecuciones.porTecnica(YO, pensamiento.tecnicas.f8.EjecutorReflexion.ID).getFirst();
+        assertThat(reflexion.resumen())
+                .isEqualTo("2 de 4 preguntas respondidas · Sesión del Consejero: Conviene abrir la segunda sucursal en el centro este año.");
+    }
+
     @Test
     void no_se_puede_cerrar_sin_responder_el_cierre_ni_responder_dos_veces_ni_tocar_una_sesion_cerrada() {
         SesionConsejero s = iniciarDecision();

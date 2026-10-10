@@ -88,6 +88,7 @@ class RNF09ConsejeroEnNavegadorIT {
             pagina.locator("#dialogo li.burbuja-consejero .autor:has-text('consejero · cierre')").waitFor();
             responder(pagina, "Que el municipio diga que los robos se movieron de cuadra.");
             pagina.locator("form.cerrar-sesion").waitFor();
+            pagina.locator("#r-aprendi").fill("Que el equipo rojo encontró una debilidad que no veía.");
             pagina.locator("#confianzaDespues").fill("70");
             pagina.locator("button[data-accion=cerrar-sesion]").click();
             pagina.locator(".resultado-sesion [data-patron=V09]").waitFor();

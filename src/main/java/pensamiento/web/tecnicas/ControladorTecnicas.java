@@ -79,8 +79,9 @@ public class ControladorTecnicas {
     }
 
     /** Lo que pinta la pestaña Usar. */
+    /** @param datosPropios qué trae "Usar mis datos" (T45, T46, T48 y T49); vacío en las demás técnicas */
     public record VistaUsar(Tecnica tecnica, List<Ejemplo> ejemplos, Optional<Ejemplo> ejemploElegido, Optional<Content> resultadoEjemplo,
-                            VistaConfiguracion configuracion, VistaFormulario formulario) {
+                            VistaConfiguracion configuracion, VistaFormulario formulario, Optional<String> datosPropios) {
     }
 
     /** El bloque plegable de configuración del usuario. */
@@ -100,10 +101,12 @@ public class ControladorTecnicas {
     private final Renderizadores renderizadores;
     private final Reloj reloj;
     private final Pagina.Fabrica paginas;
+    private final DatosPropios datosPropios;
 
     public ControladorTecnicas(RepositorioTecnica tecnicas, RepositorioEjecucion ejecuciones, RepositorioExpediente expedientes,
                                GuardadoDeEjecuciones guardado, MotorTecnicas motor, Renderizadores renderizadores, Reloj reloj,
-                               Pagina.Fabrica paginas) {
+                               Pagina.Fabrica paginas, DatosPropios datosPropios) {
+        this.datosPropios = datosPropios;
         this.tecnicas = tecnicas;
         this.ejecuciones = ejecuciones;
         this.expedientes = expedientes;
@@ -123,11 +126,12 @@ public class ControladorTecnicas {
     public String ficha(@PathVariable String id, @RequestParam(required = false) String pestana,
                         @RequestParam(required = false) UUID ejemplo, @RequestParam(required = false) UUID reejecutar,
                         @RequestParam(required = false) UUID a, @RequestParam(required = false) UUID b,
-                        HtmxRequest htmx, HttpServletRequest request, Model modelo) {
+                        @RequestParam(required = false) String propios, HtmxRequest htmx, HttpServletRequest request, Model modelo) {
         Tecnica t = tecnica(id);
-        Pestana elegida = ejemplo != null || reejecutar != null ? Pestana.USAR : Pestana.de(pestana);
+        boolean conPropios = "1".equals(propios);
+        Pestana elegida = ejemplo != null || reejecutar != null || conPropios ? Pestana.USAR : Pestana.de(pestana);
         modelo.addAttribute("pagina", paginas.crear(t.nombreLlano(), request));
-        cuerpo(t, elegida, Optional.ofNullable(ejemplo), Optional.ofNullable(reejecutar), Optional.ofNullable(a), Optional.ofNullable(b), modelo);
+        cuerpo(t, elegida, Optional.ofNullable(ejemplo), Optional.ofNullable(reejecutar), conPropios, Optional.ofNullable(a), Optional.ofNullable(b), modelo);
         return htmx.isHtmxRequest() ? "fragmentos/ficha/cuerpo" : "ficha";
     }
 
@@ -145,14 +149,15 @@ public class ControladorTecnicas {
         }
     }
 
-    private void cuerpo(Tecnica t, Pestana pestana, Optional<UUID> ejemplo, Optional<UUID> reejecutar, Optional<UUID> a, Optional<UUID> b, Model modelo) {
+    private void cuerpo(Tecnica t, Pestana pestana, Optional<UUID> ejemplo, Optional<UUID> reejecutar, boolean propios, Optional<UUID> a,
+                        Optional<UUID> b, Model modelo) {
         UsuarioSesion yo = paginas.usuarioActual();
         String familia = tecnicas.familias().stream().filter(f -> f.codigo().equals(t.familia())).map(f -> f.codigo() + " · " + f.nombre())
                 .findFirst().orElse(t.familia());
         boolean activa = motor.ejecutor(t.id()).isPresent() && !t.estaPendiente();
         modelo.addAttribute("ficha", new VistaFicha(t, familia, pestana, activa, resumenConfig(yo, t), HitosDeTecnicas.hito(t.id()),
                 relacionadas(t),
-                pestana == Pestana.USAR && activa ? vistaUsar(yo, t, ejemplo, reejecutar) : null,
+                pestana == Pestana.USAR && activa ? vistaUsar(yo, t, ejemplo, reejecutar, propios) : null,
                 pestana == Pestana.HISTORIAL && activa ? historial(yo, t) : List.of(),
                 pestana == Pestana.HISTORIAL && a.isPresent() && b.isPresent() ? comparar(yo, a.get(), b.get()) : null));
     }
@@ -178,7 +183,7 @@ public class ControladorTecnicas {
         return VistaFormulario.resumen(motor.camposConfig(t), motor.configDeUsuario(yo.id(), t));
     }
 
-    private VistaUsar vistaUsar(UsuarioSesion yo, Tecnica t, Optional<UUID> ejemploId, Optional<UUID> reejecutar) {
+    private VistaUsar vistaUsar(UsuarioSesion yo, Tecnica t, Optional<UUID> ejemploId, Optional<UUID> reejecutar, boolean propios) {
         List<Ejemplo> ejemplos = tecnicas.ejemplos(t.id());
         Optional<Ejemplo> elegido = ejemploId.flatMap(id -> ejemplos.stream().filter(e -> e.id().equals(id)).findFirst());
         Map<String, Object> configUsuario = motor.configDeUsuario(yo.id(), t);
@@ -189,6 +194,10 @@ public class ControladorTecnicas {
             config = LenguajeCampos.mapa(elegido.get().config());
             valores = LenguajeCampos.mapa(elegido.get().datos());
             origen = "la configuración del ejemplo \"" + elegido.get().titulo() + "\"";
+        } else if (propios && datosPropios.descripcion(t.id()).isPresent()) {
+            valores = datosPropios.entrada(t.id(), yo.id());
+            LectorFormulario.igualarCeldas(motor.camposEntrada(t), valores);
+            origen = "tu configuración, con " + datosPropios.descripcion(t.id()).get();
         } else if (reejecutar.isPresent()) {
             Ejecucion anterior = ejecuciones.porId(yo.id(), reejecutar.get()).orElseThrow(() -> new ObjetoNoEncontrado("ejecución"));
             valores = LenguajeCampos.mapa(anterior.datos());
@@ -202,7 +211,8 @@ public class ControladorTecnicas {
         });
         VistaFormulario formulario = VistaFormulario.de(t, motor.camposConfig(t), motor.camposEntrada(t), config, valores, Map.of(),
                 nuevaClave(), origen).conModelo(modeloEn(t, config));
-        return new VistaUsar(t, ejemplos, elegido, resultadoEjemplo, configuracion(yo, t, configUsuario, Map.of(), ""), formulario);
+        return new VistaUsar(t, ejemplos, elegido, resultadoEjemplo, configuracion(yo, t, configUsuario, Map.of(), ""), formulario,
+                datosPropios.descripcion(t.id()));
     }
 
     private VistaConfiguracion configuracion(UsuarioSesion yo, Tecnica t, Map<String, Object> config, Map<String, String> errores, String mensaje) {

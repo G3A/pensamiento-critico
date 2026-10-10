@@ -7,8 +7,15 @@
   @elseif(v.lista())
     <form class="cerrar-sesion" hx-post="${v.base()}/cerrar" hx-target="#mensaje-consejero" hx-swap="innerHTML" novalidate aria-labelledby="cerrar-titulo">
       <h2 id="cerrar-titulo" class="subtitulo">Cerrar la sesión</h2>
-      <label for="reflexion">¿Qué cambió en lo que piensas? (opcional)</label>
-      <textarea id="reflexion" name="reflexion" maxlength="600"></textarea>
+      <fieldset class="reflexion-cierre">
+        <legend>Reflexión (T47 · Reflexión estructurada)${v.reflexion().obligatoria() ? ": responde al menos una pregunta" : ", opcional"}</legend>
+        <label for="reflexion">¿Qué cambió en lo que piensas?</label>
+        <textarea id="reflexion" name="reflexion" maxlength="600"></textarea>
+        @for(var q : v.reflexion().preguntas())
+          <label for="r-${q.toString()}">${q.texto()}</label>
+          <textarea id="r-${q.toString()}" name="${VistaConsejero.Reflexion.campo(q)}" maxlength="600"></textarea>
+        @endfor
+      </fieldset>
       <label for="confianzaDespues">¿Qué tan seguro estás ahora? (0 a 100, opcional)</label>
       <input id="confianzaDespues" name="confianzaDespues" type="number" min="0" max="100">
       <fieldset>

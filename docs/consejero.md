@@ -70,9 +70,12 @@ En los otros modos el panel cambia: la escalera con sus peldaños y el débil ma
 ## Cierre de sesión
 
 - La pregunta de falsación es **obligatoria**: sin respuesta no se puede cerrar.
-- Después, la **reflexión** con las preguntas de T47 · Reflexión estructurada, que es del hito 7 (decisión: solo sus
-  preguntas, sin la técnica): "¿Qué cambió en lo que piensas?" (opcional) y la confianza al terminar (opcional), con la
-  causa del cambio (evidencia, steelman o manual).
+- Después, la **reflexión** de T47 · Reflexión estructurada (hito 7): "¿Qué cambió en lo que piensas?", que el Consejero
+  siempre pregunta, más las preguntas activas de la configuración de T47 de la persona (por defecto: qué aprendí, qué sigue
+  sin estar claro y qué haría distinto). Si T47 la hace obligatoria al cerrar (por defecto sí), la sesión no se cierra sin
+  al menos una respuesta. Con alguna respuesta, el cierre guarda además una ejecución de T47 en el expediente de la sesión,
+  y esa reflexión aparece en el diario de razonamiento (T45). Luego, la confianza al terminar (opcional), con la causa del
+  cambio (evidencia, steelman o manual).
 - En la escalera, la persona marca qué peldaños comprobó con alguien o con un dato (T10 los necesita para marcar el
   débil).
 - Cerrar guarda, en una transacción, la ejecución de la técnica del modo (T08, T10, T35 o T36) con lo que pasó en la

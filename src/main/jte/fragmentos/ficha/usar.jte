@@ -16,6 +16,11 @@
       @endfor
     </ul>
     <p class="detalle">Elegir un ejemplo carga su configuración y sus datos en el formulario para que los modifiques.</p>
+    @if(u.datosPropios().isPresent())
+      <p class="datos-propios"><a href="/tecnicas/${id}?propios=1" hx-get="/tecnicas/${id}?propios=1" hx-target="#ficha-cuerpo" hx-swap="outerHTML"
+            hx-push-url="true" class="boton boton-secundario" data-accion="usar-mis-datos">Usar mis datos</a>
+        <span class="detalle">Llena el formulario con ${u.datosPropios().get()}.</span></p>
+    @endif
   </nav>
 
   @if(u.ejemploElegido().isPresent())

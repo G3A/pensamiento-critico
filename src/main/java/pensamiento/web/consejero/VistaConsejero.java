@@ -18,6 +18,7 @@ import pensamiento.tecnicas.f2.ResultadoEscalera;
 import pensamiento.tecnicas.f2.ResultadoPreguntasSocraticas;
 import pensamiento.tecnicas.f6.ResultadoEquipoRojo;
 import pensamiento.tecnicas.f6.ResultadoSeisSombreros;
+import pensamiento.tecnicas.f8.EjecutorReflexion;
 import pensamiento.web.patrones.Modo;
 import pensamiento.web.patrones.RenderizadorEquipoRojo;
 import pensamiento.web.patrones.RenderizadorPreguntasSocraticas;
@@ -86,7 +87,7 @@ public final class VistaConsejero {
      */
     public record Sesion(SesionConsejero sesion, String titulo, List<Burbuja> burbujas, Panel panel, String estado, boolean modeloDisponible,
                          Optional<Content> resultado, List<String> comprobables, List<Expediente> expedientes, String error,
-                         Optional<Expediente> expediente) {
+                         Optional<Expediente> expediente, Reflexion reflexion) {
         public boolean cerrada() {
             return "cerrada".equals(estado);
         }
@@ -105,6 +106,14 @@ public final class VistaConsejero {
 
         public String base() {
             return "/consejero/sesiones/" + sesion.id();
+        }
+    }
+
+    /** Las preguntas de T47 · Reflexión estructurada que el cierre muestra además de "qué cambió", y si es obligatoria. */
+    public record Reflexion(List<EjecutorReflexion.Pregunta> preguntas, boolean obligatoria) {
+        /** "r_aprendi", el nombre del campo de cada pregunta en el formulario del cierre. */
+        public static String campo(EjecutorReflexion.Pregunta p) {
+            return "r_" + p.toString();
         }
     }
 

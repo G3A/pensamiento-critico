@@ -49,6 +49,7 @@ import pensamiento.nucleo.puertos.RepositorioTecnica;
 import pensamiento.tecnicas.comun.Textos;
 import pensamiento.tecnicas.f6.ResultadoSteelman;
 import pensamiento.web.ObjetoNoEncontrado;
+import pensamiento.tecnicas.f8.EjecutorReflexion;
 import pensamiento.web.Pagina;
 import pensamiento.web.formulario.LectorFormulario;
 import pensamiento.web.patrones.Modo;
@@ -224,8 +225,17 @@ public class ControladorConsejero {
         Optional<gg.jte.Content> resultado = s.ejecucionId().flatMap(e -> ejecuciones.porId(yo.id(), e))
                 .map(e -> renderizadores.render(tecnica(e.tecnica()), Optional.of(e.id()), "", motor.valorDe(e), Modo.LECTURA));
         List<String> comprobables = s.modo() == SesionConsejero.Modo.ESCALERA ? List.of("datos", "seleccion", "interpretacion", "supuestos") : List.of();
+        EjecutorReflexion.Config t47 = reflexion(yo);
         return new VistaConsejero.Sesion(s, s.postura(), burbujas, panel, estado, motor.modeloDisponible(), resultado, comprobables,
-                expedientes.deUsuario(yo.id()), error, s.expedienteId().flatMap(x -> expedientes.porId(yo.id(), x)));
+                expedientes.deUsuario(yo.id()), error, s.expedienteId().flatMap(x -> expedientes.porId(yo.id(), x)),
+                new VistaConsejero.Reflexion(t47.preguntas().stream().filter(q -> q != EjecutorReflexion.Pregunta.CAMBIO).toList(),
+                        t47.obligatoriaAlCerrar()));
+    }
+
+    /** La configuración vigente de la persona en T47 · Reflexión estructurada, para las preguntas del cierre. */
+    private EjecutorReflexion.Config reflexion(UsuarioSesion yo) {
+        Tecnica t = tecnica(EjecutorReflexion.ID);
+        return pensamiento.catalogo.MapeadorJson.mapper().convertValue(motor.configDeUsuario(yo.id(), t), EjecutorReflexion.Config.class);
     }
 
     private boolean enVivo(UsuarioSesion yo, TurnoConsejero t) {
@@ -302,8 +312,10 @@ public class ControladorConsejero {
         List<String> comprobados = Optional.ofNullable(p.get("comprobados")).orElse(List.of()).stream()
                 .filter(x -> List.of("datos", "seleccion", "interpretacion", "supuestos").contains(x)).toList();
         try {
+            Consejero.Reflexion preguntas = new Consejero.Reflexion(reflexion(yo), p.getFirst("r_aprendi"), p.getFirst("r_sin_claro"),
+                    p.getFirst("r_distinto"), p.getFirst("r_sentimientos"), p.getFirst("r_siguiente"));
             consejero.cerrar(yo.id(), id, Optional.ofNullable(p.getFirst("reflexion")), despues, Optional.ofNullable(p.getFirst("causa")), comprobados,
-                    motor.contexto(yo.id(), yo.institucionId()));
+                    preguntas, motor.contexto(yo.id(), yo.institucionId()));
             respuesta.setHeader("HX-Trigger", "ejecucion-guardada");
             return redirigir("/consejero/sesiones/" + id, htmx, respuesta);
         } catch (Consejero.NoPermitido e) {
