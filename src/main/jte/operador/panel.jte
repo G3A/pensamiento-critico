@@ -69,6 +69,9 @@
       </tbody>
     </table>
     <h2>Auditoría del operador</h2>
+    @if(v.auditoria().isEmpty())
+      <p class="detalle">Todavía no hay acciones del operador.</p>
+    @endif
     <ul class="lista">
       @for(RepositorioOperador.Evento e : v.auditoria())
         <li>${v.fecha(e.fecha())} · ${e.accion().enBaseDeDatos().replace('_', ' ')} · /${e.ruta() == null ? "" : e.ruta()}</li>

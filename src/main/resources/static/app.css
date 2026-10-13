@@ -85,6 +85,7 @@ a { color: var(--acento); }
 .quien { font-weight: 600; }
 
 .cuerpo { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 60px); }
+.cuerpo > .principal:only-child { grid-column: 1 / -1; }   /* sin sesión no hay menú: el contenido usa todo el ancho */
 .menu { background: var(--superficie); border-right: 1px solid var(--borde); padding: var(--espacio) 0; }
 .menu ul { list-style: none; margin: 0; padding: 0; }
 .menu li a, .menu li span { display: block; padding: .5rem var(--espacio); color: var(--texto); text-decoration: none; }

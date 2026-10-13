@@ -25,6 +25,12 @@ spring:
     multipart:
       max-file-size: 50MB       # RNF-08: un documento de la biblioteca; el respaldo JSON tiene su propio tope de 5 MB
       max-request-size: 51MB
+  web:
+    error:                  # Spring Boot 4 movió server.error.* a spring.web.error.* (hito 8)
+      whitelabel:
+        enabled: false      # la vista "error" es src/main/jte/error.jte
+      include-stacktrace: never
+      include-message: never
   jackson:
     default-property-inclusion: non_null
 
@@ -37,10 +43,6 @@ server:
         http-only: true
         same-site: strict
         name: PENSAMIENTO_SESION
-  error:
-    whitelabel:
-      enabled: false
-    include-stacktrace: never
 
 gg:
   jte:

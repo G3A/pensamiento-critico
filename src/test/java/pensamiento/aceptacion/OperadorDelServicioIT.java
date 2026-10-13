@@ -59,7 +59,9 @@ class OperadorDelServicioIT {
     @Test
     void el_operador_no_entra_a_nada_de_una_institucion() {
         ClienteApp operador = operador();
-        assertThat(operador.get("/expedientes").estado()).isEqualTo(403);
+        ClienteApp.Respuesta expedientes = operador.get("/expedientes");
+        assertThat(expedientes.estado()).isEqualTo(403);
+        assertThat(expedientes.cuerpo()).as("sin detalles internos").doesNotContain("Whitelabel", "Exception", "Tomcat", "trace");
         assertThat(operador.get("/usuarios").estado()).isEqualTo(403);
         assertThat(operador.get("/mis-datos").estado()).isEqualTo(403);
         assertThat(operador.get("/catalogo").estado()).isEqualTo(403);
