@@ -15,8 +15,7 @@ import pensamiento.testutil.BaseDatosDePrueba;
 import pensamiento.web.usuarios.RepositorioUsuariosJdbc;
 
 /**
- * Contra PostgreSQL como rol de aplicación bajo RLS. La "institución única" real es la de la instalación,
- * que ya existe: la prueba de idempotencia la respeta. Lo escrito va a una institución de prueba que se borra.
+ * Contra PostgreSQL como rol de aplicación bajo RLS. Lo escrito va a una institución de prueba que se borra.
  */
 @EnabledIfEnvironmentVariable(named = "CONTRACT_REAL", matches = "true")
 class RealRepositorioUsuariosContractIT extends RepositorioUsuariosContract {
@@ -43,8 +42,6 @@ class RealRepositorioUsuariosContractIT extends RepositorioUsuariosContract {
     protected RepositorioUsuarios crearSut() {
         RepositorioUsuariosJdbc real = new RepositorioUsuariosJdbc(bd.jdbcApp());
         return new RepositorioUsuarios() {
-            @Override public Optional<UUID> institucionUnica() { return bd.comoInstitucion(institucion, real::institucionUnica); }
-            @Override public UUID crearInstitucion(String nombre) { return bd.comoInstitucion(institucion, () -> real.crearInstitucion(nombre)); }
             @Override public Usuario guardar(Usuario u) { return bd.comoInstitucion(institucion, () -> real.guardar(u)); }
             @Override public Optional<Usuario> porId(UUID i, UUID id) { return bd.comoInstitucion(institucion, () -> real.porId(i, id)); }
             @Override public Optional<Usuario> porNombre(UUID i, String n) { return bd.comoInstitucion(institucion, () -> real.porNombre(i, n)); }

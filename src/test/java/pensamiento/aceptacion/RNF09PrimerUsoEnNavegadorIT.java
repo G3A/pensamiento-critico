@@ -40,7 +40,7 @@ class RNF09PrimerUsoEnNavegadorIT {
                 }
             });
 
-            pagina.navigate(base + "/bloqueo");
+            pagina.navigate(base + "/" + Instalacion.RUTA);
             pagina.getByLabel("Tu PIN").fill("2580");
             pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(persona).setExact(true)).click();
             pagina.waitForURL(base + "/");
@@ -80,7 +80,7 @@ class RNF09PrimerUsoEnNavegadorIT {
                     erroresDeConsola.add(m.text());
                 }
             });
-            pagina.navigate(base + "/bloqueo");
+            pagina.navigate(base + "/" + Instalacion.RUTA);
             pagina.getByLabel("Tu PIN").fill("1470");
             pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(persona).setExact(true)).click();
             pagina.waitForURL(base + "/");
@@ -128,7 +128,7 @@ class RNF09PrimerUsoEnNavegadorIT {
                     erroresDeConsola.add(m.text());
                 }
             });
-            pagina.navigate(base + "/bloqueo");
+            pagina.navigate(base + "/" + Instalacion.RUTA);
             pagina.getByLabel("Tu PIN").fill("3690");
             pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(persona).setExact(true)).click();
             pagina.waitForURL(base + "/");

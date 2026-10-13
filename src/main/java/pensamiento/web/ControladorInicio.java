@@ -28,7 +28,7 @@ import pensamiento.web.tecnicas.Fechas;
 /**
  * P02 · Inicio y P22 · primer uso (RF-08). Vacío: las seis intenciones, el expediente de muestra en modo lectura
  * y "Empieza con un ejemplo", que abre T28 · Análisis de hipótesis en competencia (ACH) con el ejemplo de la
- * panadería cargado. Con datos: pendientes, recientes y expedientes.
+ * panadería cargado. Con datos: pendientes, recientes y expedientes. Sin sesión, la raíz es la página neutra de entrada.
  */
 @Controller
 public class ControladorInicio {
@@ -71,6 +71,12 @@ public class ControladorInicio {
     @GetMapping("/")
     @Transactional(readOnly = true)
     public String inicio(HttpServletRequest request, Model modelo) {
+        if (pensamiento.web.seguridad.ContextoRls.usuarioDeSesion().isEmpty()) {
+            // Sin sesión: una página neutra que pide la dirección del colegio, sin listar instituciones (hito 8).
+            modelo.addAttribute("pagina", paginas.crear("Entrar", request));
+            modelo.addAttribute("rutaInvalida", request.getParameter("ruta-invalida") != null);
+            return "raiz";
+        }
         UsuarioSesion yo = paginas.usuarioActual();
         Map<IdTecnica, Tecnica> porId = tecnicas.todas().stream().collect(Collectors.toMap(Tecnica::id, Function.identity()));
         List<Reciente> recientes = ejecuciones.recientes(yo.id(), 5).stream()

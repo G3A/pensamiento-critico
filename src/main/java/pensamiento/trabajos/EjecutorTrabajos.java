@@ -65,7 +65,7 @@ public class EjecutorTrabajos {
             try {
                 hizoAlgo = procesarUno(procesador);
             } catch (RuntimeException e) {
-                LOG.warn("La cola de {} falló: {}", procesador.tipo(), e.getMessage());
+                LOG.warn("La cola de {} falló: {}", procesador.tipo(), e.getClass().getSimpleName());   // solo el tipo: el mensaje puede traer lo que escribió la persona
                 hizoAlgo = false;
             }
             if (!hizoAlgo) {
@@ -90,7 +90,7 @@ public class EjecutorTrabajos {
         try {
             desenlace = procesador.procesar(t);
         } catch (RuntimeException e) {
-            LOG.warn("El trabajo {} ({}) falló: {}", t.id(), t.tipo(), e.getMessage());
+            LOG.warn("El trabajo {} ({}) falló: {}", t.id(), t.tipo(), e.getClass().getSimpleName());   // solo el tipo: el mensaje puede traer lo que escribió la persona
             desenlace = new ProcesadorTrabajo.Reintentar(reloj.ahora().plus(ESPERA_TRAS_ERROR), "Falló: se reintenta en 30 s.");
         }
         switch (desenlace) {

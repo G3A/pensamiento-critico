@@ -27,8 +27,14 @@ public final class Entorno {
         return secreto("db_password", "SPRING_DATASOURCE_PASSWORD_FILE", "DB_PASSWORD");
     }
 
+    /** PIN con que la suite siembra la cuenta "administrador" de sus instituciones (la app ya no lo lee). */
     public static String pinAdministrador() {
         return secreto("admin_pin", "APP_ADMIN_PIN_FILE", "APP_ADMIN_PIN");
+    }
+
+    /** Clave del operador del servicio de la instalación de pruebas (generada en secretos-prueba). */
+    public static String claveOperador() {
+        return secreto("operador_clave", "APP_OPERADOR_CLAVE_FILE", "APP_OPERADOR_CLAVE");
     }
 
     public static String urlApp() {

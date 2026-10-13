@@ -20,7 +20,6 @@ public class ServicioUsuarios {
 
     public static final Pattern PIN_VALIDO = Pattern.compile("^[0-9]{4,8}$");
     public static final String NOMBRE_ADMINISTRADOR = "administrador";
-    public static final String NOMBRE_INSTITUCION = "Instalación local";
 
     public static class DatosInvalidos extends RuntimeException {
         public DatosInvalidos(String mensaje) {
@@ -40,20 +39,23 @@ public class ServicioUsuarios {
         this.reloj = reloj;
     }
 
-    /** Primer arranque: crea la institución y la cuenta administrador con el PIN del secreto. Idempotente. */
-    public Optional<Usuario> inicializar(String pinAdministrador) {
-        UUID institucion = usuarios.institucionUnica().orElseGet(() -> usuarios.crearInstitucion(NOMBRE_INSTITUCION));
+    /**
+     * La primera cuenta de una institución, siempre administrador. Si la institución ya tiene cuentas no hace nada
+     * (idempotente): así la cuenta de la instalación de la versión 1 se crea una sola vez.
+     */
+    public Optional<Usuario> primerAdministrador(UUID institucion, String nombre, String pin) {
         if (usuarios.contar(institucion) > 0) {
             return Optional.empty();
         }
-        return Optional.of(crear(Optional.empty(), institucion, NOMBRE_ADMINISTRADOR, pinAdministrador, Usuario.RolGlobal.ADMINISTRADOR));
+        return Optional.of(crear(Optional.empty(), institucion, nombre, pin, Usuario.RolGlobal.ADMINISTRADOR));
     }
 
     public Usuario crearPersona(UUID administradorId, UUID institucion, String nombre, String pin) {
         return crear(Optional.of(administradorId), institucion, nombre, pin, Usuario.RolGlobal.PERSONA);
     }
 
-    private Usuario crear(Optional<UUID> quien, UUID institucion, String nombre, String pin, Usuario.RolGlobal rol) {
+    /** Nombre de 1 a 60 caracteres y PIN de 4 a 8 dígitos; devuelve el nombre sin espacios al borde. */
+    public static String validar(String nombre, String pin) {
         String nombreLimpio = nombre == null ? "" : nombre.trim();
         if (nombreLimpio.isEmpty() || nombreLimpio.length() > 60) {
             throw new DatosInvalidos("El nombre es obligatorio y tiene como máximo 60 caracteres");
@@ -61,6 +63,11 @@ public class ServicioUsuarios {
         if (pin == null || !PIN_VALIDO.matcher(pin).matches()) {
             throw new DatosInvalidos("El PIN es obligatorio: de 4 a 8 dígitos");
         }
+        return nombreLimpio;
+    }
+
+    private Usuario crear(Optional<UUID> quien, UUID institucion, String nombre, String pin, Usuario.RolGlobal rol) {
+        String nombreLimpio = validar(nombre, pin);
         Usuario creado = usuarios.guardar(new Usuario(UUID.randomUUID(), institucion, nombreLimpio, codificador.encode(pin), rol, true));
         auditoria.registrar(new RegistroAuditoria.Evento(quien, institucion, RegistroAuditoria.Accion.CREAR, "usuario",
                 Optional.of(creado.id()), reloj.ahora()));

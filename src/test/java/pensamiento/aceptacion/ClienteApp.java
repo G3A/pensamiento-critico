@@ -36,10 +36,18 @@ public final class ClienteApp {
 
     private final HttpClient http;
     private final String base;
+    private final String ruta;
     private String csrf = "";
 
+    /** Un navegador que entra por la institución de pruebas (/prueba). */
     public ClienteApp() {
+        this(Instalacion.RUTA);
+    }
+
+    /** Un navegador que entra por la ruta de la institución dada. */
+    public ClienteApp(String ruta) {
         this.base = Entorno.urlApp();
+        this.ruta = ruta;
         CookieManager cookies = new CookieManager();
         cookies.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         this.http = HttpClient.newBuilder()
@@ -123,9 +131,9 @@ public final class ClienteApp {
         return enviar(peticion);
     }
 
-    /** Visita la pantalla de bloqueo y toma el token CSRF de la sesión anónima. */
+    /** Visita la entrada de su institución (/<ruta>) y toma el token CSRF de la sesión anónima. */
     public String tomarCsrf() {
-        Respuesta bloqueo = get("/bloqueo");
+        Respuesta bloqueo = get("/" + ruta);
         Matcher m = META_CSRF.matcher(bloqueo.cuerpo());
         if (!m.find()) {
             throw new IllegalStateException("La pantalla de bloqueo no trae el token CSRF (estado " + bloqueo.estado() + ")");
@@ -137,7 +145,7 @@ public final class ClienteApp {
     /** Entra como una persona; devuelve la respuesta cruda para afirmar sobre la redirección. */
     public Respuesta entrar(String nombre, String pin) {
         tomarCsrf();
-        Respuesta r = postFormulario("/sesion", Map.of("nombre", nombre, "pin", pin, "volver", "/"));
+        Respuesta r = postFormulario("/sesion", Map.of("nombre", nombre, "pin", pin, "volver", "/", "institucion", ruta));
         // Tras autenticarse el token cambia: se vuelve a tomar de una página con sesión.
         Respuesta inicio = get("/");
         Matcher m = META_CSRF.matcher(inicio.cuerpo());
@@ -147,8 +155,28 @@ public final class ClienteApp {
         return r;
     }
 
+    /** Entra como operador del servicio por /operador/entrar; devuelve la respuesta cruda del envío. */
+    public Respuesta entrarComoOperador(String clave) {
+        csrfDe(get("/operador/entrar"));
+        Respuesta r = postFormulario("/operador/sesion", Map.of("nombre", "operador", "clave", clave));
+        csrfDe(get("/operador"));
+        return r;
+    }
+
+    /** Toma el token CSRF de una página ya pedida (si lo trae). */
+    public void csrfDe(Respuesta pagina) {
+        Matcher m = META_CSRF.matcher(pagina.cuerpo());
+        if (m.find()) {
+            csrf = m.group(1);
+        }
+    }
+
     public Respuesta bloquear() {
         return postFormulario("/salir", Map.of());
+    }
+
+    public String ruta() {
+        return ruta;
     }
 
     public String csrf() {

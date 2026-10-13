@@ -32,4 +32,11 @@
     <Class name="pensamiento.web.seguridad.RespuestasSesion" />
     <Bug pattern="UNVALIDATED_REDIRECT,HRS_REQUEST_PARAMETER_TO_HTTP_HEADER,XSS_SERVLET" />
   </Match>
+  <!-- Cookie PENSAMIENTO_INSTITUCION (hito 8): guarda solo la ruta de entrada, no da acceso a nada. Es Secure cuando la
+       petición llega por HTTPS (request.isSecure()); en http://localhost no puede serlo hasta la salida a internet, que pone
+       el certificado, HSTS y la cookie de sesión Secure. Revisada el 13 de octubre de 2026 (hito 8). -->
+  <Match>
+    <Class name="pensamiento.web.seguridad.RespuestasSesion" />
+    <Bug pattern="INSECURE_COOKIE" />
+  </Match>
 </FindBugsFilter>

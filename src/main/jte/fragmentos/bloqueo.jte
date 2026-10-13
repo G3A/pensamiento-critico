@@ -4,6 +4,7 @@
 <div class="${bloqueo.overlay() ? "overlay" : ""}" role="dialog" aria-modal="${bloqueo.overlay()}" aria-labelledby="titulo-bloqueo">
   <form class="tarjeta formulario-bloqueo" method="post" action="/sesion" hx-post="/sesion" hx-target="#bloqueo" hx-swap="innerHTML">
     <input type="hidden" name="_csrf" value="${bloqueo.csrf()}">
+    <input type="hidden" name="institucion" value="${bloqueo.ruta()}">
     <h2 id="titulo-bloqueo">¿Quién eres?</h2>
     @if(bloqueo.overlay())
       <p>Pasaron 10 minutos sin actividad y la sesión se cerró. Lo que estabas escribiendo sigue en la página: entra de nuevo y continúa.</p>

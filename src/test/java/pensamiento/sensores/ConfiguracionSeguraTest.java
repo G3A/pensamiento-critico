@@ -66,6 +66,23 @@ class ConfiguracionSeguraTest {
     }
 
     @Test
+    void los_logs_no_llevan_pin_clave_texto_de_las_personas_ni_mensajes_de_excepcion() throws IOException {
+        // Hito 8: logs sin PIN ni texto de las personas. Un mensaje de excepción puede traer el DOT o el SQL con lo escrito.
+        String yml = Files.readString(Path.of("src/main/resources/application.yml"));
+        assertThat(yml).doesNotContainPattern("(?i)level:[\\s\\S]*(debug|trace)");
+        try (var fuentes = Files.walk(Path.of("src/main/java"))) {
+            var llamadas = fuentes.filter(p -> p.toString().endsWith(".java")).flatMap(p -> {
+                try {
+                    return Files.readAllLines(p).stream().filter(l -> l.contains("LOG.")).map(l -> p.getFileName() + ": " + l.strip());
+                } catch (IOException e) {
+                    throw new java.io.UncheckedIOException(e);
+                }
+            }).toList();
+            assertThat(llamadas).isNotEmpty().noneMatch(l -> l.matches("(?i).*LOG\\.\\w+\\(.*(\\bpin\\b|\\bclave\\b|texto|getMessage\\(\\)|nombre\\(\\)).*"));
+        }
+    }
+
+    @Test
     void la_migracion_v1_fuerza_rls_y_el_rol_de_aplicacion_no_puede_borrar_auditoria_ni_cambios_de_opinion() throws IOException {
         String v1 = Files.readString(Path.of("src/main/resources/db/migration/V1__esquema_canonico.sql"));
         assertThat(v1).contains("FORCE ROW LEVEL SECURITY").contains("uuidv7()").contains("vector(1024)").contains("USING hnsw");

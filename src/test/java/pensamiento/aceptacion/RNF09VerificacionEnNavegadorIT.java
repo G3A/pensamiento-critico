@@ -120,7 +120,7 @@ class RNF09VerificacionEnNavegadorIT {
 
     private static String entrar(Page pagina, String persona, String pin) {
         String base = urlConIp(Entorno.urlApp());
-        pagina.navigate(base + "/bloqueo");
+        pagina.navigate(base + "/" + Instalacion.RUTA);
         pagina.getByLabel("Tu PIN").fill(pin);
         pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(persona).setExact(true)).click();
         pagina.waitForURL(base + "/");

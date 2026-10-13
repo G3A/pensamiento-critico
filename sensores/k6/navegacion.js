@@ -16,8 +16,10 @@
 import http from 'k6/http';
 import { check, sleep, fail } from 'k6';
 
-const BASE = __ENV.APP_URL || 'http://app:8080';
-const PIN_ADMIN = open('/run/secrets/admin_pin').trim();
+const BASE = __ENV.APP_URL || 'http://app-prueba:8080';
+// Hito 8: cada corrida crea su propia institución con el operador del servicio (clave generada en secretos-prueba), la
+// invita y su primer administrador crea las personas. Se entra por la ruta de esa institución.
+const CLAVE_OPERADOR = open('/run/secrets/operador_clave').trim();
 const PERSONAS = 10;
 const META_CSRF = /<meta name="_csrf" content="([^"]+)"/;
 
@@ -50,9 +52,9 @@ function csrfDe(cuerpo) {
 }
 
 /** Entra con nombre y PIN; devuelve el token CSRF de la sesión ya autenticada. */
-function entrar(nombre, pin) {
-  const bloqueo = http.get(`${BASE}/bloqueo`);
-  const r = http.post(`${BASE}/sesion`, { nombre: nombre, pin: pin, volver: '/' },
+function entrar(nombre, pin, ruta) {
+  const bloqueo = http.get(`${BASE}/${ruta}`);
+  const r = http.post(`${BASE}/sesion`, { nombre: nombre, pin: pin, volver: '/', institucion: ruta },
     { headers: { 'X-CSRF-TOKEN': csrfDe(bloqueo.body) } });
   if (r.status !== 200) {
     fail(`${nombre} no pudo entrar (estado ${r.status})`);
@@ -60,10 +62,37 @@ function entrar(nombre, pin) {
   return csrfDe(http.get(`${BASE}/`).body);
 }
 
-/** El administrador crea diez personas de prueba, una por usuario virtual. */
+/** El operador crea la institución de la corrida e invita a su administrador; devuelve la ruta. */
+function institucionDeLaCorrida(sufijo) {
+  const ruta = `k6-${sufijo}`;
+  let csrf = csrfDe(http.get(`${BASE}/operador/entrar`).body);
+  const panel = http.post(`${BASE}/operador/sesion`, { nombre: 'operador', clave: CLAVE_OPERADOR }, { headers: { 'X-CSRF-TOKEN': csrf } });
+  csrf = csrfDe(panel.body);
+  const creada = http.post(`${BASE}/operador/instituciones`, { nombre: 'Carga con k6', ruta: ruta }, { headers: { 'X-CSRF-TOKEN': csrf } });
+  const accion = new RegExp('/' + ruta + '</td>[\\s\\S]*?action="(/operador/instituciones/[0-9a-f-]+/invitar)"').exec(creada.body || '');
+  if (!accion) {
+    fail(`el operador no pudo crear la institución ${ruta} (estado ${creada.status})`);
+  }
+  const invitacion = http.post(`${BASE}${accion[1]}`, {}, { headers: { 'X-CSRF-TOKEN': csrf } });
+  const codigo = /class="codigo-invitacion">([0-9A-Z-]{9})</.exec(invitacion.body || '');
+  if (!codigo) {
+    fail(`sin código de invitación (estado ${invitacion.status})`);
+  }
+  http.post(`${BASE}/operador/salir`, {}, { headers: { 'X-CSRF-TOKEN': csrf } });
+  const formulario = http.get(`${BASE}/${ruta}/invitacion`);
+  const canje = http.post(`${BASE}/${ruta}/invitacion`, { codigo: codigo[1], nombre: 'administrador', pin: '4826' },
+    { headers: { 'X-CSRF-TOKEN': csrfDe(formulario.body) } });
+  if (canje.status !== 200) {
+    fail(`no se pudo canjear la invitación (estado ${canje.status})`);
+  }
+  return ruta;
+}
+
+/** La institución de la corrida y diez personas de prueba, una por usuario virtual (más dos). */
 export function setup() {
-  const csrf = entrar('administrador', PIN_ADMIN);
   const sufijo = Date.now().toString(36);
+  const ruta = institucionDeLaCorrida(sufijo);
+  const csrf = entrar('administrador', '4826', ruta);
   const nombres = [];
   for (let i = 1; i <= PERSONAS + 2; i++) {
     const nombre = `vecino k6 ${sufijo} ${i}`;
@@ -73,14 +102,14 @@ export function setup() {
     }
     nombres.push(nombre);
   }
-  return { nombres: nombres };
+  return { nombres: nombres, ruta: ruta };
 }
 
 let csrf = null;
 
 export default function (datos) {
   if (csrf === null) {
-    csrf = entrar(datos.nombres[(__VU - 1) % PERSONAS], '4826');
+    csrf = entrar(datos.nombres[(__VU - 1) % PERSONAS], '4826', datos.ruta);
   }
   const pantalla = { tags: { pantalla: 'sin_ia' } };
 
@@ -158,7 +187,7 @@ function documento(n) {
 /** La importación como trabajo largo: subir un Markdown y esperar, como la lista que se refresca sola, a verlo indexado. */
 export function importacion(datos) {
   if (csrf === null) {
-    csrf = entrar(datos.nombres[PERSONAS + 1], '4826');
+    csrf = entrar(datos.nombres[PERSONAS + 1], '4826', datos.ruta);
   }
   const largo = { tags: { pantalla: 'trabajo_largo' } };
   const nombre = `conteo-${__VU}-${__ITER}-${Date.now().toString(36)}.md`;
@@ -217,7 +246,7 @@ function esperarTurno(cuerpo, conIa) {
 /** La sesión con Ollama activa: una sesión del Consejero que pide el modelo; cada turno se lee por SSE hasta el final. */
 export function sesionConOllama(datos) {
   if (csrf === null) {
-    csrf = entrar(datos.nombres[PERSONAS], '4826');
+    csrf = entrar(datos.nombres[PERSONAS], '4826', datos.ruta);
   }
   const conIa = { tags: { pantalla: 'con_ia' } };
   const nueva = http.post(`${BASE}/consejero/sesiones`, { modo: 'decision', postura: 'Conviene abrir los domingos.', confianza: '70', usaModelo: 'on' },

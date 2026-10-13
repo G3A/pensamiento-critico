@@ -10,7 +10,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import pensamiento.nucleo.Usuario;
 
-/** Lo que vive en la sesión del servidor: identidad, institución y rol. El PIN hasheado no sale de aquí. */
+/**
+ * Lo que vive en la sesión del servidor: identidad, institución (con la ruta por la que entró) y rol. El PIN hasheado no
+ * sale de aquí. La sesión queda atada a esa institución: una petición a la ruta de otra se rechaza (hito 8).
+ */
 public final class UsuarioSesion implements UserDetails {
 
     public static final String ROL_ADMINISTRADOR = "ROLE_ADMINISTRADOR";
@@ -18,14 +21,16 @@ public final class UsuarioSesion implements UserDetails {
 
     private final UUID id;
     private final UUID institucionId;
+    private final String ruta;
     private final String nombre;
     private final Usuario.RolGlobal rol;
     private final boolean activo;
     private final String pinHash;
 
-    public UsuarioSesion(Usuario usuario) {
+    public UsuarioSesion(Usuario usuario, String ruta) {
         this.id = usuario.id();
         this.institucionId = usuario.institucionId();
+        this.ruta = ruta;
         this.nombre = usuario.nombre();
         this.rol = usuario.rol();
         this.activo = usuario.activo();
@@ -38,6 +43,11 @@ public final class UsuarioSesion implements UserDetails {
 
     public UUID institucionId() {
         return institucionId;
+    }
+
+    /** La ruta de entrada de su institución: /<ruta>. */
+    public String ruta() {
+        return ruta;
     }
 
     public String nombre() {

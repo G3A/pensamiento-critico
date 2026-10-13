@@ -27,20 +27,6 @@ public class RepositorioUsuariosJdbc implements RepositorioUsuarios {
     }
 
     @Override
-    public Optional<UUID> institucionUnica() {
-        return jdbc.sql("SELECT id FROM institucion ORDER BY creada_en LIMIT 1").query(UUID.class).optional();
-    }
-
-    @Override
-    public UUID crearInstitucion(String nombre) {
-        return institucionUnica().orElseGet(() ->
-                jdbc.sql("INSERT INTO institucion (nombre) VALUES (:nombre) RETURNING id")
-                        .param("nombre", nombre)
-                        .query(UUID.class)
-                        .single());
-    }
-
-    @Override
     public Usuario guardar(Usuario u) {
         try {
             jdbc.sql("""
@@ -71,7 +57,7 @@ public class RepositorioUsuariosJdbc implements RepositorioUsuarios {
 
     @Override
     public Optional<Usuario> porNombre(UUID institucionId, String nombre) {
-        return jdbc.sql("SELECT " + COLUMNAS + " FROM usuario WHERE institucion_id = :institucion AND nombre = :nombre")
+        return jdbc.sql("SELECT " + COLUMNAS + " FROM usuario WHERE institucion_id = :institucion AND nombre_clave = app_clave_nombre(:nombre)")
                 .param("institucion", institucionId).param("nombre", nombre)
                 .query(RepositorioUsuariosJdbc::fila).optional();
     }

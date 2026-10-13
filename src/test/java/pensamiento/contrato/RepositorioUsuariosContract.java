@@ -11,7 +11,7 @@ import org.junit.jupiter.api.TestInstance;
 import pensamiento.nucleo.Usuario;
 import pensamiento.nucleo.puertos.RepositorioUsuarios;
 
-/** Contrato de cuentas: institución única idempotente, nombre repetido, no encontrado, orden por nombre, actualización por id. */
+/** Contrato de cuentas: nombre repetido sin distinguir mayúsculas ni tildes, no encontrado, orden por nombre, actualización por id. */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class RepositorioUsuariosContract {
 
@@ -20,13 +20,30 @@ public abstract class RepositorioUsuariosContract {
     /** Institución limpia donde escribir; el real crea una de prueba. */
     protected abstract UUID institucionDePrueba();
 
+    /** Otra institución, sin personas. */
+    protected UUID otraInstitucion() {
+        return UUID.fromString("0192f000-0000-7000-8000-0000000000ff");
+    }
+
     @Test
-    void crear_la_institucion_dos_veces_devuelve_la_misma() {
+    void el_nombre_no_distingue_mayusculas_tildes_ni_espacios_repetidos() {
         RepositorioUsuarios sut = crearSut();
-        UUID primera = sut.crearInstitucion("Instalación local");
-        UUID segunda = sut.crearInstitucion("Otra");
-        assertThat(segunda).isEqualTo(primera);
-        assertThat(sut.institucionUnica()).contains(primera);
+        UUID institucion = institucionDePrueba();
+        Usuario ana = new Usuario(UUID.randomUUID(), institucion, "Ana María Peña", "h", Usuario.RolGlobal.PERSONA, true);
+        sut.guardar(ana);
+        assertThat(sut.porNombre(institucion, "ana maria pena")).contains(ana);
+        assertThat(sut.porNombre(institucion, "  ANA   MARÍA PEÑA ")).contains(ana);
+        assertThatThrownBy(() -> sut.guardar(new Usuario(UUID.randomUUID(), institucion, "ANA MARIA PENA", "h", Usuario.RolGlobal.PERSONA, true)))
+                .isInstanceOf(RepositorioUsuarios.NombreRepetido.class);
+        assertThat(sut.contar(institucion)).isEqualTo(1);
+    }
+
+    @Test
+    void el_mismo_nombre_en_otra_institucion_no_es_repetido() {
+        RepositorioUsuarios sut = crearSut();
+        UUID institucion = institucionDePrueba();
+        sut.guardar(new Usuario(UUID.randomUUID(), institucion, "Rectora", "h", Usuario.RolGlobal.PERSONA, true));
+        assertThat(sut.porNombre(otraInstitucion(), "rectora")).isEmpty();
     }
 
     @Test

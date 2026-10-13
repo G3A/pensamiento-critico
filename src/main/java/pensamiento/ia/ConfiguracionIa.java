@@ -3,6 +3,8 @@ package pensamiento.ia;
 import java.time.Clock;
 import java.time.Duration;
 
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.health.contributor.HealthIndicator;
@@ -23,10 +25,18 @@ public class ConfiguracionIa {
     static final Duration ENFRIAMIENTO = Duration.ofSeconds(30);
 
     @Bean
+    SemaforoIa semaforoIa(MeterRegistry metricas) {
+        SemaforoIa semaforo = new SemaforoIa(1);
+        // Métrica de la cola de Ollama (hito 8): cuántas llamadas esperan turno en este momento.
+        Gauge.builder("ia.cola", semaforo, SemaforoIa::enEspera).description("Llamadas a Ollama esperando turno").register(metricas);
+        return semaforo;
+    }
+
+    @Bean
     MonitorIa monitorIa(@Value("${app.ia.base-url}") String baseUrl,
                         @Value("${app.ia.modelo-chat}") String modeloChat,
-                        @Value("${app.ia.modelo-embeddings}") String modeloEmbeddings) {
-        return new MonitorIa(new IaSpringAi(baseUrl, modeloChat, modeloEmbeddings, new SemaforoIa(1)));
+                        @Value("${app.ia.modelo-embeddings}") String modeloEmbeddings, SemaforoIa semaforo) {
+        return new MonitorIa(new IaSpringAi(baseUrl, modeloChat, modeloEmbeddings, semaforo));
     }
 
     @Bean

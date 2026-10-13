@@ -21,7 +21,8 @@ class RF02CuentaConPinIT {
 
         ClienteApp.Respuesta bloqueo = persona.bloquear();
         assertThat(bloqueo.estado()).isEqualTo(302);
-        assertThat(persona.get("/").estado()).as("tras bloquear, el inicio ya no se ve").isEqualTo(302);
+        assertThat(bloqueo.cabecera("Location").orElse("")).as("al salir vuelve a la entrada de su institución").endsWith("/" + Instalacion.RUTA);
+        assertThat(persona.get("/").cuerpo()).as("tras bloquear, el inicio ya no se ve").doesNotContain("¿Qué quieres hacer hoy?").contains("dirección de tu colegio");
 
         ClienteApp.Respuesta deVuelta = persona.entrar(nombre, "1357");
         assertThat(deVuelta.estado()).isEqualTo(302);
@@ -44,8 +45,8 @@ class RF02CuentaConPinIT {
         ClienteApp intruso = new ClienteApp();
         ClienteApp.Respuesta r = intruso.entrar(nombre, "0000");
         assertThat(r.estado()).isEqualTo(302);
-        assertThat(r.cabecera("Location").orElse("")).contains("/bloqueo?error");
-        assertThat(intruso.get("/").estado()).isEqualTo(302);
+        assertThat(r.cabecera("Location").orElse("")).endsWith("/" + Instalacion.RUTA + "?error");
+        assertThat(intruso.get("/").cuerpo()).doesNotContain("¿Qué quieres hacer hoy?");
     }
 
     @Test

@@ -77,7 +77,7 @@ public class RenderizadorCincoPorques implements RenderizadorResultado<Resultado
         try {
             return Optional.of(grafico.svg(GeneradorDotDiagramas.porques(r)));
         } catch (Grafico.GraficoInvalido | Grafico.GraficoTiempoAgotado e) {
-            LOG.warn("Graphviz no dibujó los 5 porqués; se muestra solo la lista: {}", e.getMessage());
+            LOG.warn("Graphviz no dibujó los 5 porqués; se muestra solo la lista: {}", e.getClass().getSimpleName());   // solo el tipo: el mensaje puede traer lo que escribió la persona
             return Optional.empty();
         }
     }

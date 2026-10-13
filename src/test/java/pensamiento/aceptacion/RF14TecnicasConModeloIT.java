@@ -30,7 +30,7 @@ class RF14TecnicasConModeloIT {
     }
 
     private static boolean ollamaDisponible() {
-        String salud = new ClienteApp().get("/actuator/health").cuerpo();
+        String salud = Instalacion.saludComoOperador();
         return salud.contains("\"ia\":{") && !salud.contains("\"status\":\"PLANTILLAS\"");
     }
 

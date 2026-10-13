@@ -56,7 +56,7 @@ public class RenderizadorIshikawa implements RenderizadorResultado<ResultadoIshi
         try {
             return Optional.of(grafico.svg(GeneradorDotDiagramas.espina(r, idFragmento)));
         } catch (Grafico.GraficoInvalido | Grafico.GraficoTiempoAgotado e) {
-            LOG.warn("Graphviz no dibujó la espina de Ishikawa; se muestra solo la lista: {}", e.getMessage());
+            LOG.warn("Graphviz no dibujó la espina de Ishikawa; se muestra solo la lista: {}", e.getClass().getSimpleName());   // solo el tipo: el mensaje puede traer lo que escribió la persona
             return Optional.empty();
         }
     }

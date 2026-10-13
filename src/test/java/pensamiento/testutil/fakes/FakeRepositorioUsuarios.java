@@ -13,26 +13,12 @@ import pensamiento.nucleo.puertos.RepositorioUsuarios;
 /** Cuentas en memoria. Certificado por FakeRepositorioUsuariosContractTest. */
 public final class FakeRepositorioUsuarios implements RepositorioUsuarios {
 
-    private UUID institucion;
     private final Map<UUID, Usuario> usuarios = new LinkedHashMap<>();
-
-    @Override
-    public Optional<UUID> institucionUnica() {
-        return Optional.ofNullable(institucion);
-    }
-
-    @Override
-    public UUID crearInstitucion(String nombre) {
-        if (institucion == null) {
-            institucion = UUID.randomUUID();
-        }
-        return institucion;
-    }
 
     @Override
     public Usuario guardar(Usuario usuario) {
         boolean nombreRepetido = usuarios.values().stream()
-                .anyMatch(u -> !u.id().equals(usuario.id()) && u.institucionId().equals(usuario.institucionId()) && u.nombre().equals(usuario.nombre()));
+                .anyMatch(u -> !u.id().equals(usuario.id()) && u.institucionId().equals(usuario.institucionId()) && Usuario.claveDeNombre(u.nombre()).equals(Usuario.claveDeNombre(usuario.nombre())));
         if (nombreRepetido) {
             throw new NombreRepetido(usuario.nombre());
         }
@@ -47,7 +33,7 @@ public final class FakeRepositorioUsuarios implements RepositorioUsuarios {
 
     @Override
     public Optional<Usuario> porNombre(UUID institucionId, String nombre) {
-        return usuarios.values().stream().filter(u -> u.institucionId().equals(institucionId) && u.nombre().equals(nombre)).findFirst();
+        return usuarios.values().stream().filter(u -> u.institucionId().equals(institucionId) && Usuario.claveDeNombre(u.nombre()).equals(Usuario.claveDeNombre(nombre))).findFirst();
     }
 
     @Override

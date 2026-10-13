@@ -7,19 +7,15 @@ import pensamiento.testutil.fakes.FakeRepositorioUsuarios;
 
 class FakeRepositorioUsuariosContractTest extends RepositorioUsuariosContract {
 
-    private FakeRepositorioUsuarios fake;
+    private static final UUID INSTITUCION = UUID.fromString("0192f000-0000-7000-8000-000000000001");
 
     @Override
     protected RepositorioUsuarios crearSut() {
-        fake = new FakeRepositorioUsuarios();
-        return fake;
+        return new FakeRepositorioUsuarios();
     }
 
     @Override
     protected UUID institucionDePrueba() {
-        if (fake == null) {
-            fake = new FakeRepositorioUsuarios();
-        }
-        return fake.crearInstitucion("prueba");
+        return INSTITUCION;
     }
 }

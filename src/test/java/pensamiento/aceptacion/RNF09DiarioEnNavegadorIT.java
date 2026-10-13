@@ -48,7 +48,7 @@ class RNF09DiarioEnNavegadorIT {
                     erroresDeConsola.add(m.text());
                 }
             });
-            pagina.navigate(base + "/bloqueo");
+            pagina.navigate(base + "/" + Instalacion.RUTA);
             pagina.getByLabel("Tu PIN").fill("2604");
             pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(persona).setExact(true)).click();
             pagina.waitForURL(base + "/");

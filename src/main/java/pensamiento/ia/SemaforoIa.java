@@ -14,6 +14,11 @@ public final class SemaforoIa {
         this.permisos = new Semaphore(permisos, true);
     }
 
+    /** Cuántas llamadas esperan turno (la cola de Ollama que miden las métricas, hito 8). */
+    public int enEspera() {
+        return permisos.getQueueLength();
+    }
+
     public <T> T conPermiso(Supplier<T> accion) {
         try {
             permisos.acquire();

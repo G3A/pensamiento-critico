@@ -6,20 +6,25 @@
 @param ModeloBloqueo bloqueo
 @param List<Usuario> personas
 @param String volver
+@param String aviso
 @template.layout(pagina = pagina, contenido = @`
   <section class="bloqueo-pagina">
     <form class="tarjeta formulario-bloqueo" method="post" action="/sesion">
       <input type="hidden" name="_csrf" value="${bloqueo.csrf()}">
       <input type="hidden" name="volver" value="${volver}">
+      <input type="hidden" name="institucion" value="${bloqueo.ruta()}">
       <h1>¿Quién eres?</h1>
       <p class="detalle">Escribe tu PIN y elige tu nombre. Cada persona tiene su cuenta y su PIN; las crea el administrador.</p>
+      @if(aviso != null)
+        <p class="aviso" role="status">${aviso}</p>
+      @endif
       @if(bloqueo.error() != null)
         <p class="error" role="alert">${bloqueo.error()}</p>
       @endif
       <label for="pin">Tu PIN</label>
       <input id="pin" name="pin" type="password" inputmode="numeric" pattern="[0-9]{4,8}" autocomplete="current-password" required autofocus>
       @if(personas.isEmpty())
-        <p class="error">Todavía no hay cuentas. Revisa secrets/admin_pin.txt y el registro de arranque.</p>
+        <p class="error">Todavía no hay cuentas en esta institución. Quien la administra entra con la invitación que le dio el operador del servicio.</p>
       @else
         <p id="elige-nombre">Elige tu nombre:</p>
         <ul class="personas" aria-labelledby="elige-nombre">

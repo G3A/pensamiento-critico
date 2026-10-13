@@ -7,22 +7,17 @@ import java.util.UUID;
 import pensamiento.nucleo.Usuario;
 
 /**
- * Cuentas de la instalación. En la versión 1 hay una sola institución por instalación: el repositorio
- * la conoce y la crea si no existe.
+ * Cuentas de cada institución (hito 8: ya no hay institución única; la fija la ruta de entrada). El nombre es único dentro
+ * de la institución sin distinguir mayúsculas, tildes ni espacios repetidos ({@link Usuario#claveDeNombre(String)}).
  */
 public interface RepositorioUsuarios {
 
-    /** La institución única de la instalación; vacío antes del primer arranque. */
-    Optional<UUID> institucionUnica();
-
-    /** Crea la institución única. Si ya existe una, devuelve la existente (idempotente). */
-    UUID crearInstitucion(String nombre);
-
-    /** Inserta o actualiza (por id). El nombre es único dentro de la institución: repetirlo lanza NombreRepetido. */
+    /** Inserta o actualiza (por id). Repetir la clave del nombre dentro de la institución lanza NombreRepetido. */
     Usuario guardar(Usuario usuario);
 
     Optional<Usuario> porId(UUID institucionId, UUID id);
 
+    /** Busca por la clave del nombre: "ANA MARÍA" encuentra a "Ana María". */
     Optional<Usuario> porNombre(UUID institucionId, String nombre);
 
     /** Todos los usuarios de la institución, activos o no, ordenados por nombre. */

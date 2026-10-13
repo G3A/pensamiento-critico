@@ -19,7 +19,7 @@ jobs:
       - name: Secretos de la instalación de uso (el compose los exige; la suite usa los suyos, generados en secretos-prueba)
         run: |
           printf '%s' 'clave-nocturna-${{ github.run_id }}' > secrets/db_password.txt
-          printf '%s' '2468' > secrets/admin_pin.txt
+          printf '%s' 'operador-ci-${{ github.run_id }}' > secrets/operador_clave.txt
           cp .env.example .env
 
       - name: Caché de modelos de Ollama (3,7 GB)
@@ -48,7 +48,7 @@ jobs:
       - name: Sensor contra el falso verde (los Real*ContractIT corrieron de verdad)
         # Un verde sin contratos reales ejecutados (CONTRACT_REAL perdido, gating roto) deja al Fake autocertificado.
         run: |
-          for puerto in Ia Grafico Reloj RepositorioTecnica RepositorioEjecucion RepositorioUsuarios RepositorioExpediente RegistroAuditoria RepositorioConfiguracion RegistroIdentificadores RepositorioEsquemas RepositorioArgumentos RepositorioPredicciones RepositorioCambiosOpinion RepositorioSesiones RepositorioEvidencias RepositorioVerificaciones Biblioteca ColaTrabajos ExtractorPdf TransaccionComoUsuario RepositorioDojo RegistroDeRazonamiento; do
+          for puerto in Ia Grafico Reloj RepositorioTecnica RepositorioEjecucion RepositorioUsuarios RepositorioExpediente RegistroAuditoria RepositorioConfiguracion RegistroIdentificadores RepositorioEsquemas RepositorioArgumentos RepositorioPredicciones RepositorioCambiosOpinion RepositorioSesiones RepositorioEvidencias RepositorioVerificaciones Biblioteca ColaTrabajos ExtractorPdf TransaccionComoUsuario RepositorioDojo RegistroDeRazonamiento RepositorioInstituciones RepositorioOperador; do
             reporte="target/failsafe-reports/TEST-pensamiento.contrato.real.Real${puerto}ContractIT.xml"
             test -f "$reporte" || { echo "Falta el reporte de Real${puerto}ContractIT"; exit 1; }
             corridas=$(grep -oE 'tests="[0-9]+"' "$reporte" | head -1 | grep -oE '[0-9]+')

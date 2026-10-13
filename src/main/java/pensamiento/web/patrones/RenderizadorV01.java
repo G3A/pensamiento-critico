@@ -53,7 +53,7 @@ public class RenderizadorV01 implements RenderizadorResultado<ResultadoMapa> {
         try {
             return Optional.of(grafico.svg(GeneradorDot.dot(valor)));
         } catch (Grafico.GraficoInvalido | Grafico.GraficoTiempoAgotado e) {
-            LOG.warn("Graphviz no dibujó el mapa; se muestra solo la lista de nodos: {}", e.getMessage());
+            LOG.warn("Graphviz no dibujó el mapa; se muestra solo la lista de nodos: {}", e.getClass().getSimpleName());   // solo el tipo: el mensaje puede traer lo que escribió la persona
             return Optional.empty();
         }
     }

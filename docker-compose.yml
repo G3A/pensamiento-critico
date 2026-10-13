@@ -1,6 +1,6 @@
 # Un solo comando levanta todo: docker compose up --build
 # Pruebas:  docker compose --profile test run --rm tests
-# Respaldo: docker compose --profile backup run --rm backup
+# Respaldo: docker compose --profile backup run --rm backup   (cifrado con secrets/respaldo_clave.txt)
 # Imágenes y modelos fijados por digest (resueltos el 7 de octubre de 2026 con docker manifest inspect
 # y con el manifiesto de registry.ollama.ai).
 name: pensamiento
@@ -58,7 +58,7 @@ services:
       APP_PDF_TIMEOUT: 60s
       APP_ZONA: ${APP_ZONA:-America/Bogota}
       APP_RELOJ_AJUSTABLE: ${APP_RELOJ_AJUSTABLE:-false}
-    secrets: [db_password, admin_pin]
+    secrets: [db_password, operador_clave]
     healthcheck:
       test: ["CMD-SHELL", "curl -fs http://127.0.0.1:8080/actuator/health | grep -q UP"]
       interval: 10s
@@ -68,12 +68,21 @@ services:
       db: { condition: service_healthy }
       ollama: { condition: service_healthy }
 
-  backup:                          # docker compose --profile backup run --rm backup
+  backup:                          # docker compose --profile backup run --rm backup   (respaldo completo cifrado, hito 8)
     profiles: ["backup"]
     image: pgvector/pgvector:pg18@sha256:ad249f9fb9572979643a47694e59b9a8cdcdf6abc6accebf49bb80ad5f20ff9b
-    entrypoint: ["/bin/sh", "-c", "export PGPASSWORD=$$(cat /run/secrets/db_password) && pg_dump -Fc -h db -U pensamiento pensamiento > /respaldos/pensamiento-$$(date +%F).dump && ls -la /respaldos"]
-    secrets: [db_password]
-    volumes: ["./respaldos:/respaldos"]
+    entrypoint: ["bash", "/scripts/respaldo.sh"]   # restaurar: ... run --rm backup restaurar /respaldos/ARCHIVO.dump.gpg
+    secrets: [db_password, respaldo_clave]
+    volumes: ["./respaldos:/respaldos", "./docker/respaldo:/scripts:ro"]
+    depends_on:
+      db: { condition: service_healthy }
+
+  institucion:                     # docker compose --profile backup run --rm institucion exportar|borrar <ruta>
+    profiles: ["backup"]
+    image: pgvector/pgvector:pg18@sha256:ad249f9fb9572979643a47694e59b9a8cdcdf6abc6accebf49bb80ad5f20ff9b
+    entrypoint: ["bash", "/scripts/institucion.sh"]
+    secrets: [db_password, respaldo_clave]
+    volumes: ["./respaldos:/respaldos", "./docker/respaldo:/scripts:ro"]
     depends_on:
       db: { condition: service_healthy }
 
@@ -88,7 +97,7 @@ services:
     profiles: ["test"]
     image: pgvector/pgvector:pg18@sha256:ad249f9fb9572979643a47694e59b9a8cdcdf6abc6accebf49bb80ad5f20ff9b
     volumes: ["secretos-prueba:/secretos"]
-    entrypoint: ["/bin/sh", "-c", "cd /secretos && for s in db_password:A-Za-z0-9:32 admin_pin:0-9:8 operador_clave:A-Za-z0-9:24; do n=$${s%%:*}; r=$${s#*:}; [ -s $$n ] || tr -dc $${r%:*} </dev/urandom | head -c $${r##*:} > $$n; done; chmod 644 /secretos/*"]
+    entrypoint: ["/bin/sh", "-c", "cd /secretos && for s in db_password:A-Za-z0-9:32 admin_pin:0-9:8 operador_clave:A-Za-z0-9:24 respaldo_clave:A-Za-z0-9:40; do n=$${s%%:*}; r=$${s#*:}; [ -s $$n ] || tr -dc $${r%:*} </dev/urandom | head -c $${r##*:} > $$n; done; chmod 644 /secretos/*"]
 
   db-prueba:
     profiles: ["test"]
@@ -113,7 +122,7 @@ services:
   app-prueba:
     profiles: ["test"]
     build: .
-    image: pensamiento-app         # la misma imagen que app: se construye una sola vez
+    image: pensamiento-app-prueba  # imagen propia: construir las pruebas nunca cambia la imagen de la app de uso
     mem_limit: 2g
     pids_limit: 256
     read_only: true
@@ -179,8 +188,10 @@ services:
 secrets:
   db_password:
     file: ./secrets/db_password.txt   # fuera del repo; secrets/README.md documenta el formato
-  admin_pin:
-    file: ./secrets/admin_pin.txt
+  operador_clave:                    # hito 8: clave del operador del servicio (12 caracteres o más)
+    file: ./secrets/operador_clave.txt
+  respaldo_clave:                    # hito 8: cifra los respaldos; guarda una copia fuera de este equipo
+    file: ./secrets/respaldo_clave.txt
 
 volumes:
   pgdata:

@@ -55,13 +55,23 @@ public final class BaseDatosDePrueba {
         return ContextoRls.conUsuario(usuarioId, institucionId, () -> transaccion.execute(e -> accion.get()));
     }
 
+    /** Transacción sin usuario ni institución fijados: lo que ve la app antes de que haya sesión. */
+    public <T> T sinContexto(Supplier<T> accion) {
+        return ContextoRls.con(java.util.Optional.empty(), java.util.Optional.empty(), () -> transaccion.execute(e -> accion.get()));
+    }
+
     public <T> T comoInstitucion(UUID institucionId, Supplier<T> accion) {
         return ContextoRls.conInstitucion(institucionId, () -> transaccion.execute(e -> accion.get()));
     }
 
-    /** Institución y usuario de prueba creados como administrador (sin RLS). */
+    /** Institución y usuario de prueba creados como administrador (sin RLS). La ruta sale al azar: p-<12 hex>. */
     public UUID crearInstitucion(String nombre) {
-        return jdbcAdmin().sql("INSERT INTO institucion (nombre) VALUES (:n) RETURNING id").param("n", nombre).query(UUID.class).single();
+        return crearInstitucion(nombre, "p-" + UUID.randomUUID().toString().replace("-", "").substring(0, 12));
+    }
+
+    public UUID crearInstitucion(String nombre, String ruta) {
+        return jdbcAdmin().sql("INSERT INTO institucion (nombre, ruta) VALUES (:n, :r) RETURNING id").param("n", nombre).param("r", ruta)
+                .query(UUID.class).single();
     }
 
     public UUID crearUsuario(UUID institucion, String nombre) {

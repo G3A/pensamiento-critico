@@ -2,7 +2,7 @@ spring:
   application:
     name: pensamiento-critico
   # Los secretos de Compose llegan como archivos en /run/secrets: cada archivo es una propiedad
-  # (db_password, admin_pin). Las variables *_FILE del compose documentan la ruta; aquí se leen.
+  # (db_password, operador_clave). Las variables *_FILE del compose documentan la ruta; aquí se leen.
   config:
     import: "optional:configtree:/run/secrets/"
   threads:
@@ -51,18 +51,20 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health, metrics
   endpoint:
     health:
-      show-details: always
-      show-components: always
+      # Hito 8: anónimo solo ve el estado; los detalles (modelos, ruta, disco) solo el operador del servicio.
+      show-details: when-authorized
+      show-components: when-authorized
+      roles: OPERADOR
 
 app:
   zona: ${APP_ZONA:America/Bogota}
   reloj:
     ajustable: ${APP_RELOJ_AJUSTABLE:false}   # solo pruebas de aceptación y demostraciones: el administrador puede adelantarlo
-  admin:
-    pin: ${admin_pin:}
+  operador:
+    clave: ${operador_clave:}   # secrets/operador_clave.txt: crea el operador del servicio en el primer arranque (hito 8)
   ia:
     base-url: ${SPRING_AI_OLLAMA_BASE_URL:http://localhost:11434}
     modelo-chat: ${SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL:qwen3:4b-instruct-2507-q4_K_M}

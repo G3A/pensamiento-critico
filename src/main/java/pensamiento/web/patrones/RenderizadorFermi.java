@@ -61,7 +61,7 @@ public class RenderizadorFermi implements RenderizadorResultado<ResultadoFermi> 
         try {
             return Optional.of(grafico.svg(GeneradorDotDiagramas.cadena(r)));
         } catch (Grafico.GraficoInvalido | Grafico.GraficoTiempoAgotado e) {
-            LOG.warn("Graphviz no dibujó la cadena de Fermi; se muestra solo la lista: {}", e.getMessage());
+            LOG.warn("Graphviz no dibujó la cadena de Fermi; se muestra solo la lista: {}", e.getClass().getSimpleName());   // solo el tipo: el mensaje puede traer lo que escribió la persona
             return Optional.empty();
         }
     }
