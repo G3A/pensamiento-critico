@@ -77,39 +77,104 @@ services:
     depends_on:
       db: { condition: service_healthy }
 
+  # --- Perfil test: instalación de pruebas aislada y desechable (hito 8, entregable 1) ---
+  # La suite nunca toca la base de uso (db) ni lee secrets/: corre contra db-prueba y app-prueba, con secretos
+  # generados al azar en el volumen secretos-prueba. db-prueba guarda sus datos en tmpfs: al recrearla queda vacía.
+  # Para empezar de cero: docker compose --profile test rm -sf db-prueba app-prueba secretos-prueba
+  #                       docker volume rm pensamiento_secretos-prueba
+  # (Nunca "down -v": borraría también el volumen de la base de uso.)
+
+  secretos-prueba:                 # genera los secretos de la instalación de pruebas si todavía no existen
+    profiles: ["test"]
+    image: pgvector/pgvector:pg18@sha256:ad249f9fb9572979643a47694e59b9a8cdcdf6abc6accebf49bb80ad5f20ff9b
+    volumes: ["secretos-prueba:/secretos"]
+    entrypoint: ["/bin/sh", "-c", "cd /secretos && for s in db_password:A-Za-z0-9:32 admin_pin:0-9:8 operador_clave:A-Za-z0-9:24; do n=$${s%%:*}; r=$${s#*:}; [ -s $$n ] || tr -dc $${r%:*} </dev/urandom | head -c $${r##*:} > $$n; done; chmod 644 /secretos/*"]
+
+  db-prueba:
+    profiles: ["test"]
+    image: pgvector/pgvector:pg18@sha256:ad249f9fb9572979643a47694e59b9a8cdcdf6abc6accebf49bb80ad5f20ff9b
+    shm_size: 256m
+    tmpfs: ["/var/lib/postgresql:size=2g"]
+    command: ["postgres", "-c", "shared_buffers=256MB", "-c", "fsync=off", "-c", "synchronous_commit=off"]
+    environment:
+      POSTGRES_DB: pensamiento
+      POSTGRES_USER: pensamiento
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    volumes:
+      - secretos-prueba:/run/secrets:ro
+      - ./docker/db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pensamiento -d pensamiento"]
+      interval: 3s
+      retries: 20
+    depends_on:
+      secretos-prueba: { condition: service_completed_successfully }
+
+  app-prueba:
+    profiles: ["test"]
+    build: .
+    image: pensamiento-app         # la misma imagen que app: se construye una sola vez
+    mem_limit: 2g
+    pids_limit: 256
+    read_only: true
+    tmpfs: [/tmp]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-prueba:5432/pensamiento
+      SPRING_DATASOURCE_USERNAME: app
+      SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/db_password
+      SPRING_FLYWAY_USER: pensamiento
+      SPRING_AI_OLLAMA_BASE_URL: http://ollama:11434
+      SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL: qwen3:4b-instruct-2507-q4_K_M
+      SPRING_AI_OLLAMA_EMBEDDING_OPTIONS_MODEL: bge-m3
+      APP_IA_TIMEOUT_CHAT: 60s
+      APP_IA_TIMEOUT_CLASIFICACION: 20s
+      APP_IA_TIMEOUT_EMBEDDINGS: 10s
+      APP_GRAPHVIZ_TIMEOUT: 5s
+      APP_PDF_TIMEOUT: 60s
+      APP_ZONA: ${APP_ZONA:-America/Bogota}
+      APP_RELOJ_AJUSTABLE: "true"  # las aceptaciones del flujo D, del Dojo y de P20 adelantan el reloj
+    volumes: ["secretos-prueba:/run/secrets:ro"]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://127.0.0.1:8080/actuator/health | grep -q UP"]
+      interval: 5s
+      retries: 40
+      start_period: 30s
+    depends_on:
+      db-prueba: { condition: service_healthy }
+      ollama: { condition: service_healthy }
+
   tests:                           # docker compose --profile test run --rm tests
     profiles: ["test"]
     build:
       context: .
       dockerfile: Dockerfile.tests
     working_dir: /src
-    volumes: [".:/src", "m2:/root/.m2"]
+    volumes: [".:/src", "m2:/root/.m2", "secretos-prueba:/run/secrets:ro"]
+    tmpfs: ["/src/secrets:size=1m"]  # tapa los secretos reales del repositorio: la suite no puede leerlos
     command: ["mvn", "-q", "-B", "verify"]
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/pensamiento
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-prueba:5432/pensamiento
       SPRING_DATASOURCE_USERNAME: app
       SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/db_password
       SPRING_FLYWAY_USER: pensamiento
       SPRING_AI_OLLAMA_BASE_URL: http://ollama:11434
       SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL: qwen3:4b-instruct-2507-q4_K_M
-      APP_URL: http://app:8080
+      APP_URL: http://app-prueba:8080
       CONTRACT_REAL: ${CONTRACT_REAL:-false}   # true solo en el workflow nocturno
       NVD_API_KEY: ${NVD_API_KEY:-}             # opcional: acelera Dependency-Check en -Pgates; vacía, el perfil nvd-clave no se activa
-    secrets: [db_password, admin_pin]
     depends_on:
-      db: { condition: service_healthy }
-      app: { condition: service_healthy }
+      db-prueba: { condition: service_healthy }
+      app-prueba: { condition: service_healthy }
 
   k6:                              # docker compose --profile test run --rm k6  (RNF-03, carga básica)
     profiles: ["test"]
     image: grafana/k6:2.3.0@sha256:9c2dee7f8ed74d317e4027c06a10f169b625638189de8d4555d0b3486a5aeb34
-    volumes: ["./sensores/k6:/scripts:ro", "./sensores/k6/resultados:/resultados"]
+    volumes: ["./sensores/k6:/scripts:ro", "./sensores/k6/resultados:/resultados", "secretos-prueba:/run/secrets:ro"]
     command: ["run", "--summary-export=/resultados/resumen.json", "/scripts/navegacion.js"]
     environment:
-      APP_URL: http://app:8080
-    secrets: [admin_pin]
+      APP_URL: http://app-prueba:8080
     depends_on:
-      app: { condition: service_healthy }
+      app-prueba: { condition: service_healthy }
 
 secrets:
   db_password:
@@ -121,3 +186,4 @@ volumes:
   pgdata:
   ollama:
   m2:                              # caché de Maven entre corridas de pruebas
+  secretos-prueba:                 # secretos de la instalación de pruebas, generados por secretos-prueba

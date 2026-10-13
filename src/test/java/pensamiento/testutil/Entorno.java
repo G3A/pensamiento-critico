@@ -5,14 +5,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-/** Lo que las pruebas de integración y aceptación necesitan del compose: URL, credenciales y secretos. */
+/** Lo que las pruebas de integración y aceptación necesitan de la instalación de pruebas del compose (db-prueba y app-prueba): URL, credenciales y secretos. */
 public final class Entorno {
 
     private Entorno() {
     }
 
     public static String urlBaseDeDatos() {
-        return variable("SPRING_DATASOURCE_URL").orElse("jdbc:postgresql://localhost:5432/pensamiento");
+        return variable("SPRING_DATASOURCE_URL").orElse("jdbc:postgresql://db-prueba:5432/pensamiento");
     }
 
     public static String usuarioApp() {
@@ -32,7 +32,7 @@ public final class Entorno {
     }
 
     public static String urlApp() {
-        return variable("APP_URL").orElse("http://localhost:8080");
+        return variable("APP_URL").orElse("http://app-prueba:8080");
     }
 
     /** El modelo de chat del compose (SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL); el fijado por defecto desde el hito 3. */
@@ -53,10 +53,8 @@ public final class Entorno {
         if (directo.isPresent()) {
             return directo.get();
         }
+        // Solo los secretos de la instalación de pruebas (volumen secretos-prueba); nunca los de secrets/ (hito 8).
         Path archivo = Path.of(variable(variableArchivo).orElse("/run/secrets/" + nombre));
-        if (!Files.exists(archivo)) {
-            archivo = Path.of("secrets", nombre + ".txt");
-        }
         try {
             return Files.readString(archivo).trim();
         } catch (IOException e) {

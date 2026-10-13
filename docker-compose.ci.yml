@@ -1,11 +1,8 @@
 # Superposición para GitHub Actions: los modelos de Ollama y la caché de Maven viven en carpetas del
 # runner que actions/cache guarda entre corridas. Uso:
-#   docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
+#   docker compose -f docker-compose.yml -f docker-compose.ci.yml --profile test up --build -d ollama db-prueba app-prueba
+# app-prueba ya corre con APP_RELOJ_AJUSTABLE=true (las aceptaciones del flujo D, del Dojo y de P20 lo necesitan).
 services:
-  app:
-    environment:
-      # La aceptación del flujo D revisa una decisión con el reloj adelantado (solo el administrador lo mueve).
-      APP_RELOJ_AJUSTABLE: "true"
   ollama:
     volumes:
       - ~/ollama-modelos:/root/.ollama
