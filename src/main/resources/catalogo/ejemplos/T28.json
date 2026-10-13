@@ -28,7 +28,7 @@
       "pendientes": ["Verificar E1: La baja es solo los sábados (hipótesis H1: Abrió una feria a dos cuadras los sábados)"],
       "resumen": "Menos refutada: H1, Abrió una feria a dos cuadras los sábados (0 inconsistencias ponderadas)."
     },
-    "nota": "La dueña de la panadería quiere saber por qué bajaron las ventas de los sábados antes de bajar precios. Es el ejemplo del mockup de la pestaña Usar."
+    "nota": "La dueña de la panadería quiere saber por qué bajaron las ventas de los sábados antes de bajar precios."
   },
   {
     "ambito": "comunidad",
@@ -95,7 +95,7 @@
       "pendientes": ["Verificar E3: La nevera hace ruido y el motor no se apaga (hipótesis H1: La nevera vieja está fallando)"],
       "resumen": "Menos refutada: H1, La nevera vieja está fallando (0 inconsistencias ponderadas)."
     },
-    "nota": "Una familia recibe la factura de luz de septiembre un 40% más alta que la de agosto y quiere saber qué cambió antes de discutir quién gasta más. Ninguna evidencia contradice a H1, pero eso no la confirma."
+    "nota": "Una familia recibe la factura de luz de septiembre un 40% más alta que la de agosto y quiere saber qué cambió antes de discutir quién gasta más."
   },
   {
     "ambito": "trabajo",
@@ -125,6 +125,6 @@
       "pendientes": ["Verificar E1: El pan sale quemado solo en la tanda de las 6 (hipótesis H1: El horno calienta de más)"],
       "resumen": "Menos refutada: H1, El horno calienta de más (0 inconsistencias ponderadas)."
     },
-    "nota": "Caso adicional de la tarjeta de T28 en la sección 7b; no cuenta entre los tres ejemplos de ámbito distinto."
+    "nota": "La panadería de nuevo: el pan de una sucursal sale quemado y hay varias explicaciones posibles."
   }
 ]

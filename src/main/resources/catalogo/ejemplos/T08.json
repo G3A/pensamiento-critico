@@ -28,7 +28,7 @@
       "pendientes": [],
       "resumen": "4 turnos · 4 de 8 elementos · sigue: pregunta sobre la pregunta."
     },
-    "nota": "Modo ensayo con dos saltos adaptativos. Es la tarjeta de T08 de la sección 7b; las reglas están en docs/ejemplos/T08.md."
+    "nota": "Modo ensayo con dos saltos adaptativos."
   },
   {
     "ambito": "trabajo",
@@ -98,6 +98,6 @@
       "pendientes": [ "Responder la pregunta de cierre: ¿Qué te haría cambiar de opinión sobre «debo renunciar porque mi jefe nunca reconoce mi trabajo»?" ],
       "resumen": "5 turnos · 5 de 8 elementos · falta la pregunta de cierre."
     },
-    "nota": "Es la sesión del mockup P15 con orden fijo y tres tipos: el motor salta un elemento para no repetir el tipo."
+    "nota": "Una sesión con orden fijo y tres tipos de pregunta: se salta un elemento para no repetir el tipo."
   }
 ]

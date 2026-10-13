@@ -30,7 +30,7 @@
       "pendientes": [],
       "resumen": "Hoy, 1 repaso: 1 movimiento SIFT · algoritmo SM-2 · facilidad media 2,6 · racha 2."
     },
-    "nota": "SM-2 de punta a punta: 1, 6 y 16 días para la generalización apresurada; el error del anclaje reinicia. Cálculo a mano en docs/ejemplos/T49.md (reloj fijo: miércoles 7 de octubre de 2026)."
+    "nota": "Repaso espaciado de punta a punta: 1, 6 y 16 días para la generalización apresurada; el error del anclaje vuelve a empezar."
   },
   {
     "ambito": "comunidad",

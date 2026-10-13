@@ -22,7 +22,7 @@
       "vence": "2027-04-15",
       "resumen": "Abrir en la terminal, no en el centro · predicción 70% · revisar el 15 de abril de 2027."
     },
-    "nota": "Después de la matriz ponderada, la dueña decide. El ejemplo de punta a punta, con la revisión del 15 de abril de 2027 y el Brier de 0,13 a 0,12, está en docs/ejemplos/T32.md. Las fechas del ejemplo son las del reloj fijo de las pruebas (7 de octubre de 2026)."
+    "nota": "Después de la matriz ponderada, la dueña decide y fija una fecha para revisar si acertó."
   },
   {
     "ambito": "personal",

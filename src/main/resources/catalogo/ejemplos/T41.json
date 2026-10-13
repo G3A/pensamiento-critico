@@ -22,7 +22,7 @@
       "pendientes": [ "Verificar el supuesto: Son personas de afuera del barrio.", "Verificar el supuesto: Las cámaras disuaden." ],
       "resumen": "2 certezas · 2 supuestos por verificar."
     },
-    "nota": "La junta separa lo que sabe de lo que cree. Es la tarjeta de T41 de la sección 7b; las reglas están en docs/ejemplos/T41.md."
+    "nota": "La junta separa lo que sabe de lo que cree."
   },
   {
     "ambito": "trabajo",

@@ -23,7 +23,7 @@
       "pendientes": ["Buscar un dato para el factor más incierto: Peatones por hora frente al local"],
       "resumen": "Entre 120 y 720 panes por día, central 290 · 4 factores."
     },
-    "nota": "La dueña quiere saber si la sucursal del centro vendería lo suficiente. Es la tarjeta de T26 de la sección 7b (que dice «mediana 300»: con dos cifras significativas da 290); el DOT esperado está en docs/ejemplos/T26.md."
+    "nota": "La dueña quiere saber si la sucursal del centro vendería lo suficiente."
   },
   {
     "ambito": "personal",

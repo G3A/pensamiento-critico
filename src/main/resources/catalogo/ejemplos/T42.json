@@ -19,7 +19,7 @@
       "pendientes": ["Completar la rama vacía: Respuesta"],
       "resumen": "3 ramas, 3 hojas · sin solapes · 1 rama vacía."
     },
-    "nota": "La junta descompone el problema antes de elegir qué hacer. Es la tarjeta de T42 de la sección 7b; las reglas y el DOT esperado están en docs/ejemplos/T42.md."
+    "nota": "La junta descompone el problema antes de elegir qué hacer."
   },
   {
     "ambito": "trabajo",

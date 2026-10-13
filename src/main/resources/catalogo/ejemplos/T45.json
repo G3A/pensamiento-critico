@@ -42,7 +42,7 @@
       "pendientes": [],
       "resumen": "6 ejecuciones en 2 semanas · 2 cambios de opinión."
     },
-    "nota": "La dueña de la panadería abre su diario un miércoles; el registro del 8 de septiembre queda fuera de las 4 semanas. Cálculo a mano en docs/ejemplos/T45.md (reloj fijo de las pruebas: 7 de octubre de 2026)."
+    "nota": "La dueña de la panadería abre su diario un miércoles; el registro del 8 de septiembre queda fuera de las últimas 4 semanas."
   },
   {
     "ambito": "personal",

@@ -26,7 +26,7 @@
       "pendientes": [],
       "resumen": "Brier 0,17 con 6 resueltas y 1 sin resolver · 2 avisos."
     },
-    "nota": "La familia anota en la nevera lo que cree que va a pasar; con pocas resueltas, todos los avisos son provisionales. El cálculo está en docs/ejemplos/T25.md."
+    "nota": "La familia anota en la nevera lo que cree que va a pasar; con pocas predicciones resueltas, todos los avisos son provisionales."
   },
   {
     "ambito": "trabajo",
@@ -71,7 +71,7 @@
       "pendientes": [],
       "resumen": "Brier 0,22 con 22 resueltas · 1 aviso."
     },
-    "nota": "La dueña lleva un año anotando predicciones del negocio. Es la tarjeta de T25 de la sección 7b: 22 resueltas, solo 5 en el tramo de 90 a 100."
+    "nota": "La dueña lleva un año anotando predicciones del negocio: 22 resueltas, solo 5 en el tramo de 90 a 100."
   },
   {
     "ambito": "comunidad",
