@@ -53,7 +53,7 @@ class RNF09PrimerUsoEnNavegadorIT {
             pagina.locator("button[data-accion=evaluar]").click();
             pagina.locator("#resultado-T28 [data-patron=V03a]").waitFor();
 
-            assertThat(pagina.locator("#resultado-T28 [data-patron=V03a] .titular").textContent()).contains("Menos refutada: H1");
+            assertThat(pagina.locator("#resultado-T28 [data-patron=V03a] .titular").textContent()).contains("va en contra de H1").contains("Todavía no está probada");
             assertThat(pagina.locator("#resultado-T28 [data-patron=V03a] tfoot td").allTextContents()).containsExactly("0", "5", "4");
             assertThat(pagina.evaluate("document.documentElement.scrollWidth")).as("sin desplazamiento horizontal a 360 px").isEqualTo(360);
             assertThat(erroresDeConsola).as("errores de consola, incluidas violaciones de la CSP").isEmpty();

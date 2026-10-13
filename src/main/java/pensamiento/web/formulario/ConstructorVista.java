@@ -58,7 +58,7 @@ public final class ConstructorVista {
                 List.of(), false, accionUrl, "#form-" + idFormulario, List.of());
     }
 
-    /** Una enumeración que se repite por cada fila de otro campo: "Frente a H1", "Frente a H2"... */
+    /** Una enumeración que se repite por cada fila de otro campo: "Frente a H1 · la feria", "Frente a H2 · el precio"... */
     private List<VistaCampo> celdas(Campo c, String ruta, Object valor, String prefijoParametro) {
         List<VistaCampo> vistas = new ArrayList<>();
         List<?> lista = valor instanceof List<?> l ? l : List.of();
@@ -66,7 +66,9 @@ public final class ConstructorVista {
         String prefijoOtro = prefijoDe(c.porCadaFilaDe());
         for (int j = 0; j < cuantas; j++) {
             Object celda = j < lista.size() ? lista.get(j) : null;
-            vistas.add(simple(c, ruta + "[" + j + "]", c.etiqueta() + " " + prefijoOtro + (j + 1), celda, prefijoParametro));
+            String texto = textoDe(c.porCadaFilaDe(), j);
+            String etiqueta = c.etiqueta() + " " + prefijoOtro + (j + 1) + (texto.isBlank() ? "" : " · " + texto);
+            vistas.add(simple(c, ruta + "[" + j + "]", etiqueta, celda, prefijoParametro));
         }
         return vistas;
     }
@@ -117,6 +119,19 @@ public final class ConstructorVista {
         return this;
     }
 
+    private final java.util.Map<String, List<String>> textos = new java.util.HashMap<>();
+
+    /** El texto de cada fila de un campo de filas, para nombrar la celda que se repite por ella. */
+    public ConstructorVista conTextos(String campo, List<String> lista) {
+        textos.put(campo, lista);
+        return this;
+    }
+
+    private String textoDe(String campo, int fila) {
+        List<String> lista = textos.getOrDefault(campo, List.of());
+        return fila < lista.size() ? lista.get(fila) : "";
+    }
+
     private int cantidadDe(String campo) {
         return cantidades.getOrDefault(campo, 0);
     }
@@ -136,6 +151,14 @@ public final class ConstructorVista {
         for (Campo c : campos) {
             if (c.tipo() == Campo.Tipo.FILAS) {
                 cv.conFilas(c.nombre(), LectorFormulario.tamanio(valores.get(c.nombre())), c.prefijo());
+                List<String> textosFilas = new ArrayList<>();
+                if (valores.get(c.nombre()) instanceof List<?> filas) {
+                    for (Object fila : filas) {
+                        Object t = fila instanceof Map<?, ?> m ? m.get("texto") : null;
+                        textosFilas.add(t == null ? "" : t.toString().strip());
+                    }
+                }
+                cv.conTextos(c.nombre(), textosFilas);
             }
         }
         return cv;

@@ -1,6 +1,7 @@
 /* app.js: menos de 100 líneas. Sin inline ni eval (CSP script-src 'self').
    1) componentes Alpine (build CSP), 2) token CSRF renovado por el servidor, 3) progreso de subida,
-   4) scroll al resultado en celular, 5) flechas en las pestañas, 6) espejo del campo entero.
+   4) scroll al resultado en celular, 5) flechas en las pestañas, 6) espejo del campo entero,
+   7) resultado anterior atenuado y marcas del ejemplo que se vuelven a pedir.
    El swap del 422 y del 401 lo configura <meta name="htmx-config">. */
 (function () {
   'use strict';
@@ -79,4 +80,20 @@
     var salida = campo.closest('.entero-con-rango') && campo.closest('.entero-con-rango').querySelector('output');
     if (salida) { salida.textContent = campo.value; }
   });
+  // 7) Un cambio atenúa el resultado anterior; con datos de un ejemplo, cambiar el texto de una fila borra sus marcas o su columna.
+  function aviso(clase, texto) { var p = document.createElement('p'); p.className = clase; p.textContent = texto; return p; }
+  document.body.addEventListener('input', function (evento) {
+    var campo = evento.target, form = campo.closest && campo.closest('form.formulario-tecnica'); if (!form) { return; }
+    var t = form.id.replace('form-', ''), zona = document.getElementById('resultado-' + t), estado = document.getElementById('estado-' + t);
+    if (estado) { estado.textContent = ''; }
+    if (zona && zona.querySelector('[data-patron]') && !zona.classList.contains('desactualizado')) { zona.classList.add('desactualizado');
+      zona.insertBefore(aviso('aviso-desactualizado', 'Resultado anterior: cambiaste tus datos. Vuelve a evaluar para ver el de ahora.'), zona.firstChild); }
+    var fila = form.hasAttribute('data-desde-ejemplo') && campo.matches('input[type="text"], textarea') && campo.closest('li.fila');
+    if (!fila || fila.dataset.revisar) { return; } fila.dataset.revisar = 'si';
+    var propias = fila.querySelectorAll('input[type="radio"], select'), columna = '[name$="[' + fila.id.split('-fila-').pop() + ']"]';
+    var marcas = propias.length ? propias : form.querySelectorAll('input[type="radio"]' + columna);
+    marcas.forEach(function (x) { if (x.tagName === 'SELECT') { x.value = ''; } else { x.checked = false; } });
+    fila.appendChild(aviso('aviso-revisar', 'Cambiaste el texto: vuelve a marcar, las marcas del ejemplo se borraron.'));
+  });
+  document.body.addEventListener('htmx:afterSwap', function (e) { var d = e.detail.target; if (d && d.classList) { d.classList.remove('desactualizado'); } });
 })();

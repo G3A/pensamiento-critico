@@ -138,7 +138,26 @@ public class ControladorTecnicas {
     /** Todo lo que pinta la ficha; solo la pestaña elegida trae sus datos. */
     public record VistaFicha(Tecnica tecnica, String familia, Pestana pestana, boolean activa, String resumenConfig, int hito,
                              List<Relacionada> relacionadas, VistaUsar usar, List<FilaHistorial> historial,
-                             ComparadorEjecuciones.Comparacion comparacion) {
+                             ComparadorEjecuciones.Comparacion comparacion, List<Ejemplo> ejemplos) {
+
+        /** Una faceta del catálogo para leer: "afirmación", "método de aprendizaje" (el enum no lleva tildes). */
+        public static String faceta(Enum<?> e) {
+            return switch (e.name()) {
+                case "REPRESENTACION" -> "representación";
+                case "PRACTICA" -> "práctica";
+                case "METODO_DE_APRENDIZAJE" -> "método de aprendizaje";
+                case "AFIRMACION" -> "afirmación";
+                case "DECISION" -> "decisión";
+                case "DIALOGO" -> "diálogo";
+                case "CALCULO" -> "cálculo";
+                default -> e.name().toLowerCase().replace('_', ' ');
+            };
+        }
+
+        /** El enlace de un ejemplo: abre Usar con sus datos cargados. */
+        public String url(Ejemplo e) {
+            return "/tecnicas/" + tecnica.id() + "?ejemplo=" + e.id();
+        }
 
         public Pestana[] pestanas() {
             return Pestana.values();
@@ -159,7 +178,8 @@ public class ControladorTecnicas {
                 relacionadas(t),
                 pestana == Pestana.USAR && activa ? vistaUsar(yo, t, ejemplo, reejecutar, propios) : null,
                 pestana == Pestana.HISTORIAL && activa ? historial(yo, t) : List.of(),
-                pestana == Pestana.HISTORIAL && a.isPresent() && b.isPresent() ? comparar(yo, a.get(), b.get()) : null));
+                pestana == Pestana.HISTORIAL && a.isPresent() && b.isPresent() ? comparar(yo, a.get(), b.get()) : null,
+                pestana == Pestana.QUE_ES && activa ? tecnicas.ejemplos(t.id()) : List.of()));
     }
 
     /** Qué es: técnicas relacionadas por relación tipada, con la frase desde esta técnica. */

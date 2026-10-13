@@ -87,7 +87,7 @@ public class ControladorEjecuciones {
             throw new ObjetoNoEncontrado("ejecución");
         }
         respuesta.setHeader("HX-Trigger", "expediente-cambiado");
-        String mensaje = resultado.get().map(x -> "Asociada al expediente \"" + x.nombre() + "\".").orElse("Sin expediente.");
+        String mensaje = resultado.get().map(x -> "Asociada al expediente \"" + x.nombre() + "\".").orElse("No elegiste ningún expediente: elige uno de la lista o escribe un nombre para crear uno.");
         return formulario(yo, id, mensaje, modelo);
     }
 

@@ -3,7 +3,8 @@
 @param VistaFormulario f
 @param boolean oob = false
 <form id="${f.id()}" class="formulario-tecnica" hx-post="/tecnicas/${f.tecnica()}/evaluar" hx-target="#${f.idResultado()}" hx-swap="innerHTML"
-      hx-sync="this:replace" novalidate aria-labelledby="${f.id()}-titulo" hx-swap-oob="${oob ? "true" : null}">
+      hx-sync="this:replace" novalidate aria-labelledby="${f.id()}-titulo" hx-swap-oob="${oob ? "true" : null}"
+      data-desde-ejemplo="${f.desdeEjemplo() ? "true" : null}" data-con-errores="${f.tieneErrores() ? "true" : null}">
   <h2 id="${f.id()}-titulo" class="subtitulo">Entrada</h2>
   <p class="origen-config">Con ${f.origenConfig()}: ${f.resumenConfig()}</p>
   @if(!f.erroresConfig().isEmpty())
@@ -31,5 +32,10 @@
     <button type="submit" class="boton" hx-disabled-elt="this" data-accion="evaluar">Evaluar</button>
     <button type="button" class="boton boton-secundario" hx-post="/tecnicas/${f.tecnica()}/ejecuciones" hx-target="#${f.idResultado()}"
             hx-swap="innerHTML" hx-disabled-elt="this" hx-sync="closest form:drop" data-accion="guardar">Guardar en historial</button>
+    @if(f.tieneErrores())
+      <p class="resumen-errores" role="alert"><span class="chip chip-error">no se pudo</span> Revisa el formulario: ${f.resumenErrores()}.
+        @if(!f.conError().isEmpty())<a href="#${f.conError().getFirst().id()}" data-ir-a-error>Ir al primero</a>@endif</p>
+    @endif
+    <p id="${f.idEstado()}" class="estado-guardado" role="status"></p>
   </div>
 </form>

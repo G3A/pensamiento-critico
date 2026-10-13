@@ -75,19 +75,26 @@ class PlantillasTest {
         assertThat(raiz.attr("data-patron")).isEqualTo("V03a");
         assertThat(raiz.attr("aria-labelledby")).isEqualTo("res-" + id + "-titulo");
         assertThat(d.getElementById("res-" + id + "-titulo")).isNotNull();
-        assertThat(d.select("table.matriz caption").text()).contains("C consistente");
+        assertThat(d.select("table.matriz caption").text()).contains("encaja, va en contra o no dice nada");
         assertThat(d.select("thead th[scope=col]")).hasSize(4);
         assertThat(d.select("tbody th[scope=row]")).hasSize(4);
         assertThat(d.select("td.celda")).hasSize(12).allSatisfy(td -> {
-            assertThat(td.select(".marca").text()).isNotBlank();
-            assertThat(td.select(".palabra").text()).isIn("consistente", "inconsistente", "neutral");
+            assertThat(td.select(".marca")).as("con C, I, N basta la palabra").isEmpty();
+            assertThat(td.select(".palabra").text()).isIn("encaja", "va en contra", "no dice nada");
         });
         assertThat(d.select("tfoot td").eachText()).containsExactly("0", "5", "4");
         assertThat(d.select(".tabla-desplazable").attr("role")).isEqualTo("region");
         assertThat(d.select(".tabla-desplazable").attr("tabindex")).isEqualTo("0");
         assertThat(d.select(".tarjeta-resultado").attr("role")).isEqualTo("status");
-        assertThat(d.select(".tarjeta-resultado").text()).contains("Menos refutada: H1").contains("ACH elimina, no confirma")
-                .doesNotContain("confirmada", "verdadera");
+        assertThat(d.select(".titular").text()).isEqualTo(
+                "Ninguna de tus pistas va en contra de H1: «Abrió una feria a dos cuadras los sábados». Todavía no está probada.");
+        assertThat(d.select(".tarjeta-resultado").text()).contains("sirve para descartar ideas, no para confirmarlas")
+                .doesNotContain("confirmada", "verdadera", "menos refutada", "ACH");
+        assertThat(d.select(".ideas-en-contra .cuenta").eachText())
+                .containsExactly("ninguna pista en contra", "2 pistas en contra (pesan 5)", "2 pistas en contra (pesan 4)");
+        assertThat(d.select(".ideas-en-contra li.en-pie .chip").text()).as("lo que sigue en pie no va en verde").isEqualTo("sigue en pie");
+        assertThat(d.select(".ideas-en-contra .chip-ok")).isEmpty();
+        assertThat(d.select(".ideas-en-contra meter").eachAttr("value")).containsExactly("0", "5", "4");
         assertThat(d.select("a[href=/ejecuciones/" + id + "]")).as("en modo completo no hay enlace de lectura").isEmpty();
     }
 
@@ -99,17 +106,18 @@ class PlantillasTest {
         assertThat(d.select("[data-patron=V03a]").attr("data-modo")).isEqualTo("lectura");
         assertThat(d.select("a[href=/ejecuciones/" + id + "]").text()).isEqualTo("Abrir en la técnica");
         assertThat(d.select("td.celda .marca").eachText()).contains("+2", "-2", "0");
-        assertThat(d.select("td.celda .palabra").eachText()).contains("muy consistente", "muy inconsistente");
-        assertThat(d.select(".tarjeta-resultado").text()).contains("Ninguna evidencia la contradice, pero eso no la confirma");
+        assertThat(d.select("td.celda .palabra").eachText()).contains("encaja mucho", "va muy en contra");
+        assertThat(d.select(".tarjeta-resultado").text()).contains("Que nada la contradiga todavía no la demuestra");
     }
 
     @Test
     void v03a_sin_guardar_usa_un_identificador_de_borrador_y_en_empate_lo_dice() {
         Document d = pintar("tag/v/v03a.jte", Map.of("v", new V03a(Optional.empty(), "borrador", resultado(1), Modo.COMPLETO)));
         assertThat(d.getElementById("res-T28-borrador")).isNotNull();
-        assertThat(d.select(".titular").text()).startsWith("Empate: H1 y H2");
+        assertThat(d.select(".titular").text()).startsWith("Quedan empatadas H1 y H2").endsWith("Ninguna está probada.");
+        assertThat(d.select(".tarjeta-resultado").text()).contains("busca una pista que encaje con una y vaya en contra de la otra");
         assertThat(d.select(".siguientes-pasos li").eachText())
-                .contains("H2 no tiene ninguna evidencia a favor: busca una evidencia que la distinga de las demás.");
+                .contains("H2 no tiene ninguna pista a favor: busca una que la distinga de las demás.");
     }
 
     // -------------------------------------------------------------------------------------------
@@ -262,7 +270,7 @@ class PlantillasTest {
         var usar = new ControladorTecnicas.VistaUsar(T28, CATALOGO.ejemplosDe(EjecutorAch.ID), Optional.empty(), Optional.empty(),
                 new ControladorTecnicas.VistaConfiguracion("T28", List.of(), "escala: C, I, N", false, ""), formularioT28(Map.of()), Optional.empty());
         var ficha = new ControladorTecnicas.VistaFicha(T28, "F5 · Pensamiento probabilístico y decisiones", ControladorTecnicas.Pestana.USAR,
-                true, "escala: C, I, N", 1, List.of(), usar, List.of(), null);
+                true, "escala: C, I, N", 1, List.of(), usar, List.of(), null, List.of());
         Document d = pintar("fragmentos/ficha/cuerpo.jte", Map.of("ficha", ficha));
 
         assertThat(d.select("#ficha-cuerpo").attr("aria-labelledby")).isEqualTo("ficha-titulo");
@@ -290,7 +298,7 @@ class PlantillasTest {
     void una_tecnica_sin_ejecutor_dice_en_que_hito_llega() {
         Tecnica t01 = CATALOGO.tecnicas().getFirst();
         var ficha = new ControladorTecnicas.VistaFicha(t01, "F1 · Análisis y estructura de argumentos", ControladorTecnicas.Pestana.USAR,
-                false, "", 2, List.of(), null, List.of(), null);
+                false, "", 2, List.of(), null, List.of(), null, List.of());
         Document d = pintar("fragmentos/ficha/cuerpo.jte", Map.of("ficha", ficha));
         assertThat(d.select("#panel-ficha").text()).contains("llega en el hito 2");
         assertThat(d.getElementById("resumen-config-T01")).isNull();

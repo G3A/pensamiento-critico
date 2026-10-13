@@ -8,6 +8,8 @@
 @param List<ControladorCatalogo.Tarjeta> tarjetas
 @param ControladorCatalogo.Filtros filtros
 @param long total
+@param ControladorCatalogo.Recomendacion recomendacion = null
+@param List<ControladorCatalogo.EjemploEncontrado> encontrados = java.util.List.of()
 <div id="catalogo-cuerpo" class="catalogo-cuerpo">
   <nav class="familias" aria-label="Familias">
     <ul>
@@ -24,8 +26,8 @@
     <form class="filtros" action="/catalogo" method="get" role="search" hx-get="/catalogo" hx-target="#resultados-catalogo" hx-select="#resultados-catalogo" hx-swap="outerHTML"
           hx-push-url="true" hx-trigger="submit, input changed delay:400ms from:#buscar-tecnica, change from:#filtro-intencion">
       <input type="hidden" name="familia" value="${filtros.familia()}">
-      <label for="buscar-tecnica">Buscar por nombre</label>
-      <input type="search" id="buscar-tecnica" name="q" value="${filtros.q()}" placeholder="por ejemplo: hipótesis">
+      <label for="buscar-tecnica">Busca por tu problema o por el nombre</label>
+      <input type="search" id="buscar-tecnica" name="q" value="${filtros.q()}" placeholder="por ejemplo: ventas, asamblea, hipótesis">
       <label for="filtro-intencion">Qué quieres hacer</label>
       <select id="filtro-intencion" name="intencion">
         <option value="">Cualquier intención</option>
@@ -39,13 +41,42 @@
     <div id="rejilla" class="rejilla-encabezado">
       <p class="detalle" role="status">${tarjetas.size()} ${tarjetas.size() == 1 ? "técnica" : "técnicas"} en pantalla
         @if(!filtros.tituloIntencion().isEmpty()) · intención: <strong>${filtros.tituloIntencion()}</strong>@endif
-        @if(!filtros.q().isEmpty()) · nombre: <strong>${filtros.q()}</strong>@endif
+        @if(!filtros.q().isEmpty()) · búsqueda: <strong>${filtros.q()}</strong>@endif
         @if(filtros.alguno()) · <a href="/catalogo">quitar filtros</a>@endif
       </p>
     </div>
     @if("practicar".equals(filtros.intencion()))
       <p class="aviso-lista aviso-nota" data-flujo="dojo">Para practicar todos los días, el <a href="/dojo">Dojo de razonamiento</a> te da retos
         cortos de falacias, sesgos, datos y fuentes, y programa cada repaso.</p>
+    @endif
+    @if(recomendacion != null)
+      !{String idR = recomendacion.tecnica().id().valor();}
+      <section class="tarjeta empieza-aqui" aria-labelledby="empieza-aqui-titulo" data-recomendada="${idR}">
+        <span class="chip chip-pendiente">Empieza aquí</span>
+        <h2 id="empieza-aqui-titulo">¿Tienes varias ideas de por qué pasó? Descarta las que no cuadran con lo que sabes</h2>
+        <p>${recomendacion.tecnica().nombreLlano()}: anotas tus ideas y tus pistas, marcas qué encaja con qué y ves qué idea tiene menos en contra.</p>
+        <p class="acciones">
+          <a class="boton" href="/tecnicas/${idR}?ejemplo=${recomendacion.ejemplo().id().toString()}" data-accion="probar-ejemplo">Probar con el ejemplo «${recomendacion.ejemplo().titulo()}»</a>
+          <a class="boton boton-secundario" href="/tecnicas/${idR}?pestana=usar" data-accion="caso-propio">Empezar con mi propio caso</a>
+        </p>
+        <h3 class="subtitulo">¿Cuál te sirve?</h3>
+        <ul class="guia-intencion">
+          @for(ControladorCatalogo.Guia g : recomendacion.guia())
+            <li><span>${g.cuando()}</span> <a href="/tecnicas/${g.tecnica().id().valor()}">${g.tecnica().nombreLlano()}</a></li>
+          @endfor
+        </ul>
+      </section>
+    @endif
+    @if(!encontrados.isEmpty())
+      <section class="ejemplos-encontrados" aria-labelledby="ejemplos-encontrados-titulo">
+        <h2 id="ejemplos-encontrados-titulo" class="subtitulo">Ejemplos listos para probar</h2>
+        <ul>
+          @for(ControladorCatalogo.EjemploEncontrado x : encontrados)
+            <li><a href="/tecnicas/${x.tecnica().id().valor()}?ejemplo=${x.ejemplo().id().toString()}">${x.ejemplo().titulo()}</a>
+              <span class="detalle">con ${x.tecnica().nombreLlano()}</span></li>
+          @endfor
+        </ul>
+      </section>
     @endif
     @if(tarjetas.isEmpty())
       <div class="tarjeta vacio"><p>Ninguna técnica coincide. Prueba con otra palabra o quita los filtros.</p></div>

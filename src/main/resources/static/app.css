@@ -70,6 +70,7 @@ body {
 }
 a { color: var(--acento); }
 :focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
+.visualmente-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .saltar { position: absolute; left: -999px; top: 0; background: var(--superficie); padding: .5rem; }
 .saltar:focus { left: .5rem; z-index: 10; }
 
@@ -244,10 +245,42 @@ fieldset.campo > legend, .campo legend { font-weight: 600; padding: 0 .25rem; }
 .celda-inconsistente { background: var(--error-fondo); color: var(--error); }
 .celda-neutral { color: var(--texto-suave); }
 .total { font-weight: 700; }
-.total-menor { background: var(--ok-fondo); color: var(--ok); }
-.tarjeta-resultado { margin-top: var(--espacio); border-left: 4px solid var(--acento); padding-left: .75rem; }
-.titular { font-weight: 700; font-size: 1.05rem; }
+/* Ensayo de RF-08: lo que sigue en pie va en color neutro, nunca en el verde de "correcto". */
+.total-menor { background: var(--pendiente-fondo); color: var(--pendiente); }
+.tarjeta-resultado { margin-top: var(--espacio); border-left: 4px solid var(--pendiente); padding-left: .75rem; }
+.titular { font-weight: 700; font-size: 1.15rem; line-height: 1.35; }
 .guardado { margin: .5rem 0; }
+.ideas-en-contra { list-style: none; padding: 0; margin: 0; }
+.ideas-en-contra li { display: grid; grid-template-columns: minmax(0, 2fr) minmax(4rem, 1fr) auto; gap: .35rem .75rem; align-items: center;
+  padding: .5rem 0; border-top: 1px solid var(--borde); }
+.ideas-en-contra .chip { margin-left: .25rem; }
+.ideas-en-contra meter { width: 100%; height: .8rem; }
+.ideas-en-contra meter::-webkit-meter-bar { background: var(--fondo); border: 1px solid var(--borde); border-radius: 6px; }
+.ideas-en-contra meter::-webkit-meter-optimum-value, .ideas-en-contra meter::-webkit-meter-suboptimum-value,
+.ideas-en-contra meter::-webkit-meter-even-less-good-value { background: var(--aviso); border-radius: 6px; }
+.ideas-en-contra meter::-moz-meter-bar { background: var(--aviso); border-radius: 6px; }
+.ideas-en-contra .cuenta { font-size: .9rem; font-variant-numeric: tabular-nums; }
+@media (max-width: 600px) { .ideas-en-contra li { grid-template-columns: minmax(0, 1fr) auto; } .ideas-en-contra .idea-texto { grid-column: 1 / -1; } }
+.tabla-completa { margin-top: var(--espacio); }
+.tabla-completa summary { cursor: pointer; font-weight: 600; }
+.aviso-ejemplo { display: flex; flex-wrap: wrap; gap: .5rem var(--espacio); align-items: center; justify-content: space-between;
+  background: var(--acento-fondo); border-radius: var(--radio); padding: .75rem var(--espacio); margin: var(--espacio) 0; }
+.aviso-ejemplo p { margin: 0; flex: 1 1 22rem; }
+.aviso-revisar { grid-column: 2; margin: 0; background: var(--aviso-fondo); color: var(--aviso); border-radius: 6px; padding: .4rem .6rem; font-size: .9rem; }
+.zona-resultado.desactualizado > :not(.aviso-desactualizado) { opacity: .4; }
+.aviso-desactualizado { margin: 0 0 .5rem; font-weight: 600; background: var(--pendiente-fondo); color: var(--pendiente); border-radius: var(--radio); padding: .5rem .75rem; }
+.resumen-errores { margin: 0; color: var(--error); background: var(--error-fondo); border-radius: var(--radio); padding: .4rem .7rem; }
+.resumen-errores a { color: var(--error); font-weight: 600; }
+.estado-guardado { margin: 0; }
+.estado-guardado:empty { display: none; }
+/* Celdas de una fila (encaja, va en contra, no dice nada): botones grandes, fáciles de tocar. */
+.campos-fila .radios { gap: .35rem; }
+.campos-fila .radio { min-height: 44px; padding: 0 .75rem; border: 1px solid var(--borde); border-radius: 999px; background: var(--superficie); cursor: pointer; }
+.campos-fila .radio:has(input:checked) { border-color: var(--acento); background: var(--acento-fondo); font-weight: 600; }
+@media (max-width: 600px) {
+  .campos-fila .radios { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .campos-fila .radio { justify-content: center; text-align: center; font-size: .9rem; padding: 0 .35rem; }
+}
 @media (max-width: 420px) {
   .matriz tbody th { min-width: 7rem; font-size: .8rem; }
   .celda .palabra { font-size: .65rem; }
@@ -519,3 +552,17 @@ pre.argdown { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--
 .resumen-grupo { color: var(--texto-suave); margin: .25rem 0; }
 .registro-cambio { display: grid; gap: .5rem; max-width: 36rem; }
 .registro-cambio input[type="text"], .registro-cambio select { width: 100%; max-width: 100%; }
+
+/* Qué es: primero en palabras simples, la ficha técnica plegada al final. */
+.para-que { font-size: 1.15rem; max-width: 60rem; }
+.ejemplos-ficha { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: var(--espacio); }
+.ejemplos-ficha li { display: flex; flex-direction: column; gap: .35rem; align-items: flex-start; }
+.ficha-tecnica { margin-top: var(--espacio); background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: .5rem var(--espacio); }
+.ficha-tecnica summary { cursor: pointer; font-weight: 600; }
+
+/* Catálogo: por dónde empezar en una intención y los ejemplos que coinciden con la búsqueda. */
+.empieza-aqui { border: 2px solid var(--acento); margin-bottom: var(--espacio); }
+.empieza-aqui h2 { margin-top: .5rem; }
+.guia-intencion { padding-left: 1.2rem; }
+.guia-intencion li { margin: .25rem 0; }
+.ejemplos-encontrados ul { padding-left: 1.2rem; }

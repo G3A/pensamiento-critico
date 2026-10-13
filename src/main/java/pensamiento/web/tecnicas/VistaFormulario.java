@@ -50,6 +50,43 @@ public record VistaFormulario(
                 x.map(java.util.UUID::toString).orElse(null));
     }
 
+    /** El formulario trae los datos de un ejemplo: al cambiar el texto de una fila, sus marcas se vuelven a pedir. */
+    public boolean desdeEjemplo() {
+        return origenConfig != null && origenConfig.startsWith("la configuración del ejemplo");
+    }
+
+    /** Los campos con error, en el orden del formulario, también los de dentro de las filas. */
+    public List<VistaCampo> conError() {
+        List<VistaCampo> lista = new ArrayList<>();
+        juntarErrores(campos, lista);
+        return lista;
+    }
+
+    private static void juntarErrores(List<VistaCampo> campos, List<VistaCampo> lista) {
+        for (VistaCampo c : campos) {
+            if (c.tieneError()) {
+                lista.add(c);
+            }
+            for (VistaCampo.Fila fila : c.filas()) {
+                juntarErrores(fila.campos(), lista);
+            }
+        }
+    }
+
+    /** "falta completar 1 campo" o "faltan completar 3 campos", junto al botón. */
+    public String resumenErrores() {
+        int n = conError().size() + erroresConfig.size();
+        return n == 1 ? "falta completar o corregir 1 campo" : "faltan completar o corregir " + n + " campos";
+    }
+
+    public boolean tieneErrores() {
+        return !conError().isEmpty() || !erroresConfig.isEmpty();
+    }
+
+    public String idEstado() {
+        return "estado-" + tecnica;
+    }
+
     public String idEspera() {
         return "espera-" + tecnica;
     }

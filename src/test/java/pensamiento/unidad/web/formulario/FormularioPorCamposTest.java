@@ -73,7 +73,8 @@ class FormularioPorCamposTest {
         Map<String, String> errores = EsquemaFormulario.validar(entrada, config, valores);
 
         assertThat(errores).containsOnlyKeys("pregunta", "hipotesis[1].texto", "evidencias[1].celdas[1]");
-        assertThat(errores.get("pregunta")).isEqualTo("Pregunta: este campo es obligatorio.");
+        assertThat(errores.get("pregunta")).isEqualTo("Qué pasó que quieres entender: este campo es obligatorio.");
+        assertThat(errores.get("hipotesis[1].texto")).isEqualTo("Idea: falta el texto. Escríbelo o quita la fila con su botón «Quitar».");
         assertThat(errores.get("evidencias[1].celdas[1]")).isEqualTo("Marca esta celda: elige una de las opciones.");
     }
 
@@ -97,7 +98,7 @@ class FormularioPorCamposTest {
         p.put("hipotesis[2].texto", List.of("Los clientes están de vacaciones"));
         Map<String, Object> valores = LectorFormulario.leer(entrada, p, "");
 
-        assertThat(EsquemaFormulario.validar(entrada, maximoDos, valores)).containsEntry("hipotesis", "Hipótesis: como máximo 2.");
+        assertThat(EsquemaFormulario.validar(entrada, maximoDos, valores)).containsEntry("hipotesis", "Tus ideas de por qué pasó: como máximo 2.");
     }
 
     @Test
@@ -138,7 +139,7 @@ class FormularioPorCamposTest {
     @Test
     void un_entero_que_no_es_numero_se_senala_como_tal() {
         Map<String, Object> valores = LectorFormulario.leer(configuracion, parametros("escala", "cin", "maxHipotesis", "cuatro", "pesosActivos", "true"), "");
-        assertThat(EsquemaFormulario.validar(configuracion, valores, valores)).containsEntry("maxHipotesis", "Máximo de hipótesis: escribe un número entero.");
+        assertThat(EsquemaFormulario.validar(configuracion, valores, valores)).containsEntry("maxHipotesis", "Máximo de ideas: escribe un número entero.");
     }
 
     @Test

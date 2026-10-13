@@ -36,7 +36,7 @@ class RF05FlujoCompletoDeT28IT {
         assertThat(evaluada.estado()).isEqualTo(200);
         Document matriz = Jsoup.parseBodyFragment(evaluada.cuerpo());
         assertThat(matriz.select("[data-patron=V03a] tfoot td").eachText()).containsExactly("0", "5", "4");
-        assertThat(matriz.select(".titular").text()).isEqualTo("Menos refutada: H1, Abrió una feria a dos cuadras los sábados.");
+        assertThat(matriz.select(".titular").text()).isEqualTo("Ninguna de tus pistas va en contra de H1: «Abrió una feria a dos cuadras los sábados». Todavía no está probada.");
         assertThat(matriz.select(".sin-guardar")).hasSize(1);
 
         // RF-05: guardar en historial, y el doble clic no duplica.
@@ -87,7 +87,7 @@ class RF05FlujoCompletoDeT28IT {
         assertThat(r.cabecera("HX-Retarget")).contains("#form-T28");
         Document form = Jsoup.parseBodyFragment(r.cuerpo());
         assertThat(form.getElementById("T28-hipotesis-1-texto").attr("aria-describedby")).isEqualTo("T28-hipotesis-1-texto-error");
-        assertThat(form.getElementById("T28-hipotesis-1-texto-error").text()).contains("obligatorio");
+        assertThat(form.getElementById("T28-hipotesis-1-texto-error").text()).contains("falta el texto").contains("Quitar");
         assertThat(taller.historial("T28").select("tr[id^=historial-]")).isEmpty();
     }
 

@@ -25,6 +25,11 @@
 
   @if(u.ejemploElegido().isPresent())
     !{Ejemplo e = u.ejemploElegido().get();}
+    <div class="aviso-ejemplo" role="note">
+      <p>Estás viendo un ejemplo: <strong>${e.titulo()}</strong>. Puedes evaluarlo tal cual o empezar tu propio caso desde cero; el ejemplo no se modifica.</p>
+      <a href="/tecnicas/${id}?pestana=usar" hx-get="/tecnicas/${id}?pestana=usar" hx-target="#ficha-cuerpo" hx-swap="outerHTML" hx-push-url="true"
+         class="boton" data-accion="caso-propio">Empezar con mi propio caso</a>
+    </div>
     <article class="ejemplo-elegido tarjeta" aria-labelledby="ejemplo-titulo">
       <h3 id="ejemplo-titulo">Ejemplo ${e.orden()} de ${u.ejemplos().size()} · ${e.ambito().titulo()}: ${e.titulo()}</h3>
       <p><strong>Datos ficticios.</strong> ${e.nota()}</p>

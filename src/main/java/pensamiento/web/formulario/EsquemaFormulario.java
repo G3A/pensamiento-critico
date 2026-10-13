@@ -49,7 +49,7 @@ public final class EsquemaFormulario {
                 ruta = ruta.isEmpty() ? e.getProperty() : ruta + "." + e.getProperty();
             }
             Campo campo = LenguajeCampos.buscar(campos, ruta.replaceAll("\\[\\d+]", ""));
-            errores.putIfAbsent(ruta, mensaje(e.getKeyword(), campo, config));
+            errores.putIfAbsent(ruta, mensaje(e.getKeyword(), campo, config, ruta));
         }
         return errores;
     }
@@ -160,10 +160,15 @@ public final class EsquemaFormulario {
         return sb.toString();
     }
 
-    private static String mensaje(String palabra, Campo campo, Map<String, Object> config) {
+    private static String mensaje(String palabra, Campo campo, Map<String, Object> config, String ruta) {
         String etiqueta = campo == null ? "Este campo" : campo.etiqueta();
         if (campo != null && campo.porCadaFilaDe() != null) {
             return "Marca esta celda: elige una de las opciones.";
+        }
+        // Un texto vacío dentro de una fila ("evidencias[3].texto"): borrar el texto no quita la fila, así que se dice cómo.
+        if (("required".equals(palabra) || "pattern".equals(palabra)) && campo != null && campo.tipo() == Campo.Tipo.TEXTO
+                && ruta.matches(".*\\[\\d+]\\.[^.\\[]+")) {
+            return etiqueta + ": falta el texto. Escríbelo o quita la fila con su botón «Quitar».";
         }
         return switch (palabra) {
             case "required", "pattern" -> campo != null && campo.tipo() == Campo.Tipo.FILAS
