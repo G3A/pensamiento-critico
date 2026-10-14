@@ -31,7 +31,8 @@ class ConfiguracionSeguraTest {
     void htmx_arranca_con_allow_eval_en_falso_y_el_token_csrf_sale_del_body() throws IOException {
         String layout = Files.readString(Path.of("src/main/jte/layout.jte"));
         assertThat(layout).contains("\"allowEval\":false").contains("\"allowScriptTags\":false");
-        assertThat(layout).containsPattern("<body[^>]*hx-headers='\\{\"X-CSRF-TOKEN\": \"\\$\\{pagina\\.csrf\\(\\)\\}\"\\}'");
+        assertThat(layout).containsPattern("<body[^>]*hx-headers=\"\\$\\{pagina\\.cabecerasHtmx\\(\\)\\}\"");
+        assertThat(Files.readString(Path.of("src/main/java/pensamiento/web/Pagina.java"))).contains("X-CSRF-TOKEN").contains("X-Persona");
         assertThat(layout).doesNotContain("<script>");
         assertThat(layout).doesNotContain("onclick=");
     }
@@ -47,7 +48,18 @@ class ConfiguracionSeguraTest {
         assertThat(estaticos.resolve("app.js")).exists();
         try (var archivos = Files.walk(estaticos)) {
             assertThat(archivos.filter(Files::isRegularFile).map(p -> estaticos.relativize(p).toString().replace('\\', '/')))
-                    .containsExactlyInAnyOrder("htmx.min.js", "ext/sse.js", "alpine-csp.min.js", "app.css", "app.js", "favicon.svg");
+                    .containsExactlyInAnyOrder("htmx.min.js", "ext/sse.js", "alpine-csp.min.js", "app.css", "app.js", "llave.js", "favicon.svg");
+        }
+        // Hito 9: la llave de acceso tiene su propio archivo (la CSP no admite script en línea), también corto.
+        assertThat(Files.readAllLines(estaticos.resolve("llave.js")).size()).isLessThan(100);
+        try (var plantillas = Files.walk(Path.of("src/main/jte"))) {
+            assertThat(plantillas.filter(p -> p.toString().endsWith(".jte")).map(p -> {
+                try {
+                    return Files.readString(p);
+                } catch (IOException e) {
+                    throw new java.io.UncheckedIOException(e);
+                }
+            })).as("ninguna plantilla trae script en línea").noneMatch(t -> t.contains("<script>") || t.matches("(?s).*<script(?![^>]*src=)[^>]*>.*"));
         }
     }
 
@@ -63,6 +75,10 @@ class ConfiguracionSeguraTest {
         assertThat(dockerfile).containsPattern("maven:3-eclipse-temurin-25@sha256:[0-9a-f]{64}");
         assertThat(dockerfile).containsPattern("eclipse-temurin:25-jre@sha256:[0-9a-f]{64}");
         assertThat(dockerfile).contains("graphviz");
+        // Hito 9: las pruebas corren en la imagen oficial de Playwright fijada por digest y no descargan navegadores.
+        String pruebas = Files.readString(Path.of("Dockerfile.tests"));
+        assertThat(pruebas).containsPattern("mcr.microsoft.com/playwright/java:v1\\.63\\.0-noble@sha256:[0-9a-f]{64}")
+                .contains("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1");
     }
 
     @Test

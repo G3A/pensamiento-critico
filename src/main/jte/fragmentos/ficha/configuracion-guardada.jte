@@ -4,6 +4,6 @@
 @param VistaFormulario f
 @template.fragmentos.ficha.configuracion(c = c)
 @if(f != null)
-  <p id="resumen-config-${c.tecnica()}" class="resumen-config" hx-swap-oob="true">Tu configuración: ${c.resumen()}</p>
+  <span id="resumen-config-${c.tecnica()}" class="detalle resumen-config" hx-swap-oob="true">${c.resumen()}</span>
   @template.fragmentos.ficha.formulario(f = f, oob = true)
 @endif

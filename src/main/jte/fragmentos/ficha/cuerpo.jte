@@ -23,9 +23,6 @@
         <span class="chip chip-pendiente">llega en el hito ${ficha.hito()}</span>
       @endif
     </p>
-    @if(ficha.activa())
-      <p id="resumen-config-${t.id().valor()}" class="resumen-config">Tu configuración: ${ficha.resumenConfig()}</p>
-    @endif
   </header>
   <div class="pestanas" role="tablist" aria-label="Pestañas de ${t.nombreLlano()}">
     @for(Pestana p : ficha.pestanas())

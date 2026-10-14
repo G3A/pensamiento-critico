@@ -4,7 +4,7 @@
 !{String id = u.tecnica().id().valor();}
 <div class="usar">
   <nav class="barra-ejemplos" aria-label="Ejemplos de ${u.tecnica().nombreLlano()}">
-    <h2 class="subtitulo">Ejemplos (${u.ejemplos().size()})</h2>
+    <h2 class="subtitulo">Ejemplos</h2>
     <ul>
       @for(Ejemplo e : u.ejemplos())
         <li>
@@ -15,7 +15,6 @@
         </li>
       @endfor
     </ul>
-    <p class="detalle">Elegir un ejemplo carga su configuración y sus datos en el formulario para que los modifiques.</p>
     @if(u.datosPropios().isPresent())
       <p class="datos-propios"><a href="/tecnicas/${id}?propios=1" hx-get="/tecnicas/${id}?propios=1" hx-target="#ficha-cuerpo" hx-swap="outerHTML"
             hx-push-url="true" class="boton boton-secundario" data-accion="usar-mis-datos">Usar mis datos</a>
@@ -33,7 +32,6 @@
     <article class="ejemplo-elegido tarjeta" aria-labelledby="ejemplo-titulo">
       <h3 id="ejemplo-titulo">Ejemplo ${e.orden()} de ${u.ejemplos().size()} · ${e.ambito().titulo()}: ${e.titulo()}</h3>
       <p><strong>Datos ficticios.</strong> ${e.nota()}</p>
-      <p><strong>Configuración usada.</strong> ${u.formulario().resumenConfig()}</p>
       <details>
         <summary>Resultado del ejemplo</summary>
         @if(u.resultadoEjemplo().isPresent())
@@ -44,7 +42,8 @@
   @endif
 
   <details class="configuracion">
-    <summary>Configuración · <span class="detalle">${u.configuracion().resumen()}</span></summary>
+    <%-- La frase de configuración aparece una sola vez (hito 9, innegociable 15); guardar la configuración la reemplaza. --%>
+    <summary>Configuración: <span id="resumen-config-${id}" class="detalle resumen-config">${u.configuracion().resumen()}</span></summary>
     @template.fragmentos.ficha.configuracion(c = u.configuracion())
   </details>
 

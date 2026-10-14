@@ -1,9 +1,20 @@
 # syntax=docker/dockerfile:1.7
-# Imagen del servicio "tests": Maven con Java 25 más el cliente de PostgreSQL 18 (pg_dump y pg_restore
-# para la IT de restauración), Graphviz y poppler (para los contratos reales de Grafico y ExtractorPdf) y las librerías
-# del sistema que necesita Chromium para la prueba de humo con Playwright (RNF-09). El navegador lo descarga Playwright en
-# la primera corrida a /root/.m2/ms-playwright, dentro del volumen de caché de Maven.
-FROM maven:3-eclipse-temurin-25@sha256:dd1ad2333ee5b795f43610f18044f5fc5144fd472295c6f12ee4cf06241f1838
+# Imagen del servicio "tests" (hito 9): la imagen oficial de Playwright para Java 1.63.0, fijada por digest, que ya trae
+# Chromium, WebKit y Firefox de esa versión con sus librerías del sistema en /ms-playwright. Ningún navegador se descarga
+# durante la corrida (PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD). Encima: Java 25 y Maven de la imagen de construcción del
+# proyecto, el cliente de PostgreSQL 18 (pg_dump y pg_restore para la IT de restauración), GnuPG (respaldos cifrados),
+# Graphviz y poppler (contratos reales de Grafico y ExtractorPdf).
+# Digests resueltos el 14 de octubre de 2026 con docker buildx imagetools inspect.
+FROM maven:3-eclipse-temurin-25@sha256:dd1ad2333ee5b795f43610f18044f5fc5144fd472295c6f12ee4cf06241f1838 AS java
+
+FROM mcr.microsoft.com/playwright/java:v1.63.0-noble@sha256:013e2595272806f887d91041fbf26be71dda2f48a805c717cc7de3bbca5339c8
+COPY --from=java /opt/java/openjdk /opt/java/openjdk
+COPY --from=java /usr/share/maven /usr/share/maven
+ENV JAVA_HOME=/opt/java/openjdk \
+    MAVEN_HOME=/usr/share/maven \
+    PATH=/opt/java/openjdk/bin:/usr/share/maven/bin:$PATH \
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
+    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl ca-certificates gnupg lsb-release graphviz poppler-utils \
  && install -d /usr/share/postgresql-common/pgdg \
@@ -11,9 +22,6 @@ RUN apt-get update \
  && echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
  && apt-get update \
  && apt-get install -y --no-install-recommends postgresql-client-18 \
-    libasound2t64 libatk-bridge2.0-0t64 libatk1.0-0t64 libatspi2.0-0t64 libcairo2 libcups2t64 libdbus-1-3 libdrm2 libgbm1 \
-    libglib2.0-0t64 libnspr4 libnss3 libpango-1.0-0 libx11-6 libxcb1 libxcomposite1 libxdamage1 libxext6 libxfixes3 \
-    libxkbcommon0 libxrandr2 fonts-liberation \
- && rm -rf /var/lib/apt/lists/*
-ENV PLAYWRIGHT_BROWSERS_PATH=/root/.m2/ms-playwright
+ && rm -rf /var/lib/apt/lists/* \
+ && java -version 2>&1 | head -1 && mvn -v | head -1 && ls /ms-playwright
 WORKDIR /src

@@ -15,11 +15,18 @@
 // Se corre con: docker compose --profile test run --rm k6
 import http from 'k6/http';
 import { check, sleep, fail } from 'k6';
+import encoding from 'k6/encoding';
+
+import { CREDENCIAL, CLAVE_PRIVADA_PKCS8 } from './llave-de-carga.js';
 
 const BASE = __ENV.APP_URL || 'http://app-prueba:8080';
-// Hito 8: cada corrida crea su propia institución con el operador del servicio (clave generada en secretos-prueba), la
-// invita y su primer administrador crea las personas. Se entra por la ruta de esa institución.
-const CLAVE_OPERADOR = open('/run/secrets/operador_clave').trim();
+// Hito 9: la institución /k6-carga la siembra preparar.sql en db-prueba (servicio k6-preparar): un administrador con su
+// llave de acceso de prueba, 12 personas y 500 cuentas sin canjear. Todas entran con la misma contraseña de prueba.
+const RUTA = 'k6-carga';
+const CONTRASENA = 'la carga de k6 no es real';
+const ADMINISTRADOR = 'administrador k6';
+// El origen con que firma la llave: el de la app en el equipo local (app.llave.origenes).
+const ORIGEN = __ENV.ORIGEN_LLAVE || 'http://localhost:8080';
 const PERSONAS = 10;
 const META_CSRF = /<meta name="_csrf" content="([^"]+)"/;
 
@@ -38,9 +45,12 @@ export const options = {
     navegacion: { executor: 'constant-vus', vus: PERSONAS, duration: __ENV.DURACION || '60s' },
     importacion: { executor: 'constant-vus', vus: 1, duration: __ENV.DURACION || '60s', gracefulStop: '180s', exec: 'importacion' },
     sesion_con_ollama: { executor: 'constant-vus', vus: 1, duration: __ENV.DURACION || '60s', gracefulStop: '300s', exec: 'sesionConOllama' },
+    // Hito 9 (RNF-12): quien administra recorre /usuarios con 500 cuentas: páginas y búsqueda.
+    administracion: { executor: 'constant-vus', vus: 1, duration: __ENV.DURACION || '60s', exec: 'administracion' },
   },
   thresholds: {
     'http_req_duration{pantalla:sin_ia}': ['p(95)<500'],
+    'http_req_duration{pantalla:usuarios}': ['p(95)<500'],
     http_req_failed: ['rate==0'],
     checks: ['rate==1'],
   },
@@ -51,65 +61,100 @@ function csrfDe(cuerpo) {
   return m ? m[1] : '';
 }
 
-/** Entra con nombre y PIN; devuelve el token CSRF de la sesión ya autenticada. */
-function entrar(nombre, pin, ruta) {
-  const bloqueo = http.get(`${BASE}/${ruta}`);
-  const r = http.post(`${BASE}/sesion`, { nombre: nombre, pin: pin, volver: '/', institucion: ruta },
-    { headers: { 'X-CSRF-TOKEN': csrfDe(bloqueo.body) } });
+/** Entra con nombre y contraseña por la entrada de la institución de carga; devuelve el token CSRF de la sesión. */
+function entrar(nombre) {
+  const entrada = http.get(`${BASE}/${RUTA}`);
+  const r = http.post(`${BASE}/sesion`, { nombre: nombre, contrasena: CONTRASENA, volver: '/', institucion: RUTA },
+    { headers: { 'X-CSRF-TOKEN': csrfDe(entrada.body) } });
   if (r.status !== 200) {
     fail(`${nombre} no pudo entrar (estado ${r.status})`);
   }
-  return csrfDe(http.get(`${BASE}/`).body);
+  return csrfDe(r.body);
 }
 
-/** El operador crea la institución de la corrida e invita a su administrador; devuelve la ruta. */
-function institucionDeLaCorrida(sufijo) {
-  const ruta = `k6-${sufijo}`;
-  let csrf = csrfDe(http.get(`${BASE}/operador/entrar`).body);
-  const panel = http.post(`${BASE}/operador/sesion`, { nombre: 'operador', clave: CLAVE_OPERADOR }, { headers: { 'X-CSRF-TOKEN': csrf } });
-  csrf = csrfDe(panel.body);
-  const creada = http.post(`${BASE}/operador/instituciones`, { nombre: 'Carga con k6', ruta: ruta }, { headers: { 'X-CSRF-TOKEN': csrf } });
-  const accion = new RegExp('/' + ruta + '</td>[\\s\\S]*?action="(/operador/instituciones/[0-9a-f-]+/invitar)"').exec(creada.body || '');
-  if (!accion) {
-    fail(`el operador no pudo crear la institución ${ruta} (estado ${creada.status})`);
-  }
-  const invitacion = http.post(`${BASE}${accion[1]}`, {}, { headers: { 'X-CSRF-TOKEN': csrf } });
-  const codigo = /class="codigo-invitacion">([0-9A-Z-]{9})</.exec(invitacion.body || '');
-  if (!codigo) {
-    fail(`sin código de invitación (estado ${invitacion.status})`);
-  }
-  http.post(`${BASE}/operador/salir`, {}, { headers: { 'X-CSRF-TOKEN': csrf } });
-  const formulario = http.get(`${BASE}/${ruta}/invitacion`);
-  const canje = http.post(`${BASE}/${ruta}/invitacion`, { codigo: codigo[1], nombre: 'administrador', pin: '4826' },
-    { headers: { 'X-CSRF-TOKEN': csrfDe(formulario.body) } });
-  if (canje.status !== 200) {
-    fail(`no se pudo canjear la invitación (estado ${canje.status})`);
-  }
-  return ruta;
+function base64url(bytes) {
+  return encoding.b64encode(bytes, 'rawurl');
 }
 
-/** La institución de la corrida y diez personas de prueba, una por usuario virtual (más dos). */
+function hexABytes(hex) {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+  }
+  return bytes;
+}
+
+/** WebCrypto da la firma ECDSA como r||s (64 bytes); WebAuthn la pide en DER. */
+function aDer(crudo) {
+  const entero = (b) => {
+    let i = 0;
+    while (i < b.length - 1 && b[i] === 0) i++;
+    let v = Array.from(b.slice(i));
+    if (v[0] & 0x80) v = [0].concat(v);
+    return [0x02, v.length].concat(v);
+  };
+  const r = entero(crudo.slice(0, 32));
+  const s = entero(crudo.slice(32));
+  return new Uint8Array([0x30, r.length + s.length].concat(r, s));
+}
+
+/** El administrador confirma con su llave de acceso de prueba (firma ECDSA P-256 con WebCrypto). */
+async function confirmarLlave(csrf) {
+  const opciones = JSON.parse(http.post(`${BASE}/llave/confirmacion/opciones`, '', { headers: { 'X-CSRF-TOKEN': csrf } }).body);
+  const cliente = JSON.stringify({ type: 'webauthn.get', challenge: opciones.challenge, origin: ORIGEN, crossOrigin: false });
+  const clienteBytes = new Uint8Array(encoding.b64decode(encoding.b64encode(cliente), 'std'));
+  const rpId = new Uint8Array(await crypto.subtle.digest('SHA-256', new Uint8Array(encoding.b64decode(encoding.b64encode(opciones.rpId), 'std'))));
+  const datos = new Uint8Array(37);
+  datos.set(rpId, 0);
+  datos[32] = 0x05;                                   // UP | UV; contador 0: la llave no lleva contador
+  const hashCliente = new Uint8Array(await crypto.subtle.digest('SHA-256', clienteBytes));
+  const firmar = new Uint8Array(datos.length + hashCliente.length);
+  firmar.set(datos, 0);
+  firmar.set(hashCliente, datos.length);
+  const clave = await crypto.subtle.importKey('pkcs8', new Uint8Array(encoding.b64decode(CLAVE_PRIVADA_PKCS8, 'std')),
+    { name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign']);
+  const firma = aDer(new Uint8Array(await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, clave, firmar)));
+  const credencial = base64url(hexABytes(CREDENCIAL).buffer);
+  const r = http.post(`${BASE}/llave/confirmacion`, JSON.stringify({
+    id: credencial, rawId: credencial, type: 'public-key', authenticatorAttachment: 'platform', clientExtensionResults: {},
+    response: { authenticatorData: base64url(datos.buffer), clientDataJSON: base64url(clienteBytes.buffer), signature: base64url(firma.buffer) },
+  }), { headers: { 'X-CSRF-TOKEN': csrf, 'Content-Type': 'application/json' } });
+  if (r.status !== 200) {
+    fail(`la llave del administrador no se pudo confirmar (estado ${r.status}: ${r.body})`);
+  }
+  return csrfDe(http.get(`${BASE}/usuarios`).body);
+}
+
+/** Los nombres de las personas de la institución de carga (preparar.sql). */
 export function setup() {
-  const sufijo = Date.now().toString(36);
-  const ruta = institucionDeLaCorrida(sufijo);
-  const csrf = entrar('administrador', '4826', ruta);
   const nombres = [];
   for (let i = 1; i <= PERSONAS + 2; i++) {
-    const nombre = `vecino k6 ${sufijo} ${i}`;
-    const r = http.post(`${BASE}/usuarios`, { nombre: nombre, pin: '4826' }, { headers: { 'X-CSRF-TOKEN': csrf } });
-    if (r.status !== 200) {
-      fail(`no se pudo crear ${nombre} (estado ${r.status})`);
-    }
-    nombres.push(nombre);
+    nombres.push(`vecino k6 ${i}`);
   }
-  return { nombres: nombres, ruta: ruta };
+  return { nombres: nombres };
 }
 
 let csrf = null;
 
+/** Quien administra: entra, confirma con su llave y recorre /usuarios (500 cuentas) por páginas y con búsqueda. */
+export async function administracion() {
+  if (csrf === null) {
+    csrf = entrar(ADMINISTRADOR);
+    csrf = await confirmarLlave(csrf);
+  }
+  const usuarios = { tags: { pantalla: 'usuarios' } };
+  const primera = http.get(`${BASE}/usuarios`, usuarios);
+  check(primera, { '/usuarios: la primera página con 10 cuentas': (r) => r.status === 200 && (r.body.match(/class="cuenta tarjeta"/g) || []).length === 10 });
+  const pagina = http.get(`${BASE}/usuarios?pagina=${1 + (__ITER % 40)}`, usuarios);
+  check(pagina, { '/usuarios: otra página': (r) => r.status === 200 && r.body.includes('class="cuenta tarjeta"') });
+  const busqueda = http.get(`${BASE}/usuarios?q=carga+4`, usuarios);
+  check(busqueda, { '/usuarios: buscar por nombre': (r) => r.status === 200 && r.body.includes('cuenta de carga 4') });
+  sleep(1);
+}
+
 export default function (datos) {
   if (csrf === null) {
-    csrf = entrar(datos.nombres[(__VU - 1) % PERSONAS], '4826', datos.ruta);
+    csrf = entrar(datos.nombres[(__VU - 1) % PERSONAS]);
   }
   const pantalla = { tags: { pantalla: 'sin_ia' } };
 
@@ -187,7 +232,7 @@ function documento(n) {
 /** La importación como trabajo largo: subir un Markdown y esperar, como la lista que se refresca sola, a verlo indexado. */
 export function importacion(datos) {
   if (csrf === null) {
-    csrf = entrar(datos.nombres[PERSONAS + 1], '4826', datos.ruta);
+    csrf = entrar(datos.nombres[PERSONAS + 1]);
   }
   const largo = { tags: { pantalla: 'trabajo_largo' } };
   const nombre = `conteo-${__VU}-${__ITER}-${Date.now().toString(36)}.md`;
@@ -246,7 +291,7 @@ function esperarTurno(cuerpo, conIa) {
 /** La sesión con Ollama activa: una sesión del Consejero que pide el modelo; cada turno se lee por SSE hasta el final. */
 export function sesionConOllama(datos) {
   if (csrf === null) {
-    csrf = entrar(datos.nombres[PERSONAS], '4826', datos.ruta);
+    csrf = entrar(datos.nombres[PERSONAS]);
   }
   const conIa = { tags: { pantalla: 'con_ia' } };
   const nueva = http.post(`${BASE}/consejero/sesiones`, { modo: 'decision', postura: 'Conviene abrir los domingos.', confianza: '70', usaModelo: 'on' },

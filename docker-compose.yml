@@ -97,7 +97,7 @@ services:
     profiles: ["test"]
     image: pgvector/pgvector:pg18@sha256:ad249f9fb9572979643a47694e59b9a8cdcdf6abc6accebf49bb80ad5f20ff9b
     volumes: ["secretos-prueba:/secretos"]
-    entrypoint: ["/bin/sh", "-c", "cd /secretos && for s in db_password:A-Za-z0-9:32 admin_pin:0-9:8 operador_clave:A-Za-z0-9:24 respaldo_clave:A-Za-z0-9:40; do n=$${s%%:*}; r=$${s#*:}; [ -s $$n ] || tr -dc $${r%:*} </dev/urandom | head -c $${r##*:} > $$n; done; chmod 644 /secretos/*"]
+    entrypoint: ["/bin/sh", "-c", "cd /secretos && for s in db_password:A-Za-z0-9:32 admin_contrasena:A-Za-z0-9:24 operador_clave:A-Za-z0-9:24 respaldo_clave:A-Za-z0-9:40; do n=$${s%%:*}; r=$${s#*:}; [ -s $$n ] || tr -dc $${r%:*} </dev/urandom | head -c $${r##*:} > $$n; done; chmod 644 /secretos/*"]
 
   db-prueba:
     profiles: ["test"]
@@ -175,6 +175,14 @@ services:
       db-prueba: { condition: service_healthy }
       app-prueba: { condition: service_healthy }
 
+  k6-preparar:                     # hito 9: siembra en db-prueba la institución /k6-carga (sensores/k6/preparar.sql)
+    profiles: ["test"]
+    image: pgvector/pgvector:pg18@sha256:ad249f9fb9572979643a47694e59b9a8cdcdf6abc6accebf49bb80ad5f20ff9b
+    volumes: ["./sensores/k6:/scripts:ro", "secretos-prueba:/run/secrets:ro"]
+    entrypoint: ["/bin/sh", "-c", "PGPASSWORD=$$(cat /run/secrets/db_password) psql -h db-prueba -U pensamiento -d pensamiento -q -f /scripts/preparar.sql"]
+    depends_on:
+      app-prueba: { condition: service_healthy }   # con las migraciones ya aplicadas
+
   k6:                              # docker compose --profile test run --rm k6  (RNF-03, carga básica)
     profiles: ["test"]
     image: grafana/k6:2.3.0@sha256:9c2dee7f8ed74d317e4027c06a10f169b625638189de8d4555d0b3486a5aeb34
@@ -184,6 +192,7 @@ services:
       APP_URL: http://app-prueba:8080
     depends_on:
       app-prueba: { condition: service_healthy }
+      k6-preparar: { condition: service_completed_successfully }
 
 secrets:
   db_password:
