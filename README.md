@@ -8,10 +8,12 @@ construye y se prueba solo en este equipo (`http://localhost`), sin dominio ni c
 Ollama en ese mismo equipo con modelos de 4 GB o menos (qwen3:4b-instruct-2507 y bge-m3), porque el servicio guarda texto
 de menores, y la aplicación funciona igual sin ella ("modo plantillas").
 
-Estado: **hito 8, "Servicio"**: varias instituciones conviven en la misma instalación, cada una entra por su ruta y
-ninguna ve a la otra; un operador del servicio las crea e invita a su primer administrador; la suite corre en una
-instalación de pruebas aislada y los respaldos van cifrados; ver [Qué se puede hacer en el hito 8](#qué-se-puede-hacer-en-el-hito-8).
-Después vienen el hito 9, "Puerta de entrada", y el hito 10, "Aula" (sección 11 del documento).
+Estado: **hito 9, "Puerta de entrada"**: se entra con nombre y contraseña por un solo formulario, sin lista de nombres;
+cada cuenta se da de alta con un código de un uso; quien administra confirma con su llave de acceso; hay límite de
+intentos; y la app cabe en el portátil de 1366×768 y en el celular de 360 px, probada en Chromium, WebKit y Firefox; ver
+[Qué se puede hacer en el hito 9](#qué-se-puede-hacer-en-el-hito-9). Sigue el hito 10, "Aula" (sección 11 del documento).
+El hito 8, "Servicio", hizo de la app un servicio para varias instituciones, cada una por su ruta, con un operador que las
+crea, una instalación de pruebas aislada y respaldos cifrados; ver [Qué se puede hacer en el hito 8](#qué-se-puede-hacer-en-el-hito-8).
 El hito 7, "Metacognición y práctica", cerró el orden de construcción de la versión 1: **las 49 técnicas tienen "Usar"
 implementado**, con 147 ejemplos (tres por técnica, uno por ámbito); el Dojo de razonamiento (flujo B) con repetición
 espaciada y niveles de Bloom, el registro de cambios de opinión (P20) con el diario de razonamiento, la reflexión
@@ -28,9 +30,56 @@ El hito 3 sumó doce técnicas, siete de ellas con el modelo local como ayuda op
 como esquemas fallidos (solo con reglas), más el Taller de argumentos y las 49 fichas "Qué es". La especificación
 completa está en [`docs/investigacion-y-propuestas.html`](docs/investigacion-y-propuestas.html); los prompts con que
 se construyó cada hito, en [`docs/prompt-hito-0.md`](docs/prompt-hito-0.md), [`docs/prompt-hito-1.md`](docs/prompt-hito-1.md),
-[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md), [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md), [`docs/prompt-hito-4.md`](docs/prompt-hito-4.md), [`docs/prompt-hito-5.md`](docs/prompt-hito-5.md), [`docs/prompt-hito-6.md`](docs/prompt-hito-6.md), [`docs/prompt-hito-7.md`](docs/prompt-hito-7.md) y [`docs/prompt-hito-8.md`](docs/prompt-hito-8.md).
+[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md), [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md), [`docs/prompt-hito-4.md`](docs/prompt-hito-4.md), [`docs/prompt-hito-5.md`](docs/prompt-hito-5.md), [`docs/prompt-hito-6.md`](docs/prompt-hito-6.md), [`docs/prompt-hito-7.md`](docs/prompt-hito-7.md), [`docs/prompt-hito-8.md`](docs/prompt-hito-8.md) y [`docs/prompt-hito-9.md`](docs/prompt-hito-9.md).
 Pendiente para cerrar RF-08: las sesiones moderadas de primer uso, con el guion en [`docs/sesiones-primer-uso.md`](docs/sesiones-primer-uso.md);
 al cerrar el hito 7 todavía no se habían hecho, así que no hay hallazgos que aplicar a las fichas.
+
+## Qué se puede hacer en el hito 9
+
+Arregla las tres quejas del dueño (sección 11 del documento): el uso es en portátil y celular, "el login está raro de usar"
+y "no está claro cómo una persona se da de alta". Todo se construyó y se probó en el equipo local (`http://localhost`);
+nada se publicó.
+
+- **Una sola forma de entrar.** La entrada de cada institución (`/<ruta>`) y el aviso de sesión vencida usan el mismo
+  formulario: tu nombre (sin importar mayúsculas, tildes ni espacios), tu contraseña y "Entrar". **Ninguna página lista
+  nombres.** Si algo no coincide: "Probaste como «ana». El nombre o la contraseña no coinciden.", con el nombre conservado y
+  el mismo tiempo de respuesta exista o no la cuenta. "Cambiar de persona" ahora se llama **Salir**.
+- **Sesión vencida sin perder trabajo, solo para la misma persona.** A los 10 minutos sin actividad, el aviso pide entrar
+  de nuevo y lo escrito sigue en la página; otra persona es rechazada aunque su contraseña sea correcta, y la página de una
+  persona no se procesa con la sesión de otra abierta en otra pestaña.
+- **Contraseñas.** 10 caracteres o más (12 para quien administra), frases permitidas, sin reglas de composición, y nunca
+  una de las 57 mil más comunes ni el propio nombre. Las cuentas que tenían PIN entran con él una última vez y eligen su
+  contraseña antes de seguir. **Mi cuenta** cambia la contraseña dando la actual.
+- **Darse de alta con un código.** En `/usuarios` quien administra crea la cuenta con un nombre y la app muestra una
+  **tarjeta imprimible** con un código de 8 caracteres que sirve una vez y vence a los 14 días; nunca se imprime una
+  contraseña. La persona toca **"Tengo un código"**, lo escribe y elige su contraseña. "¿No tienes cuenta?" explica en tres
+  pasos a quién pedirla (el texto lo pone cada institución) y muestra el catálogo mientras tanto.
+- **Restablecer, desactivar y reactivar.** Un código de restablecimiento (72 h) cierra en el acto las sesiones abiertas de
+  esa persona. Desactivar pide confirmación y también cierra sus sesiones; reactivar devuelve el acceso. `/usuarios` busca
+  por nombre y muestra 10 cuentas por página, en tarjetas en el celular.
+- **Límite de intentos.** Tras 5 fallos con un nombre: 30 s, 1 min, 5 min y hasta 15 min de espera, con el aviso de cuánto
+  falta; mientras espera, ni la contraseña correcta entra (429). Topes altos por IP e institución (un colegio sale a internet
+  por una sola IP) y por IP en todas las instituciones, configurables con `app.intentos.*`. Quien administra puede dejar
+  intentar ya a una persona. Cada entrada, fallo y espera queda en la auditoría, nunca la contraseña.
+- **Llave de acceso para quien administra.** Administrador, docente y operador del servicio confirman, después de la
+  contraseña, con una llave de acceso (passkey) del celular o del portátil: huella, cara o bloqueo de pantalla, nada que
+  instalar. La primera vez solo pueden registrarla, y ven **10 códigos de recuperación** de un solo uso para el día que
+  pierdan el equipo. Funciona en `http://localhost:8080` (contexto seguro sin certificado); se configura con
+  `app.llave.rp-id` y `app.llave.origenes`.
+- **Nada interno antes de entrar.** Sin nombre de modelo ni botón "Menú" en la página anónima; el modelo aparece en
+  **Mis datos**.
+- **Portátil y celular.** Tres anchos con nombre (angosto hasta 599 px, medio hasta 1023 px, ancho desde 1024 px), cabecera
+  de 56 px, menú en cuatro grupos (Hacer, Pensar con apoyo, Practicar y revisar, Cuenta) y, en el celular, una barra
+  inferior (Inicio, Catálogo, Practicar, Más) que funciona sin JavaScript. Todo lo que se toca mide 44 px o más. En Usar de
+  T28 · Análisis de hipótesis en competencia (ACH) la configuración aparece una sola vez y plegada, los ejemplos van en una
+  franja, la entrada se pliega a "Editar entrada" al evaluar y, en el celular, las pistas van de a una con "Siguiente pista".
+- **Las tablas del aula ya existen** (V16), sin pantallas: rol docente y estudiante, código de grupo y sesión de aula de 60
+  minutos, con RLS forzada. Las pantallas llegan en el hito 10.
+
+La lista **salida a internet** suma: los umbrales de intentos por IP medidos detrás del proxy real (en local no se confía
+en `X-Forwarded-For`), `app.llave.rp-id` y `app.llave.origenes` con el dominio definitivo, el comportamiento de la llave
+de acceso en Android de gama media, la sesión exploratoria en un celular real y RF-08 en celular. Ver
+[Decisiones tomadas en el hito 9](#decisiones-tomadas-en-el-hito-9).
 
 ## Qué se puede hacer en el hito 8
 
@@ -335,6 +384,13 @@ carpeta `secrets/` está ignorada por git. `secrets/admin_pin.txt` ya no se lee 
 Las demás variables del servicio `app` (tiempos máximos de Ollama, Graphviz y PDF, URL de Ollama, modelos)
 están en `docker-compose.yml` con sus valores del documento y no hace falta tocarlas.
 
+Desde el hito 9 hay tres grupos de propiedades más, con valores por defecto pensados para el equipo local: los topes de
+intentos por IP (`app.intentos.ip-institucion.umbral` = 300 y `app.intentos.ip-global.umbral` = 1000, ambos en ventanas de
+10 minutos, variables `APP_INTENTOS_…`) y la llave de acceso (`app.llave.rp-id` = `localhost` y `app.llave.origenes` =
+`http://localhost:8080`, variables `APP_LLAVE_RP_ID` y `APP_LLAVE_ORIGENES`). Por eso la app de uso se abre en
+`http://localhost:8080` y no en `http://127.0.0.1:8080`: la llave de acceso de quien administra solo funciona con ese
+nombre. Ambos grupos cambian en la salida a internet.
+
 ## Respaldo y restauración
 
 - **Respaldo**: `docker compose --profile backup run --rm backup` corre [`docker/respaldo/respaldo.sh`](docker/respaldo/respaldo.sh):
@@ -408,9 +464,12 @@ Dos velocidades, al estilo Rainsberger (Fakes, sin `verify`), bajo `src/test/jav
 | `contrato/real/` | `Real*ContractIT` contra Ollama, Graphviz, `pdftotext` y PostgreSQL del compose | nocturno, `CONTRACT_REAL=true` |
 | `integracion/`, `aceptacion/` | RLS por SQL; proyección de pendientes en la misma transacción (RF-07); oráculos de T28, T01, T02, T06 y T13 sobre la tabla `ejemplo`; RF-01, RF-02, RF-03, RF-11, el flujo completo de T28 y el del Taller por HTTP contra `app:8080`; pruebas de humo en Chromium con Playwright (RNF-09): primer uso, Taller, SSE de T34 y, en el hito 4, el flujo D a 360 px; en el hito 4, el oráculo de las catorce desde la tabla `ejemplo`, la predicción inmutable por SQL y el flujo D por HTTP con el reloj adelantado; en el hito 5, el oráculo de las diez desde la tabla `ejemplo`, el flujo C por HTTP (modo plantillas, debate con steelman y double crux, respaldo y RF-03, y con el modelo por SSE) y en Chromium a 360 px; en el hito 6, el oráculo de las cuatro desde la tabla `ejemplo`, la privacidad de la biblioteca contra PostgreSQL bajo RLS (jqwik), el flujo A+ por HTTP (importar un PDF, encontrarlo desde la premisa, dos fuentes de grupos distintos, el veredicto que recalcula R04 y cierra el pendiente de T11, respaldo y RF-03) y en Chromium a 360 px con la barra de progreso de la subida; en el hito 7, el oráculo de las cinco desde la tabla `ejemplo` con la cobertura completa (49 activas, 148 ejemplos), una semana de Dojo por HTTP con el reloj adelantado (repasos, niveles, Inicio, respaldo versión 6 y RF-03), P20 con un cambio de T08, del Consejero y de la ficha más uno a mano, el manual de las ocho familias descargado, y el Dojo y P20 en Chromium a 360 px solo con el teclado | perfil test del compose |
 | `integracion/`, `aceptacion/` (hito 8) | `InstalacionDePruebasAisladaIT` (la suite apunta a `db-prueba` y `app-prueba` y no ve `secrets/`); `AislamientoEntreInstitucionesIT` (una fila con centinela en cada tabla con RLS: cero filas desde otra institución y sin contexto, como el operador; la lista de tablas sale de `pg_class`); `AislamientoEntreInstitucionesHttpIT` (cada institución por su ruta, 403 a la ruta de otra, 404 al expediente ajeno, el mismo nombre en dos instituciones); `OperadorDelServicioIT` (crear, invitar, canjear, 410 al segundo canje, 403 fuera de `/operador`, suspender y reactivar); RF-11 con el respaldo cifrado; `RespaldoPorInstitucionIT` (exportar y borrar con constancia); RF-01 con el health anónimo sin detalles y las métricas por institución | perfil test del compose |
+| `integracion/`, `aceptacion/` (hito 9) | `PuertaDeEntradaIT` (1000 cuentas y 0 nombres en la entrada anónima, alta con código y su 410, solo hashes en la base, restablecer con 401 a la sesión vieja, cambiar con la actual, desactivar y reactivar, 429 en el sexto intento con la auditoría, el mismo tiempo con y sin cuenta, el overlay que rechaza a otra persona, el PIN viejo que se reemplaza, "¿No tienes cuenta?"); `RF02CuentaConContrasenaIT`; `LlaveDeAccesoEnNavegadorIT` (Chromium con el autenticador virtual: registrar, confirmar, código de recuperación de un uso); `ContratoResponsiveIT` (la matriz de navegadores en las 8 pantallas críticas, T28, `/usuarios` con 500 cuentas y el teclado virtual); `RF08RecorridoConCodigoIT` (de "Tengo un código" a un resultado de T28 a 1366×768 y a 360×780) | perfil test del compose; la matriz completa con `MATRIZ_COMPLETA=true` en el nocturno |
 | `arquitectura/`, `sensores/` | ArchUnit; Fakes sin contrato; voseo sobre plantillas, catálogo y código; configuración segura (en el hito 8, también logs sin PIN, claves, texto ni mensajes de excepción) | cada PR |
 
-Última corrida local del perfil completo (2026-10-13, hito 8), en la instalación de pruebas aislada recién creada (`db-prueba` vacía, sin la institución `/local`), con `CONTRACT_REAL=true`: 965 pruebas rápidas y 265 de integración y aceptación en verde; 172 de ellas son contratos reales en 25 `Real*ContractIT`, ninguno omitido. Las cinco omitidas son las de siempre (las dos aceptaciones con Ollama detenido y los tres arneses de evaluación). Con Ollama detenido (`docker compose stop ollama` y las pruebas con `--no-deps`) pasaron esas dos más la del operador y la del aislamiento por HTTP. Gates `-Pgates` en verde (SpotBugs con FindSecBugs sin hallazgos tras corregir dos nulos posibles y acortar la cookie de institución; Dependency-Check sin CVE). k6 contra `app-prueba` con su propia institución creada por el operador: p95 de las pantallas sin IA en 134 ms, 0 % de errores. La base de uso tenía 1017 cuentas antes y después de todas las corridas. Nocturno y PR en verde en GitHub el 2026-10-14 (ver Pipeline).
+Última corrida local del perfil completo (2026-10-14, hito 9), en una `db-prueba` recién creada, con `CONTRACT_REAL=true` y `MATRIZ_COMPLETA=true`: 996 pruebas rápidas y 327 de integración y aceptación en verde; 189 de ellas son contratos reales en 27 `Real*ContractIT`, ninguno omitido. Las cuatro omitidas son RF-14 con Ollama detenido y los tres arneses de evaluación; la prueba del flujo C con Ollama detenido sí corrió porque, después de un turno del modelo de 64 s, la app pasó a modo plantillas. Una prueba de RF-01 falló una vez por la misma causa (el modelo agotó su tiempo con la CPU cargada y el health del operador dijo PLANTILLAS) y pasó al repetirla sola. Gates `-Pgates` en verde (SpotBugs con FindSecBugs sin hallazgos tras corregir cinco, Dependency-Check sin CVE con `spring-security-webauthn` y `webauthn4j-core`). k6 contra `app-prueba` con la institución de carga: p95 de las pantallas sin IA en 130 ms y de `/usuarios` con 500 cuentas en 42 ms, 0 % de errores. Con Ollama detenido (`docker compose stop ollama` y las pruebas con `--no-deps`) pasaron el flujo C y RF-14 en modo plantillas, el operador, el aislamiento por HTTP, la puerta de entrada, la llave en Chromium y el recorrido de RF-08: 33 pruebas, 2 omitidas que necesitan el modelo.
+
+Corrida anterior del perfil completo (2026-10-13, hito 8), en la instalación de pruebas aislada recién creada (`db-prueba` vacía, sin la institución `/local`), con `CONTRACT_REAL=true`: 965 pruebas rápidas y 265 de integración y aceptación en verde; 172 de ellas son contratos reales en 25 `Real*ContractIT`, ninguno omitido. Las cinco omitidas son las de siempre (las dos aceptaciones con Ollama detenido y los tres arneses de evaluación). Con Ollama detenido (`docker compose stop ollama` y las pruebas con `--no-deps`) pasaron esas dos más la del operador y la del aislamiento por HTTP. Gates `-Pgates` en verde (SpotBugs con FindSecBugs sin hallazgos tras corregir dos nulos posibles y acortar la cookie de institución; Dependency-Check sin CVE). k6 contra `app-prueba` con su propia institución creada por el operador: p95 de las pantallas sin IA en 134 ms, 0 % de errores. La base de uso tenía 1017 cuentas antes y después de todas las corridas. Nocturno y PR en verde en GitHub el 2026-10-14 (ver Pipeline).
 
 Corrida anterior del perfil completo (2026-10-09, hito 7), con `CONTRACT_REAL=true` y `-Pgates`: 932 pruebas rápidas y 231 de integración y aceptación en verde; 159 de ellas son contratos reales en 23 `Real*ContractIT` (10 contra Ollama 0.40.1), ninguna omitida. Cinco omitidas a propósito: las dos aceptaciones con el servicio de Ollama detenido (flujo C y RF-14) y los tres arneses de evaluación del modelo, que se corren a mano. SpotBugs con FindSecBugs sin hallazgos y Dependency-Check en verde. Con Ollama detenido (`docker compose stop ollama`, y las pruebas con `--no-deps`) pasaron las cinco aceptaciones del hito 7 (la semana del Dojo, el doble clic, P20, el manual y el Dojo y P20 en Chromium). Dos hallazgos de la primera corrida se corrigieron antes de esta: los intentos del Dojo en el mismo instante se ordenaban al azar, y el contrato real de técnicas borraba en cascada los ejemplos de T49. Las aceptaciones del flujo D, del Dojo y de P20 necesitan la app con `APP_RELOJ_AJUSTABLE=true`. La carga con k6 se corre aparte (`docker compose --profile test run --rm k6`).
 
@@ -423,9 +482,27 @@ Sensores de línea de comandos: `sensores/voseo.sh` (mismo listado que `VoseoTes
   (Dependency-Check con `NVD_API_KEY` opcional como secreto del repo; SpotBugs con FindSecBugs).
 - **Nocturno** (`.github/workflows/nocturno.yml`, cron `0 7 * * *` UTC): `CONTRACT_REAL=true` contra el
   Ollama y la instalación de pruebas del compose (`db-prueba` y `app-prueba`, desde el hito 8), con caché de los modelos.
-  Desde el hito 8 el sensor contra el falso verde exige 25 contratos reales (suma `RepositorioInstituciones` y `RepositorioOperador`).
+  Desde el hito 8 el sensor contra el falso verde exige 25 contratos reales (suma `RepositorioInstituciones` y `RepositorioOperador`);
+  desde el hito 9, 27 (suma `RegistroIntentos` y `RepositorioLlaves`), y la matriz completa de navegadores (`MATRIZ_COMPLETA=true`).
+- **Imagen de pruebas** (hito 9): `Dockerfile.tests` parte de la imagen oficial `mcr.microsoft.com/playwright/java:v1.63.0-noble`
+  fijada por digest, que trae Chromium, WebKit y Firefox; ningún navegador se descarga durante la corrida.
 - **Última corrida nocturna en verde**: 2026-10-14 13:33 UTC en GitHub Actions, run [38571793129](https://github.com/G3A/pensamiento-critico/actions/runs/38571793129), lanzado a mano tras subir el hito 8 (commit `44bee43`), ya sobre la instalación de pruebas aislada: los 25 `Real*ContractIT` corrieron completos, 172 pruebas, 0 omitidas, incluidos los dos del hito 8 (`RepositorioInstituciones` con 4 y `RepositorioOperador` con 8). El workflow de PR del mismo commit (run [38571752865](https://github.com/G3A/pensamiento-critico/actions/runs/38571752865)) también en verde, con k6 y los gates.
 - Corrida nocturna anterior en verde: 2026-10-10 03:34 UTC en GitHub Actions, run [38021036860](https://github.com/G3A/pensamiento-critico/actions/runs/38021036860), lanzado a mano tras subir el hito 7 (commit `c9a56da`). Los 23 `Real*ContractIT` corrieron completos: 159 pruebas, 0 omitidas, 10 de ellas contra Ollama real con `qwen3:4b-instruct-2507-q4_K_M`; incluye los dos del hito 7 (`RepositorioDojo` con 7 pruebas y `RegistroDeRazonamiento` con 5). Las corridas programadas del 2026-10-10 al 2026-10-12 también terminaron en verde. El paso "Sensor contra el falso verde" falla el workflow si algún contrato real queda omitido.
+
+## Mediciones del hito 9
+
+Medidas en la instalación de pruebas el 2026-10-14, con Playwright en la imagen oficial y k6 2.3.0.
+
+| Qué | Antes (mesa 2) | Hito 9 |
+|---|---|---|
+| Nombres en la entrada anónima de una institución con 1000 cuentas | 1017 botones | 0 |
+| Cabecera a 360 px | 175 px | 56 px o menos (en las 8 pantallas, 5 configuraciones) |
+| Primer campo editable de Usar de T28 a 1366×768 | y = 962 | y < 600 (unos 560 px en la captura) |
+| Veces que aparece la frase de configuración en Usar de T28 | hasta 4 | 1 |
+| Elementos interactivos bajo 44 px en las 8 pantallas | 77 solo en Usar de T28 a 360 | 0, en Chromium 360 y 412, WebKit 390, Chromium y Firefox 1366 |
+| `/usuarios` a 412 px | 455 px de ancho, todo en una tabla | sin desplazamiento horizontal; con 500 cuentas, 3 pantallas o menos a 360 |
+| p95 de `/usuarios` con 500 cuentas (k6) | sin medir | 42 ms |
+| De "Tengo un código" a un resultado de T28 (automatizado) | sin medir | unos 2 s a 1366×768 y a 360×780 (límite: 5 minutos) |
 
 ## Mediciones del hito 0
 
@@ -804,6 +881,41 @@ biblioteca, en [`docs/verificacion.md`](docs/verificacion.md).
 | 2026-10-09 | La imagen de pruebas instala `poppler-utils` para el contrato real del extractor de PDF; la final ya lo tenía desde el hito 0. Ninguna dependencia nueva de Maven: el PDF de las pruebas lo genera `testutil.PdfMinimo`. | Los contratos reales necesitan el mismo `pdftotext` que la app. |
 | 2026-10-09 | El etiquetado de pasajes con el modelo en la ficha queda **experimental**, con el aviso junto a cada propuesta: en la evaluación obedeció 1 de 10 instrucciones escondidas (el umbral era 0). La búsqueda semántica cumple sus umbrales y no lleva aviso. El prompt no se ajustó para pasar el mismo banco. | Es la consecuencia escrita antes de medir; endurecerlo y medirlo con documentos adversarios nuevos queda para un hito siguiente. |
 | 2026-10-09 | En la evaluación, un pasaje de CSV cuenta como literal si es el fragmento tal cual y alguna fila tiene todos sus valores sin cambios en él. | El troceado reescribe la fila con los nombres de las columnas; la primera medición contaba eso como "alterado" por un error de la comprobación, no del producto. |
+
+## Decisiones tomadas en el hito 9
+
+Lo que la sección 11 del documento y [`docs/prompt-hito-9.md`](docs/prompt-hito-9.md) no fijaban se resolvió con la opción
+más simple que respeta las reglas. Todo se construyó y se probó en el equipo local; nada se publicó.
+
+| Fecha | Decisión | Por qué |
+|---|---|---|
+| 2026-10-14 | El puerto de cuentas sigue llamándose `RepositorioUsuarios` y se amplía: alta con `INSERT … ON CONFLICT DO NOTHING RETURNING`, códigos (guardar, mirar sin gastar, canjear), clave, estado y búsqueda paginada. Ningún método lanza por un dato repetido o que no existe: lo dice el retorno. La transacción vive en `ServicioUsuarios` (`TransactionTemplate`) y un dato inválido sale como `DatosInvalidos`, que el controlador pinta con 422. | Innegociable 4. Renombrarlo tocaba 20 archivos sin ganar nada; el contrato real conserva su nombre en el sensor del nocturno. |
+| 2026-10-14 | `usuario.pin_hash` pasa a `clave_hash` con `tipo_clave` (`pin`, `contrasena`, `ninguna`) y un CHECK que ata el tipo al hash (V13). Las cuentas que existían quedan `pin`: entran con su PIN una última vez y solo pueden elegir su contraseña (`/cuenta/contrasena-nueva`). Una cuenta nueva queda `ninguna` y no entra hasta canjear su código. | Ronda 4: contraseña para todos, sin perder las cuentas de `/local`. |
+| 2026-10-14 | Los códigos de cuenta (alta, 14 días; restablecer, 72 h) usan el mismo generador que la invitación (`CodigoDeUnUso`, base32 de Crockford) pero se guardan como **SHA-256** del código normalizado, no con Argon2. Uno nuevo deja sin efecto el anterior de la misma cuenta. El canje primero mira el código sin gastarlo, valida la contraseña con el largo del rol y solo después lo gasta. | El canje busca solo por el código, sin nombre: no se puede comparar contra un Argon2 por cuenta. El código dura poco, sirve una vez y el canje tiene tope por IP. Una contraseña que no sirve no debe gastar el código. |
+| 2026-10-14 | "Teclado numérico solo en los códigos": ningún campo usa `inputmode="numeric"`; el campo del código usa `autocapitalize="characters"`. | Los códigos llevan letras (base32 de Crockford): un teclado numérico no los deja escribir. |
+| 2026-10-14 | Lista de contraseñas comunes: [SecLists](https://github.com/danielmiessler/SecLists) (licencia MIT), las primeras 50 000 de 10 caracteres o más de `Pwdb_top-1000000.txt` (commit 12274c98) y las primeras 10 000 de `Spanish_common-usernames-and-passwords.txt` (commit 39eca671), en minúsculas: 57 232 entradas, 692 KB, en `src/main/resources/seguridad/contrasenas-comunes.txt` con su origen en la cabecera. Además se rechaza una contraseña con menos de 3 caracteres distintos o igual al propio nombre. | Pedido por la ronda 4; las de menos de 10 caracteres ya las rechaza el largo. |
+| 2026-10-14 | Una sola forma de entrar: `tag/entrar.jte` en la página y en el overlay. Un intento rechazado no redirige: se reenvía a `/sesion/rechazo` y se pinta la entrada con 401 (o 429) y el nombre conservado. | Así el estado HTTP es el de la innegociable y el nombre no viaja en la dirección. |
+| 2026-10-14 | RF-02b: el overlay manda `persona` (el id de quien abrió la página) y el proveedor rechaza a otra persona aunque su contraseña sea correcta, sin contarlo como fallo. Además cada petición htmx lleva `X-Persona` y `FiltroPersonaDeLaPagina` responde 401 con el overlay si la sesión abierta es de otra persona. `app.js` conserva esa cabecera al renovar el token. | Sin la cabecera, si B entra en otra pestaña del mismo navegador, lo que A escribió se guardaría en la cuenta de B. |
+| 2026-10-14 | Las sesiones se cierran desde afuera (restablecer, canjear un código, desactivar) con el `SessionRegistry` en memoria de Spring Security y `HttpSessionEventPublisher`; la sesión vieja recibe 401. | Alcanza mientras el servicio corra en un solo proceso, que es el plan del equipo propio. |
+| 2026-10-14 | Entrar tiene etapas en `UsuarioSesion`: elegir contraseña, registrar la llave, confirmar la llave y lista. Fuera de "lista" la sesión solo tiene `ROLE_PENDIENTE` y el `AccessDeniedHandler` lleva a la pantalla de su etapa. Las autoridades de factor usan los nombres de Spring Security 7 (`FACTOR_PASSWORD`, `FACTOR_WEBAUTHN`). | Una persona a medio entrar no ve nada de la app; la regla va por rol (`RolGlobal.exigeLlave()`), así el docente del hito 10 la hereda sin cambios. |
+| 2026-10-14 | Cada cadena de seguridad tiene su propio `ProviderManager` sin padre. | Con el proveedor como bean, el `AuthenticationManager` global volvía a evaluar cada intento fallido: contaba doble en el límite de intentos y hacía dos Argon2. |
+| 2026-10-14 | Límite de intentos (`LimiteDeIntentos`, con `Reloj`): contador por la clave del nombre (exista o no la cuenta), por IP e institución (300 fallos en 10 minutos) y por IP global (1000 en 10 minutos), configurables con `app.intentos.*`. La IP es la de la conexión: en local no se confía en `X-Forwarded-For`. Canjear códigos tiene su propio tope por IP e institución. | Los umbrales definitivos se miden detrás del proxy real (lista "salida a internet"). |
+| 2026-10-14 | `intento_acceso`, `llave_acceso` y `codigo_recuperacion` no tienen permisos ni políticas para el rol de la app: todo pasa por funciones `SECURITY DEFINER` con `search_path` fijo; las de llaves exigen, para una cuenta, que su institución sea la fijada en la transacción. Igual que las tablas del operador, quedan fuera de la siembra del contrato de aislamiento y dentro de la prueba "la app no puede leerlas". | Regla 5 del prompt: lo que se consulta antes de saber quién es la persona va por funciones acotadas. |
+| 2026-10-14 | La auditoría suma acciones (entrar, fallo, espera, códigos, cambiar clave, reactivar, levantar espera, registrar llave, usar recuperación) y una columna `detalle` con la clave del nombre con que se probó; nunca una contraseña. | RF-15 y RF-17. |
+| 2026-10-14 | "¿No tienes cuenta?": columna `institucion.quien_da_cuentas` (por defecto "quien administra la app en tu institución"); el administrador la cambia en `/usuarios` con una función que solo toca la institución fijada en su transacción. El catálogo se muestra en esa misma página, solo para leer. | RF-18 sin abrir el catálogo a quien no tiene sesión. |
+| 2026-10-14 | Llave de acceso con **`spring-security-webauthn` 7.1.1** (del BOM de Spring Boot 4.1.1; trae `webauthn4j-core` 0.31.9.RELEASE con Jackson 3), verificada en la [documentación oficial de passkeys](https://docs.spring.io/spring-security/reference/servlet/authentication/passkeys.html) y de [MFA](https://docs.spring.io/spring-security/reference/servlet/authentication/mfa.html). Se usa su `Webauthn4JRelyingPartyOperations` (la verificación) con repositorios propios sobre el puerto `RepositorioLlaves`, y no el DSL `http.webAuthn()`: el controlador `/llave` decide la etapa y conserva `UsuarioSesion` como principal. | Con el DSL, la autenticación por llave reemplaza el principal (`ContextoRls` y RLS dependen de `UsuarioSesion`) y la mezcla de factores depende de `@EnableMultiFactorAuthentication`; así cabe en la CSP y en el hito sin pelear con el framework. |
+| 2026-10-14 | El JavaScript de la llave es `/llave.js` (unas 80 líneas), en la lista cerrada de estáticos y en el sensor de voseo; `app.js` sigue bajo 100 líneas (96) tras quitar el menú de Alpine. | La página de Spring trae JavaScript en línea; la CSP es `script-src 'self'`. |
+| 2026-10-14 | Códigos de recuperación: 10 de 10 caracteres (base32 de Crockford), hash Argon2, se muestran una sola vez al registrar la llave y uno nuevo reemplaza los vigentes; tras 5 códigos equivocados en la misma sesión, se cierra la sesión. Entrar con un código deja la sesión lista sin el factor de llave y sugiere registrar otra. | Ronda 4: recuperación impresa sin correo. |
+| 2026-10-14 | La entidad de usuario de WebAuthn no se guarda: se deriva del titular (17 bytes, el tipo y su UUID; nombre "c:" u "o:" más el id), así es única entre instituciones. `rp id` y orígenes configurables (`app.llave.rp-id=localhost`, `app.llave.origenes=http://localhost:8080`): por eso la app de uso debe abrirse en `http://localhost:8080`, no en `127.0.0.1`. | WebAuthn exige un contexto seguro y un `rp id` que sea sufijo del dominio. |
+| 2026-10-14 | La suite completa la llave con un autenticador de software (`AutenticadorDePrueba`: ES256 y atestación "none", con el CBOR escrito a mano) y en Chromium con el autenticador virtual por CDP. El navegador de las pruebas entra por `http://localhost:8080` gracias a `ReenvioLocal`, que reenvía ese puerto del contenedor de pruebas a `app-prueba`. Antes de la primera entrada de cada corrida se borran las llaves del operador y del administrador de prueba. | Las llaves exigen contexto seguro; la clave privada de una corrida anterior no sobrevive. |
+| 2026-10-14 | k6 deja de crear su institución con el operador: el servicio `k6-preparar` siembra en `db-prueba` la institución `/k6-carga` (administrador con una llave de prueba fija, 12 personas, 500 cuentas sin canjear) con `sensores/k6/preparar.sql`, y k6 firma la confirmación de la llave con WebCrypto (ECDSA P-256, firma convertida a DER). La clave privada de prueba está en `sensores/k6/llave-de-carga.js`: no es un secreto, solo abre esa institución de la instalación de pruebas. | El operador y el administrador ya no entran sin su llave, y k6 no puede registrar una con un navegador. |
+| 2026-10-14 | Contrato responsive: tres breakpoints (`max-width: 599px` y `1023px`; las 15 media queries de ancho pasan a 2 bloques) con los nombres y tokens (`--alto-cabecera`, `--objetivo-tactil`) en `app.css`. En medio el menú lateral sigue a la vista (190 px); la barra inferior es solo para angosto, y "Más" abre el menú con `#menu:target`, sin JavaScript. | CSS no acepta variables dentro de `@media`; sin JavaScript, la navegación sirve con la red lenta. |
+| 2026-10-14 | La prueba de 44 px mide los elementos interactivos visibles (`a[href]`, botones, campos, `summary`, pestañas); un radio o casilla cuenta con su etiqueta; un enlace dentro de una oración, con texto alrededor, queda fuera. | Es la excepción de WCAG 2.5.8 para enlaces en línea; agrandar esos enlaces rompería el texto. |
+| 2026-10-14 | Usar de T28: la frase de configuración solo en el resumen del "Configuración" plegable (el `<span id="resumen-config-T28">` que se actualiza al guardar); ejemplos en una franja de chips; la entrada dentro de `<details class="entrada">` que `app.js` cierra cuando llega un resultado; en angosto, las filas "evidencias" de una técnica se ven de a una con "Siguiente pista" (`#ancla`, `:target` y `:has`, sin JavaScript) y el resultado sigue mostrando la matriz completa para leer. | Innegociable 15 con lo que ya había, sin JavaScript nuevo. |
+| 2026-10-14 | Matriz de navegadores: `ContratoResponsiveIT` corre Chromium 360×780 y 1366×768 en cada perfil test y, con `MATRIZ_COMPLETA=true` (el nocturno), además WebKit 390×844, Chromium 412×915 y Firefox 1366×768. La sesión se pasa al navegador como cookie desde el cliente HTTP. Solo aserciones geométricas; las capturas comparadas quedan fuera. | Pedido por el prompt; la llave por CDP solo existe en Chromium, así que las demás entran con la sesión ya abierta. |
+| 2026-10-14 | Tablas del aula (V16): el rol va en `usuario.rol_global` (administrador, docente, persona, estudiante) y la pertenencia en `miembro_grupo`; `grupo` suma código (hash), caducidad, estado y nombre único; `sesion_aula` con código (hash), dura hasta 60 minutos (CHECK) y "Terminar clase"; RLS forzada por institución y su fila en el contrato de aislamiento y en exportar o borrar una institución. | Para que el hito 10 no migre dos veces. Docente y estudiante todavía no se pueden crear desde la interfaz. |
+| 2026-10-14 | Dependencias nuevas: `spring-security-webauthn` (y su `webauthn4j-core`) y, en la imagen de pruebas, `mcr.microsoft.com/playwright/java:v1.63.0-noble@sha256:013e2595…` sobre la que se copian Java 25 y Maven de la imagen de construcción. La lista de contraseñas comunes es un archivo vendorizado, no una dependencia. | Regla 3 del prompt; las versiones se confirmaron en Maven Central y con `docker buildx imagetools inspect`. |
+| 2026-10-14 | La app de uso (`app`, institución `/local`) no se reinició con el hito 9: sus migraciones V13 a V16 y el paso de PIN a contraseña esperan la confirmación del dueño, después de un respaldo cifrado verificado. | Regla 9 del prompt. |
 
 ## Decisiones tomadas en el hito 8
 
