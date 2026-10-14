@@ -113,7 +113,8 @@ public class ProveedorEntrada implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication intento) throws AuthenticationException {
         String nombre = intento.getName() == null ? "" : intento.getName();
-        String clave = intento.getCredentials() == null ? "" : intento.getCredentials().toString();
+        Object credencial = intento.getCredentials();
+        String clave = credencial == null ? "" : credencial.toString();
         if (!(intento.getDetails() instanceof DetallesEntrada detalles) || detalles.institucion().isEmpty()) {
             codificador.matches(clave, hashDeRelleno);
             throw new BadCredentialsException("Sin institución activa en la ruta de entrada");

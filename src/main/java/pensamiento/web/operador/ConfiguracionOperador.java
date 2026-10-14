@@ -70,8 +70,8 @@ public class ConfiguracionOperador {
                 .deleteCookies("PENSAMIENTO_SESION"))
             .authenticationManager(new ProviderManager(new ProveedorOperador(operador, codificador, gestor, llaves)))   // sin padre (hito 9)
             .exceptionHandling(ex -> ex.accessDeniedHandler((request, response, negado) -> {
-                if (SecurityContextHolder.getContext().getAuthentication() != null
-                        && SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof OperadorSesion o && !o.lista()) {
+                var sesion = SecurityContextHolder.getContext().getAuthentication();
+                if (sesion != null && sesion.getPrincipal() instanceof OperadorSesion o && !o.lista()) {
                     RespuestasSesion.redirigir(request, response, o.baseDeLlave());
                 } else {
                     response.sendError(403);

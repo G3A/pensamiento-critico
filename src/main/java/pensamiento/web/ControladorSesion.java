@@ -16,7 +16,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import pensamiento.nucleo.Familia;
@@ -88,7 +87,13 @@ public class ControladorSesion {
     }
 
     /** El rechazo de un intento (reenviado por RespuestasSesion): la entrada de nuevo, con el error, el estado y el nombre. */
-    @RequestMapping(RespuestasSesion.RUTA_RECHAZO)
+    @org.springframework.web.bind.annotation.PostMapping(RespuestasSesion.RUTA_RECHAZO)
+    public String rechazoDeUnIntento(HttpServletRequest request, HttpServletResponse response, Model modelo) {
+        return rechazo(request, response, modelo);
+    }
+
+    /** El reenvío de una sesión cerrada desde afuera llega por GET (la petición original era una navegación). */
+    @GetMapping(RespuestasSesion.RUTA_RECHAZO)
     public String rechazo(HttpServletRequest request, HttpServletResponse response, Model modelo) {
         String ruta = RutasReservadas.deInstitucion(request.getParameter("institucion")).or(() -> RespuestasSesion.rutaRecordada(request)).orElse("");
         if (ruta.isEmpty() || institucion(ruta).isEmpty()) {

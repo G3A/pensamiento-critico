@@ -171,8 +171,8 @@ public class ControladorUsuarios {
         return "administrador".equals(rol) ? Usuario.RolGlobal.ADMINISTRADOR : Usuario.RolGlobal.PERSONA;
     }
 
-    private static String textoDeAviso(String clave) {
-        return switch (clave) {
+    private static String textoDeAviso(String motivo) {
+        return switch (motivo) {
             case "desactivada" -> "La cuenta quedó desactivada y sus sesiones se cerraron.";
             case "reactivada" -> "La cuenta quedó activa otra vez.";
             case "espera" -> "La persona ya puede volver a intentar entrar.";

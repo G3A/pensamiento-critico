@@ -31,11 +31,11 @@ public final class PoliticaDeContrasenas {
     /** Con la lista vendorizada del classpath. */
     public static PoliticaDeContrasenas conListaVendorizada() {
         Set<String> comunes = new HashSet<>();
-        try (InputStream entrada = PoliticaDeContrasenas.class.getResourceAsStream("/seguridad/contrasenas-comunes.txt")) {
-            if (entrada == null) {
-                throw new IllegalStateException("Falta seguridad/contrasenas-comunes.txt en el classpath");
-            }
-            BufferedReader lector = new BufferedReader(new InputStreamReader(entrada, StandardCharsets.UTF_8));
+        InputStream entrada = PoliticaDeContrasenas.class.getResourceAsStream("/seguridad/contrasenas-comunes.txt");
+        if (entrada == null) {
+            throw new IllegalStateException("Falta seguridad/contrasenas-comunes.txt en el classpath");
+        }
+        try (BufferedReader lector = new BufferedReader(new InputStreamReader(entrada, StandardCharsets.UTF_8))) {
             for (String linea = lector.readLine(); linea != null; linea = lector.readLine()) {
                 if (!linea.isBlank() && !linea.startsWith("#")) {
                     comunes.add(linea.strip());
