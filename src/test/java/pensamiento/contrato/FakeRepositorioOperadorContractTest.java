@@ -36,7 +36,7 @@ class FakeRepositorioOperadorContractTest extends RepositorioOperadorContract {
 
     @Override
     protected void agregarCuenta(UUID institucion) {
-        usuarios.guardar(new Usuario(UUID.randomUUID(), institucion, "administrador", "h", Usuario.RolGlobal.ADMINISTRADOR, true));
+        usuarios.crear(Usuario.nueva(UUID.randomUUID(), institucion, "administrador", Usuario.RolGlobal.ADMINISTRADOR));
     }
 
     @Override

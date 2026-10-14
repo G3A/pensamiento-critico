@@ -31,6 +31,17 @@ public class RepositorioInstitucionesJdbc implements RepositorioInstituciones {
     }
 
     @Override
+    public Optional<String> quienDaCuentas(UUID institucion) {
+        return jdbc.sql("SELECT t FROM institucion_quien_da_cuentas(:i) AS t WHERE t IS NOT NULL").param("i", institucion).query(String.class).optional();
+    }
+
+    @Override
+    public boolean cambiarQuienDaCuentas(UUID institucion, String texto) {
+        return jdbc.sql("SELECT r FROM institucion_cambiar_quien_da_cuentas(:i, :t) AS r WHERE r IS NOT NULL")
+                .param("i", institucion).param("t", texto).query(Boolean.class).optional().orElse(false);
+    }
+
+    @Override
     public Optional<Institucion> porId(UUID id) {
         return jdbc.sql("SELECT id, nombre, ruta, estado FROM institucion WHERE id = :id").param("id", id)
                 .query((rs, i) -> new Institucion(rs.getObject("id", UUID.class), rs.getString("nombre"), rs.getString("ruta"),

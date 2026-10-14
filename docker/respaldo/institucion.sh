@@ -64,6 +64,11 @@ TABLAS=(
   "verificacion|institucion_id = '$id'"
   "intento_dojo|institucion_id = '$id'"
   "invitacion|institucion_id = '$id'"
+  "codigo_cuenta|institucion_id = '$id'"
+  "sesion_aula|institucion_id = '$id'"
+  "intento_acceso|institucion_id = '$id'"
+  "llave_acceso|institucion_id = '$id'"
+  "codigo_recuperacion|institucion_id = '$id'"
 )
 
 fecha="$(date +%F)"
@@ -119,7 +124,12 @@ DELETE FROM configuracion_usuario WHERE institucion_id = '$id';
 DELETE FROM competencia WHERE institucion_id = '$id';
 DELETE FROM intento_dojo WHERE institucion_id = '$id';
 DELETE FROM auditoria WHERE institucion_id = '$id';
+DELETE FROM sesion_aula WHERE institucion_id = '$id';
 DELETE FROM grupo WHERE institucion_id = '$id';
+DELETE FROM codigo_cuenta WHERE institucion_id = '$id';
+DELETE FROM intento_acceso WHERE institucion_id = '$id';
+DELETE FROM llave_acceso WHERE institucion_id = '$id';
+DELETE FROM codigo_recuperacion WHERE institucion_id = '$id';
 DELETE FROM usuario WHERE institucion_id = '$id';
 DELETE FROM invitacion WHERE institucion_id = '$id';
 DELETE FROM institucion WHERE id = '$id';

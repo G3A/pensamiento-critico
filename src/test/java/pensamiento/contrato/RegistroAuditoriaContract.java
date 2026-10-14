@@ -50,6 +50,21 @@ public abstract class RegistroAuditoriaContract {
     }
 
     @Test
+    void las_acciones_de_cuentas_guardan_su_detalle() {
+        Personas p = personas();
+        RegistroAuditoria sut = comoUsuario(p.usuarioA());
+        Instant cuando = Instant.parse("2026-10-14T15:00:00Z");
+        sut.registrar(new RegistroAuditoria.Evento(Optional.of(p.usuarioA()), p.institucion(), RegistroAuditoria.Accion.FALLO_ENTRAR,
+                "usuario", Optional.of(p.usuarioA()), cuando, Optional.of("ana maria")));
+        sut.registrar(new RegistroAuditoria.Evento(Optional.of(p.usuarioA()), p.institucion(), RegistroAuditoria.Accion.CAMBIAR_CLAVE,
+                "usuario", Optional.of(p.usuarioA()), cuando.plusSeconds(1)));
+
+        assertThat(sut.deUsuario(p.usuarioA())).extracting(RegistroAuditoria.Evento::accion, RegistroAuditoria.Evento::detalle)
+                .containsSubsequence(org.assertj.core.groups.Tuple.tuple(RegistroAuditoria.Accion.CAMBIAR_CLAVE, Optional.empty()),
+                        org.assertj.core.groups.Tuple.tuple(RegistroAuditoria.Accion.FALLO_ENTRAR, Optional.of("ana maria")));
+    }
+
+    @Test
     void un_evento_sin_usuario_se_acepta() {
         Personas p = personas();
         RegistroAuditoria.Evento sistema = new RegistroAuditoria.Evento(Optional.empty(), p.institucion(), RegistroAuditoria.Accion.CREAR,

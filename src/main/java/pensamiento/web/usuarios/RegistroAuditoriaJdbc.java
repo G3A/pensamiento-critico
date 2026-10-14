@@ -25,8 +25,8 @@ public class RegistroAuditoriaJdbc implements RegistroAuditoria {
     @Override
     public void registrar(Evento e) {
         jdbc.sql("""
-                INSERT INTO auditoria (usuario_id, institucion_id, accion, objeto_tipo, objeto_id, fecha)
-                VALUES (:usuario, :institucion, :accion, :tipo, :objeto, :fecha)
+                INSERT INTO auditoria (usuario_id, institucion_id, accion, objeto_tipo, objeto_id, fecha, detalle)
+                VALUES (:usuario, :institucion, :accion, :tipo, :objeto, :fecha, :detalle)
                 """)
                 .param("usuario", e.usuarioId().orElse(null))
                 .param("institucion", e.institucionId())
@@ -34,13 +34,14 @@ public class RegistroAuditoriaJdbc implements RegistroAuditoria {
                 .param("tipo", e.objetoTipo())
                 .param("objeto", e.objetoId().orElse(null))
                 .param("fecha", Timestamp.from(e.fecha()))
+                .param("detalle", e.detalle().orElse(null))
                 .update();
     }
 
     @Override
     public List<Evento> deUsuario(UUID usuarioId) {
         return jdbc.sql("""
-                SELECT usuario_id, institucion_id, accion, objeto_tipo, objeto_id, fecha
+                SELECT usuario_id, institucion_id, accion, objeto_tipo, objeto_id, fecha, detalle
                 FROM auditoria WHERE usuario_id = :usuario ORDER BY fecha DESC, id DESC
                 """)
                 .param("usuario", usuarioId)
@@ -50,7 +51,8 @@ public class RegistroAuditoriaJdbc implements RegistroAuditoria {
                         Accion.valueOf(rs.getString("accion").toUpperCase()),
                         rs.getString("objeto_tipo"),
                         Optional.ofNullable(rs.getObject("objeto_id", UUID.class)),
-                        rs.getTimestamp("fecha").toInstant()))
+                        rs.getTimestamp("fecha").toInstant(),
+                        Optional.ofNullable(rs.getString("detalle"))))
                 .list();
     }
 }

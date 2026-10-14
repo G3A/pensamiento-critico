@@ -20,7 +20,7 @@ import pensamiento.web.seguridad.RutasReservadas;
 import pensamiento.web.usuarios.ServicioUsuarios;
 
 /**
- * /<ruta>/invitacion: quien recibió la invitación del operador escribe el código, su nombre y su PIN, y queda como primer
+ * /<ruta>/invitacion: quien recibió la invitación del operador escribe el código, su nombre y su contraseña, y queda como primer
  * administrador de la institución. Un código que no sirve (mal escrito, usado, caducado o de una institución que ya tiene
  * cuentas) responde 410; una ruta que no existe o está suspendida, 404 sin cuerpo.
  */
@@ -54,7 +54,8 @@ public class ControladorInvitacion {
 
     @PostMapping(RUTA)
     public String canjear(@PathVariable String ruta, @RequestParam(defaultValue = "") String codigo,
-                          @RequestParam(defaultValue = "") String nombre, @RequestParam(defaultValue = "") String pin,
+                          @RequestParam(defaultValue = "") String nombre, @RequestParam(defaultValue = "") String contrasena,
+                          @RequestParam(defaultValue = "") String repetida,
                           HttpServletRequest request, HttpServletResponse response, Model modelo) {
         Optional<UUID> institucion = institucion(ruta);
         if (institucion.isEmpty()) {
@@ -63,7 +64,10 @@ public class ControladorInvitacion {
         }
         UUID id = institucion.get();
         try {
-            ContextoRls.conInstitucion(id, () -> tx.execute(e -> servicio.canjear(id, codigo, nombre, pin)));
+            if (!contrasena.equals(repetida)) {
+                throw new ServicioUsuarios.DatosInvalidos("Las dos contraseñas no coinciden.");
+            }
+            ContextoRls.conInstitucion(id, () -> tx.execute(e -> servicio.canjear(id, codigo, nombre, contrasena)));
             return "redirect:/" + ruta + "?bienvenida";
         } catch (ServicioOperador.InvitacionNoValida e) {
             response.setStatus(HttpServletResponse.SC_GONE);

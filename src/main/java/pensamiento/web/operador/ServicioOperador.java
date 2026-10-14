@@ -13,11 +13,13 @@ import pensamiento.nucleo.puertos.Reloj;
 import pensamiento.nucleo.puertos.RepositorioInstituciones;
 import pensamiento.nucleo.puertos.RepositorioOperador;
 import pensamiento.web.seguridad.RutasReservadas;
+import pensamiento.web.usuarios.CodigoDeUnUso;
 import pensamiento.web.usuarios.ServicioUsuarios;
 
 /**
  * Operador del servicio (hito 8): crea instituciones, las suspende o reactiva e invita a su primer administrador con un
- * código de un solo uso que caduca a los 7 días. El canje crea la cuenta administrador con un PIN, solo si la institución
+ * código de un solo uso que caduca a los 7 días. El canje crea la cuenta administrador con una contraseña de 12 caracteres
+ * o más (hito 9), solo si la institución
  * todavía no tiene cuentas: así una invitación no sirve para meterse en una institución que ya funciona.
  */
 public class ServicioOperador {
@@ -42,7 +44,7 @@ public class ServicioOperador {
     /** Lo que ve el operador una sola vez al invitar: el código en claro no se guarda. */
     public record Invitacion(String codigo, Instant caducaEn) {
         public String legible() {
-            return CodigoDeInvitacion.legible(codigo);
+            return CodigoDeUnUso.legible(codigo);
         }
     }
 
@@ -51,10 +53,10 @@ public class ServicioOperador {
     private final ServicioUsuarios usuarios;
     private final PasswordEncoder codificador;
     private final Reloj reloj;
-    private final CodigoDeInvitacion codigos;
+    private final CodigoDeUnUso codigos;
 
     public ServicioOperador(RepositorioOperador operador, RepositorioInstituciones instituciones, ServicioUsuarios usuarios,
-                            PasswordEncoder codificador, Reloj reloj, CodigoDeInvitacion codigos) {
+                            PasswordEncoder codificador, Reloj reloj, CodigoDeUnUso codigos) {
         this.operador = operador;
         this.instituciones = instituciones;
         this.usuarios = usuarios;
@@ -114,9 +116,9 @@ public class ServicioOperador {
      * Canjea la invitación de la institución de esa ruta y crea su primer administrador. Corre dentro de una transacción con
      * la institución fijada: si algo falla después de marcar el código como usado, todo se deshace.
      */
-    public Usuario canjear(UUID institucion, String codigoEscrito, String nombre, String pin) {
-        String nombreLimpio = ServicioUsuarios.validar(nombre, pin);
-        String codigo = CodigoDeInvitacion.normalizar(codigoEscrito);
+    public Usuario canjear(UUID institucion, String codigoEscrito, String nombre, String contrasena) {
+        usuarios.validarPrimerAdministrador(nombre, contrasena);
+        String codigo = CodigoDeUnUso.normalizar(codigoEscrito);
         if (codigo.isEmpty()) {
             throw new InvitacionNoValida();
         }
@@ -126,7 +128,7 @@ public class ServicioOperador {
         if (!operador.canjear(vigente.id())) {
             throw new InvitacionNoValida();
         }
-        return usuarios.primerAdministrador(institucion, nombreLimpio, pin).orElseThrow(InvitacionNoValida::new);
+        return usuarios.primerAdministrador(institucion, nombre, contrasena).orElseThrow(InvitacionNoValida::new);
     }
 
     /** El id de la institución activa con esa ruta (para la página de canje). */

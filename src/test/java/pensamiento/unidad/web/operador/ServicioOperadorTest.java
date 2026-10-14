@@ -19,9 +19,13 @@ import pensamiento.testutil.fakes.FakeReloj;
 import pensamiento.testutil.fakes.FakeRepositorioInstituciones;
 import pensamiento.testutil.fakes.FakeRepositorioOperador;
 import pensamiento.testutil.fakes.FakeRepositorioUsuarios;
-import pensamiento.web.operador.CodigoDeInvitacion;
+import pensamiento.web.usuarios.CodigoDeUnUso;
 import pensamiento.web.operador.ServicioOperador;
+import pensamiento.web.usuarios.PoliticaDeContrasenas;
 import pensamiento.web.usuarios.ServicioUsuarios;
+import pensamiento.web.seguridad.LimiteDeIntentos;
+import pensamiento.testutil.TransaccionesSinBase;
+import pensamiento.testutil.fakes.FakeRegistroIntentos;
 
 /** Collaboration test del operador: crear, suspender, invitar y canjear la invitación del primer administrador (hito 8). */
 class ServicioOperadorTest {
@@ -34,8 +38,11 @@ class ServicioOperadorTest {
     /** Azar fijo: el código sale con los índices 7, 8, 9… del alfabeto ("789ABCDE"), luego "FGHJKMNP". */
     private final AtomicInteger siguiente = new AtomicInteger(7);
     private final ServicioOperador servicio = new ServicioOperador(operador, instituciones,
-            new ServicioUsuarios(usuarios, new FakeRegistroAuditoria(), argon2, reloj), argon2, reloj,
-            new CodigoDeInvitacion(n -> siguiente.getAndIncrement() % n));
+            new ServicioUsuarios(usuarios, new FakeRegistroAuditoria(), argon2, reloj, new TransaccionesSinBase(),
+                    new PoliticaDeContrasenas(java.util.Set.of()), CodigoDeUnUso.aleatorio(), id -> { },
+                    new LimiteDeIntentos(new FakeRegistroIntentos(), reloj, new LimiteDeIntentos.Tope(300, Duration.ofMinutes(10)),
+                            new LimiteDeIntentos.Tope(1000, Duration.ofMinutes(10)))), argon2, reloj,
+            new CodigoDeUnUso(n -> siguiente.getAndIncrement() % n));
 
     private UUID yo() {
         servicio.crearOperadorSiNoHay("una clave larga del despliegue");
@@ -89,12 +96,12 @@ class ServicioOperadorTest {
         UUID id = servicio.crearInstitucion(yo, "Colegio", "colegio");
         servicio.invitar(yo, id);
 
-        Usuario rectora = servicio.canjear(id, "789a bcde", "Rectora Peña", "246810");
+        Usuario rectora = servicio.canjear(id, "789a bcde", "Rectora Peña", "la rectora riega las matas");
         assertThat(rectora.esAdministrador()).isTrue();
         assertThat(rectora.institucionId()).isEqualTo(id);
-        assertThat(argon2.matches("246810", rectora.pinHash())).isTrue();
+        assertThat(argon2.matches("la rectora riega las matas", rectora.claveHash())).isTrue();
         assertThat(usuarios.contar(id)).isEqualTo(1);
-        assertThatThrownBy(() -> servicio.canjear(id, "789A-BCDE", "Otra persona", "1357")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
+        assertThatThrownBy(() -> servicio.canjear(id, "789A-BCDE", "Otra persona", "clave larga 1357")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
         assertThat(operador.auditoria(10)).extracting(RepositorioOperador.Evento::accion)
                 .containsExactly(RepositorioOperador.Accion.CANJEAR_INVITACION, RepositorioOperador.Accion.INVITAR, RepositorioOperador.Accion.CREAR_INSTITUCION);
     }
@@ -105,11 +112,11 @@ class ServicioOperadorTest {
         UUID norte = servicio.crearInstitucion(yo, "Norte", "norte");
         UUID sur = servicio.crearInstitucion(yo, "Sur", "sur");
         servicio.invitar(yo, norte);
-        assertThatThrownBy(() -> servicio.canjear(sur, "789ABCDE", "Intrusa", "1357")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
-        assertThatThrownBy(() -> servicio.canjear(norte, "789ABCDF", "Intrusa", "1357")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
-        assertThatThrownBy(() -> servicio.canjear(norte, "no-es-un-codigo", "Intrusa", "1357")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
+        assertThatThrownBy(() -> servicio.canjear(sur, "789ABCDE", "Intrusa", "clave larga 1357")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
+        assertThatThrownBy(() -> servicio.canjear(norte, "789ABCDF", "Intrusa", "clave larga 1357")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
+        assertThatThrownBy(() -> servicio.canjear(norte, "no-es-un-codigo", "Intrusa", "clave larga 1357")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
         reloj.avanzar(Duration.ofDays(7));
-        assertThatThrownBy(() -> servicio.canjear(norte, "789ABCDE", "Tarde", "1357")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
+        assertThatThrownBy(() -> servicio.canjear(norte, "789ABCDE", "Tarde", "clave larga 1357")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
         assertThat(usuarios.contar(norte) + usuarios.contar(sur)).isZero();
     }
 
@@ -120,18 +127,18 @@ class ServicioOperadorTest {
         servicio.invitar(yo, id);
         ServicioOperador.Invitacion segunda = servicio.invitar(yo, id);
         assertThat(segunda.codigo()).isEqualTo("FGHJKMNP");
-        assertThatThrownBy(() -> servicio.canjear(id, "789ABCDE", "Primera", "1357")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
-        assertThat(servicio.canjear(id, "fghj-kmnp", "Segunda", "1357").nombre()).isEqualTo("Segunda");
+        assertThatThrownBy(() -> servicio.canjear(id, "789ABCDE", "Primera", "clave larga 1357")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
+        assertThat(servicio.canjear(id, "fghj-kmnp", "Segunda", "clave larga 1357").nombre()).isEqualTo("Segunda");
     }
 
     @Test
-    void un_nombre_o_pin_invalido_no_gasta_la_invitacion() {
+    void un_nombre_o_una_contrasena_invalida_no_gasta_la_invitacion() {
         UUID yo = yo();
         UUID id = servicio.crearInstitucion(yo, "Colegio", "colegio");
         servicio.invitar(yo, id);
-        assertThatThrownBy(() -> servicio.canjear(id, "789ABCDE", "Rectora", "12")).isInstanceOf(ServicioUsuarios.DatosInvalidos.class);
+        assertThatThrownBy(() -> servicio.canjear(id, "789ABCDE", "Rectora", "corta")).isInstanceOf(ServicioUsuarios.DatosInvalidos.class);
         assertThat(operador.vigentes(id)).hasSize(1);
-        assertThat(servicio.canjear(id, "789ABCDE", "Rectora", "1234").esAdministrador()).isTrue();
+        assertThat(servicio.canjear(id, "789ABCDE", "Rectora", "clave larga 1234").esAdministrador()).isTrue();
     }
 
     @Test
@@ -141,17 +148,17 @@ class ServicioOperadorTest {
         servicio.invitar(yo, id);
         servicio.suspender(yo, id);
         assertThat(instituciones.activaPorRuta("colegio")).isEmpty();
-        assertThatThrownBy(() -> servicio.canjear(id, "789ABCDE", "Rectora", "1234")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
+        assertThatThrownBy(() -> servicio.canjear(id, "789ABCDE", "Rectora", "clave larga 1234")).isInstanceOf(ServicioOperador.InvitacionNoValida.class);
         servicio.reactivar(yo, id);
         assertThat(instituciones.activaPorRuta("colegio")).contains(id);
     }
 
     @Test
     void el_codigo_normaliza_minusculas_guiones_y_letras_que_se_confunden() {
-        assertThat(CodigoDeInvitacion.normalizar(" 7kq2-m9xd ")).isEqualTo("7KQ2M9XD");
-        assertThat(CodigoDeInvitacion.normalizar("OIL0-ABCD")).isEqualTo("0110ABCD");
-        assertThat(CodigoDeInvitacion.normalizar("7KQ2-M9XU")).as("la U no está en el alfabeto").isEmpty();
-        assertThat(CodigoDeInvitacion.normalizar("7KQ2")).isEmpty();
-        assertThat(CodigoDeInvitacion.normalizar(null)).isEmpty();
+        assertThat(CodigoDeUnUso.normalizar(" 7kq2-m9xd ")).isEqualTo("7KQ2M9XD");
+        assertThat(CodigoDeUnUso.normalizar("OIL0-ABCD")).isEqualTo("0110ABCD");
+        assertThat(CodigoDeUnUso.normalizar("7KQ2-M9XU")).as("la U no está en el alfabeto").isEmpty();
+        assertThat(CodigoDeUnUso.normalizar("7KQ2")).isEmpty();
+        assertThat(CodigoDeUnUso.normalizar(null)).isEmpty();
     }
 }
