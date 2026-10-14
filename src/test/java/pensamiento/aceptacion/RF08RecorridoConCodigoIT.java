@@ -59,6 +59,9 @@ class RF08RecorridoConCodigoIT {
             pagina.getByLabel("Tu contraseña").press("Enter");
             pagina.waitForURL(base + "/");
             pagina.locator("#empieza-con-un-ejemplo").click();
+            pagina.waitForURL("**/tecnicas/T28**");
+            pagina.waitForLoadState(com.microsoft.playwright.options.LoadState.LOAD);
+            pagina.waitForFunction("() => window.htmx !== undefined");   // con la red lenta, evaluar antes de htmx recarga la página
             pagina.locator("#form-T28").waitFor();
             pagina.locator("#form-T28 button[data-accion=evaluar]").click();
             pagina.locator("#resultado-T28 [data-patron=V03a] .titular").waitFor();
