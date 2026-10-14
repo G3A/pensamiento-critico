@@ -25,7 +25,7 @@ class RF01LevantarAplicacionIT {
         assertThat(salud.cuerpo()).as("PostgreSQL responde").contains("\"db\":{\"details\"").contains("\"database\":\"PostgreSQL\"");
         assertThat(salud.cuerpo()).as("Ollama lista los dos modelos").contains("\"ia\":{\"details\"").contains("qwen3").contains("bge-m3");
 
-        Instalacion.entraComo("administrador", pensamiento.testutil.Entorno.pinAdministrador()).get("/catalogo");
+        Instalacion.administrador().get("/catalogo");   // con su llave de acceso (hito 9)
         ClienteApp.Respuesta peticiones = operador.get("/actuator/metrics/http.server.requests");
         assertThat(peticiones.estado()).isEqualTo(200);
         assertThat(peticiones.cuerpo()).as("la institución es una etiqueta").contains("\"tag\":\"institucion\"").contains("\"" + Instalacion.RUTA + "\"");
@@ -34,12 +34,15 @@ class RF01LevantarAplicacionIT {
     }
 
     @Test
-    void sin_sesion_la_entrada_de_la_institucion_pregunta_quien_eres_y_el_resto_redirige_a_ella() {
+    void sin_sesion_la_entrada_de_la_institucion_pide_nombre_y_contrasena_y_el_resto_redirige_a_ella() {
         Instalacion.sembrar();
         ClienteApp cliente = new ClienteApp();
         ClienteApp.Respuesta entrada = cliente.get("/" + Instalacion.RUTA);
         assertThat(entrada.estado()).isEqualTo(200);
-        assertThat(entrada.cuerpo()).contains("¿Quién eres?").contains("administrador");
+        assertThat(entrada.cuerpo()).contains("Tu nombre").contains("Tu contraseña").doesNotContain("administrador");
+        // Hito 9, innegociable 10: nada interno antes de entrar, ni el modelo ni un botón de menú sin menú.
+        assertThat(entrada.cuerpo().toLowerCase()).doesNotContain("qwen", "bge-m3", "ollama", ">menú<", "id=\"menu\"");
+        assertThat(cliente.get("/" + Instalacion.RUTA + "/sin-cuenta").cuerpo().toLowerCase()).doesNotContain("qwen", "bge-m3", "ollama");
 
         ClienteApp.Respuesta catalogo = cliente.get("/catalogo");
         assertThat(catalogo.estado()).isEqualTo(302);

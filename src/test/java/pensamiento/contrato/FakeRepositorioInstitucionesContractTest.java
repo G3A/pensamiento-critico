@@ -16,6 +16,11 @@ class FakeRepositorioInstitucionesContractTest extends RepositorioInstitucionesC
     }
 
     @Override
+    protected RepositorioInstituciones comoInstitucion(UUID institucion) {
+        return fake.comoInstitucion(institucion);
+    }
+
+    @Override
     protected UUID sembrar(String nombre, String ruta, Institucion.Estado estado) {
         return fake.agregar(new Institucion(UUID.randomUUID(), nombre, ruta, estado)).id();
     }

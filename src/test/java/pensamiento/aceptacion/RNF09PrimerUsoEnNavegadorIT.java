@@ -41,8 +41,9 @@ class RNF09PrimerUsoEnNavegadorIT {
             });
 
             pagina.navigate(base + "/" + Instalacion.RUTA);
-            pagina.getByLabel("Tu PIN").fill("2580");
-            pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(persona).setExact(true)).click();
+            pagina.getByLabel("Tu nombre").fill(persona);
+            pagina.getByLabel("Tu contraseña").fill(Instalacion.contrasenaDe("2580"));
+            pagina.getByLabel("Tu contraseña").press("Enter");   // Enter entra como quien escribió su nombre (RF-02a)
             pagina.waitForURL(base + "/");
 
             assertThat(pagina.locator(".intenciones a").allTextContents()).hasSize(6);
@@ -81,8 +82,9 @@ class RNF09PrimerUsoEnNavegadorIT {
                 }
             });
             pagina.navigate(base + "/" + Instalacion.RUTA);
-            pagina.getByLabel("Tu PIN").fill("1470");
-            pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(persona).setExact(true)).click();
+            pagina.getByLabel("Tu nombre").fill(persona);
+            pagina.getByLabel("Tu contraseña").fill(Instalacion.contrasenaDe("1470"));
+            pagina.getByLabel("Tu contraseña").press("Enter");   // Enter entra como quien escribió su nombre (RF-02a)
             pagina.waitForURL(base + "/");
 
             pagina.navigate(base + "/taller?ejemplo=sucursal");
@@ -129,8 +131,9 @@ class RNF09PrimerUsoEnNavegadorIT {
                 }
             });
             pagina.navigate(base + "/" + Instalacion.RUTA);
-            pagina.getByLabel("Tu PIN").fill("3690");
-            pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(persona).setExact(true)).click();
+            pagina.getByLabel("Tu nombre").fill(persona);
+            pagina.getByLabel("Tu contraseña").fill(Instalacion.contrasenaDe("3690"));
+            pagina.getByLabel("Tu contraseña").press("Enter");   // Enter entra como quien escribió su nombre (RF-02a)
             pagina.waitForURL(base + "/");
 
             pagina.navigate(base + "/tecnicas/T34?pestana=usar");

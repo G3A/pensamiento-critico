@@ -38,7 +38,7 @@ class AislamientoEntreInstitucionesHttpIT {
         ClienteApp.Respuesta otraRuta = deA.get("/" + rutaB);
         assertThat(otraRuta.estado()).as("la sesión de A pide la entrada de B").isEqualTo(403);
         assertThat(otraRuta.cuerpo()).isEmpty();
-        ClienteApp.Respuesta entrarEnB = deA.postFormulario("/sesion", Map.of("nombre", nombre, "pin", "2468", "institucion", rutaB, "volver", "/"));
+        ClienteApp.Respuesta entrarEnB = deA.postFormulario("/sesion", Map.of("nombre", nombre, "contrasena", Instalacion.contrasenaDe("2468"), "institucion", rutaB, "volver", "/"));
         assertThat(entrarEnB.estado()).as("la sesión de A intenta entrar en B").isEqualTo(403);
         assertThat(deA.get("/expedientes/" + expedienteDeA).estado()).as("A sigue en A").isEqualTo(200);
 
@@ -54,8 +54,9 @@ class AislamientoEntreInstitucionesHttpIT {
         Instalacion.personaLlamada(Instalacion.administradorDe(rutaB), nombre, "2468");
 
         ClienteApp intruso = new ClienteApp(rutaB);
-        ClienteApp.Respuesta r = intruso.entrar(nombre, "1357");
-        assertThat(r.cabecera("Location").orElse("")).endsWith("/" + rutaB + "?error");
+        ClienteApp.Respuesta r = intruso.entrar(nombre, Instalacion.contrasenaDe("1357"));
+        assertThat(r.estado()).isEqualTo(401);
+        assertThat(intruso.get("/").cuerpo()).doesNotContain("¿Qué quieres hacer hoy?");
     }
 
     @Test

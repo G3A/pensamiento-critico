@@ -45,8 +45,9 @@ class RNF09DojoYCambiosEnNavegadorIT {
                 }
             });
             pagina.navigate(base + "/" + Instalacion.RUTA);
-            pagina.getByLabel("Tu PIN").fill("8080");
-            pagina.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(persona).setExact(true)).click();
+            pagina.getByLabel("Tu nombre").fill(persona);
+            pagina.getByLabel("Tu contraseña").fill(Instalacion.contrasenaDe("8080"));
+            pagina.getByLabel("Tu contraseña").press("Enter");   // Enter entra como quien escribió su nombre (RF-02a)
             pagina.waitForURL(base + "/");
 
             // P19: el primer reto de falacias, respondido con el teclado.

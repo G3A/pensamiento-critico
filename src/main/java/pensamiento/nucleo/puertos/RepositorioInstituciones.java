@@ -16,4 +16,13 @@ public interface RepositorioInstituciones {
 
     /** La institución de la sesión actual (bajo RLS solo se ve la propia). */
     Optional<Institucion> porId(UUID id);
+
+    /** El texto por defecto de {@link #quienDaCuentas}. */
+    String QUIEN_DA_CUENTAS = "quien administra la app en tu institución";
+
+    /** A quién pedirle una cuenta en esa institución (RF-18, hito 9); se lee antes de entrar. Vacío si no está activa. */
+    Optional<String> quienDaCuentas(UUID institucion);
+
+    /** El administrador cambia ese texto, solo en su institución; false si no es la de su sesión. */
+    boolean cambiarQuienDaCuentas(UUID institucion, String texto);
 }

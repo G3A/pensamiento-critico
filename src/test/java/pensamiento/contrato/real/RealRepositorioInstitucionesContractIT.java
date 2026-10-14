@@ -47,6 +47,26 @@ class RealRepositorioInstitucionesContractIT extends RepositorioInstitucionesCon
             @Override public Optional<Institucion> porId(UUID id) {
                 return bd.comoInstitucion(id, () -> real.porId(id));
             }
+            @Override public Optional<String> quienDaCuentas(UUID i) {
+                return bd.sinContexto(() -> real.quienDaCuentas(i));
+            }
+            @Override public boolean cambiarQuienDaCuentas(UUID i, String t) {
+                return bd.sinContexto(() -> real.cambiarQuienDaCuentas(i, t));
+            }
+        };
+    }
+
+    @Override
+    protected RepositorioInstituciones comoInstitucion(UUID institucion) {
+        RepositorioInstitucionesJdbc real = new RepositorioInstitucionesJdbc(bd.jdbcApp());
+        RepositorioInstituciones sinSesion = crearSut();
+        return new RepositorioInstituciones() {
+            @Override public Optional<UUID> activaPorRuta(String ruta) { return sinSesion.activaPorRuta(ruta); }
+            @Override public Optional<Institucion> porId(UUID id) { return sinSesion.porId(id); }
+            @Override public Optional<String> quienDaCuentas(UUID i) { return sinSesion.quienDaCuentas(i); }
+            @Override public boolean cambiarQuienDaCuentas(UUID i, String t) {
+                return bd.comoInstitucion(institucion, () -> real.cambiarQuienDaCuentas(i, t));
+            }
         };
     }
 }

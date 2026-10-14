@@ -3,35 +3,50 @@ package pensamiento.web.seguridad;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 
 import gg.jte.TemplateEngine;
 import gg.jte.TemplateOutput;
 import gg.jte.output.StringOutput;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.stereotype.Component;
 
 /**
- * Cómo responde la sesión según quién pregunta. Para una petición htmx (sesión expirada en medio de un
- * formulario) devuelve el fragmento de bloqueo "¿Quién eres?" apuntado a #bloqueo: la página y el
- * borrador quedan intactos y, al entrar de nuevo, el usuario sigue donde estaba (RF-02).
- * Para una navegación normal, redirige a la entrada de la institución (/<ruta>) con la URL a la que volver.
- * La ruta sale de la cookie PENSAMIENTO_INSTITUCION, que la entrada deja al visitarla y que sobrevive a la sesión: es solo
- * una pista para volver a la misma pantalla de entrada, la institución siempre la resuelve el servidor (hito 8).
+ * Cómo responde la sesión según quién pregunta. Para una petición htmx (sesión expirada en medio de un formulario) devuelve
+ * el formulario de entrada como overlay apuntado a #bloqueo: la página y el borrador quedan intactos y solo la misma
+ * persona puede seguir (RF-02b). Para una navegación normal, redirige a la entrada de la institución (/<ruta>) con la URL
+ * a la que volver. La ruta sale de la cookie PENSAMIENTO_INSTITUCION, que la entrada deja al visitarla: es solo una pista
+ * para volver a la misma pantalla, la institución siempre la resuelve el servidor (hito 8).
+ *
+ * <p>Hito 9: un intento fallido responde 401 con la página renderizada, el nombre conservado y el eco «Probaste como …»;
+ * con espera, 429 con cuánto falta. Una sesión cerrada desde afuera (restablecer, desactivar) recibe 401.
  */
 @Component
 public class RespuestasSesion {
 
     public static final String EVENTO_CSRF = "csrf-renovado";
     public static final String COOKIE_INSTITUCION = "PENSAMIENTO_INSTITUCION";
+    /** La página de cada persona manda su id en esta cabecera (layout.jte); el overlay solo acepta a esa persona. */
+    public static final String CABECERA_PERSONA = "X-Persona";
+    /** Atributos con que el rechazo de la entrada se reenvía a /sesion/rechazo para pintarse con su estado. */
+    public static final String ATRIBUTO_ERROR = "entrada.error";
+    public static final String ATRIBUTO_ESTADO = "entrada.estado";
+    public static final String RUTA_RECHAZO = "/sesion/rechazo";
 
     private final TemplateEngine plantillas;
 
@@ -46,7 +61,7 @@ public class RespuestasSesion {
     public AuthenticationEntryPoint alNoEstarAutenticado() {
         return (request, response, excepcion) -> {
             if (esHtmx(request)) {
-                fragmentoDeBloqueo(request, response, HttpServletResponse.SC_UNAUTHORIZED, null);
+                overlay(request, response, HttpServletResponse.SC_UNAUTHORIZED, Optional.empty(), "");
             } else {
                 String volver = request.getRequestURI() + (request.getQueryString() == null ? "" : "?" + request.getQueryString());
                 Optional<String> ruta = rutaRecordada(request);
@@ -57,7 +72,8 @@ public class RespuestasSesion {
 
     public AuthenticationSuccessHandler alEntrar() {
         return (request, response, autenticacion) -> {
-            if (esHtmx(request)) {
+            Optional<UsuarioSesion> yo = autenticacion.getPrincipal() instanceof UsuarioSesion u ? Optional.of(u) : Optional.empty();
+            if (esHtmx(request) && yo.map(UsuarioSesion::lista).orElse(false)) {
                 // Vacía el overlay #bloqueo y entrega el token CSRF de la sesión nueva.
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setHeader("HX-Retarget", "#bloqueo");
@@ -65,29 +81,115 @@ public class RespuestasSesion {
                 response.setHeader("HX-Trigger", disparadorCsrf(request));
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write("");
+            } else if (yo.isPresent() && !yo.get().lista()) {
+                redirigir(request, response, yo.get().etapa().pantalla());
             } else {
-                response.sendRedirect(destinoSeguro(request.getParameter("volver")));
+                redirigir(request, response, destinoSeguro(request.getParameter("volver")));
             }
         };
     }
 
     public AuthenticationFailureHandler alFallar() {
         return (request, response, excepcion) -> {
+            int estado = excepcion instanceof ProveedorEntrada.DemasiadosIntentos ? 429 : HttpServletResponse.SC_UNAUTHORIZED;
+            String mensaje = mensaje(excepcion, request.getParameter("nombre"));
             if (esHtmx(request)) {
-                fragmentoDeBloqueo(request, response, HttpServletResponse.SC_UNAUTHORIZED, "Nombre o PIN incorrectos");
+                overlay(request, response, estado, Optional.of(mensaje), valor(request.getParameter("nombre")));
             } else {
-                response.sendRedirect(RutasReservadas.deInstitucion(request.getParameter(ProveedorEntrada.CAMPO_INSTITUCION))
-                        .map(r -> "/" + r + "?error").orElse("/"));
+                request.setAttribute(ATRIBUTO_ERROR, mensaje);
+                request.setAttribute(ATRIBUTO_ESTADO, estado);
+                try {
+                    request.getRequestDispatcher(RUTA_RECHAZO).forward(request, response);
+                } catch (ServletException e) {
+                    throw new IOException(e);
+                }
             }
         };
     }
 
-    private void fragmentoDeBloqueo(HttpServletRequest request, HttpServletResponse response, int estado, String error) throws IOException {
+    /** El texto del rechazo: genérico con eco de lo tecleado, sin decir si la cuenta existe. */
+    public static String mensaje(AuthenticationException excepcion, String nombre) {
+        if (excepcion instanceof ProveedorEntrada.DemasiadosIntentos espera) {
+            return "Hubo muchos intentos con ese nombre. Espera " + duracion(espera.espera()) + " y vuelve a probar. Si olvidaste tu "
+                    + "contraseña, pide un código para restablecerla a quien te dio la cuenta.";
+        }
+        if (excepcion instanceof ProveedorEntrada.OtraPersona) {
+            return "Esta página es de otra persona: solo ella puede seguir aquí. Para entrar con tu cuenta, abre la entrada en otra pestaña.";
+        }
+        String escrito = valor(nombre).strip();
+        return escrito.isEmpty() ? "Escribe tu nombre y tu contraseña."
+                : "Probaste como «" + (escrito.length() > 60 ? escrito.substring(0, 60) + "…" : escrito) + "». El nombre o la contraseña no coinciden.";
+    }
+
+    public static String duracion(Duration espera) {
+        long segundos = Math.max(1, espera.toSeconds() + (espera.toNanosPart() > 0 ? 1 : 0));
+        if (segundos < 60) {
+            return segundos + (segundos == 1 ? " segundo" : " segundos");
+        }
+        long minutos = (segundos + 59) / 60;
+        return minutos + (minutos == 1 ? " minuto" : " minutos");
+    }
+
+    /**
+     * Una sesión cerrada desde afuera (restablecer la contraseña, desactivar la cuenta) recibe 401: el overlay en htmx; si
+     * no, la entrada de su institución con el aviso.
+     */
+    public SessionInformationExpiredStrategy alCerrarseDesdeAfuera() {
+        return evento -> {
+            HttpServletRequest request = evento.getRequest();
+            HttpServletResponse response = evento.getResponse();
+            SecurityContextHolder.clearContext();
+            String aviso = "Tu sesión se cerró: cambiaron tu acceso. Entra de nuevo.";
+            if (esHtmx(request)) {
+                overlay(request, response, HttpServletResponse.SC_UNAUTHORIZED, Optional.of(aviso), "");
+                return;
+            }
+            request.setAttribute(ATRIBUTO_ERROR, aviso);
+            request.setAttribute(ATRIBUTO_ESTADO, HttpServletResponse.SC_UNAUTHORIZED);
+            request.getRequestDispatcher(RUTA_RECHAZO).forward(request, response);
+        };
+    }
+
+    /** Quien todavía no termina de entrar (elegir contraseña, llave de acceso) va a la pantalla de su etapa; los demás, 403. */
+    public AccessDeniedHandler alNoTenerPermiso() {
+        return (request, response, excepcion) -> {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getPrincipal() instanceof UsuarioSesion u && !u.lista()) {
+                redirigir(request, response, u.etapa().pantalla());
+                return;
+            }
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        };
+    }
+
+    /**
+     * Una petición htmx desde la página de otra persona (su cabecera X-Persona no es quien tiene la sesión ahora, por
+     * ejemplo porque otra persona entró en otra pestaña): no se procesa; recibe 401 con el overlay de esa página.
+     */
+    public void rechazarOtraPersona(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        overlay(request, response, HttpServletResponse.SC_UNAUTHORIZED, Optional.of(mensaje(new ProveedorEntrada.OtraPersona(), "")), "");
+    }
+
+    /** Con htmx una redirección 302 se seguiría sola dentro del fragmento: se responde 200 con HX-Redirect. */
+    public static void redirigir(HttpServletRequest request, HttpServletResponse response, String destino) throws IOException {
+        if (esHtmx(request)) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setHeader("HX-Redirect", destino);
+        } else {
+            response.sendRedirect(destino);
+        }
+    }
+
+    private void overlay(HttpServletRequest request, HttpServletResponse response, int estado, Optional<String> error, String nombre)
+            throws IOException {
         CsrfToken token = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         String valorToken = token == null ? "" : token.getToken();
+        String ruta = RutasReservadas.deInstitucion(request.getParameter(ProveedorEntrada.CAMPO_INSTITUCION)).or(() -> rutaRecordada(request)).orElse("");
+        Optional<String> persona = Optional.ofNullable(request.getParameter(ProveedorEntrada.CAMPO_PERSONA))
+                .or(() -> Optional.ofNullable(request.getHeader(CABECERA_PERSONA)))
+                .flatMap(ConfiguracionSeguridad::uuid).map(Object::toString);
         TemplateOutput salida = new StringOutput();
-        plantillas.render("fragmentos/bloqueo.jte", new ModeloBloqueo(valorToken, error, true,
-                RutasReservadas.deInstitucion(request.getParameter(ProveedorEntrada.CAMPO_INSTITUCION)).or(() -> rutaRecordada(request)).orElse("")), salida);
+        plantillas.render("fragmentos/bloqueo.jte", new ModeloEntrada(valorToken, ruta, "", nombre, error, Optional.empty(), true, persona), salida);
         response.setStatus(estado);
         response.setHeader("HX-Retarget", "#bloqueo");
         response.setHeader("HX-Reswap", "innerHTML");
@@ -100,6 +202,10 @@ public class RespuestasSesion {
         CsrfToken token = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         String valor = token == null ? "" : token.getToken();
         return "{\"" + EVENTO_CSRF + "\": {\"token\": \"" + valor + "\"}, \"sesion-renovada\": true}";
+    }
+
+    private static String valor(String texto) {
+        return texto == null ? "" : texto;
     }
 
     /** Solo rutas relativas al propio sitio: una letra o dígito tras la barra y sin esquema, barra doble ni caracteres de control. */
@@ -142,7 +248,12 @@ public class RespuestasSesion {
         response.addCookie(cookie);
     }
 
-    /** Modelo del fragmento de bloqueo: token CSRF, error opcional, si se muestra como overlay y la ruta de la institución. */
-    public record ModeloBloqueo(String csrf, String error, boolean overlay, String ruta) {
+    /**
+     * Modelo del formulario único de entrada (tag/entrar.jte), en la página y en el overlay: token CSRF, ruta de la
+     * institución, adónde volver, el nombre escrito (se conserva tras un error), el error con eco, un aviso, si es overlay y
+     * la persona dueña de la página (solo en el overlay).
+     */
+    public record ModeloEntrada(String csrf, String ruta, String volver, String nombre, Optional<String> error, Optional<String> aviso,
+                                boolean overlay, Optional<String> persona) {
     }
 }

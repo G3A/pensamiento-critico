@@ -63,6 +63,8 @@ class RealRepositorioOperadorContractIT extends RepositorioOperadorContract {
         return new RepositorioInstituciones() {
             @Override public Optional<UUID> activaPorRuta(String ruta) { return bd.sinContexto(() -> real.activaPorRuta(ruta)); }
             @Override public Optional<Institucion> porId(UUID id) { return bd.comoInstitucion(id, () -> real.porId(id)); }
+            @Override public Optional<String> quienDaCuentas(UUID id) { return bd.sinContexto(() -> real.quienDaCuentas(id)); }
+            @Override public boolean cambiarQuienDaCuentas(UUID id, String t) { return bd.comoInstitucion(id, () -> real.cambiarQuienDaCuentas(id, t)); }
         };
     }
 

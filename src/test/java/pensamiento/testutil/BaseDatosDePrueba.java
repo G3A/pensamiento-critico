@@ -75,7 +75,7 @@ public final class BaseDatosDePrueba {
     }
 
     public UUID crearUsuario(UUID institucion, String nombre) {
-        return jdbcAdmin().sql("INSERT INTO usuario (institucion_id, nombre, pin_hash, rol_global) VALUES (:i, :n, 'x', 'persona') RETURNING id")
+        return jdbcAdmin().sql("INSERT INTO usuario (institucion_id, nombre, rol_global) VALUES (:i, :n, 'persona') RETURNING id")
                 .param("i", institucion).param("n", nombre).query(UUID.class).single();
     }
 
@@ -100,6 +100,8 @@ public final class BaseDatosDePrueba {
         jdbc.sql("DELETE FROM documento WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM afirmacion WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM configuracion_usuario WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM codigo_cuenta WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM sesion_aula WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM usuario WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM institucion WHERE id = :i").param("i", institucion).update();
     }

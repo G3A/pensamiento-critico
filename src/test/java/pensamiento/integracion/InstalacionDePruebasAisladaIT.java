@@ -25,6 +25,7 @@ class InstalacionDePruebasAisladaIT {
     void los_secretos_reales_del_repositorio_no_son_visibles() {
         assertThat(Path.of("secrets", "db_password.txt")).doesNotExist();
         assertThat(Path.of("secrets", "admin_pin.txt")).doesNotExist();
+        assertThat(Path.of("secrets", "operador_clave.txt")).doesNotExist();
     }
 
     @Test

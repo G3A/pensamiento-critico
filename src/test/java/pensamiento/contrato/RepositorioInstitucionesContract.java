@@ -16,6 +16,9 @@ public abstract class RepositorioInstitucionesContract {
 
     protected abstract RepositorioInstituciones crearSut();
 
+    /** El mismo repositorio con la institución de la sesión fijada (como el administrador de esa institución). */
+    protected abstract RepositorioInstituciones comoInstitucion(UUID institucion);
+
     /** Siembra una institución con esa ruta y estado (ruta única por corrida) y devuelve su id. */
     protected abstract UUID sembrar(String nombre, String ruta, Institucion.Estado estado);
 
@@ -53,5 +56,23 @@ public abstract class RepositorioInstitucionesContract {
         String ruta = rutaNueva("liceo");
         UUID id = sembrar("Liceo Central", ruta, Institucion.Estado.ACTIVA);
         assertThat(crearSut().porId(id)).contains(new Institucion(id, "Liceo Central", ruta, Institucion.Estado.ACTIVA));
+    }
+
+    @Test
+    void quien_da_cuentas_tiene_un_texto_por_defecto_y_lo_cambia_solo_su_institucion() {
+        UUID norte = sembrar("Colegio Norte", rutaNueva("norte"), Institucion.Estado.ACTIVA);
+        UUID sur = sembrar("Colegio Sur", rutaNueva("sur"), Institucion.Estado.ACTIVA);
+        assertThat(crearSut().quienDaCuentas(norte)).contains("quien administra la app en tu institución");
+        assertThat(comoInstitucion(norte).cambiarQuienDaCuentas(norte, "tu profe")).isTrue();
+        assertThat(comoInstitucion(sur).cambiarQuienDaCuentas(norte, "alguien de afuera")).isFalse();
+        assertThat(crearSut().quienDaCuentas(norte)).contains("tu profe");
+        assertThat(crearSut().quienDaCuentas(sur)).contains("quien administra la app en tu institución");
+    }
+
+    @Test
+    void una_institucion_suspendida_o_inexistente_no_dice_a_quien_pedir_cuenta() {
+        UUID cerrada = sembrar("Colegio Cerrado", rutaNueva("cerrado"), Institucion.Estado.SUSPENDIDA);
+        assertThat(crearSut().quienDaCuentas(cerrada)).isEmpty();
+        assertThat(crearSut().quienDaCuentas(UUID.randomUUID())).isEmpty();
     }
 }

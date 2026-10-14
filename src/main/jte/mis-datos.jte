@@ -6,6 +6,13 @@
   <section class="mis-datos" aria-labelledby="mis-datos-titulo">
     <h1 id="mis-datos-titulo">Mis datos</h1>
     <p class="detalle">Tus configuraciones, expedientes y ejecuciones son solo tuyos. El catálogo y los ejemplos son de todos.</p>
+    <p class="detalle">Asistente de IA:
+      @if(pagina.modoPlantillas())
+        <span class="chip">sin asistente de IA</span> todas las técnicas funcionan igual; solo no aparece «Pedir propuestas al modelo».
+      @else
+        <span class="chip chip-ok">ollama</span> <span class="chip" translate="no">${pagina.modelos()}</span>
+      @endif
+    </p>
     @if(!mensaje.isEmpty())
       <p class="tarjeta" role="status"><span class="chip chip-ok">listo</span> ${mensaje}</p>
     @endif

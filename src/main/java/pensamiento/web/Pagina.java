@@ -18,13 +18,24 @@ public record Pagina(String titulo, Optional<UsuarioSesion> usuario, EstadoIa ia
         return !ia.disponible();
     }
 
-    /** Los modelos listos, para la cabecera: "qwen3:4b · bge-m3". */
+    /** Los modelos listos, para el chip de Mis datos (hito 9: ya no van en la cabecera): "qwen3:4b · bge-m3". */
     public String modelos() {
         return String.join(" · ", ia.modelos().stream().map(m -> m.replace(":latest", "")).toList());
     }
 
     public boolean esAdministrador() {
-        return usuario.map(UsuarioSesion::esAdministrador).orElse(false);
+        return conMenu() && usuario.map(UsuarioSesion::esAdministrador).orElse(false);
+    }
+
+    /** Con sesión y ya dentro (no en la etapa de elegir contraseña ni de la llave): menú, nombre y "Salir". */
+    public boolean conMenu() {
+        return usuario.map(UsuarioSesion::lista).orElse(false);
+    }
+
+    /** Las cabeceras de htmx: el token CSRF y, con sesión, la persona dueña de la página (RF-02b). */
+    public String cabecerasHtmx() {
+        return usuario.map(u -> "{\"X-CSRF-TOKEN\": \"" + csrf + "\", \"X-Persona\": \"" + u.id() + "\"}")
+                .orElse("{\"X-CSRF-TOKEN\": \"" + csrf + "\"}");
     }
 
     @Component

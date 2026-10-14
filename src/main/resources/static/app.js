@@ -1,6 +1,6 @@
 /* app.js: menos de 100 líneas. Sin inline ni eval (CSP script-src 'self').
    1) componentes Alpine (build CSP), 2) token CSRF renovado por el servidor, 3) progreso de subida,
-   4) scroll al resultado en celular, 5) flechas en las pestañas, 6) espejo del campo entero,
+   4) entrada plegada y scroll al resultado, 5) flechas en las pestañas, 6) espejo del campo entero,
    7) resultado anterior atenuado y marcas del ejemplo que se vuelven a pedir.
    El swap del 422 y del 401 lo configura <meta name="htmx-config">. */
 (function () {
@@ -8,14 +8,6 @@
 
   // 1) Componentes Alpine registrados por nombre: el build CSP no evalúa expresiones.
   document.addEventListener('alpine:init', function () {
-    window.Alpine.data('menu', function () {
-      return {
-        abierto: false,
-        get abiertoTexto() { return this.abierto ? 'true' : 'false'; },
-        get claseMenu() { return this.abierto ? 'menu abierto' : 'menu'; },
-        alternar: function () { this.abierto = !this.abierto; }
-      };
-    });
     // Mapa (V01): un clic en un nodo del SVG o en la lista lo resalta en ambos; la lista se recorre con teclado.
     window.Alpine.data('mapa', function () {
       return {
@@ -32,11 +24,13 @@
     });
   });
 
-  // 2) Cuando la sesión se renueva (bloqueo por inactividad), el servidor manda el token nuevo.
+  // 2) Cuando la sesión se renueva (bloqueo por inactividad), el servidor manda el token nuevo; X-Persona se conserva.
   document.body.addEventListener('csrf-renovado', function (evento) {
     var token = evento.detail && evento.detail.token;
     if (!token) { return; }
-    document.body.setAttribute('hx-headers', JSON.stringify({ 'X-CSRF-TOKEN': token }));
+    var cabeceras = JSON.parse(document.body.getAttribute('hx-headers') || '{}');
+    cabeceras['X-CSRF-TOKEN'] = token;
+    document.body.setAttribute('hx-headers', JSON.stringify(cabeceras));
     var meta = document.querySelector('meta[name="_csrf"]');
     if (meta) { meta.setAttribute('content', token); }
     document.querySelectorAll('input[name="_csrf"]').forEach(function (campo) { campo.value = token; });
@@ -51,11 +45,14 @@
     }
   });
 
-  // 4) En celular, el resultado de una técnica se apila debajo del formulario: llevar la vista hasta él.
+  // 4) Con un resultado nuevo la entrada se pliega a "Editar entrada" (hito 9) y, si el resultado queda debajo del
+  //    formulario (angosto y medio, hasta 1023 px), la vista baja hasta él.
   document.body.addEventListener('htmx:afterSwap', function (evento) {
     var destino = evento.detail && evento.detail.target;
+    var entrada = destino && destino.id && destino.querySelector('[data-patron]') && document.querySelector('#form-' + destino.id.replace('resultado-', '') + ' details.entrada');
+    if (entrada) { entrada.open = false; }
     var resultado = destino && (destino.id && destino.id.indexOf('res-') === 0 ? destino : destino.querySelector('[id^="res-"]'));
-    if (resultado && window.innerWidth < 800) {
+    if (resultado && window.innerWidth < 1024) {
       resultado.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
