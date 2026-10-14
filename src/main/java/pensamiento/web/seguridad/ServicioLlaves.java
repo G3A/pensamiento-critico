@@ -33,6 +33,8 @@ import pensamiento.web.usuarios.CodigoDeUnUso;
  */
 public class ServicioLlaves {
 
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(ServicioLlaves.class);
+
     public static final int CODIGOS_DE_RECUPERACION = 10;
     public static final int LARGO_RECUPERACION = 10;
 
@@ -92,6 +94,7 @@ public class ServicioLlaves {
                     operaciones.authenticate(new RelyingPartyAuthenticationRequest(opciones, firma)));
             return quien != null && titular.nombreParaLlave().equals(quien.getName());
         } catch (RuntimeException e) {
+            LOG.info("Firma de llave de acceso rechazada: {}", e.getClass().getSimpleName());
             return false;
         }
     }
