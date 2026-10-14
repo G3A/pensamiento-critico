@@ -77,6 +77,8 @@ public final class SemillaDeInstitucion {
     private void sembrar() {
         UUID grupo = insertar("grupo", "INSERT INTO grupo (institucion_id, nombre) VALUES (:i, :c) RETURNING id");
         uno("miembro_grupo", "INSERT INTO miembro_grupo (grupo_id, usuario_id, rol) VALUES ('" + grupo + "', :u, 'estudiante')");
+        insertar("sesion_aula", "INSERT INTO sesion_aula (institucion_id, grupo_id, docente_id, codigo_hash, cierra_en) "
+                + "VALUES (:i, '" + grupo + "', :u, :c, now() + interval '60 minutes') RETURNING id");
         uno("configuracion_usuario", "INSERT INTO configuracion_usuario (usuario_id, institucion_id, tecnica_id, version_esquema, valores) "
                 + "VALUES (:u, :i, 'T28', 1, jsonb_build_object('nota', :c::text))");
         UUID afirmacion = insertar("afirmacion", "INSERT INTO afirmacion (usuario_id, institucion_id, texto, tipo, origen) "
@@ -101,8 +103,10 @@ public final class SemillaDeInstitucion {
                 + "VALUES (:u, :i, '" + afirmacion + "', 70, current_date + 30)");
         uno("pendiente", "INSERT INTO pendiente (usuario_id, institucion_id, tipo, descripcion) VALUES (:u, :i, 'revision', :c)");
         uno("competencia", "INSERT INTO competencia (usuario_id, institucion_id, tecnica_id) VALUES (:u, :i, 'T13')");
-        uno("auditoria", "INSERT INTO auditoria (usuario_id, institucion_id, accion, objeto_tipo, objeto_id) "
-                + "VALUES (:u, :i, 'crear', 'expediente', '" + expediente + "')");
+        uno("auditoria", "INSERT INTO auditoria (usuario_id, institucion_id, accion, objeto_tipo, objeto_id, detalle) "
+                + "VALUES (:u, :i, 'crear', 'expediente', '" + expediente + "', :c)");
+        insertar("codigo_cuenta", "INSERT INTO codigo_cuenta (institucion_id, usuario_id, tipo, codigo_hash, caduca_en) "
+                + "VALUES (:i, :u, 'alta', :c, now() + interval '1 day') RETURNING id");
         UUID sesion = insertar("sesion_consejero", "INSERT INTO sesion_consejero (usuario_id, institucion_id, modo, postura, config) "
                 + "VALUES (:u, :i, 'decision', :c, '{}') RETURNING id");
         uno("turno_consejero", "INSERT INTO turno_consejero (sesion_id, usuario_id, institucion_id, numero, rol, paso, texto, origen) "
@@ -121,6 +125,7 @@ public final class SemillaDeInstitucion {
         admin.sql("DELETE FROM sesion_consejero WHERE institucion_id = :i").param("i", institucion).update();
         admin.sql("DELETE FROM competencia WHERE institucion_id = :i").param("i", institucion).update();
         admin.sql("DELETE FROM cambio_opinion WHERE institucion_id = :i").param("i", institucion).update();
+        admin.sql("DELETE FROM sesion_aula WHERE institucion_id = :i").param("i", institucion).update();
         admin.sql("DELETE FROM miembro_grupo WHERE grupo_id IN (SELECT id FROM grupo WHERE institucion_id = :i)").param("i", institucion).update();
         admin.sql("DELETE FROM grupo WHERE institucion_id = :i").param("i", institucion).update();
         admin.sql("DELETE FROM fragmento WHERE documento_id IN (SELECT id FROM documento WHERE institucion_id = :i)").param("i", institucion).update();
