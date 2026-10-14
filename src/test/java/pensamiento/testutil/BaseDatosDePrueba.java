@@ -75,8 +75,13 @@ public final class BaseDatosDePrueba {
     }
 
     public UUID crearUsuario(UUID institucion, String nombre) {
-        return jdbcAdmin().sql("INSERT INTO usuario (institucion_id, nombre, rol_global) VALUES (:i, :n, 'persona') RETURNING id")
-                .param("i", institucion).param("n", nombre).query(UUID.class).single();
+        return crearUsuario(institucion, nombre, "persona");
+    }
+
+    /** Una cuenta con ese rol (administrador, docente, persona o estudiante), sin clave. */
+    public UUID crearUsuario(UUID institucion, String nombre, String rol) {
+        return jdbcAdmin().sql("INSERT INTO usuario (institucion_id, nombre, rol_global) VALUES (:i, :n, :r) RETURNING id")
+                .param("i", institucion).param("n", nombre).param("r", rol).query(UUID.class).single();
     }
 
     /** Expediente de prueba creado como administrador (sin RLS). */
@@ -102,6 +107,10 @@ public final class BaseDatosDePrueba {
         jdbc.sql("DELETE FROM configuracion_usuario WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM codigo_cuenta WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM sesion_aula WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM intento_dojo WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM competencia WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM miembro_grupo WHERE grupo_id IN (SELECT id FROM grupo WHERE institucion_id = :i)").param("i", institucion).update();
+        jdbc.sql("DELETE FROM grupo WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM usuario WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM institucion WHERE id = :i").param("i", institucion).update();
     }

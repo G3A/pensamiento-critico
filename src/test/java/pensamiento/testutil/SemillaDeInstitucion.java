@@ -21,6 +21,7 @@ public final class SemillaDeInstitucion {
     private final String centinela = "CENTINELA-" + UUID.randomUUID();
     private final List<String> marcas = new ArrayList<>();
     private final Map<String, Integer> sembradas = new LinkedHashMap<>();
+    private final Map<String, UUID> ids = new LinkedHashMap<>();
     private final UUID institucion;
     private final UUID usuario;
     private final String ruta;
@@ -29,7 +30,8 @@ public final class SemillaDeInstitucion {
         this.bd = bd;
         this.ruta = "semilla-" + UUID.randomUUID().toString().substring(0, 8);
         this.institucion = bd.crearInstitucion("Institución " + centinela, ruta);
-        this.usuario = bd.crearUsuario(institucion, "persona " + centinela);
+        // Hito 10: la persona es una estudiante, miembro del grupo sembrado (para la RLS por rol).
+        this.usuario = bd.crearUsuario(institucion, "persona " + centinela, "estudiante");
         marcas.add(centinela);
         marcas.add(institucion.toString());
         marcas.add(usuario.toString());
@@ -54,6 +56,11 @@ public final class SemillaDeInstitucion {
         return centinela;
     }
 
+    /** El id de la primera fila sembrada en esa tabla (grupo, expediente, ejecucion, argumento, documento…). */
+    public UUID id(String tabla) {
+        return ids.get(tabla);
+    }
+
     /** Tabla → filas sembradas. */
     public Map<String, Integer> sembradas() {
         return Collections.unmodifiableMap(sembradas);
@@ -66,9 +73,21 @@ public final class SemillaDeInstitucion {
 
     /** Por cada tabla sembrada, cuántas filas visibles con esa conexión traen una marca de esta institución. */
     public Map<String, Integer> contarMarcas(JdbcClient jdbc) {
+        return contar(jdbc, patron());
+    }
+
+    /**
+     * Como contarMarcas, pero solo con las marcas de la persona sembrada (el centinela y los ids de lo suyo), sin el id de la
+     * institución, que aparece en cualquier fila de ella: para la RLS por rol dentro de la misma institución (hito 10).
+     */
+    public Map<String, Integer> contarMarcasDeLaPersona(JdbcClient jdbc) {
+        return contar(jdbc, "(" + String.join("|", marcas.stream().filter(m -> !m.equals(institucion.toString())).toList()) + ")");
+    }
+
+    private Map<String, Integer> contar(JdbcClient jdbc, String patron) {
         Map<String, Integer> conteo = new LinkedHashMap<>();
         for (String tabla : sembradas.keySet()) {
-            conteo.put(tabla, jdbc.sql("SELECT count(*)::int FROM " + tabla + " t WHERE t::text ~ :patron").param("patron", patron())
+            conteo.put(tabla, jdbc.sql("SELECT count(*)::int FROM " + tabla + " t WHERE t::text ~ :patron").param("patron", patron)
                     .query(Integer.class).single());
         }
         return conteo;
@@ -135,6 +154,7 @@ public final class SemillaDeInstitucion {
     private UUID insertar(String tabla, String sql) {
         UUID id = bd.jdbcAdmin().sql(sql).param("i", institucion).param("c", centinela).param("u", usuario).query(UUID.class).single();
         marcas.add(id.toString());
+        ids.putIfAbsent(tabla, id);
         sembradas.merge(tabla, 1, Integer::sum);
         return id;
     }
