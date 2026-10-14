@@ -464,6 +464,7 @@ pre.argdown { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--
 .tecnicas-paso { display: flex; flex-wrap: wrap; gap: .25rem 1rem; list-style: none; padding: 0; }
 .tecnicas-paso li.actual a { font-weight: 700; }
 .migas { color: var(--texto-suave); margin: 0; }
+.migas a { display: inline-flex; align-items: center; min-height: var(--objetivo-tactil); }   /* hito 10: también es un objetivo táctil */
 
 /* V09 · transcripción con panel lateral (T08, T36) y diálogo del Consejero socrático (P15, P16) */
 .transcripcion-con-panel { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--espacio); align-items: start; }

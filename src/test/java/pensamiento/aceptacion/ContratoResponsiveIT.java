@@ -97,6 +97,87 @@ class ContratoResponsiveIT {
                 SELECT :i, 'estudiante ' || lpad(n::text, 3, '0'), 'x', 'contrasena', 'persona' FROM generate_series(1, 500) n
                 ON CONFLICT DO NOTHING""").param("i", institucion).update();
         sesionDeAdministrador = Instalacion.administradorDe(rutaConVolumen).cookie("PENSAMIENTO_SESION");
+        sembrarAula(admin);
+    }
+
+    // Hito 10, entregable 11: las pantallas del aula.
+    private String sesionDeDocente;
+    private String sesionDeEstudiante;
+    private UUID grupoAbierto;
+    private UUID grupoCerrado;
+    private String codigoDeClase;
+    private String htmlVistaPrevia;
+    private String htmlTarjetas;
+
+    private void sembrarAula(ClienteApp admin) {
+        String sufijo = UUID.randomUUID().toString().substring(0, 6);
+        ClienteApp profe = Instalacion.docenteNuevo(admin, "Profe Matriz " + sufijo);
+        sesionDeDocente = profe.cookie("PENSAMIENTO_SESION");
+        grupoAbierto = Aula.crearGrupo(admin, "10.º Matriz " + sufijo, "Profe Matriz " + sufijo);
+        grupoCerrado = Aula.crearGrupo(admin, "11.º Matriz " + sufijo, "Profe Matriz " + sufijo);
+        String lista = java.util.stream.IntStream.rangeClosed(1, 35).mapToObj(i -> "María Fernanda Estudiante " + i + " " + sufijo)
+                .collect(java.util.stream.Collectors.joining("\n"));
+        htmlVistaPrevia = profe.postFormulario("/grupos/" + grupoAbierto + "/lote/vista-previa", Map.of("texto", lista + "\nrepetida\nrepetida")).cuerpo();
+        htmlTarjetas = profe.postFormulario("/grupos/" + grupoAbierto + "/lote", Map.of("texto", lista)).cuerpo();
+        String codigo = AulaAltaEnLoteIT.codigos(htmlTarjetas).get(0);
+        Instalacion.canjear(Instalacion.RUTA, codigo, Instalacion.contrasenaDe("estudiante"));
+        profe.postFormulario("/grupos/" + grupoAbierto + "/tema", Map.of("tema", "falacias", "hasta", ""));
+        profe.postFormulario("/grupos/" + grupoAbierto + "/opciones", Map.of("lista", "si"));
+        profe.postFormulario("/grupos/" + grupoAbierto + "/clase", Map.of("minutos", "50"));
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("class=\"codigo-grande codigo-clase\"[^>]*>([0-9A-Z]{6})<")
+                .matcher(profe.get("/grupos/" + grupoAbierto + "/clase").cuerpo());
+        assertThat(m.find()).isTrue();
+        codigoDeClase = m.group(1);
+        sesionDeEstudiante = Instalacion.entraComo("María Fernanda Estudiante 1 " + sufijo, "estudiante").cookie("PENSAMIENTO_SESION");
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("matriz")
+    void las_pantallas_del_aula_caben_sin_desplazamiento_horizontal_y_con_objetivos_de_44_px(Configuracion c) {
+        List<String> problemas = new ArrayList<>();
+        conNavegador(c, null, (pagina, errores) -> {
+            pagina.navigate(base + "/" + Instalacion.RUTA + "?clase=" + codigoDeClase);
+            problemas.addAll(revisarPantalla(pagina, c, "entrar con el código de la clase"));
+            pagina.locator("details.lista-de-clase > summary").click();
+            problemas.addAll(revisarPantalla(pagina, c, "entrar con la lista del grupo abierta"));
+            assertThat(errores).as("errores de consola").isEmpty();
+        });
+        Map<String, String> delDocente = new java.util.LinkedHashMap<>();
+        delDocente.put("mis grupos", "/grupos");
+        delDocente.put("grupo", "/grupos/" + grupoAbierto);
+        delDocente.put("alta en lote", "/grupos/" + grupoAbierto + "/lote");
+        delDocente.put("abrir clase", "/grupos/" + grupoCerrado + "/clase");
+        delDocente.put("clase abierta con el QR y Terminar clase", "/grupos/" + grupoAbierto + "/clase");
+        delDocente.put("panel", "/grupos/" + grupoAbierto + "/panel");
+        conNavegador(c, sesionDeDocente, (pagina, errores) -> {
+            for (Map.Entry<String, String> pantalla : delDocente.entrySet()) {
+                pagina.navigate(base + pantalla.getValue());
+                assertThat(pagina.url()).as(pantalla.getKey()).isEqualTo(base + pantalla.getValue());
+                problemas.addAll(revisarPantalla(pagina, c, pantalla.getKey()));
+            }
+            pagina.setContent(htmlVistaPrevia);
+            problemas.addAll(revisarPantalla(pagina, c, "vista previa del alta en lote"));
+            pagina.setContent(htmlTarjetas);
+            problemas.addAll(revisarPantalla(pagina, c, "tarjetas"));
+            assertThat(errores).as("errores de consola").isEmpty();
+        });
+        Map<String, String> delEstudiante = Map.of("reto de hoy", "/reto", "Dojo del estudiante", "/dojo", "mis trabajos", "/mis-trabajos");
+        conNavegador(c, sesionDeEstudiante, (pagina, errores) -> {
+            for (Map.Entry<String, String> pantalla : delEstudiante.entrySet()) {
+                pagina.navigate(base + pantalla.getValue());
+                assertThat(pagina.url()).as(pantalla.getKey()).isEqualTo(base + pantalla.getValue());
+                problemas.addAll(revisarPantalla(pagina, c, pantalla.getKey()));
+                if (c.angosto()) {
+                    assertThat(pagina.locator(".barra-inferior a, .barra-inferior button").allTextContents()).as("barra del estudiante en %s", pantalla.getKey())
+                            .containsExactly("Reto de hoy", "Dojo", "Mis trabajos", "Salir");
+                } else {
+                    assertThat(pagina.locator("#menu li").allTextContents()).extracting(String::strip)
+                            .containsExactly("Reto de hoy", "Dojo", "Mis trabajos", "Salir");
+                }
+            }
+            assertThat(errores).as("errores de consola").isEmpty();
+        });
+        assertThat(problemas).as("contrato responsive del aula en %s", c).isEmpty();
     }
 
     private void conNavegador(Configuracion c, String sesion, java.util.function.BiConsumer<Page, List<String>> prueba) {
