@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import pensamiento.nucleo.Titular;
 import pensamiento.nucleo.Usuario;
+import pensamiento.nucleo.puertos.RepositorioAula;
 
 /**
  * Lo que vive en la sesión del servidor: identidad, institución (con la ruta por la que entró), rol y etapa de la entrada.
@@ -25,6 +26,9 @@ public final class UsuarioSesion implements TitularDeSesion {
 
     public static final String ROL_ADMINISTRADOR = "ROLE_ADMINISTRADOR";
     public static final String ROL_PERSONA = "ROLE_PERSONA";
+    /** Hito 10: el aula. El docente administra sus grupos; el estudiante tiene su menú de cuatro entradas. */
+    public static final String ROL_DOCENTE = "ROLE_DOCENTE";
+    public static final String ROL_ESTUDIANTE = "ROLE_ESTUDIANTE";
     public static final String ROL_PENDIENTE = "ROLE_PENDIENTE";
     /** Factores con los nombres de Spring Security 7 (FactorGrantedAuthority): contraseña y llave de acceso. */
     public static final String FACTOR_CONTRASENA = "FACTOR_PASSWORD";
@@ -152,6 +156,19 @@ public final class UsuarioSesion implements TitularDeSesion {
         return rol == Usuario.RolGlobal.ADMINISTRADOR;
     }
 
+    public boolean esDocente() {
+        return rol == Usuario.RolGlobal.DOCENTE;
+    }
+
+    public boolean esEstudiante() {
+        return rol == Usuario.RolGlobal.ESTUDIANTE;
+    }
+
+    /** Quién consulta el aula: esta cuenta, su institución y su rol (la RLS por rol de V17 lo vuelve a leer de la base). */
+    public RepositorioAula.Actor actor() {
+        return new RepositorioAula.Actor(id, institucionId, rol);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> autoridades = new ArrayList<>();
@@ -162,7 +179,12 @@ public final class UsuarioSesion implements TitularDeSesion {
         if (etapa != Etapa.LISTA) {
             autoridades.add(new SimpleGrantedAuthority(ROL_PENDIENTE));
         } else {
-            autoridades.add(new SimpleGrantedAuthority(esAdministrador() ? ROL_ADMINISTRADOR : ROL_PERSONA));
+            autoridades.add(new SimpleGrantedAuthority(switch (rol) {
+                case ADMINISTRADOR -> ROL_ADMINISTRADOR;
+                case DOCENTE -> ROL_DOCENTE;
+                case ESTUDIANTE -> ROL_ESTUDIANTE;
+                case PERSONA -> ROL_PERSONA;
+            }));
         }
         return autoridades;
     }

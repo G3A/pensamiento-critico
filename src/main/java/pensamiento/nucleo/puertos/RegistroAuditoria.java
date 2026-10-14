@@ -7,15 +7,18 @@ import java.util.UUID;
 
 /**
  * Tabla auditoria: solo inserción. Se escribe al crear, importar, exportar, compartir, borrar y desactivar, y desde el
- * hito 9 en todo lo que pasa con las cuentas y al entrar (cada entrada, cada fallo y cada espera). Nunca guarda una
- * contraseña: {@code detalle} lleva a lo sumo la clave del nombre con que se probó.
+ * hito 9 en todo lo que pasa con las cuentas y al entrar (cada entrada, cada fallo y cada espera); desde el hito 10, en el aula
+ * (grupos, alta en lote, clases y temas). Nunca guarda una contraseña: {@code detalle} lleva a lo sumo la clave del nombre con
+ * que se probó, o cómo se entró a una clase.
  */
 public interface RegistroAuditoria {
 
     enum Accion {
         CREAR, IMPORTAR, EXPORTAR, COMPARTIR, BORRAR, DESACTIVAR, SESION,
         REACTIVAR, CODIGO_ALTA, CODIGO_RESTABLECER, CANJEAR_CODIGO, CAMBIAR_CLAVE, ENTRAR, FALLO_ENTRAR, ESPERA_ENTRAR,
-        LEVANTAR_ESPERA, REGISTRAR_LLAVE, USAR_RECUPERACION
+        LEVANTAR_ESPERA, REGISTRAR_LLAVE, USAR_RECUPERACION,
+        // hito 10: el aula
+        CREAR_GRUPO, CAMBIAR_GRUPO, ALTA_EN_LOTE, ABRIR_CLASE, TERMINAR_CLASE, ASIGNAR_TEMA
     }
 
     record Evento(Optional<UUID> usuarioId, UUID institucionId, Accion accion, String objetoTipo, Optional<UUID> objetoId, Instant fecha,

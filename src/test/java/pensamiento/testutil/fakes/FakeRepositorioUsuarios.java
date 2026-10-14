@@ -60,6 +60,12 @@ public final class FakeRepositorioUsuarios implements RepositorioUsuarios {
     }
 
     @Override
+    public List<Usuario> porRol(UUID institucionId, Usuario.RolGlobal rol) {
+        return usuarios.values().stream().filter(u -> u.institucionId().equals(institucionId) && u.rol() == rol && u.activo())
+                .sorted(Comparator.comparing(FakeRepositorioUsuarios::clave).thenComparing(Usuario::id)).toList();
+    }
+
+    @Override
     public boolean cambiarClave(UUID institucionId, UUID id, String claveHash, Usuario.TipoClave tipo) {
         return porId(institucionId, id).map(u -> usuarios.put(id, u.conClave(claveHash, tipo))).isPresent();
     }

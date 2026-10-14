@@ -156,7 +156,12 @@ public final class Instalacion {
 
     /** El administrador crea la cuenta (201) y lee el código de alta de la tarjeta, que se muestra una sola vez. */
     public static String codigoDeAlta(ClienteApp admin, String nombre) {
-        ClienteApp.Respuesta r = admin.postFormulario("/usuarios", Map.of("nombre", nombre, "rol", "persona"));
+        return codigoDeAlta(admin, nombre, "persona");
+    }
+
+    /** Lo mismo con un rol: persona, docente, estudiante o administrador. */
+    public static String codigoDeAlta(ClienteApp admin, String nombre, String rol) {
+        ClienteApp.Respuesta r = admin.postFormulario("/usuarios", Map.of("nombre", nombre, "rol", rol));
         assertThat(r.estado()).as("crear la cuenta de " + nombre).isEqualTo(201);
         return codigoDeLaTarjeta(r);
     }
@@ -165,6 +170,27 @@ public final class Instalacion {
         java.util.regex.Matcher m = CODIGO.matcher(tarjeta.cuerpo());
         assertThat(m.find()).as("la tarjeta trae el código").isTrue();
         return m.group(1);
+    }
+
+    /**
+     * Hito 10: el administrador crea un docente con ese nombre; el docente canjea su código, entra y registra su llave de
+     * acceso. Devuelve su cliente con la sesión lista.
+     */
+    public static ClienteApp docenteNuevo(ClienteApp admin, String nombre) {
+        String codigo = codigoDeAlta(admin, nombre, "docente");
+        assertThat(canjear(admin.ruta(), codigo, contrasenaDe("docente")).estado()).as("el docente canjea su código").isEqualTo(302);
+        ClienteApp docente = new ClienteApp(admin.ruta());
+        ClienteApp.Respuesta r = docente.entrar(nombre, contrasenaDe("docente"));
+        assertThat(r.cabecera("Location").orElse("")).as(nombre + " confirma con su llave").endsWith("/llave");
+        completarLlave(docente, "/llave", admin.ruta() + "/" + nombre);
+        return docente;
+    }
+
+    /** Hito 10: el administrador crea un estudiante suelto (sin grupo) que canjea su código; devuelve su cliente ya dentro. */
+    public static ClienteApp estudianteNuevo(ClienteApp admin, String nombre) {
+        String codigo = codigoDeAlta(admin, nombre, "estudiante");
+        assertThat(canjear(admin.ruta(), codigo, contrasenaDe("estudiante")).estado()).isEqualTo(302);
+        return entraComo(admin.ruta(), nombre, "estudiante");
     }
 
     /** Alguien sin sesión canjea un código en la entrada de esa institución y elige su contraseña. */

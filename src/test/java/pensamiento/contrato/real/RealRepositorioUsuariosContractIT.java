@@ -55,6 +55,7 @@ class RealRepositorioUsuariosContractIT extends RepositorioUsuariosContract {
             @Override public Optional<Usuario> porNombre(UUID i, String n) { return tx(() -> real.porNombre(i, n)); }
             @Override public PaginaDeCuentas buscar(UUID i, String t, int p, int n) { return tx(() -> real.buscar(i, t, p, n)); }
             @Override public long contar(UUID i) { return tx(() -> real.contar(i)); }
+            @Override public java.util.List<Usuario> porRol(UUID i, Usuario.RolGlobal r) { return tx(() -> real.porRol(i, r)); }
             @Override public boolean cambiarClave(UUID i, UUID id, String h, Usuario.TipoClave t) { return tx(() -> real.cambiarClave(i, id, h, t)); }
             @Override public boolean cambiarActivo(UUID i, UUID id, boolean a) { return tx(() -> real.cambiarActivo(i, id, a)); }
             @Override public void guardarCodigo(UUID i, UUID u, TipoCodigo t, String h, Instant c, Optional<UUID> p) {

@@ -168,7 +168,12 @@ public class ControladorUsuarios {
     }
 
     private static Usuario.RolGlobal rolPedido(String rol) {
-        return "administrador".equals(rol) ? Usuario.RolGlobal.ADMINISTRADOR : Usuario.RolGlobal.PERSONA;
+        return switch (rol) {
+            case "administrador" -> Usuario.RolGlobal.ADMINISTRADOR;
+            case "docente" -> Usuario.RolGlobal.DOCENTE;
+            case "estudiante" -> Usuario.RolGlobal.ESTUDIANTE;
+            default -> Usuario.RolGlobal.PERSONA;
+        };
     }
 
     private static String textoDeAviso(String motivo) {

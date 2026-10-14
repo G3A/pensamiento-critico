@@ -27,6 +27,11 @@ public record Pagina(String titulo, Optional<UsuarioSesion> usuario, EstadoIa ia
         return conMenu() && usuario.map(UsuarioSesion::esAdministrador).orElse(false);
     }
 
+    /** Docente del aula (hito 10): ve "Mis grupos". */
+    public boolean esDocente() {
+        return conMenu() && usuario.map(UsuarioSesion::esDocente).orElse(false);
+    }
+
     /** Con sesión y ya dentro (no en la etapa de elegir contraseña ni de la llave): menú, nombre y "Salir". */
     public boolean conMenu() {
         return usuario.map(UsuarioSesion::lista).orElse(false);

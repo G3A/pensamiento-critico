@@ -26,6 +26,8 @@
         <fieldset>
           <legend>Rol</legend>
           <label class="opcion"><input type="radio" name="rol" value="persona" checked> Persona</label>
+          <label class="opcion"><input type="radio" name="rol" value="docente"> Docente (necesita llave de acceso; administra sus grupos)</label>
+          <label class="opcion"><input type="radio" name="rol" value="estudiante"> Estudiante (menú del aula)</label>
           <label class="opcion"><input type="radio" name="rol" value="administrador"> Administrador (necesita llave de acceso)</label>
         </fieldset>
         <button type="submit" class="boton">Crear y ver su código</button>

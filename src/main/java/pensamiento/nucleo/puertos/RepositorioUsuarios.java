@@ -47,6 +47,9 @@ public interface RepositorioUsuarios {
 
     long contar(UUID institucionId);
 
+    /** Las cuentas activas de ese rol en la institución, por nombre (hito 10: elegir el docente de un grupo). */
+    List<Usuario> porRol(UUID institucionId, Usuario.RolGlobal rol);
+
     /** Fija la clave (hash) y su tipo; false si la cuenta no existe. */
     boolean cambiarClave(UUID institucionId, UUID id, String claveHash, Usuario.TipoClave tipo);
 

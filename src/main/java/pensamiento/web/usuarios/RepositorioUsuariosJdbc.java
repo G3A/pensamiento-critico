@@ -81,6 +81,13 @@ public class RepositorioUsuariosJdbc implements RepositorioUsuarios {
     }
 
     @Override
+    public java.util.List<Usuario> porRol(UUID institucionId, Usuario.RolGlobal rol) {
+        return jdbc.sql("SELECT " + COLUMNAS + " FROM usuario WHERE institucion_id = :institucion AND rol_global = :rol AND activo "
+                        + "ORDER BY nombre_clave, id")
+                .param("institucion", institucionId).param("rol", rol.enBaseDeDatos()).query(RepositorioUsuariosJdbc::fila).list();
+    }
+
+    @Override
     public boolean cambiarClave(UUID institucionId, UUID id, String claveHash, Usuario.TipoClave tipo) {
         return jdbc.sql("UPDATE usuario SET clave_hash = :clave, tipo_clave = :tipo WHERE institucion_id = :institucion AND id = :id")
                 .param("clave", claveHash.isEmpty() ? null : claveHash).param("tipo", tipo.enBaseDeDatos())

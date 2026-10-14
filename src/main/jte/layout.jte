@@ -60,6 +60,12 @@
         <li><a href="/cambios-de-opinion" class="${pagina.titulo().equals("Cambios de opinión") ? "activo" : ""}">Cambios de opinión</a></li>
         <li><a href="/manual" class="${pagina.titulo().equals("Manual") ? "activo" : ""}">Manual</a></li>
       </ul>
+      @if(pagina.esAdministrador() || pagina.esDocente())
+        <h2 class="grupo-menu">Aula</h2>
+        <ul>
+          <li><a href="/grupos" class="${pagina.titulo().equals("Grupos") || pagina.titulo().equals("Mis grupos") ? "activo" : ""}">@if(pagina.esAdministrador())Grupos@else Mis grupos@endif</a></li>
+        </ul>
+      @endif
       <h2 class="grupo-menu">Cuenta</h2>
       <ul>
         <li><a href="/cuenta" class="${pagina.titulo().equals("Mi cuenta") ? "activo" : ""}">Mi cuenta</a></li>

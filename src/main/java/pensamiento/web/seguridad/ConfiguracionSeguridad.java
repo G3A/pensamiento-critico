@@ -137,9 +137,10 @@ public class ConfiguracionSeguridad {
                 .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                 .requestMatchers("/actuator/**").hasRole("OPERADOR")      // métricas: solo el operador del servicio
                 .requestMatchers("/cuenta/contrasena-nueva").hasRole("PENDIENTE")   // quien entró con PIN elige su contraseña
-                .requestMatchers("/llave", "/llave/**").hasAnyRole("PENDIENTE", "ADMINISTRADOR")   // registrar o confirmar su llave
+                .requestMatchers("/llave", "/llave/**").hasAnyRole("PENDIENTE", "ADMINISTRADOR", "DOCENTE")   // registrar o confirmar su llave
                 .requestMatchers("/usuarios", "/usuarios/**", "/administracion/**").hasRole("ADMINISTRADOR")
-                .anyRequest().hasAnyRole("ADMINISTRADOR", "PERSONA"))   // el operador y quien no terminó de entrar, no
+                .requestMatchers("/grupos", "/grupos/**").hasAnyRole("ADMINISTRADOR", "DOCENTE")   // hito 10: el aula
+                .anyRequest().hasAnyRole("ADMINISTRADOR", "DOCENTE", "PERSONA", "ESTUDIANTE"))   // el operador y quien no terminó de entrar, no
             .formLogin(login -> login
                 .loginPage("/bloqueo")
                 .authenticationDetailsSource(proveedor.detalles())

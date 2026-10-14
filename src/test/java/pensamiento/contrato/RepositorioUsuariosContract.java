@@ -127,6 +127,21 @@ public abstract class RepositorioUsuariosContract {
     }
 
     @Test
+    void por_rol_trae_solo_las_cuentas_activas_de_ese_rol_por_nombre() {
+        RepositorioUsuarios sut = crearSut();
+        UUID institucion = institucionDePrueba();
+        sut.crear(Usuario.nueva(UUID.randomUUID(), institucion, "Zoe Docente", Usuario.RolGlobal.DOCENTE));
+        sut.crear(Usuario.nueva(UUID.randomUUID(), institucion, "Álvaro Docente", Usuario.RolGlobal.DOCENTE));
+        Usuario retirado = sut.crear(Usuario.nueva(UUID.randomUUID(), institucion, "Beto Docente", Usuario.RolGlobal.DOCENTE)).orElseThrow();
+        sut.cambiarActivo(institucion, retirado.id(), false);
+        sut.crear(persona("Carla Persona"));
+
+        assertThat(sut.porRol(institucion, Usuario.RolGlobal.DOCENTE)).extracting(Usuario::nombre).containsExactly("Álvaro Docente", "Zoe Docente");
+        assertThat(sut.porRol(institucion, Usuario.RolGlobal.ESTUDIANTE)).isEmpty();
+        assertThat(sut.porRol(otraInstitucion(), Usuario.RolGlobal.DOCENTE)).isEmpty();
+    }
+
+    @Test
     void un_codigo_se_canjea_una_sola_vez() {
         RepositorioUsuarios sut = crearSut();
         UUID institucion = institucionDePrueba();
