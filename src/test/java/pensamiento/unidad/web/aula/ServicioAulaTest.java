@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import pensamiento.nucleo.Grupo;
 import pensamiento.nucleo.Usuario;
 import pensamiento.nucleo.puertos.RegistroAuditoria;
+import pensamiento.nucleo.puertos.RepositorioAula;
+import pensamiento.nucleo.puertos.RepositorioUsuarios;
 import pensamiento.nucleo.puertos.RepositorioAula.Actor;
 import pensamiento.testutil.TransaccionesSinBase;
 import pensamiento.testutil.fakes.FakeRegistroAuditoria;
@@ -19,7 +21,9 @@ import pensamiento.testutil.fakes.FakeRepositorioAula;
 import pensamiento.testutil.fakes.FakeRepositorioDojo;
 import pensamiento.testutil.fakes.FakeRepositorioUsuarios;
 import pensamiento.web.ObjetoNoEncontrado;
+import pensamiento.web.aula.ListaDeEstudiantes;
 import pensamiento.web.aula.ServicioAula;
+import pensamiento.web.usuarios.CodigoDeUnUso;
 import pensamiento.web.usuarios.ServicioUsuarios;
 
 /**
@@ -32,7 +36,12 @@ class ServicioAulaTest {
     private final FakeRepositorioUsuarios usuarios = new FakeRepositorioUsuarios();
     private final FakeRegistroAuditoria auditoria = new FakeRegistroAuditoria();
     private final FakeRepositorioAula aula = new FakeRepositorioAula(usuarios, new FakeRepositorioDojo(), auditoria);
-    private final ServicioAula servicio = new ServicioAula(aula, usuarios, auditoria, new FakeReloj(), new TransaccionesSinBase());
+    private final FakeReloj reloj = new FakeReloj();
+    private final java.util.List<UUID> sesionesCerradas = new java.util.ArrayList<>();
+    /** Azar fijo para los códigos: el primero sale "789ABCDE", el segundo "FGHJKMNP" (como en ServicioUsuariosTest). */
+    private final java.util.concurrent.atomic.AtomicInteger siguiente = new java.util.concurrent.atomic.AtomicInteger(7);
+    private final ServicioAula servicio = new ServicioAula(aula, usuarios, auditoria, reloj, new TransaccionesSinBase(),
+            new CodigoDeUnUso(n -> siguiente.getAndIncrement() % n), sesionesCerradas::add);
 
     private Actor cuenta(String nombre, Usuario.RolGlobal rol) {
         Usuario u = usuarios.crear(Usuario.nueva(UUID.randomUUID(), colegio, nombre, rol)).orElseThrow();
@@ -98,6 +107,80 @@ class ServicioAulaTest {
         assertThat(servicio.grupos(profe)).isEmpty();
         assertThat(auditoria.todos()).extracting(RegistroAuditoria.Evento::accion)
                 .containsExactly(RegistroAuditoria.Accion.CREAR_GRUPO, RegistroAuditoria.Accion.CAMBIAR_GRUPO);
+    }
+
+    @Test
+    void la_vista_previa_marca_repetidas_invalidas_y_las_que_ya_existen_sin_crear_nada() {
+        Actor rectora = cuenta("Rectora", Usuario.RolGlobal.ADMINISTRADOR);
+        Actor profe = cuenta("Profe Ramírez", Usuario.RolGlobal.DOCENTE);
+        cuenta("Luis Gómez", Usuario.RolGlobal.PERSONA);
+        Grupo g = servicio.crearGrupo(rectora, "10.º A", Optional.of(profe.id()));
+
+        ServicioAula.VistaPrevia previa = servicio.vistaPrevia(profe, g.id(), "Ana Pérez\nana perez\nLuis Gómez\n" + "x".repeat(61) + "\nSofía Ruiz");
+
+        assertThat(previa.filas()).extracting(ListaDeEstudiantes.Fila::estado).containsExactly(ListaDeEstudiantes.Estado.NUEVA,
+                ListaDeEstudiantes.Estado.REPETIDA_EN_LA_LISTA, ListaDeEstudiantes.Estado.YA_EXISTE, ListaDeEstudiantes.Estado.INVALIDA,
+                ListaDeEstudiantes.Estado.NUEVA);
+        assertThat(previa.nuevas()).isEqualTo(2);
+        assertThat(servicio.miembros(profe, g.id())).isEmpty();
+    }
+
+    @Test
+    void el_alta_en_lote_crea_las_nuevas_en_el_grupo_con_su_codigo_guardado_como_hash() {
+        Actor rectora = cuenta("Rectora", Usuario.RolGlobal.ADMINISTRADOR);
+        Actor profe = cuenta("Profe Ramírez", Usuario.RolGlobal.DOCENTE);
+        cuenta("Luis Gómez", Usuario.RolGlobal.PERSONA);
+        Grupo g = servicio.crearGrupo(rectora, "10.º A", Optional.of(profe.id()));
+
+        ServicioAula.AltaEnLote alta = servicio.altaEnLote(profe, g.id(), "Ana Pérez\nana perez\nLuis Gómez\nSofía Ruiz");
+
+        assertThat(alta.creadas()).extracting(c -> c.cuenta().nombre()).containsExactly("Ana Pérez", "Sofía Ruiz");
+        assertThat(alta.creadas()).extracting(ServicioUsuarios.CodigoEmitido::legible).containsExactly("789A-BCDE", "FGHJ-KMNP");
+        assertThat(alta.sinCrear()).extracting(ListaDeEstudiantes.Fila::nombre).containsExactly("ana perez", "Luis Gómez");
+        assertThat(servicio.miembros(profe, g.id())).extracting(RepositorioAula.Miembro::nombre).containsExactly("Ana Pérez", "Sofía Ruiz");
+        assertThat(usuarios.porNombre(colegio, "Ana Pérez")).map(Usuario::rol).contains(Usuario.RolGlobal.ESTUDIANTE);
+        assertThat(usuarios.codigoVigente(colegio, CodigoDeUnUso.hash("789ABCDE"), reloj.ahora()))
+                .map(RepositorioUsuarios.CodigoCanjeado::tipo).contains(RepositorioUsuarios.TipoCodigo.ALTA);
+        assertThat(usuarios.codigoVigente(colegio, "789ABCDE", reloj.ahora())).as("nunca en claro").isEmpty();
+        assertThat(auditoria.todos()).filteredOn(e -> e.accion() == RegistroAuditoria.Accion.ALTA_EN_LOTE)
+                .extracting(e -> e.detalle().orElse("")).containsExactly("2 creadas, 2 sin crear");
+    }
+
+    @Test
+    void un_docente_no_da_de_alta_en_un_grupo_ajeno_y_una_lista_vacia_o_de_501_se_rechaza() {
+        Actor rectora = cuenta("Rectora", Usuario.RolGlobal.ADMINISTRADOR);
+        Actor profe = cuenta("Profe Ramírez", Usuario.RolGlobal.DOCENTE);
+        Actor otra = cuenta("Profe Díaz", Usuario.RolGlobal.DOCENTE);
+        Grupo g = servicio.crearGrupo(rectora, "10.º A", Optional.of(profe.id()));
+        String quinientasUna = java.util.stream.IntStream.rangeClosed(1, 501).mapToObj(i -> "Estudiante " + i).collect(java.util.stream.Collectors.joining("\n"));
+
+        assertThatThrownBy(() -> servicio.altaEnLote(otra, g.id(), "Ana")).isInstanceOf(ObjetoNoEncontrado.class);
+        assertThatThrownBy(() -> servicio.altaEnLote(profe, g.id(), " \n ")).isInstanceOf(ServicioUsuarios.DatosInvalidos.class)
+                .hasMessageContaining("vacía");
+        assertThatThrownBy(() -> servicio.altaEnLote(profe, g.id(), quinientasUna)).isInstanceOf(ServicioUsuarios.DatosInvalidos.class)
+                .hasMessageContaining("501 filas");
+        assertThat(servicio.miembros(profe, g.id())).isEmpty();
+    }
+
+    @Test
+    void los_codigos_nuevos_restablecen_a_quien_tiene_clave_dan_alta_a_quien_no_y_cierran_sus_sesiones() {
+        Actor rectora = cuenta("Rectora", Usuario.RolGlobal.ADMINISTRADOR);
+        Actor profe = cuenta("Profe Ramírez", Usuario.RolGlobal.DOCENTE);
+        Grupo g = servicio.crearGrupo(rectora, "10.º A", Optional.of(profe.id()));
+        ServicioAula.AltaEnLote alta = servicio.altaEnLote(profe, g.id(), "Ana Pérez\nSofía Ruiz\nLuis Gómez");
+        UUID ana = alta.creadas().get(0).cuenta().id();
+        UUID sofia = alta.creadas().get(1).cuenta().id();
+        UUID luis = alta.creadas().get(2).cuenta().id();
+        usuarios.cambiarClave(colegio, ana, "hash-de-ana", Usuario.TipoClave.CONTRASENA);
+        usuarios.cambiarActivo(colegio, luis, false);
+        UUID ajena = cuenta("Persona ajena", Usuario.RolGlobal.ESTUDIANTE).id();
+
+        var emitidos = servicio.codigosNuevos(profe, g.id(), java.util.List.of(ana, sofia, luis, ajena));
+
+        assertThat(emitidos).extracting(e -> e.cuenta().nombre() + ":" + e.tipo())
+                .containsExactly("Ana Pérez:RESTABLECER", "Sofía Ruiz:ALTA");
+        assertThat(sesionesCerradas).containsExactly(ana, sofia);
+        assertThatThrownBy(() -> servicio.codigosNuevos(profe, g.id(), java.util.List.of(ajena))).isInstanceOf(ServicioUsuarios.DatosInvalidos.class);
     }
 
     @Test

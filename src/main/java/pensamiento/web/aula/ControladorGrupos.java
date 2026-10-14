@@ -125,6 +125,7 @@ public class ControladorGrupos {
         return switch (motivo) {
             case "creado" -> "Listo: el grupo quedó creado.";
             case "docente" -> "Listo: el grupo tiene su docente.";
+            case "elige" -> "Marca al menos un estudiante activo del grupo para darle un código nuevo.";
             default -> "";
         };
     }

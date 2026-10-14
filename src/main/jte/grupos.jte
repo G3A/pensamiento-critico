@@ -26,7 +26,7 @@
         @for(FilaGrupo f : v.filas())
           <li class="tarjeta grupo-fila">
             <a class="grupo-nombre" href="/grupos/${f.grupo().id().toString()}">${f.grupo().nombre()}</a>
-            <span class="detalle">${f.estudiantes()} @if(f.estudiantes() == 1)estudiante@else estudiantes@endif@if(v.administra()) · ${f.docente()}@endif</span>
+            <span class="detalle">${f.estudiantes()}@if(f.estudiantes() == 1) estudiante@else estudiantes@endif@if(v.administra()) · ${f.docente()}@endif</span>
           </li>
         @endfor
       </ul>

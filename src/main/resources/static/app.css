@@ -587,6 +587,33 @@ fieldset { border: 1px solid var(--borde); border-radius: var(--radio); }
   .tarjeta-codigo { border: 2px dashed #000; break-inside: avoid; }
 }
 
+/* Hito 10 · El aula: grupos, alta en lote y la hoja de tarjetas. */
+.lista-grupos, .miembros { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; gap: .5rem; }
+.grupo-fila { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .25rem 1rem; margin: 0; }
+.grupo-nombre { font-weight: 600; min-height: var(--objetivo-tactil); display: inline-flex; align-items: center; }
+.miembro { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .25rem .75rem;
+  border-bottom: 1px solid var(--borde); }
+.miembro .opcion { flex: 1 1 12rem; }
+.vista-previa { width: 100%; border-collapse: collapse; margin: .5rem 0 1rem; }
+.vista-previa th, .vista-previa td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid var(--borde); overflow-wrap: anywhere; }
+.acciones-lote { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+.hoja-tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 1rem; }
+.tarjeta-lote { margin: 0; }
+.tarjeta-lote-nombre { font-size: 1.15rem; margin: 0 0 .25rem; overflow-wrap: anywhere; }
+.tarjeta-lote-para, .tarjeta-lote-pasos { font-size: .9rem; margin: .25rem 0; }
+.tarjeta-lote .codigo-grande { font-size: 1.8rem; margin: .25rem 0; }
+/* 8 tarjetas por hoja en dos columnas de 95 mm por 64 mm: caben igual en A4 (190 x 277 mm útiles) y en carta (196 x 259). */
+@page { margin: 10mm; }
+@media print {
+  .principal { padding: 0; }
+  .hoja-tarjetas { grid-template-columns: 95mm 95mm; gap: 0; }
+  .tarjeta-lote { height: 64mm; box-sizing: border-box; padding: 4mm 5mm; border: 1px dashed #000; border-radius: 0; break-inside: avoid;
+    overflow: hidden; box-shadow: none; }
+  .tarjeta-lote .codigo-grande { font-size: 22pt; }
+  .tarjeta-lote-pasos { font-size: 8.5pt; padding-left: 1.2em; }
+  .tarjeta-lote .detalle, .tarjeta-lote-para { font-size: 8.5pt; }
+}
+
 /* Hito 9 · Usar cabe en el portátil y en el celular (innegociable 15): ejemplos en una franja, la entrada plegable y,
    en angosto, una pista a la vez. */
 .barra-ejemplos { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .6rem; margin-bottom: .5rem; }
