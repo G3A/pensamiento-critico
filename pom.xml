@@ -79,7 +79,13 @@
       <artifactId>postgresql</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <!-- Argon2 para el hash del PIN -->
+    <!-- Hito 9: llave de acceso (passkey, WebAuthn) como segundo factor de los adultos. Versión del BOM de Spring Boot
+         4.1.1 (Spring Security 7.1.1); trae webauthn4j-core 0.31.9.RELEASE (Jackson 3), que verifica las firmas. -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-webauthn</artifactId>
+    </dependency>
+    <!-- Argon2 para el hash de contraseñas, claves y códigos de recuperación -->
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk18on</artifactId>

@@ -43,12 +43,12 @@ jobs:
 
       - name: Contratos reales
         # Sin -q: el log debe mostrar cuántas pruebas corrieron en cada Real*ContractIT.
-        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml --profile test run --rm -e CONTRACT_REAL=true tests mvn -B verify
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml --profile test run --rm -e CONTRACT_REAL=true -e MATRIZ_COMPLETA=true tests mvn -B verify
 
       - name: Sensor contra el falso verde (los Real*ContractIT corrieron de verdad)
         # Un verde sin contratos reales ejecutados (CONTRACT_REAL perdido, gating roto) deja al Fake autocertificado.
         run: |
-          for puerto in Ia Grafico Reloj RepositorioTecnica RepositorioEjecucion RepositorioUsuarios RepositorioExpediente RegistroAuditoria RepositorioConfiguracion RegistroIdentificadores RepositorioEsquemas RepositorioArgumentos RepositorioPredicciones RepositorioCambiosOpinion RepositorioSesiones RepositorioEvidencias RepositorioVerificaciones Biblioteca ColaTrabajos ExtractorPdf TransaccionComoUsuario RepositorioDojo RegistroDeRazonamiento RepositorioInstituciones RepositorioOperador; do
+          for puerto in Ia Grafico Reloj RepositorioTecnica RepositorioEjecucion RepositorioUsuarios RepositorioExpediente RegistroAuditoria RepositorioConfiguracion RegistroIdentificadores RepositorioEsquemas RepositorioArgumentos RepositorioPredicciones RepositorioCambiosOpinion RepositorioSesiones RepositorioEvidencias RepositorioVerificaciones Biblioteca ColaTrabajos ExtractorPdf TransaccionComoUsuario RepositorioDojo RegistroDeRazonamiento RepositorioInstituciones RepositorioOperador RegistroIntentos RepositorioLlaves; do
             reporte="target/failsafe-reports/TEST-pensamiento.contrato.real.Real${puerto}ContractIT.xml"
             test -f "$reporte" || { echo "Falta el reporte de Real${puerto}ContractIT"; exit 1; }
             corridas=$(grep -oE 'tests="[0-9]+"' "$reporte" | head -1 | grep -oE '[0-9]+')

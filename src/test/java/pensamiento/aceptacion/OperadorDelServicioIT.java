@@ -24,6 +24,8 @@ class OperadorDelServicioIT {
 
     private static final Pattern CODIGO = Pattern.compile("class=\"codigo-invitacion\">([0-9A-Z]{4}-[0-9A-Z]{4})<");
 
+    private static final String CLAVE_RECTORA = "la rectora riega las matas";
+
     private final String ruta = "colegio-" + UUID.randomUUID().toString().substring(0, 8);
 
     @Test
@@ -33,21 +35,25 @@ class OperadorDelServicioIT {
                 .isEqualTo(302);
         String codigo = invitar(operador, ruta);
 
-        assertThat(new ClienteApp(ruta).get("/" + ruta).cuerpo()).as("todavía sin cuentas").contains("Todavía no hay cuentas");
         ClienteApp invitada = new ClienteApp(ruta);
         invitada.csrfDe(invitada.get("/" + ruta + "/invitacion"));
         ClienteApp.Respuesta canje = invitada.postFormulario("/" + ruta + "/invitacion",
-                Map.of("codigo", codigo.toLowerCase(), "nombre", "Rectora Peña", "pin", "246810"));
+                Map.of("codigo", codigo.toLowerCase(), "nombre", "Rectora Peña", "contrasena", CLAVE_RECTORA, "repetida", CLAVE_RECTORA));
         assertThat(canje.estado()).isEqualTo(302);
         assertThat(canje.cabecera("Location").orElse("")).endsWith("/" + ruta + "?bienvenida");
 
         ClienteApp otraVez = new ClienteApp(ruta);
         otraVez.csrfDe(otraVez.get("/" + ruta + "/invitacion"));
         ClienteApp.Respuesta segundo = otraVez.postFormulario("/" + ruta + "/invitacion",
-                Map.of("codigo", codigo, "nombre", "Colado", "pin", "1357"));
+                Map.of("codigo", codigo, "nombre", "Colado", "contrasena", "otra clave larga de colado", "repetida", "otra clave larga de colado"));
         assertThat(segundo.estado()).as("el mismo código otra vez").isEqualTo(410);
 
-        ClienteApp rectora = Instalacion.entraComo(ruta, "rectora pena", "246810");
+        ClienteApp rectora = new ClienteApp(ruta);
+        ClienteApp.Respuesta entra = rectora.entrar("rectora pena", CLAVE_RECTORA);
+        assertThat(entra.estado()).as("entra con su contraseña").isEqualTo(302);
+        assertThat(entra.cabecera("Location").orElse("")).as("y solo puede registrar su llave").endsWith("/llave");
+        assertThat(rectora.get("/usuarios").cabecera("Location").orElse("")).as("sin llave, /usuarios la lleva a registrarla").endsWith("/llave");
+        Instalacion.completarLlave(rectora, "/llave", ruta + "/rectora");
         assertThat(rectora.get("/usuarios").estado()).as("es administradora").isEqualTo(200);
 
         Document panel = Jsoup.parse(operador.get("/operador").cuerpo());
@@ -101,7 +107,8 @@ class OperadorDelServicioIT {
     private static ClienteApp operador() {
         ClienteApp operador = new ClienteApp();
         ClienteApp.Respuesta r = operador.entrarComoOperador(Entorno.claveOperador());
-        assertThat(r.cabecera("Location").orElse("")).as("el operador entra").endsWith("/operador");
+        assertThat(r.cabecera("Location").orElse("")).as("el operador da su clave y confirma con su llave (hito 9)").endsWith("/operador/llave");
+        assertThat(operador.get("/operador").estado()).as("con la llave confirmada, el panel").isEqualTo(200);
         return operador;
     }
 

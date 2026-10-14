@@ -35,6 +35,7 @@ public final class ClienteApp {
     private static final Pattern META_CSRF = Pattern.compile("<meta name=\"_csrf\" content=\"([^\"]*)\"");
 
     private final HttpClient http;
+    private final CookieManager cookies;
     private final String base;
     private final String ruta;
     private String csrf = "";
@@ -48,7 +49,7 @@ public final class ClienteApp {
     public ClienteApp(String ruta) {
         this.base = Entorno.urlApp();
         this.ruta = ruta;
-        CookieManager cookies = new CookieManager();
+        this.cookies = new CookieManager();
         cookies.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         this.http = HttpClient.newBuilder()
                 .cookieHandler(cookies)
@@ -100,6 +101,33 @@ public final class ClienteApp {
         return enviar(peticion);
     }
 
+    /** El valor de una cookie de esta sesión (para pasarle la sesión a un navegador de Playwright). */
+    public String cookie(String nombre) {
+        return cookies.getCookieStore().getCookies().stream().filter(c -> c.getName().equals(nombre)).map(java.net.HttpCookie::getValue)
+                .findFirst().orElseThrow(() -> new IllegalStateException("Sin cookie " + nombre));
+    }
+
+    /** Un POST con cuerpo JSON y el token CSRF en la cabecera, como los que manda /llave.js. */
+    public Respuesta postJson(String ruta, String json) {
+        return enviar(HttpRequest.newBuilder(URI.create(base + ruta))
+                .header("Content-Type", "application/json")
+                .header("X-CSRF-TOKEN", csrf)
+                .POST(HttpRequest.BodyPublishers.ofString(json)));
+    }
+
+    /** Una petición htmx desde la página de una persona: lleva su id en X-Persona, como la manda layout.jte (RF-02b). */
+    public Respuesta postHtmxDesdeLaPaginaDe(String persona, String ruta, Map<String, String> campos) {
+        String cuerpo = campos.entrySet().stream()
+                .map(e -> URLEncoder.encode(e.getKey(), StandardCharsets.UTF_8) + "=" + URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8))
+                .collect(Collectors.joining("&"));
+        return enviar(HttpRequest.newBuilder(URI.create(base + ruta))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("X-CSRF-TOKEN", csrf)
+                .header("HX-Request", "true")
+                .header("X-Persona", persona)
+                .POST(HttpRequest.BodyPublishers.ofString(cuerpo)));
+    }
+
     /** Sube un archivo como multipart/form-data, con el token CSRF en la cabecera (formulario de importar). */
     public Respuesta postArchivo(String ruta, String campo, String nombreArchivo, byte[] contenido) {
         String limite = "----limite" + java.util.UUID.randomUUID();
@@ -142,10 +170,10 @@ public final class ClienteApp {
         return csrf;
     }
 
-    /** Entra como una persona; devuelve la respuesta cruda para afirmar sobre la redirección. */
-    public Respuesta entrar(String nombre, String pin) {
+    /** Entra como una persona con su contraseña; devuelve la respuesta cruda para afirmar sobre la redirección. */
+    public Respuesta entrar(String nombre, String contrasena) {
         tomarCsrf();
-        Respuesta r = postFormulario("/sesion", Map.of("nombre", nombre, "pin", pin, "volver", "/", "institucion", ruta));
+        Respuesta r = postFormulario("/sesion", Map.of("nombre", nombre, "contrasena", contrasena, "volver", "/", "institucion", ruta));
         // Tras autenticarse el token cambia: se vuelve a tomar de una página con sesión.
         Respuesta inicio = get("/");
         Matcher m = META_CSRF.matcher(inicio.cuerpo());
@@ -155,10 +183,14 @@ public final class ClienteApp {
         return r;
     }
 
-    /** Entra como operador del servicio por /operador/entrar; devuelve la respuesta cruda del envío. */
+    /** Entra como operador del servicio por /operador/entrar y confirma con su llave; devuelve la respuesta cruda del envío. */
     public Respuesta entrarComoOperador(String clave) {
+        Instalacion.prepararOperador();
         csrfDe(get("/operador/entrar"));
         Respuesta r = postFormulario("/operador/sesion", Map.of("nombre", "operador", "clave", clave));
+        if (r.estado() == 302 && r.cabecera("Location").orElse("").endsWith("/operador/llave")) {
+            Instalacion.completarLlave(this, "/operador/llave", "operador");
+        }
         csrfDe(get("/operador"));
         return r;
     }

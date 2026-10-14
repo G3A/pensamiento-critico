@@ -67,7 +67,7 @@ class AislamientoEntreInstitucionesIT {
 
     @Test
     void el_rol_de_la_app_no_puede_leer_las_tablas_del_operador() {
-        for (String tabla : java.util.List.of("operador", "invitacion", "auditoria_operador")) {
+        for (String tabla : java.util.List.of("operador", "invitacion", "auditoria_operador", "intento_acceso", "llave_acceso", "codigo_recuperacion")) {
             Boolean puede = bd.jdbcApp().sql("SELECT has_table_privilege('app', :t, 'SELECT')").param("t", tabla).query(Boolean.class).single();
             assertThat(puede).as("SELECT de app sobre %s", tabla).isFalse();
         }
@@ -75,13 +75,16 @@ class AislamientoEntreInstitucionesIT {
         assertThat(bypass).as("el rol de la app no tiene BYPASSRLS").isFalse();
     }
 
-    /** Las tablas con RLS forzada, menos las del operador (sin políticas: nadie las lee por RLS, solo por sus funciones). */
+    /**
+     * Las tablas con RLS forzada, menos las del operador, la de intentos de acceso y las de llaves de acceso (sin políticas
+     * ni permisos: nadie las lee por RLS, solo por sus funciones SECURITY DEFINER).
+     */
     private Set<String> tablasConRlsDeInstitucion() {
         Set<String> tablas = new TreeSet<>(bd.jdbcAdmin().sql("""
                 SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
                 WHERE n.nspname = 'public' AND c.relkind = 'r' AND c.relrowsecurity AND c.relforcerowsecurity""")
                 .query(String.class).list());
-        tablas.removeAll(Set.of("operador", "invitacion", "auditoria_operador"));
+        tablas.removeAll(Set.of("operador", "invitacion", "auditoria_operador", "intento_acceso", "llave_acceso", "codigo_recuperacion"));
         return tablas;
     }
 }
