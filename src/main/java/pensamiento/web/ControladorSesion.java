@@ -53,9 +53,11 @@ public class ControladorSesion {
     private final RepositorioTecnica tecnicas;
     private final Pagina.Fabrica paginas;
     private final TransactionTemplate tx;
+    private final pensamiento.web.aula.ServicioAula aula;
 
     public ControladorSesion(RepositorioInstituciones instituciones, RepositorioTecnica tecnicas, Pagina.Fabrica paginas,
-                             PlatformTransactionManager gestor) {
+                             PlatformTransactionManager gestor, pensamiento.web.aula.ServicioAula aula) {
+        this.aula = aula;
         this.instituciones = instituciones;
         this.tecnicas = tecnicas;
         this.paginas = paginas;
@@ -83,7 +85,27 @@ public class ControladorSesion {
                 ? Optional.of("Listo, " + nombre + ": tu contraseña quedó guardada. Entra con tu nombre y tu contraseña.")
                 : request.getParameter("bienvenida") != null
                 ? Optional.of("Tu cuenta de administrador está lista: entra con tu nombre y tu contraseña.") : Optional.empty();
-        return pintar(request, modelo, ruta, listo instanceof String nombre ? nombre : "", Optional.empty(), aviso);
+        Optional<RespuestasSesion.ClaseEnEntrada> clase = claseEnEntrada(institucion(ruta).orElseThrow(), request);
+        String nombre = listo instanceof String n ? n : clase.filter(RespuestasSesion.ClaseEnEntrada::conLista)
+                .map(c -> request.getParameter("nombre")).orElse("");
+        return pintar(request, modelo, ruta, nombre, Optional.empty(), aviso, clase);
+    }
+
+    /**
+     * Hito 10: /<ruta>?clase=CODIGO (el QR de la clase). Si la clase está abierta, la entrada dice de qué grupo es y, solo si su
+     * docente la activó, muestra los nombres de ese grupo; tocar el propio vuelve aquí con ?nombre= y lista=si. Un código que
+     * no sirve deja la entrada de siempre, sin lista.
+     */
+    private Optional<RespuestasSesion.ClaseEnEntrada> claseEnEntrada(UUID institucion, HttpServletRequest request) {
+        String codigo = request.getParameter("clase");
+        if (codigo == null || codigo.isBlank()) {
+            return Optional.empty();
+        }
+        return aula.clasePorCodigo(institucion, codigo).map(c -> {
+            List<String> lista = aula.listaDeClase(institucion, codigo);
+            boolean conLista = "si".equals(request.getParameter("lista")) && lista.contains(request.getParameter("nombre"));
+            return new RespuestasSesion.ClaseEnEntrada(codigo.strip().toUpperCase(java.util.Locale.ROOT), c.grupo(), lista, conLista);
+        });
     }
 
     /** El rechazo de un intento (reenviado por RespuestasSesion): la entrada de nuevo, con el error, el estado y el nombre. */
@@ -103,7 +125,7 @@ public class ControladorSesion {
         response.setStatus(estado instanceof Integer codigo ? codigo : HttpServletResponse.SC_UNAUTHORIZED);
         Optional<String> error = Optional.ofNullable(request.getAttribute(RespuestasSesion.ATRIBUTO_ERROR)).map(Object::toString);
         String nombre = request.getParameter("nombre") == null ? "" : request.getParameter("nombre");
-        return pintar(request, modelo, ruta, nombre, error, Optional.empty());
+        return pintar(request, modelo, ruta, nombre, error, Optional.empty(), institucion(ruta).flatMap(i -> claseEnEntrada(i, request)));
     }
 
     @GetMapping("/{ruta:[a-z0-9][a-z0-9-]{1,38}[a-z0-9]}/sin-cuenta")
@@ -136,12 +158,13 @@ public class ControladorSesion {
         return RutasReservadas.deInstitucion(ruta).map(r -> "redirect:/" + r).orElse("redirect:/?ruta-invalida");
     }
 
-    private String pintar(HttpServletRequest request, Model modelo, String ruta, String nombre, Optional<String> error, Optional<String> aviso) {
+    private String pintar(HttpServletRequest request, Model modelo, String ruta, String nombre, Optional<String> error, Optional<String> aviso,
+                          Optional<RespuestasSesion.ClaseEnEntrada> clase) {
         CsrfToken token = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         String volver = RespuestasSesion.destinoSeguro(request.getParameter("volver"));
         modelo.addAttribute("pagina", paginas.crear("Entrar", request));
         modelo.addAttribute("entrada", new ModeloEntrada(token == null ? "" : token.getToken(), ruta, "/".equals(volver) ? "" : volver,
-                nombre, error, aviso, false, Optional.empty()));
+                nombre, error, aviso, false, Optional.empty(), clase));
         return "bloqueo";
     }
 

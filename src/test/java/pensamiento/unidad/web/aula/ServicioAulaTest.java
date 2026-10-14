@@ -8,6 +8,9 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import pensamiento.nucleo.ClaseDeAula;
 import pensamiento.nucleo.Grupo;
 import pensamiento.nucleo.Usuario;
 import pensamiento.nucleo.puertos.RegistroAuditoria;
@@ -181,6 +184,76 @@ class ServicioAulaTest {
                 .containsExactly("Ana Pérez:RESTABLECER", "Sofía Ruiz:ALTA");
         assertThat(sesionesCerradas).containsExactly(ana, sofia);
         assertThatThrownBy(() -> servicio.codigosNuevos(profe, g.id(), java.util.List.of(ajena))).isInstanceOf(ServicioUsuarios.DatosInvalidos.class);
+    }
+
+    @Test
+    void abrir_la_clase_da_un_codigo_corto_que_lleva_al_grupo_y_la_lista_solo_si_se_activo() {
+        Actor rectora = cuenta("Rectora", Usuario.RolGlobal.ADMINISTRADOR);
+        Actor profe = cuenta("Profe Ramírez", Usuario.RolGlobal.DOCENTE);
+        Grupo g = servicio.crearGrupo(rectora, "10.º A", Optional.of(profe.id()));
+        servicio.altaEnLote(profe, g.id(), "Beto Ruiz\nAna Pérez");
+
+        ServicioAula.ClaseAbierta abierta = servicio.abrirClase(profe, g.id(), 50);
+
+        assertThat(abierta.codigo()).hasSize(6);
+        assertThat(java.time.Duration.between(abierta.clase().abiertaEn(), abierta.clase().cierraEn())).isEqualTo(java.time.Duration.ofMinutes(50));
+        assertThat(servicio.clasePorCodigo(colegio, abierta.codigo().toLowerCase())).map(RepositorioAula.ClasePorCodigo::grupo).contains("10.º A");
+        assertThat(servicio.listaDeClase(colegio, abierta.codigo())).as("apagada por defecto").isEmpty();
+        servicio.cambiarOpciones(profe, g.id(), true, false);
+        assertThat(servicio.listaDeClase(colegio, abierta.codigo())).containsExactly("Ana Pérez", "Beto Ruiz");
+        assertThat(servicio.clasePorCodigo(colegio, "no-es")).isEmpty();
+        assertThat(auditoria.todos()).extracting(RegistroAuditoria.Evento::accion).contains(RegistroAuditoria.Accion.ABRIR_CLASE);
+    }
+
+    @Test
+    void la_clase_dura_entre_10_y_60_minutos() {
+        Actor rectora = cuenta("Rectora", Usuario.RolGlobal.ADMINISTRADOR);
+        Actor profe = cuenta("Profe Ramírez", Usuario.RolGlobal.DOCENTE);
+        Grupo g = servicio.crearGrupo(rectora, "10.º A", Optional.of(profe.id()));
+
+        ClaseDeAula larga = servicio.abrirClase(profe, g.id(), 600).clase();
+        ClaseDeAula corta = servicio.abrirClase(profe, g.id(), 1).clase();
+
+        assertThat(java.time.Duration.between(larga.abiertaEn(), larga.cierraEn())).isEqualTo(java.time.Duration.ofMinutes(60));
+        assertThat(java.time.Duration.between(corta.abiertaEn(), corta.cierraEn())).isEqualTo(java.time.Duration.ofMinutes(10));
+    }
+
+    @Test
+    void la_sesion_del_estudiante_dura_lo_que_queda_de_su_clase_y_si_no_hay_clase_10_minutos() {
+        Actor rectora = cuenta("Rectora", Usuario.RolGlobal.ADMINISTRADOR);
+        Actor profe = cuenta("Profe Ramírez", Usuario.RolGlobal.DOCENTE);
+        Grupo g = servicio.crearGrupo(rectora, "10.º A", Optional.of(profe.id()));
+        UUID ana = servicio.altaEnLote(profe, g.id(), "Ana Pérez").creadas().get(0).cuenta().id();
+        Actor estudiante = new Actor(ana, colegio, Usuario.RolGlobal.ESTUDIANTE);
+        assertThat(servicio.duracionDeSesion(estudiante)).isEqualTo(java.time.Duration.ofMinutes(10));
+
+        servicio.abrirClase(profe, g.id(), 50);
+        reloj.avanzar(java.time.Duration.ofMinutes(5));
+        assertThat(servicio.duracionDeSesion(estudiante)).isEqualTo(java.time.Duration.ofMinutes(45));
+        assertThat(servicio.duracionDeSesion(profe)).as("solo los estudiantes").isEqualTo(java.time.Duration.ofMinutes(10));
+        reloj.avanzar(java.time.Duration.ofMinutes(42));
+        assertThat(servicio.duracionDeSesion(estudiante)).as("nunca menos de 10").isEqualTo(java.time.Duration.ofMinutes(10));
+
+        servicio.terminarClase(profe, g.id());
+        assertThat(servicio.duracionDeSesion(estudiante)).isEqualTo(java.time.Duration.ofMinutes(10));
+    }
+
+    @Test
+    void terminar_la_clase_cierra_las_sesiones_de_todo_el_grupo_y_su_codigo_deja_de_servir() {
+        Actor rectora = cuenta("Rectora", Usuario.RolGlobal.ADMINISTRADOR);
+        Actor profe = cuenta("Profe Ramírez", Usuario.RolGlobal.DOCENTE);
+        Actor otra = cuenta("Profe Díaz", Usuario.RolGlobal.DOCENTE);
+        Grupo g = servicio.crearGrupo(rectora, "10.º A", Optional.of(profe.id()));
+        List<UUID> ids = servicio.altaEnLote(profe, g.id(), "Ana Pérez\nBeto Ruiz").creadas().stream().map(c -> c.cuenta().id()).toList();
+        String codigo = servicio.abrirClase(profe, g.id(), 50).codigo();
+
+        assertThatThrownBy(() -> servicio.terminarClase(otra, g.id())).isInstanceOf(ObjetoNoEncontrado.class);
+        assertThat(servicio.terminarClase(profe, g.id())).isEqualTo(2);
+
+        assertThat(sesionesCerradas).containsExactlyInAnyOrderElementsOf(ids);
+        assertThat(servicio.clasePorCodigo(colegio, codigo)).isEmpty();
+        assertThat(servicio.claseAbierta(profe, g.id())).isEmpty();
+        assertThat(auditoria.todos()).extracting(RegistroAuditoria.Evento::accion).contains(RegistroAuditoria.Accion.TERMINAR_CLASE);
     }
 
     @Test

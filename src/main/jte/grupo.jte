@@ -16,6 +16,26 @@
     @if(v.error().isPresent())
       <p class="error" role="alert">${v.error().get()}</p>
     @endif
+    <section class="tarjeta acciones-grupo" aria-labelledby="clase-titulo">
+      <h2 id="clase-titulo">Clase</h2>
+      @if(v.claseAbierta())
+        <p><span class="chip chip-ok">clase abierta</span></p>
+        <p><a class="boton" href="/grupos/${v.grupo().id().toString()}/clase">Ver el código y el QR</a></p>
+      @else
+        <p><a class="boton" href="/grupos/${v.grupo().id().toString()}/clase">Abrir clase</a></p>
+      @endif
+      <details class="plegable">
+        <summary>Opciones de la clase</summary>
+        <form class="formulario" method="post" action="/grupos/${v.grupo().id().toString()}/opciones">
+          <input type="hidden" name="_csrf" value="${pagina.csrf()}">
+          <label class="opcion"><input type="checkbox" name="lista" value="si" checked="${v.grupo().listaEnClase()}"> Mostrar la lista de nombres del grupo en la entrada de la clase</label>
+          <p class="ayuda">Solo mientras la clase está abierta y solo con su código. Igual hace falta la contraseña de cada quien.</p>
+          <label class="opcion"><input type="checkbox" name="ia" value="si" checked="${v.grupo().iaEnClase()}"> Dejar usar el asistente de IA durante la clase</label>
+          <p class="ayuda">Apagado, las técnicas funcionan igual sin «Pedir propuestas al modelo». Encendido, el grupo tiene un turno justo en la cola del modelo.</p>
+          <button type="submit" class="boton boton-secundario">Guardar opciones</button>
+        </form>
+      </details>
+    </section>
     <section class="tarjeta" aria-labelledby="estudiantes-titulo">
       <h2 id="estudiantes-titulo">Estudiantes</h2>
       <p><a class="boton" href="/grupos/${v.grupo().id().toString()}/lote">Dar de alta en lote</a></p>

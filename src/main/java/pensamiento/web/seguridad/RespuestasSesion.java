@@ -254,6 +254,24 @@ public class RespuestasSesion {
      * la persona dueña de la página (solo en el overlay).
      */
     public record ModeloEntrada(String csrf, String ruta, String volver, String nombre, Optional<String> error, Optional<String> aviso,
-                                boolean overlay, Optional<String> persona) {
+                                boolean overlay, Optional<String> persona, Optional<ClaseEnEntrada> clase) {
+
+        public ModeloEntrada(String csrf, String ruta, String volver, String nombre, Optional<String> error, Optional<String> aviso,
+                             boolean overlay, Optional<String> persona) {
+            this(csrf, ruta, volver, nombre, error, aviso, overlay, persona, Optional.empty());
+        }
+    }
+
+    /**
+     * Hito 10: la entrada con el código de una clase abierta (QR o escrito). Dice de qué grupo es y, solo si su docente la
+     * activó, trae la lista de nombres de ese grupo para tocar el propio. {@code conLista}: el nombre vino de la lista.
+     */
+    public record ClaseEnEntrada(String codigo, String grupo, java.util.List<String> lista, boolean conLista) {
+
+        /** El enlace de un nombre de la lista: vuelve a la entrada con ese nombre escrito. */
+        public String enlace(String ruta, String nombre) {
+            return "/" + ruta + "?clase=" + java.net.URLEncoder.encode(codigo, java.nio.charset.StandardCharsets.UTF_8) + "&lista=si&nombre="
+                    + java.net.URLEncoder.encode(nombre, java.nio.charset.StandardCharsets.UTF_8);
+        }
     }
 }

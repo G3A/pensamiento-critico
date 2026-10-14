@@ -602,6 +602,17 @@ fieldset { border: 1px solid var(--borde); border-radius: var(--radio); }
 .tarjeta-lote-nombre { font-size: 1.15rem; margin: 0 0 .25rem; overflow-wrap: anywhere; }
 .tarjeta-lote-para, .tarjeta-lote-pasos { font-size: .9rem; margin: .25rem 0; }
 .tarjeta-lote .codigo-grande { font-size: 1.8rem; margin: .25rem 0; }
+.proyectar { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; margin: 1rem 0; }
+.qr-marco { flex: 0 1 22rem; max-width: 100%; background: #fff; padding: .5rem; border-radius: var(--radio); }
+.qr-marco .qr { display: block; width: 100%; height: auto; }
+.proyectar-texto { flex: 1 1 16rem; font-size: 1.2rem; overflow-wrap: anywhere; }
+.proyectar-texto p { margin: .25rem 0; }
+.direccion-clase { font-weight: 600; }
+.codigo-clase { font-size: 3rem; }
+.terminar-clase { margin-top: 1.5rem; }
+.lista-de-clase ul { list-style: none; margin: .5rem 0; padding: 0; display: grid; gap: .25rem; }
+.lista-de-clase a { display: flex; align-items: center; min-height: var(--objetivo-tactil); padding: 0 .5rem; border: 1px solid var(--borde);
+  border-radius: var(--radio); text-decoration: none; }
 /* 8 tarjetas por hoja en dos columnas de 95 mm por 64 mm: caben igual en A4 (190 x 277 mm útiles) y en carta (196 x 259). */
 @page { margin: 10mm; }
 @media print {

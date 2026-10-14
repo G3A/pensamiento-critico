@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import pensamiento.nucleo.ClaseDeAula;
 import pensamiento.nucleo.Grupo;
 import pensamiento.nucleo.Usuario;
 import pensamiento.nucleo.puertos.RegistroAuditoria;
@@ -46,6 +47,15 @@ public class ServicioAula {
     private final TransactionTemplate tx;
     private final CodigoDeUnUso codigos;
     private final Consumer<UUID> cerrarSesiones;
+
+    /** Largo del código de clase: corto para dictarlo o copiarlo del tablero; dura lo que la clase. */
+    public static final int LARGO_CODIGO_CLASE = 6;
+    /** La sesión de un estudiante fuera de una clase abierta (RF-02). */
+    public static final Duration SESION_SIN_CLASE = Duration.ofMinutes(10);
+
+    /** Una clase recién abierta con su código en claro: solo lo ve su docente, mientras la proyecta. */
+    public record ClaseAbierta(ClaseDeAula clase, String codigo) {
+    }
 
     /** Lo que se crearía con una lista, antes de crear nada. */
     public record VistaPrevia(Grupo grupo, List<ListaDeEstudiantes.Fila> filas) {
@@ -182,6 +192,86 @@ public class ServicioAula {
         });
         emitidos.forEach(e -> cerrarSesiones.accept(e.cuenta().id()));
         return emitidos;
+    }
+
+    /**
+     * El docente (o el administrador) abre la clase del grupo con un código corto, por {@code minutos} (entre 10 y 60); si había
+     * otra abierta, la termina. El código se guarda solo como hash.
+     */
+    public ClaseAbierta abrirClase(Actor actor, UUID grupoId, int minutos) {
+        return enTransaccion(() -> {
+            grupoQueAdministra(actor, grupoId);
+            Duration dura = Duration.ofMinutes(Math.clamp(minutos, 10, ClaseDeAula.DURACION_MAXIMA.toMinutes()));
+            String codigo = codigos.nuevo().substring(0, LARGO_CODIGO_CLASE);
+            Instant ahora = reloj.ahora();
+            ClaseDeAula clase = aula.abrirClase(actor, grupoId, CodigoDeUnUso.hash(codigo), ahora, ahora.plus(dura))
+                    .orElseThrow(() -> new ObjetoNoEncontrado("grupo"));
+            registrar(actor, RegistroAuditoria.Accion.ABRIR_CLASE, grupoId);
+            return new ClaseAbierta(clase, codigo);
+        });
+    }
+
+    /**
+     * El docente del grupo (o el administrador) decide si la entrada con el código de su clase muestra la lista de nombres del
+     * grupo y si sus estudiantes pueden usar el modelo durante la clase (las dos, apagadas por defecto).
+     */
+    public void cambiarOpciones(Actor actor, UUID grupoId, boolean listaEnClase, boolean iaEnClase) {
+        enTransaccion(() -> {
+            grupoQueAdministra(actor, grupoId);
+            aula.cambiarOpciones(actor, grupoId, listaEnClase, iaEnClase);
+            auditoria.registrar(new RegistroAuditoria.Evento(Optional.of(actor.id()), actor.institucionId(), RegistroAuditoria.Accion.CAMBIAR_GRUPO,
+                    "grupo", Optional.of(grupoId), reloj.ahora(), Optional.of("lista:" + (listaEnClase ? "si" : "no") + " ia:" + (iaEnClase ? "si" : "no"))));
+            return null;
+        });
+    }
+
+    /** La clase abierta del grupo, si el actor ve el grupo. */
+    public Optional<ClaseDeAula> claseAbierta(Actor actor, UUID grupoId) {
+        return enTransaccion(() -> aula.claseAbierta(actor, grupoId, reloj.ahora()));
+    }
+
+    /** "Terminar clase": la cierra y cierra las sesiones de todos los estudiantes del grupo. Devuelve cuántas cuentas tocó. */
+    public int terminarClase(Actor actor, UUID grupoId) {
+        List<UUID> estudiantes = enTransaccion(() -> {
+            grupoQueAdministra(actor, grupoId);
+            aula.terminarClase(actor, grupoId, reloj.ahora());
+            registrar(actor, RegistroAuditoria.Accion.TERMINAR_CLASE, grupoId);
+            return aula.miembros(actor, grupoId).stream().map(RepositorioAula.Miembro::id).toList();
+        });
+        estudiantes.forEach(cerrarSesiones);
+        return estudiantes.size();
+    }
+
+    /**
+     * Cuánto dura sin actividad la sesión de un estudiante: lo que le queda a la clase abierta de alguno de sus grupos (hasta 60
+     * minutos) o, sin clase abierta, 10 minutos. Nunca menos de 10.
+     */
+    public Duration duracionDeSesion(Actor actor) {
+        if (actor.rol() != Usuario.RolGlobal.ESTUDIANTE) {
+            return SESION_SIN_CLASE;
+        }
+        Instant ahora = reloj.ahora();
+        Duration clase = enTransaccion(() -> aula.grupos(actor).stream().map(g -> aula.claseAbierta(actor, g.id(), ahora))
+                .flatMap(Optional::stream).map(c -> c.quedan(ahora)).max(Duration::compareTo).orElse(Duration.ZERO));
+        return clase.compareTo(SESION_SIN_CLASE) > 0 ? clase : SESION_SIN_CLASE;
+    }
+
+    /** Antes de entrar (QR o código escrito): la clase abierta con ese código en esa institución. */
+    public Optional<RepositorioAula.ClasePorCodigo> clasePorCodigo(UUID institucion, String codigoEscrito) {
+        String codigo = CodigoDeUnUso.normalizarLargo(codigoEscrito == null ? "" : codigoEscrito, LARGO_CODIGO_CLASE);
+        if (codigo.isEmpty()) {
+            return Optional.empty();
+        }
+        return enTransaccion(() -> aula.clasePorCodigo(institucion, CodigoDeUnUso.hash(codigo), reloj.ahora()));
+    }
+
+    /** Los nombres del grupo de esa clase, solo si está abierta y su docente activó la lista; si no, vacía. */
+    public List<String> listaDeClase(UUID institucion, String codigoEscrito) {
+        String codigo = CodigoDeUnUso.normalizarLargo(codigoEscrito == null ? "" : codigoEscrito, LARGO_CODIGO_CLASE);
+        if (codigo.isEmpty()) {
+            return List.of();
+        }
+        return enTransaccion(() -> aula.listaDeClase(institucion, CodigoDeUnUso.hash(codigo), reloj.ahora()));
     }
 
     private VistaPrevia previa(Actor actor, UUID grupoId, String texto) {

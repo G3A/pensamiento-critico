@@ -40,7 +40,7 @@ public class ControladorGrupos {
 
     /** Lo que pinta /grupos/{id}. */
     public record VistaGrupo(Grupo grupo, String docente, List<RepositorioAula.Miembro> miembros, List<Usuario> docentes, boolean administra,
-                             Optional<String> aviso, Optional<String> error) {
+                             Optional<String> aviso, Optional<String> error, boolean claseAbierta) {
     }
 
     private final ServicioAula servicio;
@@ -87,6 +87,13 @@ public class ControladorGrupos {
         }
     }
 
+    @PostMapping("/grupos/{id}/opciones")
+    public String opciones(@PathVariable UUID id, @RequestParam(defaultValue = "") String lista, @RequestParam(defaultValue = "") String ia) {
+        UsuarioSesion yo = paginas.usuarioActual();
+        servicio.cambiarOpciones(yo.actor(), id, "si".equals(lista), "si".equals(ia));
+        return "redirect:/grupos/" + id + "?aviso=opciones";
+    }
+
     private String pintarGrupos(HttpServletRequest request, Model modelo, Optional<String> error, String nombreEscrito) {
         UsuarioSesion yo = paginas.usuarioActual();
         RepositorioAula.Actor actor = yo.actor();
@@ -109,7 +116,7 @@ public class ControladorGrupos {
         String docente = g.docenteId().map(d -> servicio.nombreDe(actor, d).orElse("otra cuenta")).orElse("sin docente");
         modelo.addAttribute("pagina", paginas.crear(g.nombre(), request));
         modelo.addAttribute("v", new VistaGrupo(g, docente, servicio.miembros(actor, id), yo.esAdministrador() ? servicio.docentes(actor) : List.of(),
-                yo.esAdministrador(), aviso, error));
+                yo.esAdministrador(), aviso, error, servicio.claseAbierta(actor, id).isPresent()));
         return "grupo";
     }
 
@@ -125,6 +132,8 @@ public class ControladorGrupos {
         return switch (motivo) {
             case "creado" -> "Listo: el grupo quedó creado.";
             case "docente" -> "Listo: el grupo tiene su docente.";
+            case "opciones" -> "Listo: las opciones de la clase quedaron guardadas.";
+            case "terminada" -> "La clase terminó y las sesiones de sus estudiantes se cerraron.";
             case "elige" -> "Marca al menos un estudiante activo del grupo para darle un código nuevo.";
             default -> "";
         };

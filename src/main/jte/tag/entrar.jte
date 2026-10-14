@@ -13,18 +13,37 @@
   @if(m.persona().isPresent())
     <input type="hidden" name="persona" value="${m.persona().get()}">
   @endif
+  @if(m.clase().isPresent())
+    <input type="hidden" name="clase" value="${m.clase().get().codigo()}">
+    @if(m.clase().get().conLista())
+      <input type="hidden" name="lista" value="si">
+    @endif
+  @endif
   @if(m.overlay())
     <h2 id="titulo-entrar">Entra de nuevo para seguir</h2>
     <p>Pasaron 10 minutos sin actividad y la sesión se cerró. Lo que estabas escribiendo sigue en la página: entra con tu
       nombre y tu contraseña y continúa. Solo puede seguir la misma persona.</p>
   @else
     <h1 id="titulo-entrar">Entrar</h1>
+    @if(m.clase().isPresent())
+      <p class="aviso clase-en-entrada" role="status">Clase de <strong>${m.clase().get().grupo()}</strong>: entra con tu nombre y tu contraseña.</p>
+    @endif
   @endif
   @if(m.aviso().isPresent())
     <p class="aviso" role="status">${m.aviso().get()}</p>
   @endif
   @if(m.error().isPresent())
     <p class="error" role="alert" id="${p}error-entrar">${m.error().get()}</p>
+  @endif
+  @if(m.clase().isPresent() && !m.clase().get().lista().isEmpty() && !m.clase().get().conLista())
+    <details class="lista-de-clase">
+      <summary>Tocar mi nombre en la lista del grupo</summary>
+      <ul>
+        @for(String n : m.clase().get().lista())
+          <li><a href="${m.clase().get().enlace(m.ruta(), n)}">${n}</a></li>
+        @endfor
+      </ul>
+    </details>
   @endif
   <label for="${p}nombre">Tu nombre</label>
   <input id="${p}nombre" name="nombre" type="text" autocomplete="username" autocapitalize="words" spellcheck="false" maxlength="60"

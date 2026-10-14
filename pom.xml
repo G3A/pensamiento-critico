@@ -85,6 +85,13 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-webauthn</artifactId>
     </dependency>
+    <!-- Hito 10: el QR de la clase. Nayuki QR Code generator 1.8.0 (MIT, un solo paquete y sin dependencias), confirmado en
+         Maven Central (repo1.maven.org/maven2/io/nayuki/qrcodegen); el SVG lo arma la app en el servidor. -->
+    <dependency>
+      <groupId>io.nayuki</groupId>
+      <artifactId>qrcodegen</artifactId>
+      <version>1.8.0</version>
+    </dependency>
     <!-- Argon2 para el hash de contraseñas, claves y códigos de recuperación -->
     <dependency>
       <groupId>org.bouncycastle</groupId>

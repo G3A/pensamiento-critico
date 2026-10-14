@@ -38,8 +38,16 @@ public class ProveedorEntrada implements AuthenticationProvider {
     public static final String CAMPO_PERSONA = "persona";
 
     /** Lo que el formulario de entrada aporta además del nombre y la contraseña. */
-    public record DetallesEntrada(String ruta, Optional<UUID> institucion, Optional<UUID> persona, String ip) {
+    public record DetallesEntrada(String ruta, Optional<UUID> institucion, Optional<UUID> persona, String ip, Optional<String> comoEntro) {
+
+        public DetallesEntrada(String ruta, Optional<UUID> institucion, Optional<UUID> persona, String ip) {
+            this(ruta, institucion, persona, ip, Optional.empty());
+        }
     }
+
+    /** Hito 10: la entrada de una clase manda el código ("clase") y si el nombre se tocó en la lista ("lista" = "si"). */
+    public static final String CAMPO_CLASE = "clase";
+    public static final String CAMPO_LISTA = "lista";
 
     /** Hay que esperar antes de volver a intentar: responde 429 con cuánto falta. */
     public static class DemasiadosIntentos extends AuthenticationException {
@@ -101,7 +109,9 @@ public class ProveedorEntrada implements AuthenticationProvider {
             Optional<UUID> institucion = ruta.isEmpty() ? Optional.empty()
                     : ContextoRls.con(Optional.empty(), Optional.empty(), () -> tx.execute(e -> instituciones.activaPorRuta(ruta)));
             Optional<UUID> persona = Optional.ofNullable(request.getParameter(CAMPO_PERSONA)).flatMap(ConfiguracionSeguridad::uuid);
-            return new DetallesEntrada(ruta, institucion == null ? Optional.empty() : institucion, persona, request.getRemoteAddr());
+            Optional<String> comoEntro = Optional.ofNullable(request.getParameter(CAMPO_CLASE)).filter(c -> !c.isBlank())
+                    .map(c -> "si".equals(request.getParameter(CAMPO_LISTA)) ? "clase:con-lista" : "clase:sin-lista");
+            return new DetallesEntrada(ruta, institucion == null ? Optional.empty() : institucion, persona, request.getRemoteAddr(), comoEntro);
         };
     }
 
@@ -144,7 +154,7 @@ public class ProveedorEntrada implements AuthenticationProvider {
             limite.exito(institucion, nombre);
             return null;
         });
-        auditar(institucion, Optional.of(usuario.id()), RegistroAuditoria.Accion.ENTRAR, nombre);
+        auditar(institucion, Optional.of(usuario.id()), RegistroAuditoria.Accion.ENTRAR, nombre, detalles.comoEntro());
         UsuarioSesion sesion = new UsuarioSesion(usuario, detalles.ruta(), etapaInicial.para(usuario), false);
         UsernamePasswordAuthenticationToken resultado = UsernamePasswordAuthenticationToken.authenticated(sesion, null, sesion.getAuthorities());
         resultado.setDetails(detalles);
@@ -152,9 +162,14 @@ public class ProveedorEntrada implements AuthenticationProvider {
     }
 
     private void auditar(UUID institucion, Optional<UUID> usuario, RegistroAuditoria.Accion accion, String nombre) {
+        auditar(institucion, usuario, accion, nombre, Optional.empty());
+    }
+
+    /** {@code comoEntro}: en una entrada desde una clase, si fue con la lista o sin ella (para medirlo en el piloto). */
+    private void auditar(UUID institucion, Optional<UUID> usuario, RegistroAuditoria.Accion accion, String nombre, Optional<String> comoEntro) {
         ContextoRls.conInstitucion(institucion, () -> tx.execute(e -> {
             auditoria.registrar(new RegistroAuditoria.Evento(usuario, institucion, accion, "usuario", usuario, reloj.ahora(),
-                    Optional.of(Usuario.claveDeNombre(nombre))));
+                    Optional.of(comoEntro.orElse(Usuario.claveDeNombre(nombre)))));
             return null;
         }));
     }

@@ -183,6 +183,22 @@ public final class ClienteApp {
         return r;
     }
 
+    /**
+     * Hito 10: entra desde la entrada de una clase abierta (/<ruta>?clase=CODIGO), con su contraseña; {@code conLista} si tocó
+     * su nombre en la lista del grupo.
+     */
+    public Respuesta entrarEnClase(String nombre, String contrasena, String codigo, boolean conLista) {
+        csrfDe(get("/" + ruta + "?clase=" + codigo));
+        java.util.Map<String, String> campos = new java.util.HashMap<>(Map.of("nombre", nombre, "contrasena", contrasena, "volver", "/",
+                "institucion", ruta, "clase", codigo));
+        if (conLista) {
+            campos.put("lista", "si");
+        }
+        Respuesta r = postFormulario("/sesion", campos);
+        csrfDe(get("/"));
+        return r;
+    }
+
     /** Entra como operador del servicio por /operador/entrar y confirma con su llave; devuelve la respuesta cruda del envío. */
     public Respuesta entrarComoOperador(String clave) {
         Instalacion.prepararOperador();
