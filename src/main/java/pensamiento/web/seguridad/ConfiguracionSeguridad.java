@@ -133,7 +133,7 @@ public class ConfiguracionSeguridad {
                 .requestMatchers("/", "/ir", "/bloqueo", "/sesion", RespuestasSesion.RUTA_RECHAZO, "/salir", "/error").permitAll()
                 .requestMatchers(ConfiguracionSeguridad::esEntradaDeInstitucion).permitAll()
                 .requestMatchers(ConfiguracionSeguridad::esSubrutaPublica).permitAll()
-                .requestMatchers("/htmx.min.js", "/alpine-csp.min.js", "/app.css", "/app.js", "/llave.js", "/ext/*.js", "/favicon.svg").permitAll()
+                .requestMatchers("/htmx.min.js", "/alpine-csp.min.js", "/app.css", "/app.js", "/llave.js", "/borrador.js", "/ext/*.js", "/favicon.svg").permitAll()
                 .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                 .requestMatchers("/actuator/**").hasRole("OPERADOR")      // métricas: solo el operador del servicio
                 .requestMatchers("/cuenta/contrasena-nueva").hasRole("PENDIENTE")   // quien entró con PIN elige su contraseña

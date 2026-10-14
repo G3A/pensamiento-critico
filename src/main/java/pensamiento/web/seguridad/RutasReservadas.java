@@ -13,7 +13,7 @@ public final class RutasReservadas {
 
     public static final Set<String> PRIMER_SEGMENTO = Set.of(
             // controladores
-            "administracion", "argumentos", "biblioteca", "bloqueo", "cambios-de-opinion", "catalogo", "consejero", "cuenta", "diario",
+            "administracion", "argumentos", "biblioteca", "bloqueo", "borradores", "cambios-de-opinion", "catalogo", "consejero", "cuenta", "diario",
             "dojo", "ejecuciones", "expedientes", "grupos", "ia", "ir", "llave", "manual", "mis-datos", "mis-trabajos", "operador", "reto", "taller", "tecnicas", "usuarios",
             "verificar",
             // Spring Security y Spring Boot

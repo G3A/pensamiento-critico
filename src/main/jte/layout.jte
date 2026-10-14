@@ -109,6 +109,7 @@
 <script src="/htmx.min.js"></script>
 <script src="/ext/sse.js"></script>
 <script src="/app.js"></script>
+<script src="/borrador.js"></script>
 <script src="/alpine-csp.min.js" defer></script>
 </body>
 </html>

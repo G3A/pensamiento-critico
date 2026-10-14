@@ -132,6 +132,7 @@ public final class SemillaDeInstitucion {
                 + "VALUES ('" + sesion + "', :u, :i, 1, 'persona', 'postura', :c, 'persona')");
         uno("verificacion", "INSERT INTO verificacion (afirmacion_id, usuario_id, institucion_id, preguntas) "
                 + "VALUES ('" + afirmacion + "', :u, :i, jsonb_build_object('nota', :c::text))");
+        uno("borrador", "INSERT INTO borrador (usuario_id, institucion_id, clave, campos) VALUES (:u, :i, 'dojo:semilla', jsonb_build_object('respuesta', :c::text))");
         uno("intento_dojo", "INSERT INTO intento_dojo (usuario_id, institucion_id, clave, reto_id, tecnica_id, concepto, nivel, respuesta, acierto, dia) "
                 + "VALUES (:u, :i, :c, 'reto-i1', 'T13', 'ad-hominem', 'identificar', :c, true, current_date)");
     }
@@ -140,6 +141,7 @@ public final class SemillaDeInstitucion {
     public void borrar() {
         JdbcClient admin = bd.jdbcAdmin();
         admin.sql("DELETE FROM intento_dojo WHERE institucion_id = :i").param("i", institucion).update();
+        admin.sql("DELETE FROM borrador WHERE institucion_id = :i").param("i", institucion).update();
         admin.sql("DELETE FROM turno_consejero WHERE institucion_id = :i").param("i", institucion).update();
         admin.sql("DELETE FROM sesion_consejero WHERE institucion_id = :i").param("i", institucion).update();
         admin.sql("DELETE FROM competencia WHERE institucion_id = :i").param("i", institucion).update();

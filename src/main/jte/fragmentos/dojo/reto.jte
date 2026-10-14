@@ -15,7 +15,7 @@
     <h2 id="reto-titulo">${r.pregunta()}</h2>
     <blockquote class="texto-reto"><p>${r.texto()}</p></blockquote>
     <form method="post" action="/dojo/retos/${r.id()}" hx-post="/dojo/retos/${r.id()}" hx-target="#reto" hx-swap="outerHTML" novalidate
-          class="formulario-reto">
+          class="formulario-reto" data-borrador="dojo:${r.id().toLowerCase()}">
       <input type="hidden" name="_csrf" value="${pagina.csrf()}">
       <input type="hidden" name="_clave" value="${v.clave()}">
       <input type="hidden" name="tema" value="${v.claveTema()}">

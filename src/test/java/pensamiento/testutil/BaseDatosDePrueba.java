@@ -108,6 +108,7 @@ public final class BaseDatosDePrueba {
         jdbc.sql("DELETE FROM codigo_cuenta WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM sesion_aula WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM intento_dojo WHERE institucion_id = :i").param("i", institucion).update();
+        jdbc.sql("DELETE FROM borrador WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM competencia WHERE institucion_id = :i").param("i", institucion).update();
         jdbc.sql("DELETE FROM miembro_grupo WHERE grupo_id IN (SELECT id FROM grupo WHERE institucion_id = :i)").param("i", institucion).update();
         jdbc.sql("DELETE FROM grupo WHERE institucion_id = :i").param("i", institucion).update();

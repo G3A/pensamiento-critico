@@ -48,10 +48,11 @@ class ConfiguracionSeguraTest {
         assertThat(estaticos.resolve("app.js")).exists();
         try (var archivos = Files.walk(estaticos)) {
             assertThat(archivos.filter(Files::isRegularFile).map(p -> estaticos.relativize(p).toString().replace('\\', '/')))
-                    .containsExactlyInAnyOrder("htmx.min.js", "ext/sse.js", "alpine-csp.min.js", "app.css", "app.js", "llave.js", "favicon.svg");
+                    .containsExactlyInAnyOrder("htmx.min.js", "ext/sse.js", "alpine-csp.min.js", "app.css", "app.js", "llave.js", "borrador.js", "favicon.svg");
         }
         // Hito 9: la llave de acceso tiene su propio archivo (la CSP no admite script en línea), también corto.
         assertThat(Files.readAllLines(estaticos.resolve("llave.js")).size()).isLessThan(100);
+        assertThat(Files.readAllLines(estaticos.resolve("borrador.js")).size()).isLessThan(100);
         try (var plantillas = Files.walk(Path.of("src/main/jte"))) {
             assertThat(plantillas.filter(p -> p.toString().endsWith(".jte")).map(p -> {
                 try {
