@@ -290,13 +290,33 @@ public class ServicioAula {
      * minutos) o, sin clase abierta, 10 minutos. Nunca menos de 10.
      */
     public Duration duracionDeSesion(Actor actor) {
+        return estadoEnClase(actor).sesion();
+    }
+
+    /** Lo que rige para un estudiante según sus clases abiertas: cuánto dura su sesión y qué pasa con el modelo (entregable 9). */
+    public record EstadoEnClase(Duration sesion, IaDelAula.EnClase ia) {
+    }
+
+    /**
+     * Sin clase abierta en ninguno de sus grupos: 10 minutos y el modelo como siempre. Con clase abierta: la sesión dura lo que
+     * le queda a la clase y el modelo está apagado, salvo que el docente de ese grupo lo haya encendido (cupo del grupo).
+     */
+    public EstadoEnClase estadoEnClase(Actor actor) {
         if (actor.rol() != Usuario.RolGlobal.ESTUDIANTE) {
-            return SESION_SIN_CLASE;
+            return new EstadoEnClase(SESION_SIN_CLASE, new IaDelAula.EnClase.Libre());
         }
         Instant ahora = reloj.ahora();
-        Duration clase = enTransaccion(() -> aula.grupos(actor).stream().map(g -> aula.claseAbierta(actor, g.id(), ahora))
-                .flatMap(Optional::stream).map(c -> c.quedan(ahora)).max(Duration::compareTo).orElse(Duration.ZERO));
-        return clase.compareTo(SESION_SIN_CLASE) > 0 ? clase : SESION_SIN_CLASE;
+        record Abierta(Grupo grupo, ClaseDeAula clase) {
+        }
+        List<Abierta> abiertas = enTransaccion(() -> aula.grupos(actor).stream()
+                .flatMap(g -> aula.claseAbierta(actor, g.id(), ahora).map(c -> new Abierta(g, c)).stream()).toList());
+        if (abiertas.isEmpty()) {
+            return new EstadoEnClase(SESION_SIN_CLASE, new IaDelAula.EnClase.Libre());
+        }
+        Duration queda = abiertas.stream().map(a -> a.clase().quedan(ahora)).max(Duration::compareTo).orElse(Duration.ZERO);
+        IaDelAula.EnClase ia = abiertas.stream().filter(a -> a.grupo().iaEnClase()).findFirst()
+                .<IaDelAula.EnClase>map(a -> new IaDelAula.EnClase.ConCupo(a.grupo().id())).orElse(new IaDelAula.EnClase.Apagada());
+        return new EstadoEnClase(queda.compareTo(SESION_SIN_CLASE) > 0 ? queda : SESION_SIN_CLASE, ia);
     }
 
     /** Antes de entrar (QR o código escrito): la clase abierta con ese código en esa institución. */

@@ -26,6 +26,8 @@ services:
   ollama:
     image: ollama/ollama:0.40.1@sha256:69f27594d8127cb43db1edcafa5e2d3cd8f88bdbc54a2cf3ceb11b8d138a24b1
     volumes: [ollama:/root/.ollama]
+    mem_limit: 7g                  # hito 10: los dos modelos cargados ocupan unos 5,3 GB; la app y PostgreSQL no quedan sin memoria
+    cpus: 4                        # hito 10: atiende una petición a la vez (OLLAMA_NUM_PARALLEL=1) sin ahogar a la app en un aula de 35
     environment:
       OLLAMA_NUM_PARALLEL: "1"
       OLLAMA_KEEP_ALIVE: "30m"
