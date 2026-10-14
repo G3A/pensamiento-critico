@@ -62,10 +62,10 @@ function csrfDe(cuerpo) {
 }
 
 /** Entra con nombre y contraseña por la entrada de la institución de carga; devuelve el token CSRF de la sesión. */
-function entrar(nombre) {
+export function entrar(nombre, parametros) {
   const entrada = http.get(`${BASE}/${RUTA}`);
   const r = http.post(`${BASE}/sesion`, { nombre: nombre, contrasena: CONTRASENA, volver: '/', institucion: RUTA },
-    { headers: { 'X-CSRF-TOKEN': csrfDe(entrada.body) } });
+    Object.assign({ headers: { 'X-CSRF-TOKEN': csrfDe(entrada.body) } }, parametros || {}));
   if (r.status !== 200) {
     fail(`${nombre} no pudo entrar (estado ${r.status})`);
   }
@@ -99,7 +99,7 @@ function aDer(crudo) {
 }
 
 /** El administrador confirma con su llave de acceso de prueba (firma ECDSA P-256 con WebCrypto). */
-async function confirmarLlave(csrf) {
+export async function confirmarLlave(csrf) {
   const opciones = JSON.parse(http.post(`${BASE}/llave/confirmacion/opciones`, '', { headers: { 'X-CSRF-TOKEN': csrf } }).body);
   const cliente = JSON.stringify({ type: 'webauthn.get', challenge: opciones.challenge, origin: ORIGEN, crossOrigin: false });
   const clienteBytes = new Uint8Array(encoding.b64decode(encoding.b64encode(cliente), 'std'));

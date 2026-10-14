@@ -181,7 +181,7 @@ services:
     profiles: ["test"]
     image: pgvector/pgvector:pg18@sha256:ad249f9fb9572979643a47694e59b9a8cdcdf6abc6accebf49bb80ad5f20ff9b
     volumes: ["./sensores/k6:/scripts:ro", "secretos-prueba:/run/secrets:ro"]
-    entrypoint: ["/bin/sh", "-c", "PGPASSWORD=$$(cat /run/secrets/db_password) psql -h db-prueba -U pensamiento -d pensamiento -q -f /scripts/preparar.sql"]
+    entrypoint: ["/bin/sh", "-c", "PGPASSWORD=$$(cat /run/secrets/db_password) psql -h db-prueba -U pensamiento -d pensamiento -q -f /scripts/preparar.sql -f /scripts/preparar-aula.sql"]
     depends_on:
       app-prueba: { condition: service_healthy }   # con las migraciones ya aplicadas
 
