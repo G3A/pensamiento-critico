@@ -621,6 +621,13 @@ fieldset { border: 1px solid var(--borde); border-radius: var(--radio); }
 .barra-inferior form button { flex: 1; background: none; border: 0; font: inherit; font-weight: 600; color: var(--texto); cursor: pointer; }
 .lista-trabajos { list-style: none; padding: 0; display: grid; gap: .5rem; }
 .lista-trabajos li { margin: 0; }
+.cifras { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr)); gap: .75rem; }
+.cifra { margin: 0; display: flex; flex-direction: column; gap: .25rem; }
+.cifra-numero { font-size: 1.8rem; font-weight: 700; }
+.cifra-texto { color: var(--texto-suave); }
+.tabla-panel { width: 100%; border-collapse: collapse; }
+.tabla-panel th, .tabla-panel td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid var(--borde); overflow-wrap: anywhere; }
+.niveles-panel, .sin-practicar { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; }
 /* 8 tarjetas por hoja en dos columnas de 95 mm por 64 mm: caben igual en A4 (190 x 277 mm útiles) y en carta (196 x 259). */
 @page { margin: 10mm; }
 @media print {

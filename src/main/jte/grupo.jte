@@ -18,6 +18,7 @@
     @endif
     <section class="tarjeta acciones-grupo" aria-labelledby="clase-titulo">
       <h2 id="clase-titulo">Clase</h2>
+      <p><a class="boton boton-secundario" href="/grupos/${v.grupo().id().toString()}/panel">Ver el panel del grupo</a></p>
       @if(v.claseAbierta())
         <p><span class="chip chip-ok">clase abierta</span></p>
         <p><a class="boton" href="/grupos/${v.grupo().id().toString()}/clase">Ver el código y el QR</a></p>

@@ -88,6 +88,17 @@ class AulaRetoIT {
 
     @Test
     @Order(4)
+    void el_panel_cuenta_el_reto_respondido_con_ambos_rotulos_y_solo_lo_ve_su_docente() {
+        ClienteApp.Respuesta panel = profe.get("/grupos/" + grupo + "/panel");
+
+        assertThat(panel.estado()).isEqualTo(200);
+        assertThat(panel.cuerpo()).contains("Aciertos por concepto · T14 · Sesgos cognitivos", "Retos de crear · práctica, no nota",
+                " de 1 (", "retos respondidos hoy, por 1 estudiante");
+        assertThat(estudiante.get("/grupos/" + grupo + "/panel").estado()).isEqualTo(403);
+    }
+
+    @Test
+    @Order(4)
     void mis_trabajos_muestra_solo_lo_suyo_y_el_enlace_al_progreso() {
         ClienteApp.Respuesta r = estudiante.get("/mis-trabajos");
         assertThat(r.estado()).isEqualTo(200);

@@ -16,6 +16,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import pensamiento.nucleo.ClaseDeAula;
 import pensamiento.nucleo.Grupo;
+import pensamiento.nucleo.PanelGrupo;
 import pensamiento.nucleo.Usuario;
 import pensamiento.nucleo.puertos.RegistroAuditoria;
 import pensamiento.nucleo.puertos.Reloj;
@@ -243,6 +244,28 @@ public class ServicioAula {
     public Optional<Grupo> grupoConReto(Actor actor) {
         java.time.LocalDate hoy = reloj.hoy();
         return enTransaccion(() -> aula.grupos(actor).stream().filter(g -> g.temaVigente(hoy).isPresent()).findFirst());
+    }
+
+    /** Desde cuántos días sin practicar el panel nombra a alguien. */
+    public static final int DIAS_SIN_PRACTICAR = 3;
+
+    /** El panel con su grupo y su clase abierta, si hay. */
+    public record Panel(Grupo grupo, Optional<ClaseDeAula> clase, PanelGrupo agregados) {
+    }
+
+    /**
+     * El panel del grupo (entregable 7): solo agregados del día, de la clase abierta y del tema asignado, y quién lleva 3 días o
+     * más sin practicar. Sale de funciones SECURITY DEFINER que devuelven números; ningún texto de un estudiante.
+     */
+    public Panel panel(Actor actor, UUID grupoId) {
+        return enTransaccion(() -> {
+            Grupo g = grupoQueAdministra(actor, grupoId);
+            Instant ahora = reloj.ahora();
+            Optional<ClaseDeAula> clase = aula.claseAbierta(actor, grupoId, ahora);
+            RepositorioAula.Periodo periodo = new RepositorioAula.Periodo(reloj.hoy().atStartOfDay(reloj.zona()).toInstant(),
+                    clase.map(ClaseDeAula::abiertaEn), reloj.hoy(), g.tema(), DIAS_SIN_PRACTICAR);
+            return new Panel(g, clase, aula.panel(actor, grupoId, periodo).orElseThrow(() -> new ObjetoNoEncontrado("grupo")));
+        });
     }
 
     /** La clase abierta del grupo, si el actor ve el grupo. */

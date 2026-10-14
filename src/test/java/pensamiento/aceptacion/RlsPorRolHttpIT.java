@@ -70,6 +70,23 @@ class RlsPorRolHttpIT {
     }
 
     @Test
+    void el_panel_del_grupo_cuenta_lo_que_ella_respondio_y_su_html_nunca_trae_su_texto() {
+        // El grupo y la cuenta llevaban el centinela en su nombre (que el docente sí ve); aquí el centinela queda solo en lo que
+        // ella escribió: su respuesta del Dojo, sus expedientes, ejecuciones, documentos, etc.
+        bd.jdbcAdmin().sql("UPDATE grupo SET nombre = 'Grupo del panel', tema_dojo = 'T13' WHERE id = :g").param("g", estudiante.id("grupo")).update();
+        bd.jdbcAdmin().sql("UPDATE usuario SET nombre = 'Estudiante del panel' WHERE id = :u").param("u", estudiante.usuario()).update();
+        String ruta = "/grupos/" + estudiante.id("grupo") + "/panel";
+
+        ClienteApp.Respuesta panel = docente.get(ruta);
+        ClienteApp.Respuesta fragmento = docente.getHtmx(ruta);
+
+        assertThat(panel.estado()).isEqualTo(200);
+        assertThat(panel.cuerpo()).contains("Aciertos por concepto", "1 de 1 (100 %)", "retos del tema en total");
+        assertThat(panel.cuerpo()).as("el panel no trae el texto de la estudiante").doesNotContain(estudiante.centinela());
+        assertThat(fragmento.cuerpo()).contains("id=\"panel\"").doesNotContain(estudiante.centinela());
+    }
+
+    @Test
     void la_biblioteca_y_el_inicio_del_docente_no_muestran_el_documento_compartido_de_la_estudiante() {
         assertThat(docente.get("/biblioteca").cuerpo()).doesNotContain(estudiante.centinela());
         assertThat(docente.get("/").cuerpo()).doesNotContain(estudiante.centinela());
