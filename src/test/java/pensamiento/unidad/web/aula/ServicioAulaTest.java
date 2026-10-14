@@ -257,6 +257,27 @@ class ServicioAulaTest {
     }
 
     @Test
+    void el_reto_de_hoy_sale_del_tema_vigente_de_su_grupo_y_una_fecha_pasada_se_rechaza() {
+        Actor rectora = cuenta("Rectora", Usuario.RolGlobal.ADMINISTRADOR);
+        Actor profe = cuenta("Profe Ramírez", Usuario.RolGlobal.DOCENTE);
+        Grupo g = servicio.crearGrupo(rectora, "10.º A", Optional.of(profe.id()));
+        UUID ana = servicio.altaEnLote(profe, g.id(), "Ana Pérez").creadas().get(0).cuenta().id();
+        Actor estudiante = new Actor(ana, colegio, Usuario.RolGlobal.ESTUDIANTE);
+        pensamiento.nucleo.IdTecnica falacias = pensamiento.nucleo.IdTecnica.de("T13");
+        assertThat(servicio.grupoConReto(estudiante)).isEmpty();
+
+        assertThatThrownBy(() -> servicio.asignarTema(profe, g.id(), Optional.of(falacias), Optional.of(reloj.hoy().minusDays(1))))
+                .isInstanceOf(ServicioUsuarios.DatosInvalidos.class).hasMessageContaining("ya pasó");
+        servicio.asignarTema(profe, g.id(), Optional.of(falacias), Optional.of(reloj.hoy().plusDays(2)));
+
+        assertThat(servicio.grupoConReto(estudiante)).map(Grupo::id).contains(g.id());
+        reloj.avanzar(java.time.Duration.ofDays(3));
+        assertThat(servicio.grupoConReto(estudiante)).as("la asignación venció").isEmpty();
+        assertThat(auditoria.todos()).filteredOn(e -> e.accion() == RegistroAuditoria.Accion.ASIGNAR_TEMA)
+                .extracting(e -> e.detalle().orElse("")).containsExactly("T13");
+    }
+
+    @Test
     void los_docentes_para_elegir_son_solo_las_cuentas_activas_de_docente() {
         Actor rectora = cuenta("Rectora", Usuario.RolGlobal.ADMINISTRADOR);
         cuenta("Profe Ramírez", Usuario.RolGlobal.DOCENTE);

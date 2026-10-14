@@ -40,6 +40,15 @@
     <%-- Cuatro grupos (innegociable 12). En angosto se abre con "Más" de la barra inferior (#menu, :target, sin JS). --%>
     <nav id="menu" class="menu" aria-label="Módulos">
       <a class="cerrar-menu solo-angosto" href="#">Cerrar</a>
+      @if(pagina.esEstudiante())
+      <%-- Hito 10: el menú de estudiante tiene cuatro entradas. --%>
+      <ul class="menu-estudiante">
+        <li><a href="/reto" class="${pagina.titulo().equals("Reto de hoy") ? "activo" : ""}">Reto de hoy</a></li>
+        <li><a href="/dojo" class="${pagina.titulo().equals("Dojo") ? "activo" : ""}">Dojo</a></li>
+        <li><a href="/mis-trabajos" class="${pagina.titulo().equals("Mis trabajos") ? "activo" : ""}">Mis trabajos</a></li>
+        <li><form method="post" action="/salir"><input type="hidden" name="_csrf" value="${pagina.csrf()}"><button type="submit" class="enlace-menu">Salir</button></form></li>
+      </ul>
+      @else
       <h2 class="grupo-menu">Hacer</h2>
       <ul>
         <li><a href="/" class="${pagina.titulo().equals("Inicio") ? "activo" : ""}">Inicio</a></li>
@@ -74,6 +83,7 @@
           <li><a href="/usuarios" class="${pagina.titulo().equals("Usuarios") ? "activo" : ""}">Usuarios</a></li>
         @endif
       </ul>
+      @endif
     </nav>
   @endif
   <main id="principal" class="principal" tabindex="-1">
@@ -82,10 +92,17 @@
 </div>
 @if(pagina.conMenu())
   <nav class="barra-inferior solo-angosto" aria-label="Accesos rápidos">
+    @if(pagina.esEstudiante())
+      <a href="/reto" class="${pagina.titulo().equals("Reto de hoy") ? "activo" : ""}">Reto de hoy</a>
+      <a href="/dojo" class="${pagina.titulo().equals("Dojo") ? "activo" : ""}">Dojo</a>
+      <a href="/mis-trabajos" class="${pagina.titulo().equals("Mis trabajos") ? "activo" : ""}">Mis trabajos</a>
+      <form method="post" action="/salir"><input type="hidden" name="_csrf" value="${pagina.csrf()}"><button type="submit">Salir</button></form>
+    @else
     <a href="/" class="${pagina.titulo().equals("Inicio") ? "activo" : ""}">Inicio</a>
     <a href="/catalogo" class="${pagina.titulo().equals("Catálogo") ? "activo" : ""}">Catálogo</a>
     <a href="/dojo" class="${pagina.titulo().equals("Dojo") ? "activo" : ""}">Practicar</a>
     <a href="#menu">Más</a>
+    @endif
   </nav>
 @endif
 <div id="bloqueo" aria-live="polite"></div>

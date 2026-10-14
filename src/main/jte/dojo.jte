@@ -5,7 +5,12 @@
 @param ControladorDojo.VistaDojo v
 @template.layout(pagina = pagina, contenido = @`
   <section class="dojo" aria-labelledby="dojo-titulo">
+    @if(v.esRetoDeHoy())
+      <h1 id="dojo-titulo">Reto de hoy</h1>
+      <p class="detalle">El tema que tu profe eligió para ${v.grupo().get()}: ${v.p().filtro().map(t -> t.cita()).orElse("")}. Tus repasos y tu nivel son tuyos.</p>
+    @else
     <h1 id="dojo-titulo">Dojo de razonamiento</h1>
+    @endif
     <p class="detalle">Retos cortos de falacias, sesgos, datos y fuentes. Repasas cada concepto justo antes de olvidarlo
       (T49 · Repetición espaciada) y subes de nivel con tus aciertos (T48 · Taxonomía de Bloom). Todo se califica por reglas,
       sin el modelo.</p>
@@ -13,6 +18,7 @@
       <span class="chip">racha ${v.p().racha()}</span>
       Hoy: ${v.p().hechosHoy()} de ${v.p().limite()} retos · ${v.p().progreso()}
     </p>
+    @if(!v.esRetoDeHoy())
     <nav class="temas-dojo" aria-label="Temas del Dojo">
       <ul>
         @for(ControladorDojo.Tema t : v.temas())
@@ -21,6 +27,7 @@
         <li><a href="/dojo/progreso">Progreso</a></li>
       </ul>
     </nav>
+    @endif
     @if(v.p().avanceManual())
       <form method="get" action="/dojo" class="nivel-manual">
         <input type="hidden" name="tema" value="${v.claveTema()}">

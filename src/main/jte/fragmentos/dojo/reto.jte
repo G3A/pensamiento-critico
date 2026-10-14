@@ -19,6 +19,9 @@
       <input type="hidden" name="_csrf" value="${pagina.csrf()}">
       <input type="hidden" name="_clave" value="${v.clave()}">
       <input type="hidden" name="tema" value="${v.claveTema()}">
+      @if(v.grupo().isPresent())
+        <input type="hidden" name="grupo" value="${v.grupo().get()}">
+      @endif
       <input type="hidden" name="nivel" value="${v.p().nivel().toString()}">
       @if(r.esDeEscribir())
         <label for="respuesta-reto">Tu versión</label>

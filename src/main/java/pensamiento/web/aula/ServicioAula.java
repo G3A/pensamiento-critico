@@ -225,6 +225,26 @@ public class ServicioAula {
         });
     }
 
+    /** El docente del grupo (o el administrador) asigna un tema del Dojo (T13, T14, T18 o T19), con fecha opcional; vacío lo quita. */
+    public void asignarTema(Actor actor, UUID grupoId, Optional<pensamiento.nucleo.IdTecnica> tema, Optional<java.time.LocalDate> hasta) {
+        enTransaccion(() -> {
+            grupoQueAdministra(actor, grupoId);
+            hasta.filter(h -> h.isBefore(reloj.hoy())).ifPresent(h -> {
+                throw new ServicioUsuarios.DatosInvalidos("La fecha ya pasó: elige hoy o un día que venga.");
+            });
+            aula.asignarTema(actor, grupoId, tema, hasta, reloj.ahora());
+            auditoria.registrar(new RegistroAuditoria.Evento(Optional.of(actor.id()), actor.institucionId(), RegistroAuditoria.Accion.ASIGNAR_TEMA,
+                    "grupo", Optional.of(grupoId), reloj.ahora(), Optional.of(tema.map(pensamiento.nucleo.IdTecnica::valor).orElse("ninguno"))));
+            return null;
+        });
+    }
+
+    /** "Reto de hoy" de un estudiante: el primer grupo suyo (por nombre) con un tema vigente hoy. */
+    public Optional<Grupo> grupoConReto(Actor actor) {
+        java.time.LocalDate hoy = reloj.hoy();
+        return enTransaccion(() -> aula.grupos(actor).stream().filter(g -> g.temaVigente(hoy).isPresent()).findFirst());
+    }
+
     /** La clase abierta del grupo, si el actor ve el grupo. */
     public Optional<ClaseDeAula> claseAbierta(Actor actor, UUID grupoId) {
         return enTransaccion(() -> aula.claseAbierta(actor, grupoId, reloj.ahora()));

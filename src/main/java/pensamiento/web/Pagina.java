@@ -32,6 +32,11 @@ public record Pagina(String titulo, Optional<UsuarioSesion> usuario, EstadoIa ia
         return conMenu() && usuario.map(UsuarioSesion::esDocente).orElse(false);
     }
 
+    /** Estudiante del aula (hito 10): su menú tiene cuatro entradas. */
+    public boolean esEstudiante() {
+        return conMenu() && usuario.map(UsuarioSesion::esEstudiante).orElse(false);
+    }
+
     /** Con sesión y ya dentro (no en la etapa de elegir contraseña ni de la llave): menú, nombre y "Salir". */
     public boolean conMenu() {
         return usuario.map(UsuarioSesion::lista).orElse(false);

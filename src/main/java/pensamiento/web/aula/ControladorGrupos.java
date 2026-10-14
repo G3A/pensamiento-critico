@@ -87,6 +87,25 @@ public class ControladorGrupos {
         }
     }
 
+    @PostMapping("/grupos/{id}/tema")
+    public String tema(@PathVariable UUID id, @RequestParam(defaultValue = "") String tema, @RequestParam(defaultValue = "") String hasta,
+                       HttpServletRequest request, HttpServletResponse response, Model modelo) {
+        UsuarioSesion yo = paginas.usuarioActual();
+        try {
+            Optional<pensamiento.nucleo.IdTecnica> elegido = tema.isBlank() ? Optional.empty()
+                    : Optional.of(pensamiento.tecnicas.f8.TemaDojo.porClave(tema).tecnica());
+            Optional<java.time.LocalDate> fecha = hasta.isBlank() ? Optional.empty() : Optional.of(java.time.LocalDate.parse(hasta));
+            servicio.asignarTema(yo.actor(), id, elegido, fecha);
+            return "redirect:/grupos/" + id + "?aviso=tema";
+        } catch (IllegalArgumentException | java.time.format.DateTimeParseException e) {
+            response.setStatus(422);
+            return pintarGrupo(request, modelo, id, Optional.empty(), Optional.of("Elige un tema de la lista y una fecha válida."));
+        } catch (ServicioUsuarios.DatosInvalidos e) {
+            response.setStatus(422);
+            return pintarGrupo(request, modelo, id, Optional.empty(), Optional.of(e.getMessage()));
+        }
+    }
+
     @PostMapping("/grupos/{id}/opciones")
     public String opciones(@PathVariable UUID id, @RequestParam(defaultValue = "") String lista, @RequestParam(defaultValue = "") String ia) {
         UsuarioSesion yo = paginas.usuarioActual();
@@ -132,6 +151,7 @@ public class ControladorGrupos {
         return switch (motivo) {
             case "creado" -> "Listo: el grupo quedó creado.";
             case "docente" -> "Listo: el grupo tiene su docente.";
+            case "tema" -> "Listo: «Reto de hoy» de tus estudiantes toma de ese tema.";
             case "opciones" -> "Listo: las opciones de la clase quedaron guardadas.";
             case "terminada" -> "La clase terminó y las sesiones de sus estudiantes se cerraron.";
             case "elige" -> "Marca al menos un estudiante activo del grupo para darle un código nuevo.";

@@ -44,12 +44,26 @@ public class ControladorDojo {
     }
 
     /** Lo que pinta P19: la pantalla del Dojo, la clave del formulario, el error y la respuesta, si la hay. */
-    public record VistaDojo(DojoDeRazonamiento.Pantalla p, List<Tema> temas, String clave, String error, Optional<DojoDeRazonamiento.Respuesta> respuesta) {
+    public record VistaDojo(DojoDeRazonamiento.Pantalla p, List<Tema> temas, String clave, String error, Optional<DojoDeRazonamiento.Respuesta> respuesta,
+                            Optional<String> grupo) {
+
+        public VistaDojo(DojoDeRazonamiento.Pantalla p, List<Tema> temas, String clave, String error, Optional<DojoDeRazonamiento.Respuesta> respuesta) {
+            this(p, temas, clave, error, respuesta, Optional.empty());
+        }
+
+        /** Hito 10: es el "Reto de hoy" del grupo de un estudiante (lleva el nombre del grupo). */
+        public boolean esRetoDeHoy() {
+            return grupo.isPresent();
+        }
+
         public String claveTema() {
             return p.filtro().map(TemaDojo::clave).orElse("");
         }
 
         public String urlSiguiente() {
+            if (grupo.isPresent()) {
+                return "/reto";
+            }
             return p.filtro().map(t -> "/dojo?tema=" + t.clave()).orElse("/dojo");
         }
     }
@@ -61,8 +75,10 @@ public class ControladorDojo {
     private final DojoDeRazonamiento dojo;
     private final ConfiguracionesF8 configuraciones;
     private final Pagina.Fabrica paginas;
+    private final pensamiento.web.aula.ServicioAula aula;
 
-    public ControladorDojo(DojoDeRazonamiento dojo, ConfiguracionesF8 configuraciones, Pagina.Fabrica paginas) {
+    public ControladorDojo(DojoDeRazonamiento dojo, ConfiguracionesF8 configuraciones, Pagina.Fabrica paginas, pensamiento.web.aula.ServicioAula aula) {
+        this.aula = aula;
         this.dojo = dojo;
         this.configuraciones = configuraciones;
         this.paginas = paginas;
@@ -80,20 +96,41 @@ public class ControladorDojo {
         return htmx.isHtmxRequest() ? "fragmentos/dojo/reto" : "dojo";
     }
 
+    /**
+     * Hito 10 · "Reto de hoy": el Dojo del estudiante filtrado por el tema que su docente asignó al grupo. Sus repasos y su
+     * nivel siguen siendo suyos (las mismas reglas de T48 y T49); sin tema asignado, invita al Dojo.
+     */
+    @GetMapping("/reto")
+    @Transactional(readOnly = true)
+    public String reto(HtmxRequest htmx, HttpServletRequest request, Model modelo) {
+        UsuarioSesion yo = paginas.usuarioActual();
+        modelo.addAttribute("pagina", paginas.crear("Reto de hoy", request));
+        Optional<pensamiento.nucleo.Grupo> grupo = aula.grupoConReto(yo.actor());
+        if (grupo.isEmpty()) {
+            return "reto-sin-tema";
+        }
+        Optional<TemaDojo> filtro = Optional.of(TemaDojo.de(grupo.get().tema().orElseThrow()));
+        DojoDeRazonamiento.Pantalla p = dojo.pantalla(yo.id(), filtro, Optional.empty(), configuraciones.dojo(yo.id()));
+        modelo.addAttribute("v", new VistaDojo(p, temas(filtro), UUID.randomUUID().toString(), "", Optional.empty(), Optional.of(grupo.get().nombre())));
+        return htmx.isHtmxRequest() ? "fragmentos/dojo/reto" : "dojo";
+    }
+
     /** Responder: se califica por reglas y se guarda el intento; el doble clic con la misma clave no guarda otro. */
     @PostMapping("/dojo/retos/{id}")
     @Transactional
     public String responder(@PathVariable String id, @RequestParam(required = false) String respuesta, @RequestParam(name = "_clave", required = false) String clave,
-                            @RequestParam(required = false) String tema, @RequestParam(required = false) String nivel, HtmxRequest htmx,
+                            @RequestParam(required = false) String tema, @RequestParam(required = false) String nivel,
+                            @RequestParam(required = false) String grupo, HtmxRequest htmx,
                             HttpServletRequest request, HttpServletResponse salida, Model modelo) {
         UsuarioSesion yo = paginas.usuarioActual();
         Optional<TemaDojo> filtro = tema(tema);
+        Optional<String> deGrupo = Optional.ofNullable(grupo).filter(g -> !g.isBlank());
         DojoDeRazonamiento.Configuracion config = configuraciones.dojo(yo.id());
-        modelo.addAttribute("pagina", paginas.crear("Dojo", request));
+        modelo.addAttribute("pagina", paginas.crear(deGrupo.isPresent() ? "Reto de hoy" : "Dojo", request));
         try {
             DojoDeRazonamiento.Respuesta r = dojo.responder(yo.id(), yo.institucionId(), id, respuesta, clave, config);
             DojoDeRazonamiento.Pantalla p = dojo.pantalla(yo.id(), filtro, nivel(nivel), config);
-            modelo.addAttribute("v", new VistaDojo(p, temas(filtro), UUID.randomUUID().toString(), "", Optional.of(r)));
+            modelo.addAttribute("v", new VistaDojo(p, temas(filtro), UUID.randomUUID().toString(), "", Optional.of(r), deGrupo));
             return htmx.isHtmxRequest() ? "fragmentos/dojo/respuesta" : "dojo";
         } catch (DojoDeRazonamiento.NoEncontrado e) {
             throw new ObjetoNoEncontrado("reto");
@@ -107,7 +144,7 @@ public class ControladorDojo {
                     Optional.of(new DojoDeRazonamiento.RetoElegido(reto, concepto, TemaDojo.de(concepto.idTecnica()), false)), Optional.empty(),
                     reto.nivel(), actual.progreso(), actual.avanceManual(), actual.nivelesActivos());
             modelo.addAttribute("v", new VistaDojo(p, temas(filtro), clave == null || clave.isBlank() ? UUID.randomUUID().toString() : clave,
-                    e.getMessage(), Optional.empty()));
+                    e.getMessage(), Optional.empty(), deGrupo));
             return htmx.isHtmxRequest() ? "fragmentos/dojo/reto" : "dojo";
         }
     }

@@ -36,6 +36,30 @@
         </form>
       </details>
     </section>
+    <section class="tarjeta" aria-labelledby="tema-titulo">
+      <h2 id="tema-titulo">Reto del grupo</h2>
+      <p class="detalle">
+        @if(v.grupo().tema().isPresent())
+          «Reto de hoy» toma de ${pensamiento.tecnicas.f8.TemaDojo.de(v.grupo().tema().get()).cita()}@if(v.grupo().temaHasta().isPresent()) hasta el ${v.grupo().temaHasta().get().toString()}@endif.
+        @else
+          Sin tema asignado: «Reto de hoy» invita a practicar en el Dojo.
+        @endif
+        El Dojo de cada estudiante sigue siendo suyo: sus repasos y su nivel no cambian.
+      </p>
+      <form class="formulario" method="post" action="/grupos/${v.grupo().id().toString()}/tema">
+        <input type="hidden" name="_csrf" value="${pagina.csrf()}">
+        <label for="tema-grupo">Tema del Dojo</label>
+        <select id="tema-grupo" name="tema">
+          <option value="">Ninguno</option>
+          @for(pensamiento.tecnicas.f8.TemaDojo t : pensamiento.tecnicas.f8.TemaDojo.values())
+            <option value="${t.clave()}" selected="${v.grupo().tema().map(t.tecnica()::equals).orElse(false)}">${t.cita()}</option>
+          @endfor
+        </select>
+        <label for="tema-hasta">Hasta (opcional)</label>
+        <input id="tema-hasta" name="hasta" type="date" value="${v.grupo().temaHasta().map(Object::toString).orElse("")}">
+        <button type="submit" class="boton boton-secundario">Asignar</button>
+      </form>
+    </section>
     <section class="tarjeta" aria-labelledby="estudiantes-titulo">
       <h2 id="estudiantes-titulo">Estudiantes</h2>
       <p><a class="boton" href="/grupos/${v.grupo().id().toString()}/lote">Dar de alta en lote</a></p>

@@ -176,6 +176,9 @@ public final class ClienteApp {
         Respuesta r = postFormulario("/sesion", Map.of("nombre", nombre, "contrasena", contrasena, "volver", "/", "institucion", ruta));
         // Tras autenticarse el token cambia: se vuelve a tomar de una página con sesión.
         Respuesta inicio = get("/");
+        if (inicio.estado() == 302) {   // hito 10: el inicio de un estudiante es /reto
+            inicio = get(inicio.cabecera("Location").orElse("/").replaceFirst("^https?://[^/]+", ""));
+        }
         Matcher m = META_CSRF.matcher(inicio.cuerpo());
         if (m.find()) {
             csrf = m.group(1);
@@ -195,7 +198,8 @@ public final class ClienteApp {
             campos.put("lista", "si");
         }
         Respuesta r = postFormulario("/sesion", campos);
-        csrfDe(get("/"));
+        Respuesta inicio = get("/");
+        csrfDe(inicio.estado() == 302 ? get(inicio.cabecera("Location").orElse("/").replaceFirst("^https?://[^/]+", "")) : inicio);
         return r;
     }
 

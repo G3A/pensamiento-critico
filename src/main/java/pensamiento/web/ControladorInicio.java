@@ -81,6 +81,9 @@ public class ControladorInicio {
         if (!yo.lista()) {
             return "redirect:" + yo.etapa().pantalla();   // hito 9: todavía elige su contraseña o confirma su llave
         }
+        if (yo.esEstudiante()) {
+            return "redirect:/reto";   // hito 10: el estudiante empieza por su menú de cuatro entradas
+        }
         Map<IdTecnica, Tecnica> porId = tecnicas.todas().stream().collect(Collectors.toMap(Tecnica::id, Function.identity()));
         List<Reciente> recientes = ejecuciones.recientes(yo.id(), 5).stream()
                 .map(e -> new Reciente(e, porId.get(e.tecnica()), Fechas.corta(e.creadaEn(), reloj.zona()))).toList();

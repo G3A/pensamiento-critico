@@ -613,6 +613,14 @@ fieldset { border: 1px solid var(--borde); border-radius: var(--radio); }
 .lista-de-clase ul { list-style: none; margin: .5rem 0; padding: 0; display: grid; gap: .25rem; }
 .lista-de-clase a { display: flex; align-items: center; min-height: var(--objetivo-tactil); padding: 0 .5rem; border: 1px solid var(--borde);
   border-radius: var(--radio); text-decoration: none; }
+.menu-estudiante form { margin: 0; }
+.enlace-menu { display: flex; align-items: center; width: 100%; background: none; border: 0; padding: .5rem var(--espacio); font: inherit;
+  color: var(--texto); cursor: pointer; text-align: left; min-height: var(--objetivo-tactil); }
+.enlace-menu:hover { background: var(--fondo); }
+.barra-inferior form { display: flex; margin: 0; }
+.barra-inferior form button { flex: 1; background: none; border: 0; font: inherit; font-weight: 600; color: var(--texto); cursor: pointer; }
+.lista-trabajos { list-style: none; padding: 0; display: grid; gap: .5rem; }
+.lista-trabajos li { margin: 0; }
 /* 8 tarjetas por hoja en dos columnas de 95 mm por 64 mm: caben igual en A4 (190 x 277 mm útiles) y en carta (196 x 259). */
 @page { margin: 10mm; }
 @media print {
