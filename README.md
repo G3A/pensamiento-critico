@@ -8,10 +8,13 @@ construye y se prueba solo en este equipo (`http://localhost`), sin dominio ni c
 Ollama en ese mismo equipo con modelos de 4 GB o menos (qwen3:4b-instruct-2507 y bge-m3), porque el servicio guarda texto
 de menores, y la aplicación funciona igual sin ella ("modo plantillas").
 
-Estado: **hito 9, "Puerta de entrada"**: se entra con nombre y contraseña por un solo formulario, sin lista de nombres;
-cada cuenta se da de alta con un código de un uso; quien administra confirma con su llave de acceso; hay límite de
-intentos; y la app cabe en el portátil de 1366×768 y en el celular de 360 px, probada en Chromium, WebKit y Firefox; ver
-[Qué se puede hacer en el hito 9](#qué-se-puede-hacer-en-el-hito-9). Sigue el hito 10, "Aula" (sección 11 del documento).
+Estado: **hito 10, "Aula"**: el aula pasa a ser la persona primaria. Quien administra crea docentes y grupos; el docente
+da de alta a su grupo en lote con tarjetas imprimibles, abre la clase con un código o un QR, asigna el reto del Dojo y ve un
+panel que solo tiene números; el estudiante tiene un menú de cuatro entradas y su texto no se pierde si el wifi se cae. La
+RLS va por rol: el docente nunca ve el texto de un estudiante. Ver [Qué se puede hacer en el hito 10](#qué-se-puede-hacer-en-el-hito-10).
+El hito 9, "Puerta de entrada", trajo la entrada con nombre y contraseña por un solo formulario, sin lista de nombres,
+el alta con un código de un uso, la llave de acceso de quien administra, el límite de intentos y la app que cabe en el
+portátil de 1366×768 y en el celular de 360 px; ver [Qué se puede hacer en el hito 9](#qué-se-puede-hacer-en-el-hito-9).
 El hito 8, "Servicio", hizo de la app un servicio para varias instituciones, cada una por su ruta, con un operador que las
 crea, una instalación de pruebas aislada y respaldos cifrados; ver [Qué se puede hacer en el hito 8](#qué-se-puede-hacer-en-el-hito-8).
 El hito 7, "Metacognición y práctica", cerró el orden de construcción de la versión 1: **las 49 técnicas tienen "Usar"
@@ -30,9 +33,53 @@ El hito 3 sumó doce técnicas, siete de ellas con el modelo local como ayuda op
 como esquemas fallidos (solo con reglas), más el Taller de argumentos y las 49 fichas "Qué es". La especificación
 completa está en [`docs/investigacion-y-propuestas.html`](docs/investigacion-y-propuestas.html); los prompts con que
 se construyó cada hito, en [`docs/prompt-hito-0.md`](docs/prompt-hito-0.md), [`docs/prompt-hito-1.md`](docs/prompt-hito-1.md),
-[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md), [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md), [`docs/prompt-hito-4.md`](docs/prompt-hito-4.md), [`docs/prompt-hito-5.md`](docs/prompt-hito-5.md), [`docs/prompt-hito-6.md`](docs/prompt-hito-6.md), [`docs/prompt-hito-7.md`](docs/prompt-hito-7.md), [`docs/prompt-hito-8.md`](docs/prompt-hito-8.md) y [`docs/prompt-hito-9.md`](docs/prompt-hito-9.md).
+[`docs/prompt-hito-2.md`](docs/prompt-hito-2.md), [`docs/prompt-hito-3.md`](docs/prompt-hito-3.md), [`docs/prompt-hito-4.md`](docs/prompt-hito-4.md), [`docs/prompt-hito-5.md`](docs/prompt-hito-5.md), [`docs/prompt-hito-6.md`](docs/prompt-hito-6.md), [`docs/prompt-hito-7.md`](docs/prompt-hito-7.md), [`docs/prompt-hito-8.md`](docs/prompt-hito-8.md), [`docs/prompt-hito-9.md`](docs/prompt-hito-9.md) y [`docs/prompt-hito-10.md`](docs/prompt-hito-10.md).
 Pendiente para cerrar RF-08: las sesiones moderadas de primer uso, con el guion en [`docs/sesiones-primer-uso.md`](docs/sesiones-primer-uso.md);
 al cerrar el hito 7 todavía no se habían hecho, así que no hay hallazgos que aplicar a las fichas.
+
+## Qué se puede hacer en el hito 10
+
+Abre el aula sobre la puerta de entrada del hito 9 (sección 11 del documento). Desde este hito **la persona primaria es el
+aula**: un docente de colegio público con 4 grupos de 35, clases de 50 minutos y wifi inestable, y estudiantes de 16 años con
+un Android de 360 px. Todo se construyó y se probó en el equipo local (`http://localhost`); nada se publicó.
+
+- **El docente nunca ve el texto de un estudiante.** La RLS va por rol además de por institución (V17), con el rol leído de
+  la base: el docente ve de sus estudiantes solo la cuenta (nombre y estado), el grupo y los agregados del panel; de su texto
+  (Dojo, ejecuciones, expedientes, afirmaciones, borradores) recibe cero filas y 404, y un texto centinela de una estudiante
+  no aparece en ningún HTML del panel. Un docente no ve grupos ajenos, una persona no ve ninguno, un estudiante no ve la
+  lista de sus compañeros, y el documento compartido de una estudiante no lo ve nadie más. Es la condición de entrada del
+  hito y la prueba un contrato real (`RealRepositorioAulaContractIT`) con su Fake.
+- **Docentes y grupos.** En `/usuarios` quien administra crea docentes (con llave de acceso, como él) y estudiantes; en
+  **Grupos** crea cada grupo con un nombre único y le asigna su docente. Un docente puede tener varios grupos (el profesor de
+  la mesa: 4 de 35) y los ve en **Mis grupos**, dentro del grupo "Aula" del menú; un grupo ajeno le responde 404.
+- **Alta en lote y tarjetas.** El docente pega la lista del curso o sube un CSV de hasta 500 filas; la vista previa marca
+  las repetidas, las inválidas y las que ya tienen cuenta antes de crear nada; al confirmar se crean todas en una sola
+  transacción y sale una **hoja de tarjetas** (8 por página, que caben igual en A4 y en carta) con el código de alta de cada
+  estudiante, que no se vuelve a mostrar. Si alguien pierde su código u olvida su contraseña, el docente le genera uno nuevo,
+  de a uno o en lote, y eso cierra sus sesiones abiertas.
+- **Clase con código o QR.** El docente abre la clase de un grupo por 10 a 60 minutos: un código de 6 caracteres y un **QR
+  grande para proyectar** (un SVG armado en el servidor, sin script) que lleva a la entrada del colegio con el grupo a la vista.
+  Cada estudiante sigue entrando con su nombre y su contraseña: el código no la reemplaza. Mientras la clase está abierta, su
+  sesión dura lo que la clase en vez de 10 minutos; **Terminar clase** la cierra y cierra las sesiones de todo el grupo.
+- **Lista del grupo, opcional.** Si el docente la activa (apagada por defecto), la entrada con el código de la clase muestra
+  los nombres de ese grupo para tocar el propio; nunca fuera de una clase abierta ni de otro grupo. La auditoría guarda cada
+  entrada desde una clase como `clase:con-lista` o `clase:sin-lista`, para medirlo en el piloto.
+- **Menú de estudiante y Reto de hoy.** El estudiante tiene cuatro entradas: **Reto de hoy**, **Dojo**, **Mis trabajos** y
+  **Salir**, también en la barra inferior del celular. El docente asigna al grupo un tema del Dojo (con fecha si quiere) y
+  "Reto de hoy" toma de él; el Dojo de cada estudiante sigue siendo suyo (repasos y nivel de Bloom de siempre).
+- **Panel del grupo, solo números.** Cuántos entraron hoy y en la clase, retos respondidos, aciertos por concepto del tema,
+  niveles de Bloom y quién lleva 3 días o más sin practicar (nombre y conteo). Por decisión del dueño, los retos de "crear"
+  van aparte, rotulados **"práctica, no nota"**. Se actualiza solo cada 30 segundos.
+- **El texto no se pierde si se cae el wifi.** En el reto, lo escrito se copia en el celular en cada cambio y en el servidor
+  cada 20 segundos; sin red aparece "Sin conexión: tu texto está guardado aquí" y, al volver la red, se envía solo y se
+  guarda una sola vez. "Salir" borra las copias del navegador.
+- **Ollama apagado en clase.** Con su clase abierta, el estudiante usa las técnicas sin el asistente de IA; el docente puede
+  encenderlo para su grupo, y entonces cada grupo tiene un solo turno a la vez en la cola. El contenedor de Ollama queda con
+  `mem_limit: 7g` y `cpus: 4`.
+
+No había contenido escolar en el repositorio al empezar: el reto del grupo usa los cuatro temas que ya tiene el Dojo. La
+lista **salida a internet** suma: el piloto con un colegio (con la medición con lista y sin lista), la demo con celulares
+reales y la capacidad con 140 sesiones en el hardware definitivo. Ver [Decisiones tomadas en el hito 10](#decisiones-tomadas-en-el-hito-10).
 
 ## Qué se puede hacer en el hito 9
 
@@ -422,12 +469,12 @@ Paquetes (sección 4 del documento), verificados con ArchUnit en el perfil test:
 
 | Paquete | Contiene | Depende de |
 |---|---|---|
-| `nucleo` | Afirmación, Evidencia, Fuente, Argumento, Técnica, reglas R01 a R05 como código puro (R05, calibración: Brier, logarítmico y curva), la predicción inmutable al resolverse, el cambio de opinión y la sesión del Consejero con sus turnos, la verificación con su veredicto, el documento con sus fragmentos y pasajes, puertos (`Ia`, `Grafico`, `Reloj`, repositorios, entre ellos los de predicciones, cambios de opinión, sesiones, evidencias, verificaciones, `Biblioteca`, `ColaTrabajos`, `ExtractorPdf`, `TransaccionComoUsuario` y, en el hito 7, `RepositorioDojo` y `RegistroDeRazonamiento`), el banco del Dojo con su rúbrica de crear, el intento, la competencia y el nivel de Bloom, el contrato `Ejecutor<C, E, R>` y el record `Resultado<R>` | nadie: sin Spring, sin JPA, sin Ollama |
+| `nucleo` | Afirmación, Evidencia, Fuente, Argumento, Técnica, reglas R01 a R05 como código puro (R05, calibración: Brier, logarítmico y curva), la predicción inmutable al resolverse, el cambio de opinión y la sesión del Consejero con sus turnos, la verificación con su veredicto, el documento con sus fragmentos y pasajes, puertos (`Ia`, `Grafico`, `Reloj`, repositorios, entre ellos los de predicciones, cambios de opinión, sesiones, evidencias, verificaciones, `Biblioteca`, `ColaTrabajos`, `ExtractorPdf`, `TransaccionComoUsuario` y, en el hito 7, `RepositorioDojo` y `RegistroDeRazonamiento`; en el hito 10, `RepositorioAula` y `RepositorioBorradores`), el grupo, la clase de aula y el panel de agregados, el banco del Dojo con su rúbrica de crear, el intento, la competencia y el nivel de Bloom, el contrato `Ejecutor<C, E, R>` y el record `Resultado<R>` | nadie: sin Spring, sin JPA, sin Ollama |
 | `catalogo` | lectura del JSON del repo, semilla repeatable de Flyway, repositorio de técnicas, verificación al arrancar, intenciones | `nucleo` |
 | `tecnicas.f1` a `f8` | un ejecutor por técnica: `f1` T01, T02 y T06 (con el mapa argumental y R04), `f2` T08 a T12 (con la estrategia socrática: tipo, elemento y rama del banco), `f3` T13 con sus reglas léxicas, `f4` T19 a T23 (SIFT, lectura lateral, CRAAP con su puntaje, triangulación con sus evidencias y jerarquía de evidencia), `f5` T24 a T33 (con la matriz ponderada que comparten T31 y T33), `f6` T34 a T39 (con los ataques del equipo rojo por esquema de Walton), `f7` T40 a T44, `f8` T45 a T49 (con SM-2, la escalera de Bloom y los cuatro temas del Dojo); `comun` lleva el validador del turno y la redacción con reintentos | `nucleo`, `catalogo` |
 | `flujos`, `expediente` | flujos guiados (el Taller de argumentos arma T02 y T13 desde el mapa; el Diario de decisiones da el tablero con R05, la revisión y el asistente de cinco pasos; el Consejero socrático es el motor híbrido de los modos ensayo, decisión, escalera, sombreros y debate; la ficha de verificación es el flujo A+ con el buscador de pasajes; el Dojo de razonamiento elige y califica los retos por reglas; el registro de cambios arma P20 y el diario de razonamiento); Expediente, respaldo de cada persona, guardado de ejecuciones con argumentos, predicciones y cambios de opinión, y los repositorios JDBC de ejecución, argumento, predicción, cambio de opinión, sesión del Consejero, expediente e identificadores, los intentos del Dojo y la lectura del registro de razonamiento | `tecnicas`, `catalogo`, `nucleo` |
 | `argdown`, `graficos`, `ia`, `biblioteca`, `trabajos` | adaptadores: parser del subconjunto Argdown, Graphviz como proceso hijo con saneador de SVG, Ollama vía Spring AI; en `biblioteca`, el detector de tipo por contenido, el troceado, el importador, el indexador y el vectorizador, `pdftotext` con límites y pgvector con HNSW y texto completo; en `trabajos`, la cola con reencolado y un hilo virtual por tipo | solo puertos de `nucleo` |
-| `web` | controladores, plantillas JTE, seguridad (Spring Security, RLS, CSRF, CSP), usuarios; en el hito 7, el Dojo, P20, "Usar mis datos" y el manual por familia | `flujos`, `tecnicas`, `catalogo` |
+| `web` | controladores, plantillas JTE, seguridad (Spring Security, RLS, CSRF, CSP), usuarios; en el hito 7, el Dojo, P20, "Usar mis datos" y el manual por familia; en el hito 10, el aula (`web.aula`: grupos, alta en lote, clase con QR, panel, la sesión de clase y el modelo en clase) y los borradores | `flujos`, `tecnicas`, `catalogo` |
 
 Stack fijado: Spring Boot 4.1.1 sobre Java 25 con hilos virtuales, JTE 3.2.4 precompilado, htmx 2.0.11 y
 Alpine.js 3.17.4 (build CSP) vendorizados, PostgreSQL 18 con pgvector, Flyway, Spring AI 2.0.1 solo para el
@@ -442,7 +489,8 @@ adaptador de Ollama, Graphviz en la imagen final. Sin npm ni CDN.
 - Sesión en servidor que expira a los 10 minutos de inactividad. Si expira en medio de un formulario, la
   petición htmx recibe el bloqueo "¿Quién eres?" como overlay sobre la misma página: el borrador no se pierde.
 - Toda consulta filtra por el usuario de la sesión **y** PostgreSQL aplica RLS con `FORCE ROW LEVEL SECURITY`
-  y `SET LOCAL app.usuario` en cada transacción; el rol de aplicación `app` no tiene `BYPASSRLS`.
+  y `SET LOCAL app.usuario` en cada transacción; el rol de aplicación `app` no tiene `BYPASSRLS`. Desde el hito 10 la
+  RLS de cuentas, grupos, miembros y clases va además por rol, leído de la base: el docente nunca ve el texto de un estudiante.
 - CSRF activo con el token en las cabeceras de htmx desde el `<body>`; CSP `script-src 'self'` sin inline ni
   eval (Alpine build CSP, htmx con `allowEval:false`).
 - SVG de Graphviz saneado por lista blanca; Graphviz y `pdftotext` como procesos hijo con tiempo máximo
@@ -465,6 +513,7 @@ Dos velocidades, al estilo Rainsberger (Fakes, sin `verify`), bajo `src/test/jav
 | `integracion/`, `aceptacion/` | RLS por SQL; proyección de pendientes en la misma transacción (RF-07); oráculos de T28, T01, T02, T06 y T13 sobre la tabla `ejemplo`; RF-01, RF-02, RF-03, RF-11, el flujo completo de T28 y el del Taller por HTTP contra `app:8080`; pruebas de humo en Chromium con Playwright (RNF-09): primer uso, Taller, SSE de T34 y, en el hito 4, el flujo D a 360 px; en el hito 4, el oráculo de las catorce desde la tabla `ejemplo`, la predicción inmutable por SQL y el flujo D por HTTP con el reloj adelantado; en el hito 5, el oráculo de las diez desde la tabla `ejemplo`, el flujo C por HTTP (modo plantillas, debate con steelman y double crux, respaldo y RF-03, y con el modelo por SSE) y en Chromium a 360 px; en el hito 6, el oráculo de las cuatro desde la tabla `ejemplo`, la privacidad de la biblioteca contra PostgreSQL bajo RLS (jqwik), el flujo A+ por HTTP (importar un PDF, encontrarlo desde la premisa, dos fuentes de grupos distintos, el veredicto que recalcula R04 y cierra el pendiente de T11, respaldo y RF-03) y en Chromium a 360 px con la barra de progreso de la subida; en el hito 7, el oráculo de las cinco desde la tabla `ejemplo` con la cobertura completa (49 activas, 148 ejemplos), una semana de Dojo por HTTP con el reloj adelantado (repasos, niveles, Inicio, respaldo versión 6 y RF-03), P20 con un cambio de T08, del Consejero y de la ficha más uno a mano, el manual de las ocho familias descargado, y el Dojo y P20 en Chromium a 360 px solo con el teclado | perfil test del compose |
 | `integracion/`, `aceptacion/` (hito 8) | `InstalacionDePruebasAisladaIT` (la suite apunta a `db-prueba` y `app-prueba` y no ve `secrets/`); `AislamientoEntreInstitucionesIT` (una fila con centinela en cada tabla con RLS: cero filas desde otra institución y sin contexto, como el operador; la lista de tablas sale de `pg_class`); `AislamientoEntreInstitucionesHttpIT` (cada institución por su ruta, 403 a la ruta de otra, 404 al expediente ajeno, el mismo nombre en dos instituciones); `OperadorDelServicioIT` (crear, invitar, canjear, 410 al segundo canje, 403 fuera de `/operador`, suspender y reactivar); RF-11 con el respaldo cifrado; `RespaldoPorInstitucionIT` (exportar y borrar con constancia); RF-01 con el health anónimo sin detalles y las métricas por institución | perfil test del compose |
 | `integracion/`, `aceptacion/` (hito 9) | `PuertaDeEntradaIT` (1000 cuentas y 0 nombres en la entrada anónima, alta con código y su 410, solo hashes en la base, restablecer con 401 a la sesión vieja, cambiar con la actual, desactivar y reactivar, 429 en el sexto intento con la auditoría, el mismo tiempo con y sin cuenta, el overlay que rechaza a otra persona, el PIN viejo que se reemplaza, "¿No tienes cuenta?"); `RF02CuentaConContrasenaIT`; `LlaveDeAccesoEnNavegadorIT` (Chromium con el autenticador virtual: registrar, confirmar, código de recuperación de un uso); `ContratoResponsiveIT` (la matriz de navegadores en las 8 pantallas críticas, T28, `/usuarios` con 500 cuentas y el teclado virtual); `RF08RecorridoConCodigoIT` (de "Tengo un código" a un resultado de T28 a 1366×768 y a 360×780) | perfil test del compose; la matriz completa con `MATRIZ_COMPLETA=true` en el nocturno |
+| `integracion/`, `aceptacion/`, `contrato/` (hito 10) | `RepositorioAulaContract` y `RepositorioBorradoresContract` con sus Fakes y sus `Real*ContractIT`; `RlsPorRolIT` (el docente recibe cero filas del texto de su estudiante en cada tabla con RLS, sembrada con un centinela); `RlsPorRolHttpIT` (404 por cada objeto de ella y el centinela ausente del HTML del panel); `AulaRolesYGruposIT`; `AulaAltaEnLoteIT` (35 cuentas con vista previa, solo hashes en la base y la hoja de tarjetas en PDF A4 y carta); `AulaClaseIT` (código y QR, lista solo activada, auditoría con y sin lista, 35 entradas a la vez, Terminar clase); `AulaRetoIT`; `AulaIaIT`; `BorradoresIT`; `DemoDelAulaEnNavegadorIT` (la demo de 10 minutos en tres celulares con la red cortada 30 s); el aula en `ContratoResponsiveIT` | perfil test del compose; la matriz completa y los contratos reales en el nocturno |
 | `arquitectura/`, `sensores/` | ArchUnit; Fakes sin contrato; voseo sobre plantillas, catálogo y código; configuración segura (en el hito 8, también logs sin PIN, claves, texto ni mensajes de excepción) | cada PR |
 
 Última corrida local del perfil completo (2026-10-14, hito 9), en una `db-prueba` recién creada, con `CONTRACT_REAL=true` y `MATRIZ_COMPLETA=true`: 996 pruebas rápidas y 327 de integración y aceptación en verde; 189 de ellas son contratos reales en 27 `Real*ContractIT`, ninguno omitido. Las cuatro omitidas son RF-14 con Ollama detenido y los tres arneses de evaluación; la prueba del flujo C con Ollama detenido sí corrió porque, después de un turno del modelo de 64 s, la app pasó a modo plantillas. Una prueba de RF-01 falló una vez por la misma causa (el modelo agotó su tiempo con la CPU cargada y el health del operador dijo PLANTILLAS) y pasó al repetirla sola. Gates `-Pgates` en verde (SpotBugs con FindSecBugs sin hallazgos tras corregir cinco, Dependency-Check sin CVE con `spring-security-webauthn` y `webauthn4j-core`). k6 contra `app-prueba` con la institución de carga: p95 de las pantallas sin IA en 130 ms y de `/usuarios` con 500 cuentas en 42 ms, 0 % de errores. Con Ollama detenido (`docker compose stop ollama` y las pruebas con `--no-deps`) pasaron el flujo C y RF-14 en modo plantillas, el operador, el aislamiento por HTTP, la puerta de entrada, la llave en Chromium y el recorrido de RF-08: 33 pruebas, 2 omitidas que necesitan el modelo.
@@ -483,12 +532,26 @@ Sensores de línea de comandos: `sensores/voseo.sh` (mismo listado que `VoseoTes
 - **Nocturno** (`.github/workflows/nocturno.yml`, cron `0 7 * * *` UTC): `CONTRACT_REAL=true` contra el
   Ollama y la instalación de pruebas del compose (`db-prueba` y `app-prueba`, desde el hito 8), con caché de los modelos.
   Desde el hito 8 el sensor contra el falso verde exige 25 contratos reales (suma `RepositorioInstituciones` y `RepositorioOperador`);
-  desde el hito 9, 27 (suma `RegistroIntentos` y `RepositorioLlaves`), y la matriz completa de navegadores (`MATRIZ_COMPLETA=true`).
+  desde el hito 9, 27 (suma `RegistroIntentos` y `RepositorioLlaves`), y la matriz completa de navegadores (`MATRIZ_COMPLETA=true`);
+  desde el hito 10, 29 (suma `RepositorioAula` y `RepositorioBorradores`).
 - **Imagen de pruebas** (hito 9): `Dockerfile.tests` parte de la imagen oficial `mcr.microsoft.com/playwright/java:v1.63.0-noble`
   fijada por digest, que trae Chromium, WebKit y Firefox; ningún navegador se descarga durante la corrida.
 - **Última corrida nocturna en verde**: 2026-10-14 en GitHub Actions, run [38617260187](https://github.com/G3A/pensamiento-critico/actions/runs/38617260187), lanzado a mano tras subir el hito 9 (commit `c6c8fee`), con `MATRIZ_COMPLETA=true`: 996 pruebas rápidas y 327 de integración y aceptación, los 27 `Real*ContractIT` completos (189 pruebas, 0 omitidas), incluidos `RegistroIntentos` y `RepositorioLlaves`, y la matriz de navegadores con WebKit y Firefox. El PR del commit `e4f884e` (run [38619285690](https://github.com/G3A/pensamiento-critico/actions/runs/38619285690)) también en verde, con k6 (p95 sin IA 48 ms, `/usuarios` 19 ms) y los gates; el PR anterior (`c6c8fee`) había fallado por una carrera de la prueba de RF-08 con htmx en la máquina de CI, corregida en `e4f884e`.
 - Corrida nocturna anterior en verde: 2026-10-14 13:33 UTC en GitHub Actions, run [38571793129](https://github.com/G3A/pensamiento-critico/actions/runs/38571793129), lanzado a mano tras subir el hito 8 (commit `44bee43`), ya sobre la instalación de pruebas aislada: los 25 `Real*ContractIT` corrieron completos, 172 pruebas, 0 omitidas, incluidos los dos del hito 8 (`RepositorioInstituciones` con 4 y `RepositorioOperador` con 8). El workflow de PR del mismo commit (run [38571752865](https://github.com/G3A/pensamiento-critico/actions/runs/38571752865)) también en verde, con k6 y los gates.
 - Corrida nocturna anterior en verde: 2026-10-10 03:34 UTC en GitHub Actions, run [38021036860](https://github.com/G3A/pensamiento-critico/actions/runs/38021036860), lanzado a mano tras subir el hito 7 (commit `c9a56da`). Los 23 `Real*ContractIT` corrieron completos: 159 pruebas, 0 omitidas, 10 de ellas contra Ollama real con `qwen3:4b-instruct-2507-q4_K_M`; incluye los dos del hito 7 (`RepositorioDojo` con 7 pruebas y `RegistroDeRazonamiento` con 5). Las corridas programadas del 2026-10-10 al 2026-10-12 también terminaron en verde. El paso "Sensor contra el falso verde" falla el workflow si algún contrato real queda omitido.
+
+## Mediciones del hito 10
+
+Medidas en la instalación de pruebas el 2026-10-14 (k6 2.3.0 y Playwright en la imagen oficial), en este equipo de 16 núcleos.
+
+| Qué | Hito 10 |
+|---|---|
+| k6 con 140 sesiones del aula sin Ollama (4 aulas de 35, 2 minutos, 9812 peticiones) | p95 de 6 ms en Reto de hoy, responder, Dojo y Mis trabajos; 42 ms al entrar; 17 ms en el panel; 0 % de errores |
+| Pool de conexiones durante esa carga (Hikari, 8 conexiones) | 8 abiertas, a lo sumo 1 ocupada en las muestras de cada segundo |
+| 35 estudiantes entrando a la vez desde la segunda clase (35 clientes HTTP) | menos de 1 s (límite: 5 minutos) |
+| Demo de 10 minutos automatizada (QR, tres celulares, reto en vivo, panel, red cortada 30 s, Terminar clase) | 39 s, 30 de ellos con la red cortada; la respuesta se guardó una vez |
+| Hoja de 35 tarjetas impresa en PDF (Chromium) | 5 páginas en A4 y 5 en carta |
+| Pantallas del aula en la matriz de navegadores | sin desplazamiento horizontal, nada bajo 44 px y cabecera de 56 px o menos en las 5 configuraciones |
 
 ## Mediciones del hito 9
 
@@ -882,6 +945,31 @@ biblioteca, en [`docs/verificacion.md`](docs/verificacion.md).
 | 2026-10-09 | La imagen de pruebas instala `poppler-utils` para el contrato real del extractor de PDF; la final ya lo tenía desde el hito 0. Ninguna dependencia nueva de Maven: el PDF de las pruebas lo genera `testutil.PdfMinimo`. | Los contratos reales necesitan el mismo `pdftotext` que la app. |
 | 2026-10-09 | El etiquetado de pasajes con el modelo en la ficha queda **experimental**, con el aviso junto a cada propuesta: en la evaluación obedeció 1 de 10 instrucciones escondidas (el umbral era 0). La búsqueda semántica cumple sus umbrales y no lleva aviso. El prompt no se ajustó para pasar el mismo banco. | Es la consecuencia escrita antes de medir; endurecerlo y medirlo con documentos adversarios nuevos queda para un hito siguiente. |
 | 2026-10-09 | En la evaluación, un pasaje de CSV cuenta como literal si es el fragmento tal cual y alguna fila tiene todos sus valores sin cambios en él. | El troceado reescribe la fila con los nombres de las columnas; la primera medición contaba eso como "alterado" por un error de la comprobación, no del producto. |
+
+## Decisiones tomadas en el hito 10
+
+Lo que la sección 11 del documento y [`docs/prompt-hito-10.md`](docs/prompt-hito-10.md) no fijaban se resolvió con la opción
+más simple que respeta las reglas. Todo se construyó y se probó en el equipo local; nada se publicó.
+
+| Fecha | Decisión | Por qué |
+|---|---|---|
+| 2026-10-14 | El dueño eligió **los dos rótulos** para los retos de "crear": "aciertos por concepto" para identificar, analizar y evaluar, y los de crear en una tabla aparte, "práctica, no nota". | El prompt pedía preguntarle antes de construir el panel; cierra el desacuerdo de la mesa. |
+| 2026-10-14 | La RLS por rol lee el rol de la base (`app_rol_actual()`, SECURITY DEFINER, con la cuenta activa de la transacción), no de la app. Con usuario fijado: el administrador ve todas las cuentas; el docente, la suya y las de sus estudiantes; los demás, la propia. Sin usuario (entrar, canjear un código) se sigue viendo por institución, como en el hito 9. `codigo_cuenta` va igual que la cuenta. | Una sesión con un rol viejo no amplía lo que se ve; las funciones de antes de entrar no cambian. |
+| 2026-10-14 | Un documento compartido de una estudiante no lo ve nadie más (ni su docente ni quien administra). | Es su texto: la regla del prompt es que el docente nunca vea el texto de un estudiante. |
+| 2026-10-14 | Un grupo tiene un solo docente (`grupo.docente_id`) y `miembro_grupo` guarda solo estudiantes; un docente puede tener varios grupos y los ve en "Mis grupos" (una entrada del grupo "Aula" del menú, no una por grupo). Un estudiante puede estar en varios grupos; "Reto de hoy" toma el primero, por nombre, con un tema vigente. | Es lo que usa el profesor de la mesa (4 de 35) sin una tabla nueva; una entrada de menú por grupo haría crecer el menú. |
+| 2026-10-14 | El alta en lote crea solo cuentas nuevas; un nombre que ya existe en la institución se marca "ya hay una cuenta" y no se suma al grupo. | Sumar una cuenta existente dejaría a un docente ver los agregados de cualquier persona escribiendo su nombre. |
+| 2026-10-14 | Las cuentas del lote se crean con `aula_crear_estudiante` (SECURITY DEFINER: comprueba que quien llama administra el grupo, `INSERT … ON CONFLICT DO NOTHING` y la pertenencia en el mismo paso). | El docente no puede insertar cuentas por RLS y, con ON CONFLICT, un repetido no rompe la transacción del lote. |
+| 2026-10-14 | La hoja de tarjetas no elige tamaño: 8 tarjetas de 95 × 64 mm en dos columnas, que caben en A4 (190 × 277 mm útiles) y en carta (196 × 259). | Sin hojas de estilo por tamaño ni JavaScript; la prueba cuenta 5 páginas para 35 tarjetas en los dos formatos. |
+| 2026-10-14 | El código de clase tiene 6 caracteres (base32 de Crockford, guardado como SHA-256) y su versión en claro vive solo en la sesión del docente que abrió la clase; para verlo en otro equipo, se abre la clase otra vez con otro código. | Es corto para dictarlo y dura lo que la clase; la base nunca lo tiene en claro. |
+| 2026-10-14 | QR con **`io.nayuki:qrcodegen` 1.8.0** (MIT, un paquete, sin dependencias), confirmado en [Maven Central](https://repo1.maven.org/maven2/io/nayuki/qrcodegen/maven-metadata.xml); el SVG (un `path`, margen de 4 módulos) lo arma la app. | El prompt prefería algo pequeño y verificado; escribir un codificador de QR con Reed-Solomon a mano era más riesgo que esta dependencia. |
+| 2026-10-14 | La sesión de un estudiante con su clase abierta dura lo que le queda a la clase (nunca menos de 10 minutos); `SesionDeClase` lo revisa a lo sumo una vez por minuto por sesión y deja ahí también la regla del modelo. "Terminar clase" cierra las sesiones del grupo con el `SessionRegistry` del hito 9. | Sin consultar la base en cada petición; la sesión vuelve a 10 minutos sola cuando la clase vence. |
+| 2026-10-14 | La entrada con el código es `/<ruta>?clase=CODIGO`; la lista se toca con un enlace que vuelve con `?nombre=…&lista=si` (sin JavaScript). La auditoría de esa entrada guarda `clase:con-lista` o `clase:sin-lista` en `detalle`. | Mide el desacuerdo de la mesa en el piloto sin una tabla nueva. |
+| 2026-10-14 | "Reto de hoy" es el Dojo filtrado por el tema del grupo, con el mismo formulario y las mismas reglas; "Mis trabajos" lista las ejecuciones recientes y los expedientes del estudiante. El estudiante puede seguir usando el catálogo y las técnicas: el menú de cuatro entradas es su puerta, no un muro. | Las secuencias de 50 minutos de la mesa usan técnicas como T13 y T28 en clase. |
+| 2026-10-14 | El borrador sin conexión es `/borrador.js` (97 líneas, en la lista cerrada) para los formularios con `data-borrador` (hoy, el reto del Dojo); la copia del servidor va en la tabla `borrador` (V18, RLS por usuario, hasta 16 000 bytes) y no entra en el respaldo JSON de cada persona. | `app.js` ya estaba en 96 líneas; un borrador es transitorio. |
+| 2026-10-14 | Ollama en clase: `IaDelAula` envuelve el puerto `Ia` (`@Primary`); con la clase abierta y el modelo apagado responde "no disponible" y cada técnica sigue en modo plantillas; encendido por el docente, un semáforo justo de 1 por grupo. Los trabajos de fondo (sin petición) no cambian. | Usa el modo plantillas que ya existe; el cupo por grupo impide que un curso entero llene la cola, que atiende una llamada a la vez. |
+| 2026-10-14 | k6 del aula en un guion propio (`sensores/k6/aula.js`) con `preparar-aula.sql`, que corre en `k6-preparar` después de `preparar.sql`; el panel lo pide el administrador de carga, que administra los cuatro grupos (un docente de carga necesitaría su propia llave sembrada). El PR sigue corriendo `navegacion.js`. | Mide el panel con las mismas funciones; la carga del aula dura 2 minutos y no hace falta en cada PR. |
+| 2026-10-14 | Dependencia nueva: `io.nayuki:qrcodegen` 1.8.0. Ninguna otra. | Regla 3 del prompt. |
+| 2026-10-14 | Contratos reales en el nocturno: 29 (suman `RepositorioAula` y `RepositorioBorradores`). | Regla 4 del prompt. |
 
 ## Decisiones tomadas en el hito 9
 

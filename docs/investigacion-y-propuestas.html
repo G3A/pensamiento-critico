@@ -542,6 +542,7 @@ volumes:
 <div class="col">
 <p>Regla de producto fijada: el software contiene <b>las 49 técnicas del catálogo, todas, agrupadas en sus 8 familias</b>. No se escoge una técnica u otra: el usuario navega el catálogo, filtra por la familia que quiere usar, abre una técnica, la configura a su gusto y la ejecuta con sus datos. Cada técnica trae como mínimo <b>tres ejemplos completos</b>, cada uno con la configuración usada, datos ficticios y el resultado tal como lo mostraría la herramienta. Los módulos A, B, C y D de la sección siguiente dejan de ser la estructura principal: se convierten en <b>flujos guiados</b> que encadenan técnicas del catálogo.</p>
 <p><b>Persona primaria de la versión 1:</b> un adulto que toma decisiones en casa, en un negocio pequeño o en su barrio, sin vocabulario de lógica ni de estadística. Estudiantes y docentes son la versión 2, con roles y reporte por grupo. Cada pantalla del inventario de la sección 7 dice si entra en la versión 1 o después.</p>
+<p><b>Persona primaria desde el hito 10 (sección 11):</b> el aula. Un docente de colegio público con 4 grupos de 35 estudiantes, clases de 50 minutos y wifi inestable, y estudiantes de 16 años con un Android de 360 px. El adulto que decide en casa pasa a ser persona secundaria; RF-08 sigue abierto hasta las sesiones moderadas.</p>
 </div>
 <div class="col"><p>Las pantallas del catálogo, de la ficha de técnica y de todo lo demás están reunidas en la <a href="#visuales">sección 7</a>.</p></div>
 
@@ -798,11 +799,12 @@ volumes:
 <tr><td>2026-10-07</td><td>Base de conocimiento: facetas, tipos, proveniencia, relaciones, Afirmación unificada, reglas R01 a R06, validación Delphi, competencia, glosario, IDs.</td><td>Esta sección; catálogo de 36 a 49 técnicas; 147 ejemplos.</td></tr>
 <tr><td>2026-10-07</td><td>Mesa de nueve expertos: voto 7 de 9 por la rebanada vertical con base acotada; 13 correcciones aplicadas; Java 25, JTE y el resto del stack confirmados.</td><td>Sección 10; arquitectura, seguridad y compose nuevos en la 4; tabla canónica y reglas R01 a R04 reescritas en 5b; requisitos en 5c; hitos únicos en 9; tres pestañas, primer uso y espera en 7.</td></tr>
 <tr><td>2026-10-13</td><td>Mesa de doce roles (los nueve más QA, una estudiante y un profesor de bachillerato): voto 9 de 12 por "Primero la puerta, después el aula"; 15 correcciones innegociables sobre entrar, darse de alta y el uso en portátil y celular. Ronda 3: la app pasa a ser un servicio en la nube para varias instituciones, sin nada instalado en los equipos; 5 de 7 por agregar el hito 8 · Servicio. Ronda 4: por ahora pruebas solo en el equipo local; después un solo equipo propio expondrá el servicio a internet, sigue Ollama, todos entran por internet con contraseña y sin correo institucional (llave de acceso como segundo factor para adultos).</td><td>Sección 11; hitos 8 (servicio), 9 (puerta de entrada) y 10 (aula) propuestos; secciones 4, 5, 5b, 5c, 7, 8, 9 y 10 por revisar contra la premisa nueva; requisitos RF-02a, RF-02b, RF-15 a RF-19, RNF-11 y RNF-12 por sumar a la 5c.</td></tr>
+<tr><td>2026-10-14</td><td>Hito 10 · Aula construido en el equipo local: el aula pasa a ser la persona primaria; RLS por rol; el dueño cierra el desacuerdo de la rúbrica de crear con los dos rótulos.</td><td>5c (RF-19 a RF-24 y RNF-13), sección 7 (P23 a P27, mockup del aula), sección 9 (fila del hito 10), sección 11 (desacuerdos).</td></tr>
 </tbody></table></div>
 </section>
 <section id="requisitos">
 <h2>5c · Requisitos con identificador y criterio de aceptación</h2>
-<div class="col"><p>Corrección 6 de la mesa. Cada requisito tiene identificador, criterio verificable, la prueba que lo verifica, el hito en que se cierra y las pantallas o técnicas que toca. Persona primaria de la versión 1: un adulto que decide en casa, en un negocio pequeño o en su barrio; estudiantes y docentes son versión 2. Versión 1 = hitos 0 a 2.</p></div>
+<div class="col"><p>Corrección 6 de la mesa. Cada requisito tiene identificador, criterio verificable, la prueba que lo verifica, el hito en que se cierra y las pantallas o técnicas que toca. Persona primaria de la versión 1: un adulto que decide en casa, en un negocio pequeño o en su barrio; estudiantes y docentes son versión 2. Versión 1 = hitos 0 a 2. Desde el hito 10 la persona primaria es el aula (el docente de 4 grupos de 35 y la estudiante con un celular de 360 px); los requisitos RF-19 a RF-24 y RNF-13 son suyos.</p></div>
 <div class="tscroll"><table>
 <thead><tr><th>ID</th><th>Requisito</th><th>Criterio de aceptación</th><th>Prueba</th><th>Hito</th><th>Pantallas y técnicas</th></tr></thead>
 <tbody>
@@ -826,7 +828,12 @@ volumes:
 <tr><td>RF-16</td><td>Alta asistida con código de un uso</td><td>El administrador crea la cuenta con un nombre y la app genera un código de alta de 8 caracteres (base32 de Crockford) con caducidad, guardado solo como hash y mostrado una vez en una tarjeta imprimible; nunca se imprime una contraseña. La persona toca "Tengo un código" y elige su contraseña. Canjear dos veces da 410; un código vencido no sirve; una contraseña inválida no gasta el código.</td><td>Aceptación (PuertaDeEntradaIT); contrato de RepositorioUsuarios; collaboration test de ServicioUsuarios</td><td>9 (el lote, en el 10)</td><td>P21, entrada</td></tr>
 <tr><td>RF-17</td><td>Restablecer y cambiar la contraseña</td><td>El administrador genera un código de restablecimiento de un uso (72 h) que cierra las sesiones abiertas de esa persona (la sesión vieja recibe 401); cada persona cambia la suya dando la actual; ambos quedan en la auditoría. Desactivar cierra las sesiones y reactivar devuelve el acceso.</td><td>Aceptación (PuertaDeEntradaIT); collaboration test de ServicioUsuarios</td><td>9</td><td>P21, Mi cuenta</td></tr>
 <tr><td>RF-18</td><td>A quién pedir la cuenta</td><td>"¿No tienes cuenta?" lleva a una explicación de tres pasos con el texto de cada institución ("tu profe", "quien instaló la app"), que el administrador cambia en /usuarios, y el catálogo a la vista mientras tanto.</td><td>Aceptación (PuertaDeEntradaIT); contrato de RepositorioInstituciones</td><td>9</td><td>Entrada</td></tr>
-<tr><td>RF-19</td><td>Roles de aula</td><td>Docente y estudiante sobre grupo y miembro_grupo con RLS por rol, sesión de aula de 60 minutos. Las tablas ya existen desde el hito 9 (V16); la interfaz y las políticas por rol llegan en el hito 10.</td><td>Contrato real de RLS por rol (hito 10)</td><td>10</td><td>Aula</td></tr>
+<tr><td>RF-19</td><td>Roles de aula</td><td>Quien administra crea docentes (con llave de acceso) y grupos, y asigna el docente de cada uno; un docente tiene varios grupos y ve solo los suyos (404 a uno ajeno). La RLS va por rol (V17): el docente ve de sus estudiantes solo la cuenta, el grupo y los agregados del panel, y recibe cero filas y 404 de todo su texto (Dojo, ejecuciones, expedientes, afirmaciones, borradores); un texto centinela de una estudiante no aparece en ningún HTML del panel; el documento compartido de una estudiante no lo ve nadie más.</td><td>RepositorioAulaContract (Fake y RealRepositorioAulaContractIT), RlsPorRolIT, RlsPorRolHttpIT, AulaRolesYGruposIT</td><td>10</td><td>Aula</td></tr>
+<tr><td>RF-20</td><td>Alta en lote</td><td>El docente de un grupo (o quien administra) pega una lista o sube un CSV de hasta 500 filas; la vista previa marca repetidas, inválidas y las que ya existen antes de crear nada; al confirmar se crean en una sola transacción, sin excepciones por repetidos, y sale una hoja de tarjetas (8 por hoja en A4 y en carta) con el código de alta de cada estudiante, que no se vuelve a mostrar; los códigos nuevos del grupo, de a uno o en lote, cierran sus sesiones. Todo en la auditoría.</td><td>ListaDeEstudiantesTest (jqwik), ServicioAulaTest, AulaAltaEnLoteIT (PDF de 5 páginas para 35 tarjetas en A4 y en carta)</td><td>10</td><td>Aula</td></tr>
+<tr><td>RF-21</td><td>Clase de 60 minutos con código o QR</td><td>El docente abre la clase de un grupo (10 a 60 minutos): código corto y QR en SVG del servidor que llevan a la entrada con el grupo a la vista; se sigue entrando con nombre y contraseña. Mientras está abierta, la sesión del estudiante dura lo que la clase; "Terminar clase" la cierra para todos. La lista de nombres del grupo aparece solo con la clase abierta, solo de ese grupo y solo si su docente la activó; la auditoría separa entradas con lista y sin lista. Desde la segunda clase, 35 estudiantes entran a la vez en menos de 5 minutos.</td><td>ServicioAulaTest, QrSvgTest, AulaClaseIT (35 entradas a la vez en menos de 1 s)</td><td>10</td><td>Aula</td></tr>
+<tr><td>RF-22</td><td>Panel de grupo</td><td>Solo agregados que devuelven funciones SECURITY DEFINER: entradas del día y de la clase, retos respondidos, aciertos por concepto del tema asignado, los retos de crear aparte como "práctica, no nota", niveles de Bloom y quién lleva 3 días o más sin practicar (nombre y conteo). Nunca una respuesta.</td><td>RepositorioAulaContract (panel con centinela), RlsPorRolHttpIT, AulaRetoIT</td><td>10</td><td>Aula</td></tr>
+<tr><td>RF-23</td><td>Borrador sin conexión</td><td>Copia en el navegador (solo de esa persona y ese formulario) en cada cambio y en el servidor cada 20 s y al perder el foco; sin red, aviso "sin conexión, tu texto está guardado aquí" y reenvío al volver la red con la misma clave, que se guarda una sola vez; "Salir" borra las copias locales.</td><td>RepositorioBorradoresContract (Fake y real), BorradoresIT, DemoDelAulaEnNavegadorIT (red cortada 30 s)</td><td>10</td><td>Aula, P19</td></tr>
+<tr><td>RF-24</td><td>Menú de estudiante y reto del grupo</td><td>El estudiante ve cuatro entradas (Reto de hoy, Dojo, Mis trabajos, Salir), también en la barra inferior; el docente asigna un tema del Dojo al grupo con fecha opcional y "Reto de hoy" toma de él, con los repasos y el nivel de cada quien. En una clase abierta el modelo está apagado salvo que el docente lo encienda, y entonces cada grupo tiene un turno a la vez en la cola.</td><td>AulaRetoIT, IaDelAulaTest, AulaIaIT</td><td>10</td><td>Aula, P19</td></tr>
 <tr><td>RNF-01</td><td>Hardware mínimo</td><td>Versión 1 sin Ollama corre con 8 GB de RAM y 2 núcleos; con Ollama, 12 GB mínimo y 16 recomendados.</td><td>Medición en el hito 0 documentada en el README</td><td>0</td><td></td></tr>
 <tr><td>RNF-02</td><td>Latencia con Ollama</td><td>Primer token bajo 3 s y turno completo bajo 15 s en p95 con preguntas de 80 tokens, qwen3:4b en 8 núcleos sin GPU.</td><td>Banco de 30 diálogos</td><td>3</td><td>P15</td></tr>
 <tr><td>RNF-03</td><td>Concurrencia del servicio (hasta el hito 7, "en red local"; desde el hito 8, por internet en un solo equipo, medida por ahora en local)</td><td>10 usuarios navegando y 1 sesión con Ollama activa sin errores; p95 de las pantallas sin IA bajo 500 ms.</td><td>k6 dentro del compose</td><td>2</td><td></td></tr>
@@ -839,6 +846,7 @@ volumes:
 <tr><td>RNF-10</td><td>Idioma y estilo</td><td>Todo texto en español latino neutro con tuteo; chequeo automático de voseo y peninsular en CI sobre plantillas y catálogo.</td><td>Sensor en el pipeline</td><td>0</td><td>Todas</td></tr>
 <tr><td>RNF-11</td><td>Portátil y celular</td><td>Tres breakpoints con nombre (angosto hasta 599 px, medio de 600 a 1023 px, ancho desde 1024 px). En las 8 pantallas críticas (entrar, alta, Inicio, catálogo, Usar de T28, Expediente, Dojo, /usuarios) y en Chromium 360×780 y 1366×768 (PR), más WebKit 390×844, Chromium 412×915 y Firefox 1366×768 (nocturno): sin desplazamiento horizontal, 0 elementos interactivos bajo 44 px, cabecera de 56 px o menos. En 1366×768 el primer campo editable de Usar de T28 queda en y&lt;600 y la frase de configuración aparece una vez; después de evaluar, el resultado empieza en la primera pantalla a 360. Con el alto reducido a 400 px el campo de contraseña se ve y tiene el foco.</td><td>ContratoResponsiveIT con Playwright Java y la imagen oficial fijada por digest</td><td>9</td><td>Todas</td></tr>
 <tr><td>RNF-12</td><td>Volumen de cuentas</td><td>Con 500 cuentas, /usuarios a 360 px mide 3 pantallas o menos, sin desplazamiento horizontal, con búsqueda y páginas, y su p95 con k6 queda bajo 500 ms.</td><td>ContratoResponsiveIT; k6 con la institución de carga (500 cuentas)</td><td>9</td><td>P21</td></tr>
+<tr><td>RNF-13</td><td>Capacidad del aula</td><td>140 sesiones a la vez (4 aulas de 35) sin Ollama: entrar, Reto de hoy, responder, Dojo, Mis trabajos y el panel del docente con p95 bajo 500 ms y 0 % de errores, con el pool de conexiones medido. Las pantallas del aula entran al contrato responsive (estudiante a 360 y 412, docente a 1366×768).</td><td>sensores/k6/aula.js con preparar-aula.sql; ContratoResponsiveIT</td><td>10</td><td>Aula</td></tr>
 </tbody></table></div>
 <h3 style="margin-top:2rem">Fuera de alcance de la versión 1</h3>
 <div class="col"><ol>
@@ -962,7 +970,7 @@ volumes:
 </section>
 
 <section id="visuales">
-<h2>7 · Propuestas visuales: las 22 pantallas</h2>
+<h2>7 · Propuestas visuales: las 27 pantallas</h2>
 <div class="col"><p>Todas las interfaces de la aplicación en un solo lugar, agrupadas por área y en el orden en que el usuario las encuentra. La tabla es el índice: cada fila enlaza a su mockup y dice en qué hito se entrega. Los mockups son ilustrativos; los textos y cifras que muestran son ejemplos inventados.</p></div>
 <div class="col"><p>Las 49 técnicas comparten la misma ficha de tres pestañas, así que no son 49 pantallas distintas: son una plantilla y 49 renderizadores de resultado. Todas tienen mockup.</p></div>
 <h3 style="margin-top:1.5rem">Inventario de interfaces</h3>
@@ -991,8 +999,13 @@ volumes:
 <tr><td>P20 · Registro de cambios de opinión (T)</td><td>Línea de tiempo, resumen anual, posturas sin revisar.</td><td><a href="#mod-t">sección 7</a></td><td>6</td><td>después</td></tr>
 <tr><td>P21 · Usuarios y respaldo</td><td>Entrar con nombre y contraseña, alta con código de un uso, restablecer, /usuarios con búsqueda y páginas (hito 9); exportar e importar respaldo en JSON.</td><td><a href="#mk-usuarios">sección 7</a></td><td>1 y 6</td><td>v1</td></tr>
 <tr><td>P22 · Primer uso y estado de espera</td><td>Inicio vacío con intenciones y expediente de muestra; Usar esperando al modelo con indicador, texto provisional y Cancelar.</td><td><a href="#mk-primer-uso">sección 7, Primer uso</a></td><td>1 y 3</td><td>v1</td></tr>
+<tr><td>P23 · Grupos y grupo</td><td>Mis grupos del docente (o todos, para quien administra); el grupo con sus estudiantes y el estado de su cuenta, códigos nuevos, tema del Dojo y opciones de la clase.</td><td><a href="#mk-aula">sección 7, Aula</a></td><td>10</td><td>aula</td></tr>
+<tr><td>P24 · Alta en lote y tarjetas</td><td>Pegar la lista o subir un CSV, vista previa con las filas marcadas y la hoja de tarjetas para imprimir (8 por hoja).</td><td><a href="#mk-aula">sección 7, Aula</a></td><td>10</td><td>aula</td></tr>
+<tr><td>P25 · Clase con código y QR</td><td>Abrir la clase, el código y el QR para proyectar, "Terminar clase"; la entrada con el código y, si se activó, la lista del grupo.</td><td><a href="#mk-aula">sección 7, Aula</a></td><td>10</td><td>aula</td></tr>
+<tr><td>P26 · Panel de grupo</td><td>Solo agregados: entradas, retos, aciertos por concepto, crear como práctica, niveles y quién lleva días sin practicar.</td><td><a href="#mk-aula">sección 7, Aula</a></td><td>10</td><td>aula</td></tr>
+<tr><td>P27 · Menú de estudiante y Reto de hoy</td><td>Cuatro entradas (Reto de hoy, Dojo, Mis trabajos, Salir), el reto del tema del grupo y el aviso de sin conexión.</td><td><a href="#mk-aula">sección 7, Aula</a></td><td>10</td><td>aula</td></tr>
 </tbody></table></div>
-<p class="legend">22 pantallas, 19 mockups de pantalla: el layout se ve en Inicio, y las pestañas Qué es, Configuración y Ejemplos comparten el mockup de la ficha de técnica. Además, los 49 renderizadores de resultado de la pestaña Usar están dibujados uno por uno al <a href="#las49">final de esta sección</a>.</p>
+<p class="legend">27 pantallas, 20 mockups de pantalla (las cinco del aula comparten uno): el layout se ve en Inicio, y las pestañas Qué es, Configuración y Ejemplos comparten el mockup de la ficha de técnica. Además, los 49 renderizadores de resultado de la pestaña Usar están dibujados uno por uno al <a href="#las49">final de esta sección</a>.</p>
 
 <h3 style="margin-top:2.5rem">Base: navegación y catálogo</h3>
 <article class="prop" id="mod-inicio">
@@ -1848,6 +1861,59 @@ volumes:
   </div>
 </article>
 
+<h3 style="margin-top:2.5rem">Aula (hito 10)</h3>
+<article class="prop" id="mk-aula">
+  <div class="prop-h"><span class="letter">Aula</span><h3>Grupos, clase con QR, panel y menú de estudiante</h3><p class="sub">Hito 10: el aula es la persona primaria. A la izquierda, el portátil del docente proyecta la clase abierta y mira el panel de su grupo, que solo tiene números. A la derecha, el celular de una estudiante a 360 px con su menú de cuatro entradas, en medio del reto cuando se cae el wifi.</p>
+  <p class="sub tecs"><b>Técnicas:</b> T48 · Taxonomía de Bloom y T49 · Repetición espaciada (el Dojo de cada estudiante); el tema del grupo es T13 · Falacias como esquemas fallidos, T14 · Sesgos cognitivos, T18 · Correlación, causalidad y tasas base o T19 · SIFT.</p></div>
+  <div class="prop-body">
+    <div class="mock-wrap">
+      <div class="win">
+        <div class="bar"><i></i><i></i><i></i><span class="url">&lt;servidor&gt;/grupos/…/clase · 1366×768</span></div>
+        <div class="cols2" style="min-height:220px">
+          <div class="pane">
+            <div class="mk-h">Clase de 10.º A · abierta hasta las 9:50 a. m.</div>
+            <div class="pad" style="display:grid;grid-template-columns:90px 1fr;gap:.6rem;font-size:11px;align-items:center">
+              <div style="width:90px;height:90px;background:repeating-linear-gradient(90deg,#000 0 6px,#fff 6px 12px),repeating-linear-gradient(0deg,#000 0 6px,#fff 6px 12px);background-blend-mode:difference;border:6px solid #fff;outline:1px solid var(--line)"></div>
+              <div>Escanea el QR o entra a<br><b>&lt;servidor&gt;/colegio-del-norte?clase=7KQ2M9</b><br>Código de la clase<br><span style="font-family:var(--mono);font-size:20px;letter-spacing:.1em">7KQ2M9</span></div>
+            </div>
+            <div class="pad" style="font-size:11px"><span class="btn" style="background:#b42318">Terminar clase</span> <span style="color:var(--muted)">cierra las sesiones de todo el grupo</span></div>
+          </div>
+          <div class="pane">
+            <div class="mk-h">Panel de 10.º A · solo números</div>
+            <div class="pad" style="font-size:11px">
+              <div class="bar-row"><span style="width:150px">entraron hoy</span><b>33 de 35</b></div>
+              <div class="bar-row"><span style="width:150px">retos respondidos hoy</span><b>61, por 31 estudiantes</b></div>
+              <div style="margin-top:.35rem"><b>Aciertos por concepto · T13</b></div>
+              <div class="bar-row"><span style="width:150px">Generalización apresurada</span>24 de 30 (80 %)</div>
+              <div class="bar-row"><span style="width:150px">Ad hominem</span>13 de 22 (59 %)</div>
+              <div style="margin-top:.35rem"><b>Retos de crear · práctica, no nota</b></div>
+              <div class="bar-row"><span style="width:150px">Generalización apresurada</span>5 de 9 cumplieron la rúbrica</div>
+              <div style="margin-top:.35rem"><b>Llevan 3 días o más sin practicar</b>: Luis Gómez (nunca practicó), Sofía Ruiz (hace 4 días)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="win" style="max-width:240px;margin-top:.75rem">
+        <div class="bar"><i></i><i></i><i></i><span class="url">…/reto · 360 px</span></div>
+        <div class="pane">
+          <div class="mk-h">Reto de hoy</div>
+          <div class="pad" style="font-size:11px;display:grid;gap:.35rem">
+            <div style="padding:.35rem;background:var(--mock-bg);border-radius:4px">Sin conexión: tu texto está guardado aquí. Se envía solo cuando vuelva la red.</div>
+            <span>«Todos en el chat del curso dicen que el profe es injusto, así que lo es.»</span>
+            <span>(•) Apelación a la mayoría · ( ) Hombre de paja</span>
+            <span class="btn" style="text-align:center">Responder</span>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;border-top:1px solid var(--line);padding-top:.3rem;text-align:center"><b>Reto de hoy</b><span>Dojo</span><span>Mis trabajos</span><span>Salir</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="analysis">
+      <h4>Qué define esta pantalla</h4>
+      <ul><li>Quien administra crea docentes y grupos; un docente puede tener varios (el profesor de la mesa 2 tiene 4 de 35) y los ve en "Mis grupos", dentro del grupo "Aula" del menú. El alta es en lote (lista pegada o CSV de hasta 500 filas) con vista previa y una hoja de 8 tarjetas por página en A4 y en carta.</li><li>La clase dura hasta 60 minutos. El código y el QR solo llevan a la entrada con el grupo a la vista: cada quien entra con su nombre y su contraseña. La lista de nombres del grupo es opcional, apagada por defecto, y solo aparece con la clase abierta; la auditoría cuenta las entradas con lista y sin lista para medirlo en el piloto.</li><li>El panel nunca muestra una respuesta: sale de funciones que devuelven números. Por decisión del dueño (2026-10-14) los retos de crear van aparte, rotulados "práctica, no nota".</li><li>El estudiante tiene cuatro entradas; si el wifi se cae, el texto queda en su celular y en el servidor, y se envía una sola vez al volver la red. En clase el asistente de IA está apagado salvo que el docente lo encienda para el grupo.</li></ul>
+    </div>
+  </div>
+</article>
+
 <h3 id="las49" style="margin-top:3rem">Resultado de cada técnica: las 49 en un solo lugar</h3>
 <div class="col"><p>Cada tarjeta es el renderizador de resultado que la pestaña Usar muestra para esa técnica, con datos de los tres escenarios recurrentes: la familia, la panadería y el barrio. Cada técnica declara su <b>patrón de visualización</b> (V01 a V13), que es un fragmento JTE reutilizable; así 49 resultados se construyen con 13 fragmentos. Agrupadas por familia en el orden del catálogo canónico.</p></div>
 <div class="tscroll"><table>
@@ -2260,6 +2326,7 @@ volumes:
 <tr><td>7 · Metacognición y práctica (3 semanas)</td><td>Dojo con repetición espaciada y niveles de Bloom, reflexión, diario de razonamiento, cambios de opinión; manual por familia; 147 ejemplos completos.</td><td>T45 a T49</td><td></td><td>Las 49 técnicas con "Usar" implementado; cobertura de ejemplos completa; manual generado.</td></tr>
 <tr><td>8 · Servicio (3 a 4 semanas; sección 11)</td><td>Instalación de pruebas aislada y desechable; institución con ruta y estado bajo RLS; entrada por <code>/&lt;institucion&gt;</code> con la sesión atada a ella y sin <code>institucionUnica()</code>; nombre único sin distinguir mayúsculas ni tildes; operador del servicio con invitación de un solo uso para el primer administrador; respaldos cifrados y exportar o borrar una institución con constancia; health sin detalles y métricas por institución. Todo en el equipo local, sin despliegue público.</td><td>Ninguna</td><td>RNF-03 y los supuestos reescritos para el servicio; correcciones 8 y 10 de la sección 11 (la 9, HTTPS, espera a la salida a internet)</td><td>La suite corre en la base aislada y la base de uso no cambia; dos instituciones conviven y ninguna ve a la otra (contrato de aislamiento y aceptación HTTP); el operador crea una institución e invita a su primer administrador, que entra por la ruta nueva, sin leer sus datos; el respaldo cifrado se restaura en la prueba de RF-11; health anónimo sin detalles.</td></tr>
 <tr><td>9 · Puerta de entrada (unas 3 semanas; sección 11)</td><td>Contraseña para todos (10 caracteres o más, 12 para quien administra, contra una lista vendorizada de contraseñas comunes), con las cuentas de PIN que eligen su contraseña al entrar; alta con código de un uso y tarjeta imprimible; restablecer y cambiar la contraseña, reactivar; una sola forma de entrar sin lista de nombres en la página y en el overlay, que solo acepta a la misma persona; límite de intentos con retardo progresivo y auditoría; llave de acceso (WebAuthn de Spring Security 7) con códigos de recuperación para administrador, docente y operador; nada interno antes de entrar; contrato responsive con tres breakpoints, cabecera de 56 px, navegación en cuatro grupos con barra inferior y objetivos de 44 px; /usuarios con búsqueda y páginas; Usar de T28 plegado y una pista a la vez en celular; matriz de navegadores con la imagen oficial de Playwright; tablas del aula sin interfaz. Todo en el equipo local.</td><td>Ninguna</td><td>RF-02 (contraseña), RF-02a, RF-02b, RF-15 a RF-18, RNF-11, RNF-12; RNF-06 y RNF-09 verificados por la matriz; innegociables 1 a 7 y 10 a 15 de la sección 11 (la 8 la cerró el hito 8; la 9, HTTPS, espera a la salida a internet)</td><td>La entrada anónima con 1000 cuentas no muestra nombres; el sexto intento recibe 429; alta, restablecer y cambiar con sus 410 y 401 y solo hashes en la base; operador y administrador no pasan sin su llave y un código de recuperación sirve una vez; la matriz de viewport en verde en el PR y en el nocturno; k6 de /usuarios con 500 cuentas bajo 500 ms. La sesión en un celular real y RF-08 en celular pasan a la salida a internet.</td></tr>
+<tr><td>10 · Aula (unas 5 semanas; sección 11)</td><td>RLS por rol (V17) con su contrato real como condición de entrada; docente y estudiante con reglas por ruta; grupos con su docente (varios por docente); alta en lote con vista previa y hoja de tarjetas; códigos nuevos para el grupo; clase de hasta 60 minutos con código corto y QR en SVG, sesión del estudiante atada a la clase y "Terminar clase"; lista del grupo detrás del código, opcional; menú de estudiante de cuatro entradas y "Reto de hoy" con el tema que asigna el docente; panel con agregados; borrador que no se pierde sin red (V18); Ollama apagado por defecto en clase con un turno por grupo al encenderlo; k6 con 140 sesiones; pantallas del aula en la matriz de navegadores. Todo en el equipo local. Sin contenido escolar nuevo: el reto usa los cuatro temas del Dojo.</td><td>T48 y T49 en el Dojo de cada estudiante; T13, T14, T18 y T19 como temas del grupo</td><td>RF-19 a RF-24, RNF-13; persona primaria: el aula</td><td>El docente recibe cero filas y 404 del texto de sus estudiantes y el centinela no aparece en el panel; 35 cuentas con una lista pegada y sus tarjetas; 35 estudiantes entran a la vez en menos de 1 s; la demo de 10 minutos automatizada en tres celulares con la red cortada 30 s y una sola respuesta guardada; fuera de una clase abierta ninguna lista de nombres; k6 con 140 sesiones con p95 de 6 ms y 0 % de errores. El piloto en un colegio, el contenido escolar y el paquete de cumplimiento siguen pendientes.</td></tr>
 </tbody></table></div>
 <p class="legend">Suma honesta para una persona: versión 1 en 6 a 8 semanas; las 49 técnicas con contenido completo, entre 9 y 14 meses. Los contenidos (ejemplos, esquemas, escenarios) se escriben en prosa por familia antes de cada hito.</p>
 
@@ -2448,9 +2515,9 @@ volumes:
 <li><b>Estudiante en casa (cerrado en la ronda 4):</b> todos entran solo por la página, por internet, también desde la casa; el estudiante usa contraseña y no PIN. (El desacuerdo de la ronda 2 sobre instalar una CA en 35 celulares se disolvió: con certificado público no hay nada que instalar.)</li>
 <li><b>Subdominio o ruta (cerrado en la ronda 4):</b> con un solo equipo y un solo dominio gana la ruta; el subdominio vuelve cuando haya un DNS con API para certificados comodín. Seguridad pide a cambio que la sesión guarde su institución y rechace cualquier otra ruta.</li>
 <li><b>Tope por IP en el aula:</b> todo un colegio sale a internet por una sola IP; hay que medir qué IP ve la app detrás del proxy y del balanceador del proveedor antes de fijar los umbrales.</li>
-<li><b>Lista del grupo detrás de código:</b> el profesor la quiere para entrar rápido; la estudiante y UX dicen que escribir el nombre ya funciona y no expone a nadie. Se mide en el piloto, con lista y sin lista.</li>
+<li><b>Lista del grupo detrás de código:</b> el profesor la quiere para entrar rápido; la estudiante y UX dicen que escribir el nombre ya funciona y no expone a nadie. Se mide en el piloto, con lista y sin lista. (Hito 10: la lista existe, apagada por defecto, y la auditoría guarda cada entrada como con lista o sin lista para esa medición.)</li>
 <li><b>Capturas comparadas o solo geometría:</b> frontend quiere capturas con umbral en el nocturno; QA prefiere solo aserciones geométricas por los falsos rojos. Por ahora quedan las aserciones y las capturas son opcionales.</li>
-<li><b>Rúbrica de "crear" en el Dojo:</b> conocimiento quiere el rótulo "práctica, no nota"; comercial quiere "aciertos por concepto" en el panel. Se resuelve en el hito 10.</li>
+<li><b>Rúbrica de "crear" en el Dojo (cerrado por el dueño el 2026-10-14):</b> conocimiento quería el rótulo "práctica, no nota"; comercial, "aciertos por concepto" en el panel. El dueño eligió los dos: aciertos por concepto para identificar, analizar y evaluar, y los retos de crear en una tabla aparte rotulada "práctica, no nota".</li>
 </ul></div>
 
 <h3 style="margin-top:2.5rem">Lo que la mesa no verificó</h3>
