@@ -972,6 +972,7 @@ más simple que respeta las reglas. Todo se construyó y se probó en el equipo 
 | 2026-10-14 | k6 del aula en un guion propio (`sensores/k6/aula.js`) con `preparar-aula.sql`, que corre en `k6-preparar` después de `preparar.sql`; el panel lo pide el administrador de carga, que administra los cuatro grupos (un docente de carga necesitaría su propia llave sembrada). El PR sigue corriendo `navegacion.js`. | Mide el panel con las mismas funciones; la carga del aula dura 2 minutos y no hace falta en cada PR. |
 | 2026-10-14 | Dependencia nueva: `io.nayuki:qrcodegen` 1.8.0. Ninguna otra. | Regla 3 del prompt. |
 | 2026-10-14 | Contratos reales en el nocturno: 29 (suman `RepositorioAula` y `RepositorioBorradores`). | Regla 4 del prompt. |
+| 2026-10-15 | Con la confirmación del dueño, la app de uso (`app`, institución `/local`) corre el hito 10: antes, un respaldo cifrado (`respaldos/pensamiento-2026-10-15.dump.gpg`, sha256 `304840dd…`) verificado al restaurarlo en un PostgreSQL desechable (1 cuenta, 1 ejecución, 1 expediente y 49 técnicas, igual que la base de uso); después, V17 y V18 aplicadas, con los mismos conteos. | Regla 9 del prompt. |
 
 ## Decisiones tomadas en el hito 9
 
